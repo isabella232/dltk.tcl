@@ -14,7 +14,7 @@ import org.eclipse.dltk.ast.declarations.TypeDeclaration;
 import org.eclipse.dltk.ast.expressions.Expression;
 import org.eclipse.dltk.ast.references.SimpleReference;
 import org.eclipse.dltk.codeassist.IAssistParser;
-import org.eclipse.dltk.codeassist.ISelectionEngine;
+import org.eclipse.dltk.codeassist.ScriptSelectionEngine;
 import org.eclipse.dltk.compiler.env.ISourceModule;
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.IDLTKLanguageToolkit;
@@ -32,7 +32,6 @@ import org.eclipse.dltk.core.search.SearchMatch;
 import org.eclipse.dltk.core.search.SearchParticipant;
 import org.eclipse.dltk.core.search.SearchPattern;
 import org.eclipse.dltk.core.search.SearchRequestor;
-import org.eclipse.dltk.internal.codeassist.impl.Engine;
 import org.eclipse.dltk.internal.codeassist.select.SelectionNodeFound;
 import org.eclipse.dltk.internal.compiler.lookup.LookupEnvironment;
 import org.eclipse.dltk.tcl.ast.TclModuleDeclaration;
@@ -44,16 +43,16 @@ import org.eclipse.dltk.tcl.internal.core.codeassist.selection.SelectionOnKeywor
 import org.eclipse.dltk.tcl.internal.core.codeassist.selection.SelectionOnVariable;
 import org.eclipse.dltk.tcl.internal.parser.TclParseUtils;
 
-public class TclSelectionEngine extends Engine implements ISelectionEngine {
+public class TclSelectionEngine extends ScriptSelectionEngine {
 	public static boolean DEBUG = DLTKCore.DEBUG_SELECTION;
 
 	private int actualSelectionStart;
 
 	private int actualSelectionEnd;
+	
+	private List selectionElements = new ArrayList();
 
 	private TclSelectionParser parser = new TclSelectionParser();
-
-	private List selectionElements = new ArrayList();
 
 	private org.eclipse.dltk.core.ISourceModule sourceModule;
 
@@ -71,7 +70,8 @@ public class TclSelectionEngine extends Engine implements ISelectionEngine {
 			int selectionSourceStart, int selectionSourceEnd) {
 		sourceModule = (org.eclipse.dltk.core.ISourceModule) sourceUnit
 				.getModelElement();
-		String source = sourceUnit.getSourceContents();
+		String content = sourceUnit.getSourceContents();
+		
 		if (DEBUG) {
 			System.out.print("SELECTION IN "); //$NON-NLS-1$
 			System.out.print(sourceUnit.getFileName());
@@ -80,17 +80,20 @@ public class TclSelectionEngine extends Engine implements ISelectionEngine {
 			System.out.print(" TO "); //$NON-NLS-1$
 			System.out.println(selectionSourceEnd);
 			System.out.println("SELECTION - Source :"); //$NON-NLS-1$
-			System.out.println(source);
+			System.out.println(content);
 		}
-		if (!checkSelection(source, selectionSourceStart, selectionSourceEnd)) {
+		
+		if (!checkSelection(content, selectionSourceStart, selectionSourceEnd)) {
 			return new IModelElement[0];
 		}
+		
 		if (DEBUG) {
 			System.out.print("SELECTION - Checked : \""); //$NON-NLS-1$
-			System.out.print(source.substring(actualSelectionStart,
+			System.out.print(content.substring(actualSelectionStart,
 					actualSelectionEnd));
 			System.out.println('"');
 		}
+		
 		try {
 			TclModuleDeclaration parsedUnit = (TclModuleDeclaration) this.parser
 					.parse(sourceUnit);
@@ -130,9 +133,8 @@ public class TclSelectionEngine extends Engine implements ISelectionEngine {
 				System.out.println("Exception caught by SelectionEngine:"); //$NON-NLS-1$
 				e.printStackTrace(System.out);
 			}
-		} finally {
-			reset();
-		}
+		} 
+		
 		return (IModelElement[]) selectionElements
 				.toArray(new IModelElement[selectionElements.size()]);
 	}
@@ -427,9 +429,7 @@ public class TclSelectionEngine extends Engine implements ISelectionEngine {
 	private void processExecuteBlock(String name, Expression bl,
 			int beforePosition) {
 		TclExecuteExpression block = (TclExecuteExpression) bl;
-		List/* < Statement > */code = null;
-
-		code = block.parseExpression(block.sourceStart() + 1);
+		List code = block.parseExpression(block.sourceStart() + 1);
 		checkVariableStatements(name, beforePosition, code, "");
 
 	}

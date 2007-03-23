@@ -12,8 +12,8 @@ import org.eclipse.dltk.ast.declarations.ModuleDeclaration;
 import org.eclipse.dltk.ast.declarations.TypeDeclaration;
 import org.eclipse.dltk.ast.expressions.Expression;
 import org.eclipse.dltk.ast.references.SimpleReference;
-import org.eclipse.dltk.codeassist.CompletionEngine;
 import org.eclipse.dltk.codeassist.IAssistParser;
+import org.eclipse.dltk.codeassist.ScriptCompletionEngine;
 import org.eclipse.dltk.codeassist.complete.CompletionNodeFound;
 import org.eclipse.dltk.compiler.env.ISourceModule;
 import org.eclipse.dltk.compiler.env.lookup.Scope;
@@ -45,10 +45,9 @@ import org.eclipse.dltk.tcl.internal.core.codeassist.completion.CompletionOnVari
 import org.eclipse.dltk.tcl.internal.core.codeassist.completion.TclCompletionParser;
 import org.eclipse.dltk.tcl.internal.parser.TclParseUtils;
 
-public class TclCompletionEngine extends CompletionEngine {
-	boolean assistNodeIsNamespace;
-	boolean assistNodeIsFunction;
-	TclCompletionParser parser;
+public class TclCompletionEngine extends ScriptCompletionEngine {
+	
+	private TclCompletionParser parser;
 
 	public TclCompletionEngine(ISearchableEnvironment environment,
 			CompletionRequestor requestor, Map options, IDLTKProject project) {
@@ -56,24 +55,27 @@ public class TclCompletionEngine extends CompletionEngine {
 		this.parser = new TclCompletionParser();
 	}
 
-	public void complete(ISourceModule sourceUnit, int completionPosition,
+	public void complete(ISourceModule sourceModule, int completionPosition,
 			int pos) {
 		if (DEBUG) {
 			System.out.print("COMPLETION IN "); //$NON-NLS-1$
-			System.out.print(sourceUnit.getFileName());
+			System.out.print(sourceModule.getFileName());
 			System.out.print(" AT POSITION "); //$NON-NLS-1$
 			System.out.println(completionPosition);
 			System.out.println("COMPLETION - Source :"); //$NON-NLS-1$
-			System.out.println(sourceUnit.getSourceContents());
+			System.out.println(sourceModule.getSourceContents());
 		}
+		
 		this.requestor.beginReporting();
+				
 		boolean contextAccepted = false;
 		try {
-			this.fileName = sourceUnit.getFileName();
+			this.fileName = sourceModule.getFileName();
 			this.actualCompletionPosition = completionPosition;
 			this.offset = pos;
 			TclModuleDeclaration parsedUnit = (TclModuleDeclaration) this.parser
-					.parse(sourceUnit);
+					.parse(sourceModule);
+			
 			if (parsedUnit != null) {
 				if (DEBUG) {
 					System.out.println("COMPLETION - Diet AST :"); //$NON-NLS-1$
@@ -81,11 +83,13 @@ public class TclCompletionEngine extends CompletionEngine {
 				}
 				try {
 					this.lookupEnvironment.buildTypeScope(parsedUnit, null);
+					
 					if ((this.unitScope = parsedUnit.scope) != null) {
-						this.source = sourceUnit.getSourceContents()
+						this.source = sourceModule.getSourceContents()
 								.toCharArray();
 						parseBlockStatements(parsedUnit,
 								this.actualCompletionPosition);
+						
 						if (DEBUG) {
 							System.out.println("COMPLETION - AST :"); //$NON-NLS-1$
 							System.out.println(parsedUnit.toString());
@@ -112,27 +116,31 @@ public class TclCompletionEngine extends CompletionEngine {
 					}
 				}
 			}
+			
 			if (this.noProposal && this.problem != null) {
-				if (!contextAccepted) {
-					contextAccepted = true;
+				if (!contextAccepted) {					
 					CompletionContext context = new CompletionContext();
 					context.setOffset(completionPosition);
-					context.setTokenKind(CompletionContext.TOKEN_KIND_UNKNOWN);
-					this.requestor.acceptContext(context);
+					context.setTokenKind(CompletionContext.TOKEN_KIND_UNKNOWN);			
+					
+					this.requestor.acceptContext(context);					
+					contextAccepted = true;
 				}
+				
 				this.requestor.completionFailure(this.problem);
+				
 				if (DEBUG) {
 					this.printDebug(this.problem);
 				}
 			}
-		} finally {
-			reset();
-			if (!contextAccepted) {
-				contextAccepted = true;
+		} finally {			
+			if (!contextAccepted) {				
 				CompletionContext context = new CompletionContext();
 				context.setTokenKind(CompletionContext.TOKEN_KIND_UNKNOWN);
 				context.setOffset(completionPosition);
+				
 				this.requestor.acceptContext(context);
+				contextAccepted = true;
 			}
 			this.requestor.endReporting();
 		}
@@ -191,8 +199,9 @@ public class TclCompletionEngine extends CompletionEngine {
 	}
 
 	private char[] removeLastColonFromToken(char[] token) {
-		//remove : on the end.
-		if( token.length > 2 && token[token.length -1 ] == ':' && token[token.length -2 ] != ':' ) {
+		// remove : on the end.
+		if (token.length > 2 && token[token.length - 1] == ':'
+				&& token[token.length - 2] != ':') {
 			char co2[] = new char[token.length - 1];
 			System.arraycopy(token, 0, co2, 0, co2.length);
 			token = co2;
@@ -202,7 +211,7 @@ public class TclCompletionEngine extends CompletionEngine {
 
 	private void findNamespaceFunctions(final char[] token,
 			final List methodNames) {
-		
+
 		final List methods = new ArrayList();
 		final List types = new ArrayList();
 		SearchRequestor requestor = new SearchRequestor() {
@@ -261,7 +270,7 @@ public class TclCompletionEngine extends CompletionEngine {
 		};
 		IDLTKLanguageToolkit toolkit = null;
 		try {
-			toolkit = DLTKLanguageManager.getLangaugeToolkit(this.dltkProject);
+			toolkit = DLTKLanguageManager.getLanguageToolkit(this.dltkProject);
 		} catch (CoreException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -365,7 +374,7 @@ public class TclCompletionEngine extends CompletionEngine {
 	private void findLocalFunctions(char[] token,
 			boolean canCompleteEmptyToken, ASTNode astNodeParent,
 			List methodNames) {
-		
+
 		token = removeLastColonFromToken(token);
 		List methods = new ArrayList();
 		fillFunctionsByLevels(token, astNodeParent, methods, methodNames);
@@ -519,11 +528,11 @@ public class TclCompletionEngine extends CompletionEngine {
 			}
 			// Process variable setters.
 			statements = method.getStatements();
-			checkVariableStatements(beforePosition, choices, statements );
+			checkVariableStatements(beforePosition, choices, statements);
 			char[][] cc = new char[choices.size()][];
 			for (int i = 0; i < choices.size(); ++i) {
 				cc[i] = ((String) choices.get(i)).toCharArray();
-				gChoices.add( choices.get(i));
+				gChoices.add(choices.get(i));
 			}
 			findLocalVariables(token, cc, canCompleteEmptyToken, provideDollar);
 		} else if (parent instanceof ModuleDeclaration) {
@@ -556,14 +565,14 @@ public class TclCompletionEngine extends CompletionEngine {
 					canCompleteEmptyToken, choices);
 		}
 		// remove dublicates
-		for( int i = 0; i < gChoices.size(); ++i ) {
-			String c = (String)gChoices.get(i);
-			if( choices.contains(c)) {
+		for (int i = 0; i < gChoices.size(); ++i) {
+			String c = (String) gChoices.get(i);
+			if (choices.contains(c)) {
 				choices.remove(c);
 			}
-			if( c.startsWith("$")) {
+			if (c.startsWith("$")) {
 				String cc = c.substring(1);
-				if( choices.contains(cc)) {
+				if (choices.contains(cc)) {
 					choices.remove(cc);
 				}
 			}
@@ -583,7 +592,7 @@ public class TclCompletionEngine extends CompletionEngine {
 			final boolean provideDollar) {
 		final List fields = new ArrayList();
 		final List types = new ArrayList();
-		boolean provideDots = false; 
+		boolean provideDots = false;
 		SearchRequestor requestor = new SearchRequestor() {
 			public void acceptSearchMatch(SearchMatch match)
 					throws CoreException {
@@ -643,7 +652,7 @@ public class TclCompletionEngine extends CompletionEngine {
 		};
 		IDLTKLanguageToolkit toolkit = null;
 		try {
-			toolkit = DLTKLanguageManager.getLangaugeToolkit(this.dltkProject);
+			toolkit = DLTKLanguageManager.getLanguageToolkit(this.dltkProject);
 		} catch (CoreException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -721,85 +730,6 @@ public class TclCompletionEngine extends CompletionEngine {
 		findFields(token, false, fields, provideDollar ? "$" : "");
 	}
 
-	private void findGlobalVariablesOld(final char[] token, final List choices,
-			final boolean provideDollar) {
-		final String to = new String(token);
-		SearchRequestor requestor = new SearchRequestor() {
-			public void acceptSearchMatch(SearchMatch match)
-					throws CoreException {
-				Object element = match.getElement();
-				if (element instanceof IField) {
-					IField field = (IField) element;
-					String nme = field.getElementName();
-					if (field.getDeclaringType() != null) {
-						// IType type = field.getDeclaringType();
-						// nme = type.getTypeQualifiedName("::") + "::" + nme;
-						return;
-					}
-					if (nme.startsWith("::")) {
-						nme = nme.substring(2);
-					}
-					if ((token.length >= 2 && token[0] == ':' && token[1] == ':')
-							|| (token.length >= 3 && token[0] == '$'
-									&& token[1] == ':' && token[2] == ':')) {
-						nme = "::" + nme;
-					}
-					if (provideDollar) {
-						nme = "$" + nme;
-					}
-					if (nme.startsWith(to) && !choices.contains(nme)) {
-						choices.add(nme);
-					}
-				}
-			}
-		};
-
-		IDLTKLanguageToolkit toolkit = null;
-		try {
-			toolkit = DLTKLanguageManager.getLangaugeToolkit(this.dltkProject);
-		} catch (CoreException e1) {
-			e1.printStackTrace();
-		}
-		IDLTKSearchScope scope = SearchEngine.createWorkspaceScope(toolkit);
-		try {
-			String tok = new String(token);
-			if (tok.indexOf("::") == -1 && tok.length() > 1) {
-				if (tok.startsWith("$")) {
-					tok = tok.substring(1);
-				}
-				search(tok + "*", IDLTKSearchConstants.FIELD,
-						IDLTKSearchConstants.DECLARATIONS, scope, requestor);
-			} else {
-				if (tok.startsWith("::")) {
-					String tt = tok.substring(2);
-					if (tt.indexOf("::") == -1 && tt.length() > 1) {
-						search(tt + "*", IDLTKSearchConstants.FIELD,
-								IDLTKSearchConstants.DECLARATIONS, scope,
-								requestor);
-					}
-				}
-			}
-			if (tok.startsWith("$") && tok.length() > 2) {
-				if (tok.indexOf("::") == -1) {
-					search(tok + "*", IDLTKSearchConstants.FIELD,
-							IDLTKSearchConstants.DECLARATIONS, scope, requestor);
-				} else {
-					String tt = tok.substring(1);
-					if (tt.startsWith("::")) {
-						tt = tt.substring(2);
-						if (tt.indexOf("::") == -1 && tt.length() > 1) {
-							search(tt + "*", IDLTKSearchConstants.FIELD,
-									IDLTKSearchConstants.DECLARATIONS, scope,
-									requestor);
-						}
-					}
-				}
-			}
-		} catch (CoreException e) {
-			e.printStackTrace();
-		}
-	}
-
 	private void findASTVariables(ASTNode node, String prefix, char[] token,
 			boolean canCompleteEmptyToken, List choices) {
 		List statements = null;
@@ -828,8 +758,7 @@ public class TclCompletionEngine extends CompletionEngine {
 							String var = prefix + add;
 							if (var.endsWith("::") && prev.startsWith("::")) {
 								var = var + prev.substring(2);
-							}
-							else {
+							} else {
 								var = var + prev;
 							}
 							if (!choices.contains(var)) {
@@ -845,14 +774,15 @@ public class TclCompletionEngine extends CompletionEngine {
 	}
 
 	private void checkVariables(char[] token, boolean canCompleteEmptyToken,
-			int beforePosition, List statements, boolean provideDollar, List gChoices) {
+			int beforePosition, List statements, boolean provideDollar,
+			List gChoices) {
 		List choices = new ArrayList();
 		// Process variable setters.
 		checkVariableStatements(beforePosition, choices, statements);
 		char[][] cc = new char[choices.size()][];
 		for (int i = 0; i < choices.size(); ++i) {
 			cc[i] = ((String) choices.get(i)).toCharArray();
-			gChoices.add( choices.get(i));
+			gChoices.add(choices.get(i));
 		}
 		findLocalVariables(token, cc, canCompleteEmptyToken, provideDollar);
 	}
@@ -987,13 +917,7 @@ public class TclCompletionEngine extends CompletionEngine {
 		}
 		return str;
 	}
-
-	protected void reset() {
-		super.reset();
-		this.knownPkgs = new HashtableOfObject(10);
-		this.knownTypes = new HashtableOfObject(10);
-	}
-
+	
 	public IAssistParser getParser() {
 		return parser;
 	}

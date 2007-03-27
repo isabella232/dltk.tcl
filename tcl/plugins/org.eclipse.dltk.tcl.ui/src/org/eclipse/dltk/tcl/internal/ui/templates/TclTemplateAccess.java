@@ -47,7 +47,7 @@ public class TclTemplateAccess {
 	public ContextTypeRegistry getContextTypeRegistry() {
 		if (fRegistry == null) {
 			fRegistry = new ContributionContextTypeRegistry();
-			fRegistry.addContextType(TclUniversalTemplateContextType.CONTEXT_TYPE_ID);
+			fRegistry.addContextType(new TclUniversalTemplateContextType());
 		}
 
 		return fRegistry;

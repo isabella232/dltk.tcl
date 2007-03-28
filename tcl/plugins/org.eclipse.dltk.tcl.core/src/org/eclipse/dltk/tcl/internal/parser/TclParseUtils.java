@@ -258,7 +258,7 @@ public class TclParseUtils {
 		try {
 			if (content.charAt(position) == '$') {
 				position++;
-				if (content.charAt(position) == '{')
+				if (position < content.length() && content.charAt(position) == '{')
 					position++;
 			}
 		} catch (IndexOutOfBoundsException e) {
@@ -267,11 +267,12 @@ public class TclParseUtils {
 		if (start < 0) {
 			start = 0;
 		}
-		if ((content.charAt(start) == '$' && content.charAt(start + 1) == '{')
+		if (start + 1 < content.length() && (content.charAt(start) == '$' && content.charAt(start + 1) == '{')
 				|| (content.charAt(start) == '{')) {
-			while (content.charAt(end) != '}' && end < content.length())
+			while (content.charAt(end) != '}' && content.charAt(end) != '\\' && end < content.length())
 				end++;
 			end++;
+			
 		}
 		if (start < end) {
 			String sub = content.substring(start, end);
@@ -339,7 +340,7 @@ public class TclParseUtils {
 
 	private static boolean checkBounds(String content, int pos) {
 		char[] syms = { ' ', '\t', '\n', '\r', ']', '[', '}', '{', '(', ')',
-				'$' };
+				'$', '\\' };
 		char c = content.charAt(pos);
 		for (int i = 0; i < syms.length; ++i) {
 			if (syms[i] == c) {

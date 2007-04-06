@@ -14,7 +14,7 @@
          point="org.eclipse.core.runtime.preferences">
       <initializer class="org.eclipse.dltk.tcl.internal.tclchecker.TclCheckerPreferenceInitializer"/>
    </extension>
-   <extension
+   <!--extension
          id="tclcheckerbuilder"
          name="%TclChecker.BuilderName"
          point="org.eclipse.core.resources.builders">
@@ -30,29 +30,35 @@
          <run class="org.eclipse.dltk.tcl.internal.tclchecker.TclCheckerNature"/>
       </runtime>
       <builder id="org.eclipse.dltk.tcl.tclchecker.tclcheckerbuilder"/>
-   </extension>
+   </extension-->
    
-   <extension
+   <!--extension
          point="org.eclipse.ui.preferencePages">
       <page
             category="org.eclipse.dltk.tcl.ui.tcl"
             class="org.eclipse.dltk.tcl.internal.tclchecker.ui.preferences.TclCheckerPreferences"
             id="org.eclipse.dltk.tcl.tclchecker.ui.preferences.TclCheckerPreferences"
             name="%TclChecker.PreferencePage"/>
-   </extension>
-   <extension
+   </extension-->
+   <!--extension
          point="org.eclipse.ui.popupMenus">
       <objectContribution
             adaptable="false"
-            id="org.eclipse.dltk.tcl.tclchecker.builder.objectContribution2"
+            id="org.eclipse.dltk.tcl.tclchecker.builder.enableTclChecker"
             nameFilter="*"
             objectClass="org.eclipse.dltk.core.IDLTKProject">
          <visibility>
+         <and>
             <not>
+            	
                <objectState
                      name="nature"
-                     value="org.eclipse.dltk.tcl.tclchecker.tclcheckernature"/>
+                     value="org.eclipse.dltk.tcl.tclchecker.tclcheckernature"/>         
             </not>
+                 <objectState
+                  name="nature"
+                  value="org.eclipse.dltk.tcl.core.nature"/>
+                 </and>
          </visibility>
          <action
                class="org.eclipse.dltk.tcl.internal.tclchecker.ui.actions.AddTclCheckerNature"
@@ -62,13 +68,18 @@
       </objectContribution>
       <objectContribution
             adaptable="false"
-            id="org.eclipse.dltk.tcl.tclchecker.builder.objectContribution2"
+            id="org.eclipse.dltk.tcl.tclchecker.builder.disableTclChecker"
             nameFilter="*"
             objectClass="org.eclipse.dltk.core.IDLTKProject">
          <visibility>
+         	<and>
             <objectState
                   name="nature"
                   value="org.eclipse.dltk.tcl.tclchecker.tclcheckernature"/>
+             <objectState
+                  name="nature"
+                  value="org.eclipse.dltk.tcl.core.nature"/>
+             </and>
          </visibility>
          <action
                class="org.eclipse.dltk.tcl.internal.tclchecker.ui.actions.RemoveTclCheckerNature"
@@ -76,6 +87,20 @@
                label="%TclChecker.RemoveNature"
                menubarPath="additions"/>
       </objectContribution>
+   </extension-->
+ <extension
+         point="org.eclipse.dltk.validators.core.validator">
+      <validatorType
+            class="org.eclipse.dltk.tcl.internal.tclchecker.TclCheckerType"
+            id="org.eclipse.dltk.tclchecker"
+            nature="org.eclipse.dltk.tcl.core.nature">
+      </validatorType>
    </extension>
-   
+   <extension
+         point="org.eclipse.dltk.validators.ui.validatorConfigPage">
+      <validatorConfigPage
+            class="org.eclipse.dltk.tcl.internal.tclchecker.TclCheckerConfigurationPage"
+            id="org.eclipse.dltk.tclchecker">
+      </validatorConfigPage>
+   </extension>
 </plugin>

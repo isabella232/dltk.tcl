@@ -1,3 +1,12 @@
+/*******************************************************************************
+ * Copyright (c) 2005, 2007 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ 
+ *******************************************************************************/
 package org.eclipse.dltk.tcl.internal.ui.text.folding;
 
 import java.util.ArrayList;
@@ -5,6 +14,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.runtime.ILog;
+import org.eclipse.dltk.ast.ASTNode;
 import org.eclipse.dltk.ast.declarations.ISourceParser;
 import org.eclipse.dltk.ast.declarations.ModuleDeclaration;
 import org.eclipse.dltk.ast.expressions.Expression;
@@ -183,7 +193,7 @@ public class TclFoldingStructureProvider extends AbstractASTFoldingStructureProv
             store.getBoolean(TclPreferenceConstants.EDITOR_FOLDING_INIT_NAMESPACES);
     }
 
-    protected boolean initiallyCollapse(Statement s, FoldingStructureComputationContext ctx)
+    protected boolean initiallyCollapse(ASTNode s, FoldingStructureComputationContext ctx)
     {
         if (s instanceof TclStatement)
         {
@@ -215,7 +225,7 @@ public class TclFoldingStructureProvider extends AbstractASTFoldingStructureProv
     /*
      * @see org.eclipse.dltk.ui.text.folding.AbstractASTFoldingStructureProvider#mayCollapse(org.eclipse.dltk.ast.statements.Statement, org.eclipse.dltk.ui.text.folding.AbstractASTFoldingStructureProvider.FoldingStructureComputationContext)
      */
-    protected boolean mayCollapse(Statement s, FoldingStructureComputationContext ctx)
+    protected boolean mayCollapse(ASTNode s, FoldingStructureComputationContext ctx)
     {
         if (s instanceof TclStatement)
         {

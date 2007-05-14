@@ -79,7 +79,7 @@
          point="org.eclipse.debug.ui.debugModelPresentations">
       <debugModelPresentation
             class="org.eclipse.dltk.tcl.internal.debug.ui.TclDebugModelPresentation"
-            id="org.eclipse.dltk.debug.core.model"/>
+            id="org.eclipse.dltk.debug.tclModel"/>
    </extension>
     <extension
        point="org.eclipse.ui.popupMenus">
@@ -184,22 +184,24 @@
       </launchConfigurationTabGroup>
    </extension-->
    <extension
-         point="org.eclipse.ui.preferencePages">
+         point="org.eclipse.ui.preferencePages">         
       <page
-            category="org.eclipse.dltk.tcl.ui.tcl"
-            class="org.eclipse.dltk.tcl.internal.debug.ui.preferences.TclDebugPreferencePage"
-            id="org.eclipse.dltk.tcl.internal.debug.ui.preferences.TclDebugPreferences"
-            name="Debug"/>
-   </extension>
-
-   <extension
-         point="org.eclipse.ui.preferencePages">
-      <page
-		    category="org.eclipse.dltk.tcl.ui.tcl"
+		    category="org.eclipse.dltk.tcl.preferences"
             class="org.eclipse.dltk.tcl.internal.debug.ui.interpreters.TclInterpreterPreferencePage"
-            id="org.eclipse.dltk.debug.ui.TCLInterpreters"
-            name="Tcl Interpreters"/>
+            id="org.eclipse.dltk.tcl.preferences.interpreters"
+            name="%InterpretersPreferencePage"/>
+      <page
+            category="org.eclipse.dltk.tcl.preferences"
+            class="org.eclipse.dltk.tcl.internal.debug.ui.preferences.TclDebugPreferencePage"
+            id="org.eclipse.dltk.tcl.preferences.debug"
+            name="%Debug.PreferencePage"/>            
+      <page
+            category="org.eclipse.dltk.tcl.preferences"
+            class="org.eclipse.dltk.tcl.internal.console.ui.preferences.TclConsolePreferencePage"
+            id="org.eclipse.dltk.tcl.preferences.console"
+            name="%TclConsole.PreferencePage"/>
    </extension>
+   
  <extension
          point="org.eclipse.ui.editorActions">
       <editorContribution
@@ -211,7 +213,7 @@
              class="org.eclipse.debug.ui.actions.RulerToggleBreakpointActionDelegate"
              style="push"
              actionID="RulerDoubleClick"
-             id="example.doubleClickBreakpointAction"/>
+             id="TclEditor.doubleClickBreakpointAction"/>
             
       </editorContribution>   
  </extension>
@@ -220,15 +222,7 @@
       <consoleFactory
             class="org.eclipse.dltk.tcl.internal.console.ui.TclConsoleFactory"
             label="%TclConsole.Console"/>
-   </extension>
-   <extension
-         point="org.eclipse.ui.preferencePages">
-      <page
-            category="org.eclipse.dltk.tcl.ui.tcl"
-            class="org.eclipse.dltk.tcl.internal.console.ui.preferences.TclConsolePreferences"
-            id="org.eclipse.dltk.tcl.console.ui.internal.preferences.TclConsolePreferences"
-            name="%TclConsole.PreferencePage"/>
-   </extension>
+   </extension>   
    <extension
          point="org.eclipse.dltk.console.ui.scriptConsole">
       <scriptConsole
@@ -252,8 +246,10 @@
          </actionSet>
       </perspectiveExtension>
    </extension>      
- 
- 
- 
+   
  <!--- Tcl console ui -->
+ 
+ <extension point="org.eclipse.debug.ui.debugModelContextBindings">
+	<modelContextBinding contextId="org.eclipse.dltk.debug.ui.debugging" debugModelId="org.eclipse.dltk.debug.tclModel"></modelContextBinding>
+ </extension>
 </plugin>

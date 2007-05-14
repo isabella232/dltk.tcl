@@ -1,9 +1,17 @@
+/*******************************************************************************
+ * Copyright (c) 2005, 2007 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ 
+ *******************************************************************************/
 package org.eclipse.dltk.tcl.internal.core.codeassist;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.dltk.ast.ASTNode;
@@ -20,14 +28,11 @@ import org.eclipse.dltk.compiler.env.ISourceModule;
 import org.eclipse.dltk.compiler.env.lookup.Scope;
 import org.eclipse.dltk.core.CompletionContext;
 import org.eclipse.dltk.core.CompletionProposal;
-import org.eclipse.dltk.core.CompletionRequestor;
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.DLTKLanguageManager;
 import org.eclipse.dltk.core.IDLTKLanguageToolkit;
-import org.eclipse.dltk.core.IDLTKProject;
 import org.eclipse.dltk.core.IField;
 import org.eclipse.dltk.core.IMethod;
-import org.eclipse.dltk.core.ISearchableEnvironment;
 import org.eclipse.dltk.core.IType;
 import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.core.search.IDLTKSearchConstants;
@@ -49,9 +54,9 @@ public class TclCompletionEngine extends ScriptCompletionEngine {
 	
 	private TclCompletionParser parser;
 
-	public TclCompletionEngine(ISearchableEnvironment environment,
-			CompletionRequestor requestor, Map options, IDLTKProject project) {
-		super(environment, requestor, options, project);
+	public TclCompletionEngine(/*ISearchableEnvironment environment,
+			CompletionRequestor requestor, Map options, IDLTKProject project*/) {
+//		super(environment, requestor, options, project);
 		this.parser = new TclCompletionParser();
 	}
 
@@ -119,12 +124,12 @@ public class TclCompletionEngine extends ScriptCompletionEngine {
 			
 			if (this.noProposal && this.problem != null) {
 				if (!contextAccepted) {					
+					contextAccepted = true;
 					CompletionContext context = new CompletionContext();
 					context.setOffset(completionPosition);
 					context.setTokenKind(CompletionContext.TOKEN_KIND_UNKNOWN);			
 					
 					this.requestor.acceptContext(context);					
-					contextAccepted = true;
 				}
 				
 				this.requestor.completionFailure(this.problem);
@@ -134,13 +139,13 @@ public class TclCompletionEngine extends ScriptCompletionEngine {
 				}
 			}
 		} finally {			
-			if (!contextAccepted) {				
+			if (!contextAccepted) {	
+				contextAccepted = true;
 				CompletionContext context = new CompletionContext();
 				context.setTokenKind(CompletionContext.TOKEN_KIND_UNKNOWN);
 				context.setOffset(completionPosition);
 				
 				this.requestor.acceptContext(context);
-				contextAccepted = true;
 			}
 			this.requestor.endReporting();
 		}
@@ -254,8 +259,18 @@ public class TclCompletionEngine extends ScriptCompletionEngine {
 				for (int i = 0; i < tmethods.length; ++i) {
 					String mn = tmethods[i].getTypeQualifiedName("$", false)
 							.replaceAll("\\$", "::");
-					if (!mn.startsWith("::")) {
-						mn = "::" + mn;
+					if (methodNames.contains(mn)) {
+						continue;
+					}
+					if (mn.startsWith("::")) {
+						if (methodNames.contains(mn.substring(2))) {
+							continue;
+						}
+					}
+					else {
+						if (methodNames.contains("::" + mn)) {
+							continue;
+						}
 					}
 					if (!methodNames.contains(mn)) {
 						methods.add(tmethods[i]);

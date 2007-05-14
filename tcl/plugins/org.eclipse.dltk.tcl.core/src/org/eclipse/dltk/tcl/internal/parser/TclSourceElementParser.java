@@ -1,3 +1,12 @@
+/*******************************************************************************
+ * Copyright (c) 2005, 2007 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ 
+ *******************************************************************************/
 package org.eclipse.dltk.tcl.internal.parser;
 
 import java.util.ArrayList;
@@ -16,7 +25,7 @@ import org.eclipse.dltk.ast.expressions.StringLiteral;
 import org.eclipse.dltk.ast.references.SimpleReference;
 import org.eclipse.dltk.ast.statements.Statement;
 import org.eclipse.dltk.compiler.ISourceElementRequestor;
-import org.eclipse.dltk.compiler.problem.DLTKProblemReporter;
+import org.eclipse.dltk.compiler.problem.IProblemReporter;
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.ISourceElementParser;
 import org.eclipse.dltk.core.ISourceModuleInfoCache.ISourceModuleInfo;
@@ -46,14 +55,10 @@ public class TclSourceElementParser implements ISourceElementParser {
 			kwMap.put(kw[q], Boolean.TRUE);
 		}
 	}
-
-	public TclSourceElementParser(ISourceElementRequestor requestor) {
-		this(requestor, null);
-	}
-
-	public TclSourceElementParser(ISourceElementRequestor requestor,
-			DLTKProblemReporter reporter) {
-		this.fRequestor = requestor;
+	
+	public TclSourceElementParser(/*ISourceElementRequestor requestor,
+			DLTKProblemReporter reporter*/) {
+//		this.fRequestor = requestor;
 	}
 
 	private static int counter = 0;
@@ -475,7 +480,7 @@ public class TclSourceElementParser implements ISourceElementParser {
 			String arrayIndex = null;
 			if (isArrayVariable(name)) {
 				int t1 = name.indexOf("(");
-				if (name.charAt(t1 - 1) == '\\')
+				if (t1 > 0 && (name.charAt(t1 - 1) == '\\'))
 					t1--;
 				arrayName = name.substring(0, t1);
 				arrayIndex = name.substring(name.indexOf("(") + 1, name
@@ -687,7 +692,7 @@ public class TclSourceElementParser implements ISourceElementParser {
 				if (node instanceof Argument) {
 					Argument ref = (Argument) node;
 					parameter[a] = ref.getName();
-					Expression e = ref.getInitialization();
+					Statement e = (Statement) ref.getInitialization();
 					if (e != null) {
 						if (e instanceof SimpleReference) {
 							parameterInitializers[a] = ((SimpleReference) e)
@@ -894,7 +899,10 @@ public class TclSourceElementParser implements ISourceElementParser {
 
 	}
 
-	public void setRequirestor(ISourceElementRequestor requestor) {
+	public void setRequestor(ISourceElementRequestor requestor) {
 		this.fRequestor = requestor;
+	}
+
+	public void setReporter(IProblemReporter reporter) {
 	}
 }

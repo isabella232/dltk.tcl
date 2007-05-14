@@ -1,9 +1,17 @@
+/*******************************************************************************
+ * Copyright (c) 2005, 2007 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ 
+ *******************************************************************************/
 package org.eclipse.dltk.tcl.internal.core.codeassist;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.dltk.ast.ASTNode;
@@ -22,7 +30,6 @@ import org.eclipse.dltk.core.IField;
 import org.eclipse.dltk.core.IMethod;
 import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.IParent;
-import org.eclipse.dltk.core.ISearchableEnvironment;
 import org.eclipse.dltk.core.IType;
 import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.core.search.IDLTKSearchConstants;
@@ -33,11 +40,11 @@ import org.eclipse.dltk.core.search.SearchParticipant;
 import org.eclipse.dltk.core.search.SearchPattern;
 import org.eclipse.dltk.core.search.SearchRequestor;
 import org.eclipse.dltk.internal.codeassist.select.SelectionNodeFound;
-import org.eclipse.dltk.internal.compiler.lookup.LookupEnvironment;
 import org.eclipse.dltk.tcl.ast.TclModuleDeclaration;
 import org.eclipse.dltk.tcl.ast.TclStatement;
 import org.eclipse.dltk.tcl.ast.expressions.TclBlockExpression;
 import org.eclipse.dltk.tcl.ast.expressions.TclExecuteExpression;
+import org.eclipse.dltk.tcl.core.TclLanguageToolkit;
 import org.eclipse.dltk.tcl.internal.core.codeassist.selection.SelectionOnAST;
 import org.eclipse.dltk.tcl.internal.core.codeassist.selection.SelectionOnKeywordOrFunction;
 import org.eclipse.dltk.tcl.internal.core.codeassist.selection.SelectionOnVariable;
@@ -58,12 +65,8 @@ public class TclSelectionEngine extends ScriptSelectionEngine {
 
 	private IDLTKLanguageToolkit toolkit;
 
-	public TclSelectionEngine(ISearchableEnvironment environment, Map options,
-			IDLTKLanguageToolkit toolkit) {
-		super(options);
-		this.toolkit = toolkit;
-		this.nameEnvironment = environment;
-		this.lookupEnvironment = new LookupEnvironment(this, nameEnvironment);
+	public TclSelectionEngine() {
+		this.toolkit = TclLanguageToolkit.getDefault();
 	}
 
 	public IModelElement[] select(ISourceModule sourceUnit,

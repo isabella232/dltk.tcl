@@ -19,9 +19,9 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
-public class TclCodeTemplatesPreferencePage extends ScriptTemplatePreferencePage
+public class TclTemplatePreferencePage extends ScriptTemplatePreferencePage
 		implements IWorkbenchPreferencePage {
-	public TclCodeTemplatesPreferencePage() {
+	public TclTemplatePreferencePage() {
 		setPreferenceStore(TclUI.getDefault().getPreferenceStore());
 		
 		setTemplateStore(TclTemplateAccess.getInstance().getTemplateStore());

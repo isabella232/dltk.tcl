@@ -13,7 +13,6 @@ import junit.framework.Test;
 
 import org.eclipse.core.runtime.Path;
 import org.eclipse.dltk.core.IModelElement;
-import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.tests.model.AbstractModelTests;
 import org.eclipse.dltk.tcl.tests.TclTestsPlugin;
@@ -39,7 +38,7 @@ public class ModelTclTests extends AbstractModelTests
 	public void testModel00_() throws Exception
 	{
 		String prj = "model0";
-		IScriptProject project = setUpScriptProject( prj );
+		//IScriptProject project = setUpScriptProject( prj );
 		
 		ISourceModule module = this.getSourceModule( prj, "", new Path("X.tcl") );
 		
@@ -62,7 +61,7 @@ public class ModelTclTests extends AbstractModelTests
 	public void testModel01() throws Exception
 	{
 		String prj = "model1";
-		IScriptProject project = setUpScriptProject( prj );
+		//IScriptProject project = setUpScriptProject( prj );
 		
 		ISourceModule module = this.getSourceModule( prj, "", new Path("X.tcl") );
 		

@@ -14,7 +14,7 @@ import org.eclipse.dltk.internal.debug.ui.interpreters.InterpretersBlock;
 
 public class TclInterpreterPreferencePage extends InterpreterPreferencePage {
 
-	public static final String PAGE_ID = "org.eclipse.dltk.tcl.preferences.interpreters";
+	public static final String PAGE_ID = "org.eclipse.dltk.debug.ui.TCLInterpreters";
 
 	public InterpretersBlock createInterpretersBlock() {
 		return new TclInterpretersBlock();

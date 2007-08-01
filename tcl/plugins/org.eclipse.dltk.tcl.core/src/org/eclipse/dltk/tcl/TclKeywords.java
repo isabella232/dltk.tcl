@@ -1,4 +1,4 @@
-package org.eclipse.dltk.tcl.core;
+package org.eclipse.dltk.tcl;
 
 public class TclKeywords implements ITclKeywords {
 	private static String[] fgKeywords = { "after", "append", "array",

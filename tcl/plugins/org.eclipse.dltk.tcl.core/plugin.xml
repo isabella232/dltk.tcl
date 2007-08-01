@@ -78,7 +78,7 @@
    <extension
          point="org.eclipse.dltk.tcl.core.tclkeywords">
       <keywords
-            class="org.eclipse.dltk.tcl.core.TclKeywords"
+            class="org.eclipse.dltk.tcl.TclKeywords"
             priority="0">
       </keywords>
    </extension>

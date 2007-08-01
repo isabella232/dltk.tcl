@@ -5,7 +5,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
-
+ 
  *******************************************************************************/
 package org.eclipse.dltk.tcl.internal.parser;
 
@@ -32,11 +32,11 @@ import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.DLTKLanguageManager;
 import org.eclipse.dltk.core.ISourceElementParser;
 import org.eclipse.dltk.core.ISourceModuleInfoCache.ISourceModuleInfo;
+import org.eclipse.dltk.tcl.TclKeywordsManager;
 import org.eclipse.dltk.tcl.ast.TclConstants;
 import org.eclipse.dltk.tcl.ast.TclStatement;
 import org.eclipse.dltk.tcl.ast.expressions.TclBlockExpression;
 import org.eclipse.dltk.tcl.ast.expressions.TclExecuteExpression;
-import org.eclipse.dltk.tcl.core.TclKeywordsManager;
 import org.eclipse.dltk.tcl.core.TclNature;
 import org.eclipse.dltk.tcl.internal.parser.TclParseUtils.IProcessStatementAction;
 import org.eclipse.dltk.tcl.internal.parsers.raw.SimpleTclParser;
@@ -52,8 +52,6 @@ public class TclSourceElementParser implements ISourceElementParser {
 
 	private Stack namespacesLevel = new Stack();
 
-	private IProblemReporter fReporter;
-
 	private static String[] kw = TclKeywordsManager.getKeywords();
 	private static Map kwMap = new HashMap();
 
@@ -62,7 +60,7 @@ public class TclSourceElementParser implements ISourceElementParser {
 			kwMap.put(kw[q], Boolean.TRUE);
 		}
 	}
-
+	
 	public TclSourceElementParser(/*ISourceElementRequestor requestor,
 			DLTKProblemReporter reporter*/) {
 //		this.fRequestor = requestor;
@@ -79,7 +77,7 @@ public class TclSourceElementParser implements ISourceElementParser {
 		// TODO: Add correct visitor like model builder for TCL.
 		ISourceParser sourceParser = null;
 		try {
-			sourceParser = DLTKLanguageManager.getSourceParser(TclNature.NATURE_ID);
+			sourceParser = (ISourceParser) DLTKLanguageManager.getSourceParser(TclNature.NATURE_ID);
 		} catch (CoreException e1) {
 			if( DLTKCore.DEBUG ) {
 				e1.printStackTrace();
@@ -87,14 +85,14 @@ public class TclSourceElementParser implements ISourceElementParser {
 			return null;
 		}
 		ModuleDeclaration moduleDeclaration = sourceParser.parse(
-				null, contents, this.fReporter);
+				null, contents, null);
 		moduleDeclaration.disableRebuild();
 		List statements = moduleDeclaration.getStatements();
 		try {
-			this.fRequestor.enterModule();
-			this.namespacesLevel.push("::");
-			this.buildModel(statements, TYPE_MODULE, "");
-			this.fRequestor.exitModule(contents.length);
+			fRequestor.enterModule();
+			namespacesLevel.push("::");
+			buildModel(statements, TYPE_MODULE, "");
+			fRequestor.exitModule(contents.length);
 		} catch (Exception e) {
 			if (DLTKCore.DEBUG_PARSER) {
 				e.printStackTrace();
@@ -135,29 +133,29 @@ public class TclSourceElementParser implements ISourceElementParser {
 					} else if (name.equals("global") && type == TYPE_PROC) {
 						this.processGlobalVariable(statement, variablesSet);
 					} else if (name.equals("package")) {
-						this.processPackage(statement);
+						processPackage(statement);
 					} else if (name.equals("namespace")) {
-						this.processNamespace(statement, namespaceName);
+						processNamespace(statement, namespaceName);
 					} else if (name.equals("if")) {
-						this.processIf(statement, namespaceName);
+						processIf(statement, namespaceName);
 					} else if (name.equals("while")) {
-						this.processWhile(statement, namespaceName);
+						processWhile(statement, namespaceName);
 					} else if (name.equals("for")) {
-						this.processFor(statement, namespaceName);
+						processFor(statement, namespaceName);
 					} else if (name.equals("catch")) {
-						this.processCatch(statement, namespaceName);
+						processCatch(statement, namespaceName);
 					} else if (name.equals("after")) {
-						this.processAfter(statement, namespaceName);
+						processAfter(statement, namespaceName);
 					}
 
 					for (int j = 1; j < statement.getCount(); ++j) {
 						if (statement.getAt(j) instanceof TclExecuteExpression) {
 							TclExecuteExpression expr = (TclExecuteExpression) statement
 									.getAt(j);
-							this.processBlock(expr, namespaceName);
+							processBlock(expr, namespaceName);
 						}
 					}
-					this.processReferences(statement);
+					processReferences(statement);
 					// TODO: Add switch, foreach support code.
 				}
 			}
@@ -169,7 +167,7 @@ public class TclSourceElementParser implements ISourceElementParser {
 			for (int i = 2; i < statement.getCount(); ++i) {
 				Expression e = statement.getAt(i);
 				if (e instanceof TclExecuteExpression) {
-					this.processBlock((TclExecuteExpression) e, namespaceName);
+					processBlock((TclExecuteExpression) e, namespaceName);
 				}
 			}
 		}
@@ -179,7 +177,7 @@ public class TclSourceElementParser implements ISourceElementParser {
 		if (statement.getCount() >= 2) {
 			Expression e = statement.getAt(1);
 			if (e instanceof TclBlockExpression) {
-				this.processBlock(e, namespaceName);
+				processBlock(e, namespaceName);
 			}
 		}
 	}
@@ -209,7 +207,7 @@ public class TclSourceElementParser implements ISourceElementParser {
 				List exprs = expr.parseExpression();
 				for (int i = 0; i < exprs.size(); ++i) {
 					if (exprs.get(i) instanceof TclStatement) {
-						this.processReferences((TclStatement) exprs.get(i));
+						processReferences((TclStatement) exprs.get(i));
 					}
 				}
 			} else if (st instanceof StringLiteral) {
@@ -250,7 +248,7 @@ public class TclSourceElementParser implements ISourceElementParser {
 		if (1 < len) { // Process initializers
 			Expression bl = (Expression) exprs.get(1);
 			if (bl instanceof TclBlockExpression) {
-				this.processBlock(bl, namespaceName);
+				processBlock(bl, namespaceName);
 			}
 		}
 
@@ -258,7 +256,7 @@ public class TclSourceElementParser implements ISourceElementParser {
 		if (bi < len) {
 			Expression bl = (Expression) exprs.get(bi);
 			if (bl instanceof TclBlockExpression) {
-				this.processBlock(bl, namespaceName);
+				processBlock(bl, namespaceName);
 			}
 		}
 	}
@@ -274,7 +272,7 @@ public class TclSourceElementParser implements ISourceElementParser {
 		if (bi < len) {
 			Expression bl = (Expression) exprs.get(bi);
 			if (bl instanceof TclBlockExpression) {
-				this.processBlock(bl, namespaceName);
+				processBlock(bl, namespaceName);
 			}
 		}
 	}
@@ -283,7 +281,7 @@ public class TclSourceElementParser implements ISourceElementParser {
 		List exprs = statement.getExpressions();
 		TclParseUtils.processIf(exprs, namespaceName, 0, new IProcessStatementAction() {
 			public void doAction(String name, Expression bl, int beforePosition) {
-				TclSourceElementParser.this.processBlock(bl, name);
+				processBlock(bl, name);
 			}
 		});
 	}
@@ -292,14 +290,14 @@ public class TclSourceElementParser implements ISourceElementParser {
 		TclBlockExpression block = (TclBlockExpression) bl;
 		List/* < Statement > */code = null;
 		code = block.parseBlock(block.sourceStart() + 1);
-		this.buildModel(code, TYPE_PROC, namespaceName);
+		buildModel(code, TYPE_PROC, namespaceName);
 
 	}
 
 	private void processBlock(TclExecuteExpression bl, String namespaceName) {
 		List/* < Statement > */code = null;
 		code = bl.parseExpression(bl.sourceStart() + 1);
-		this.buildModel(code, TYPE_PROC, namespaceName);
+		buildModel(code, TYPE_PROC, namespaceName);
 	}
 
 	private void processNamespace(TclStatement statement,
@@ -342,18 +340,17 @@ public class TclSourceElementParser implements ISourceElementParser {
 			String fullName = sNameSpaceName;
 
 			String[] split = sNameSpaceName.split("::");
-			if (split.length != 0) {
+			if (split.length != 0)
 				info.name = split[split.length - 1];
-			} else {
+			else
 				info.name = "";
-			}
 
 			SimpleReference nsName = (SimpleReference) nameSpaceName;
 			info.nameSourceStart = nsName.sourceStart();
 			info.nameSourceEnd = nsName.sourceEnd() - 1;
 			info.declarationStart = statement.getAt(0).sourceStart();
 
-			ExitFromType exit = this.resolveType(nameSpaceName,
+			ExitFromType exit = resolveType(nameSpaceName,
 					fullName + "::dummy", true);
 
 			List/* < Statement > */inner = null;
@@ -423,7 +420,7 @@ public class TclSourceElementParser implements ISourceElementParser {
 		if (variableName == null) {
 			throw new RuntimeException("empty variable name");
 		}
-		this.makeVariable(variableName, vars, 0, "");
+		makeVariable(variableName, vars, 0, "");
 	}
 
 	private void makeVariable(Expression variableName, HashSet vars, int flags,
@@ -435,10 +432,10 @@ public class TclSourceElementParser implements ISourceElementParser {
 			name = ((SimpleReference) variableName).getName();
 		} else if (variableName instanceof TclBlockExpression) {
 			name = ((TclBlockExpression) variableName).getBlock();
-			name = this.nameFromBlock(name, '{', '}');
+			name = nameFromBlock(name, '{', '}');
 		} else if (variableName instanceof StringLiteral) {
 			name = ((StringLiteral) variableName).getValue();
-			name = this.nameFromBlock(name, '"', '"');
+			name = nameFromBlock(name, '"', '"');
 		} else if (variableName instanceof TclExecuteExpression) {
 			name = ((TclExecuteExpression) variableName).getExpression();
 			if (vars.contains(name)) {
@@ -456,32 +453,29 @@ public class TclSourceElementParser implements ISourceElementParser {
 
 			if (!name.startsWith("::")) {
 				if ((flags == TclConstants.TCL_FIELD_TYPE_NAMESPACE)
-						&& this.namespacesLevel.size() > 0) {
+						&& namespacesLevel.size() > 0) {
 					name = this.namespacesLevel.peek() + "::" + name;
 				}
 			}
 
 			String arrayName = null;
 			String arrayIndex = null;
-			if (this.isArrayVariable(name)) {
+			if (isArrayVariable(name)) {
 				int t1 = name.indexOf("(");
-				if (t1 > 0 && (name.charAt(t1 - 1) == '\\')) {
+				if (t1 > 0 && (name.charAt(t1 - 1) == '\\'))
 					t1--;
-				}
 				arrayName = name.substring(0, t1);
 				arrayIndex = name.substring(name.indexOf("(") + 1, name
 						.length() - 1);
-				if (arrayIndex.endsWith("\\")) {
+				if (arrayIndex.endsWith("\\"))
 					arrayIndex = arrayIndex.substring(0,
 							arrayIndex.length() - 1);
-				}
 			}
 
-			if (arrayName != null) {
+			if (arrayName != null)
 				name = arrayName;
-			}
 
-			String fullName = this.escapeName(name);
+			String fullName = escapeName(name);
 
 			if (fullName.indexOf("::") != -1) {
 				String[] split = name.split("::");
@@ -499,7 +493,7 @@ public class TclSourceElementParser implements ISourceElementParser {
 
 			boolean needExit = false;
 
-			ExitFromType exit = this.resolveType(variableName, fullName, false);
+			ExitFromType exit = resolveType(variableName, fullName, false);
 			needExit = this.fRequestor.enterFieldCheckDuplicates(fi);
 
 			if (needExit) {
@@ -510,9 +504,8 @@ public class TclSourceElementParser implements ISourceElementParser {
 					fiIndex.nameSourceEnd = end - 1;
 					fiIndex.declarationStart = start;
 					fiIndex.modifiers = TclConstants.TCL_FIELD_TYPE_INDEX;
-					if (this.fRequestor.enterFieldCheckDuplicates(fiIndex)) {
+					if (this.fRequestor.enterFieldCheckDuplicates(fiIndex))
 						this.fRequestor.exitField(end);
-					}
 				}
 				this.fRequestor.exitField(end);
 			}
@@ -522,15 +515,12 @@ public class TclSourceElementParser implements ISourceElementParser {
 	}
 
 	private boolean isArrayVariable(String name) {
-		if (name.length() <= 2) {
+		if (name.length() <= 2)
 			return false;
-		}
-		if (!name.endsWith(")")) {
+		if (!name.endsWith(")"))
 			return false;
-		}
-		if (name.indexOf("(") == -1) {
+		if (name.indexOf("(") == -1)
 			return false;
-		}
 		return true;
 	}
 
@@ -538,18 +528,15 @@ public class TclSourceElementParser implements ISourceElementParser {
 		name = SimpleTclParser.magicSubstitute(name);
 		StringBuffer res = new StringBuffer();
 		int len = name.length();
-		for (int i = 0; i < len; i++) {
+		for (int i = 0; i < len; i++)
 			if (Character.isISOControl(name.charAt(i))) {
 				res.append("\\u");
 				String tmp = Integer.toHexString(name.charAt(i)).toUpperCase();
-				if (tmp.length() == 1) {
+				if (tmp.length() == 1)
 					res.append("0");
-				}
 				res.append(tmp);
-			} else {
+			} else
 				res.append(name.charAt(i));
-			}
-		}
 		String ans = res.toString();
 		if (ans.trim().length() == 0) {
 			return "{" + name + "}";
@@ -598,7 +585,7 @@ public class TclSourceElementParser implements ISourceElementParser {
 				}
 				return;
 			}
-			this.makeVariable(variableName, vars, TclConstants.TCL_FIELD_TYPE_UPVAR,
+			makeVariable(variableName, vars, TclConstants.TCL_FIELD_TYPE_UPVAR,
 					"");
 		}
 	}
@@ -615,7 +602,7 @@ public class TclSourceElementParser implements ISourceElementParser {
 			if (variableName == null) {
 				throw new RuntimeException("empty variable name");
 			}
-			this.makeVariable(variableName, vars,
+			makeVariable(variableName, vars,
 					TclConstants.TCL_FIELD_TYPE_GLOBAL, "");
 		}
 	}
@@ -631,7 +618,7 @@ public class TclSourceElementParser implements ISourceElementParser {
 			if (variableName == null) {
 				throw new RuntimeException("empty variable name");
 			}
-			this.makeVariable(variableName, vars,
+			makeVariable(variableName, vars,
 					TclConstants.TCL_FIELD_TYPE_NAMESPACE, namespaceName);
 		}
 	}
@@ -649,15 +636,14 @@ public class TclSourceElementParser implements ISourceElementParser {
 		}
 
 		String sName = null;
-		if (procName instanceof SimpleReference) {
+		if (procName instanceof SimpleReference)
 			sName = ((SimpleReference) procName).getName();
-		} else if (procName instanceof TclBlockExpression) {
+		else if (procName instanceof TclBlockExpression)
 			sName = ((TclBlockExpression) procName).getBlock();
-		} else if (procName instanceof TclExecuteExpression) {
+		else if (procName instanceof TclExecuteExpression)
 			sName = ((TclExecuteExpression) procName).getExpression();
-		} else {
+		else
 			return;
-		}
 
 		Expression procArguments = statement.getAt(2);
 		Expression procCode = statement.getAt(3);
@@ -695,11 +681,11 @@ public class TclSourceElementParser implements ISourceElementParser {
 									.getName();
 						} else if (e instanceof TclBlockExpression) {
 							String name = ((TclBlockExpression) e).getBlock();
-							parameterInitializers[a] = this.nameFromBlock(name, '{',
+							parameterInitializers[a] = nameFromBlock(name, '{',
 									'}');
 						} else if (e instanceof StringLiteral) {
 							String name = ((StringLiteral) e).getValue();
-							parameterInitializers[a] = this.nameFromBlock(name, '"',
+							parameterInitializers[a] = nameFromBlock(name, '"',
 									'"');
 						} else if (e instanceof TclExecuteExpression) {
 							String name = ((TclBlockExpression) e).getBlock();
@@ -716,7 +702,7 @@ public class TclSourceElementParser implements ISourceElementParser {
 		}
 		ISourceElementRequestor.MethodInfo mi = new ISourceElementRequestor.MethodInfo();
 
-		sName = this.escapeName(sName);
+		sName = escapeName(sName);
 		String fullName = sName;
 
 		if (fullName.indexOf("::") != -1) {
@@ -732,7 +718,7 @@ public class TclSourceElementParser implements ISourceElementParser {
 		mi.nameSourceEnd = procName.sourceEnd() - 1;
 		mi.declarationStart = statement.sourceStart();
 
-		ExitFromType exit = this.resolveType(procName, fullName, false);
+		ExitFromType exit = resolveType(procName, fullName, false);
 		this.fRequestor.enterMethodRemoveSame(mi);
 
 		if (procCode instanceof TclBlockExpression) {
@@ -746,7 +732,7 @@ public class TclSourceElementParser implements ISourceElementParser {
 				in.setStart(in.sourceStart());
 				in.setEnd(in.sourceEnd());
 			}
-			this.buildModel(code, TYPE_PROC, namespaceName);
+			buildModel(code, TYPE_PROC, namespaceName);
 		}
 		this.fRequestor.exitMethod(statement.sourceEnd());
 		exit.go();
@@ -766,31 +752,26 @@ public class TclSourceElementParser implements ISourceElementParser {
 		}
 
 		public void go() {
-			for (int i = 0; i < this.level; i++) {
-				TclSourceElementParser.this.fRequestor.exitType(this.end);
+			for (int i = 0; i < level; i++) {
+				fRequestor.exitType(this.end);
 			}
-			if (this.exitFromModule) {
-				TclSourceElementParser.this.fRequestor.exitModuleRoot();
-			}
-			if (this.pop) {
-				TclSourceElementParser.this.namespacesLevel.pop();
-			}
+			if (exitFromModule)
+				fRequestor.exitModuleRoot();
+			if (pop)
+				namespacesLevel.pop();
 		}
 	}
 
 	private String removeLastSegment(String s, String delimeter) {
-		if (s.indexOf("::") == -1) {
+		if (s.indexOf("::") == -1)
 			return "";
-		}
 		int pos = s.length() - 1;
-		while (s.charAt(pos) != ':') {
+		while (s.charAt(pos) != ':')
 			pos--;
-		}
 		if (pos > 1) {
 			return s.substring(0, pos - 1);
-		} else {
+		} else
 			return "::";
-		}
 	}
 
 	/**
@@ -801,7 +782,7 @@ public class TclSourceElementParser implements ISourceElementParser {
 	 * <em>not qualified</em> names only in current namespace. If type doesn't
 	 * exists, it will be created. If name is qualified, it will be created
 	 * globally, else in current namespace.s
-	 *
+	 * 
 	 * @param expr
 	 *            expression containing the name for correct source ranges setup
 	 * @param name
@@ -811,18 +792,17 @@ public class TclSourceElementParser implements ISourceElementParser {
 	 */
 	private ExitFromType resolveType(Expression expr, String name,
 			boolean onlyCurrent) {
-		String type = this.removeLastSegment(name, "::");
-		while (type.length() > 2 && type.endsWith("::")) {
+		String type = removeLastSegment(name, "::");
+		while (type.length() > 2 && type.endsWith("::"))
 			type = type.substring(0, type.length() - 2);
-		}
 
 		if (type.length() == 0) {
 			return new ExitFromType(0, 0, false, false);
 		}
 
 		if (type.equals("::")) {
-			this.fRequestor.enterModuleRoot();
-			this.namespacesLevel.push("::");
+			fRequestor.enterModuleRoot();
+			namespacesLevel.push("::");
 			return new ExitFromType(0, expr.sourceEnd(), true, true);
 		}
 
@@ -830,23 +810,21 @@ public class TclSourceElementParser implements ISourceElementParser {
 
 		String fullyQualified = type;
 		if (!fqn) { // make name fully-qualified
-			String e = this.getEnclosingNamespace();
-			if (e == null) {
+			String e = getEnclosingNamespace();
+			if (e == null)
 				throw new AssertionError("there are no enclosing namespace!");
-			}
-			if (!e.endsWith("::")) {
+			if (!e.endsWith("::"))
 				e += "::";
-			}
 			fullyQualified = e + type;
 		}
 
 		// first, try existent
 		if (this.fRequestor.enterTypeAppend(type, "::")) {
-			this.namespacesLevel.push(fullyQualified);
+			namespacesLevel.push(fullyQualified);
 			return new ExitFromType(1, expr.sourceEnd(), false, true);
 		} else if (!fqn && !onlyCurrent) { // look in global
 			if (this.fRequestor.enterTypeAppend("::" + type, "::")) {
-				this.namespacesLevel.push("::" + type);
+				namespacesLevel.push("::" + type);
 				return new ExitFromType(1, expr.sourceEnd(), false, true);
 			}
 		}
@@ -854,23 +832,21 @@ public class TclSourceElementParser implements ISourceElementParser {
 		// create it
 		int needEnterLeave = 0;
 		String[] split = null;
-		String e = this.getEnclosingNamespace();
-		if (e == null) {
+		String e = getEnclosingNamespace();
+		if (e == null)
 			throw new AssertionError("there are no enclosing namespace!");
-		}
 		boolean entered = false;
 		boolean exitFromModule = false;
 		if (e.length() > 0 && !fqn) {
-			entered = this.fRequestor.enterTypeAppend(e, "::");
+			entered = fRequestor.enterTypeAppend(e, "::");
 		}
 		if (fqn || !entered) {
 			split = fullyQualified.substring(2).split("::");
-			this.fRequestor.enterModuleRoot();
+			fRequestor.enterModuleRoot();
 			exitFromModule = true;
 		} else {
-			if (!entered) {
+			if (!entered)
 				throw new AssertionError("can't enter to enclosing namespace!");
-			}
 			needEnterLeave++;
 			split = type.split("::");
 		}
@@ -889,14 +865,14 @@ public class TclSourceElementParser implements ISourceElementParser {
 				}
 			}
 		}
-		this.namespacesLevel.push(fullyQualified);
+		namespacesLevel.push(fullyQualified);
 		return new ExitFromType(needEnterLeave, expr.sourceEnd(),
 				exitFromModule, true);
 	}
 
 	/**
 	 * Returns fully-qualified name of current namespace
-	 *
+	 * 
 	 * @return
 	 */
 	private String getEnclosingNamespace() {
@@ -910,6 +886,5 @@ public class TclSourceElementParser implements ISourceElementParser {
 	}
 
 	public void setReporter(IProblemReporter reporter) {
-		this.fReporter = reporter;
 	}
 }

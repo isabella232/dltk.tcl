@@ -5,7 +5,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
-
+ 
  *******************************************************************************/
 package org.eclipse.dltk.tcl.ast;
 
@@ -25,47 +25,38 @@ public class TclStatement extends Statement {
 		if (!expressions.isEmpty()) {
 			// First
 			Expression first = (Expression) expressions.get(0);
-			this.setStart(first.sourceStart());
+			setStart(first.sourceStart());
 
 			// Last
 			Expression last = (Expression) expressions
 					.get(expressions.size() - 1);
-			this.setEnd(last.sourceEnd());
+			setEnd(last.sourceEnd());
 		}
 
 		this.expressions = expressions;
 	}
 
 	public List getExpressions() {
-		return this.expressions;
+		return expressions;
 	}
 
 	public Expression getAt(int index) {
-		if (index >= 0 && index < this.expressions.size()) {
-			return (Expression) this.expressions.get(index);
+		if (index >= 0 && index < expressions.size()) {
+			return (Expression) expressions.get(index);
 		}
 
 		return null;
 	}
 
 	public int getCount() {
-		return this.expressions.size();
+		return expressions.size();
 	}
 
 	public int getKind() {
 		return TclConstants.TCL_STATEMENT;
 	}
 
-	public void traverse(ASTVisitor visitor) throws Exception {
-		if (visitor.visit(this)) {
-			if( this.expressions != null ) {
-				for (int i = 0; i < this.expressions.size(); i++) {
-					ASTNode node = (ASTNode) this.expressions.get(i);
-					node.traverse(visitor);
-				}
-			}
-			visitor.endvisit(this);
-		}
+	public void traverse(ASTVisitor pVisitor) throws Exception {
 	}
 
 	public void printNode(CorePrinter output) {

@@ -52,7 +52,7 @@ public class TclLibraryContentProvider extends LibraryContentProvider {
 
 	public void initialize(File file,
 			EnvironmentVariable[] environmentVariables, boolean restoreDefault) {
-		if (file.exists()) {
+		if (file != null && file.exists()) {
 			LibraryLocation[] additions = null;
 			if (restoreDefault) {
 				this.additions.clear();
@@ -115,7 +115,7 @@ public class TclLibraryContentProvider extends LibraryContentProvider {
 	}
 
 	private void updateLibrariesFromPackages() {
-		// We need to remove libraries not pressent in packages.
+		// We need to remove libraries not present in packages.
 		if (packageLocations == null) {
 			return;
 		}

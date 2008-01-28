@@ -115,7 +115,7 @@ public class TclLibraryContentProvider extends LibraryContentProvider {
 	}
 
 	private void updateLibrariesFromPackages() {
-		// We need to remove libraries not present in packages.
+		// We need to remove libraries not pressent in packages.
 		if (packageLocations == null) {
 			return;
 		}

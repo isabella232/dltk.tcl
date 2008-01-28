@@ -81,10 +81,7 @@ public class GenericTclInstallType extends AbstractInterpreterInstallType {
 							+ installLocation.toString()
 							+ " with auto_path.tcl.";
 					if (result == null) {
-						DLTKLaunchingPlugin.logWarning(message);
-					} else {
-						DLTKLaunchingPlugin.logWarning(message, new Exception(
-								"Output:\n" + result));
+						DLTKLaunchingPlugin.log(message);
 					}
 				} catch (IOException e) {
 					DLTKLaunchingPlugin.log(e);

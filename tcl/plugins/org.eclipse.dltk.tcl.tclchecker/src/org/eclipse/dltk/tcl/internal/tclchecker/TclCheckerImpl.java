@@ -126,9 +126,4 @@ public class TclCheckerImpl extends AbstractValidator {
 			}
 		}
 	}
-
-	public void setProgressMonitor(IProgressMonitor monitor) {
-		// TODO Auto-generated method stub
-		
-	}
 }

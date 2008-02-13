@@ -27,6 +27,7 @@ import org.eclipse.dltk.tcl.ast.TclStatement;
 import org.eclipse.dltk.tcl.ast.expressions.TclExecuteExpression;
 import org.eclipse.dltk.tcl.core.TclKeywordsManager;
 import org.eclipse.dltk.tcl.core.TclParseUtil;
+import org.eclipse.dltk.tcl.core.ast.TclPackageDeclaration;
 import org.eclipse.dltk.tcl.core.extensions.ICompletionExtension;
 import org.eclipse.dltk.tcl.internal.core.codeassist.TclAssistParser;
 import org.eclipse.dltk.tcl.internal.parser.TclParseUtils;
@@ -133,7 +134,12 @@ public class TclCompletionParser extends TclAssistParser {
 					completionToken = "";
 				}
 			} else if (completionNode instanceof SimpleReference) {
+				int maxLen = position - completionNode.sourceStart();
 				completionToken = ((SimpleReference) completionNode).getName();
+				// We need to cut some sumbols if node is begger then position.
+				if (completionToken.length() > maxLen && maxLen > 0) {
+					completionToken = completionToken.substring(0, maxLen);
+				}
 			} /*
 				 * else if (completionNode instanceof TclBlockExpression) {
 				 * TclBlockExpression block = (TclBlockExpression)
@@ -152,7 +158,8 @@ public class TclCompletionParser extends TclAssistParser {
 				 * handleNotInElement(inNode, position); }
 				 */
 			if (completionNode instanceof StringLiteral) {
-				int pos = position - completionNode.sourceStart();
+				int maxLen = position - completionNode.sourceStart();
+				int pos = maxLen;
 				SimpleReference tok = TclParseUtils.extractVariableFromString(
 						(StringLiteral) completionNode, pos);
 				if (tok != null) {
@@ -231,15 +238,15 @@ public class TclCompletionParser extends TclAssistParser {
 								(TclStatement) node, keywords);
 						this.assistNodeParent = inNode;
 						throw new CompletionNodeFound(nde, null/* ((TypeDeclaration)inNode).scope */);
-					}
-					else {
+					} else {
 						String[] keywords = checkKeywords(completionToken,
 								MODULE);
-						if( completionToken == null ) {
+						if (completionToken == null) {
 							completionToken = "";
 						}
 						ASTNode nde = new CompletionOnKeywordArgumentOrFunctionArgument(
-								completionToken, (TclStatement) node, keywords, position);
+								completionToken, (TclStatement) node, keywords,
+								position);
 						this.assistNodeParent = inNode;
 						throw new CompletionNodeFound(nde, null/* ((TypeDeclaration)inNode).scope */);
 					}
@@ -298,9 +305,19 @@ public class TclCompletionParser extends TclAssistParser {
 					TclCompletionParser.this.parseBlockStatements(s, inNode,
 							position);
 				}
+				if (s instanceof TclPackageDeclaration) {
+					TclPackageDeclaration decl = (TclPackageDeclaration) s;
+					if (decl.getNameStart() <= position
+							&& position <= decl.getNameEnd()) {
+						ASTNode inNode = TclParseUtil.getScopeParent(module, s);
+						assistNodeParent = inNode;
+						throw new CompletionNodeFound(decl, null/* ((TypeDeclaration)inNode).scope */);
+					}
+				}
 			}
 			return super.visit(s);
 		}
+
 		public boolean visit(Expression s) throws Exception {
 			if (s.sourceStart() <= position && s.sourceEnd() >= position) {
 				for (int i = 0; i < extensions.length; i++) {

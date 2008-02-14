@@ -17,8 +17,6 @@ import org.eclipse.dltk.launching.InterpreterConfig;
 import org.eclipse.dltk.launching.debug.DbgpConstants;
 import org.eclipse.dltk.utils.PlatformFileUtils;
 
-import com.sun.org.apache.bcel.internal.generic.DNEG;
-
 /**
  * Debugging engine implementation for ActiveState's tcl debugging engine.
  * 

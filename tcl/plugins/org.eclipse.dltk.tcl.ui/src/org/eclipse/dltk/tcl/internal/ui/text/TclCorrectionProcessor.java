@@ -118,7 +118,8 @@ public class TclCorrectionProcessor implements IQuickAssistProcessor {
 			}
 			if (install != null) {
 				PackagesManager manager = PackagesManager.getInstance();
-				IPath[] paths = manager.getPathsForPackage(install, pkgName);
+				IPath[] paths = manager
+						.getPathsForPackage(install, pkgName);
 				if (paths != null && paths.length > 0) {
 					return true;
 				}

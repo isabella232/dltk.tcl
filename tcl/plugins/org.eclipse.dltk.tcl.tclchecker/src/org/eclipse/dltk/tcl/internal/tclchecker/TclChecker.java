@@ -144,7 +144,7 @@ public class TclChecker {
 			ISourceModule module = (ISourceModule) iterator.next();
 			try {
 				char[] sourceAsCharArray = module.getSourceAsCharArray();
-				if( sourceAsCharArray.length == 0 ) {
+				if (sourceAsCharArray.length == 0) {
 					continue;
 				}
 			} catch (ModelException e) {
@@ -156,8 +156,8 @@ public class TclChecker {
 			pathToSource.put(loc, module);
 			arguments.add(loc);
 		}
-		if( arguments.size() == 0 ) {
-			if(monitor != null) {
+		if (arguments.size() == 0) {
+			if (monitor != null) {
 				monitor.done();
 			}
 			return;
@@ -198,10 +198,22 @@ public class TclChecker {
 		monitor.beginTask("Executing TclChecker...",
 				sourceModules.size() * 2 + 1);
 
+		Map map = DebugPlugin.getDefault().getLaunchManager()
+				.getNativeEnvironmentCasePreserved();
+
+		TclCheckerHelper.passEnvironment(map, store);
+		String[] env = new String[map.size()];
+		int i = 0;
+		for (Iterator iterator = map.keySet().iterator(); iterator.hasNext();) {
+			String key = (String) iterator.next();
+			String value = (String) map.get(key);
+			env[i] = key + "=" + value;
+			++i;
+		}
 		try {
 			monitor.subTask("Launching TclChecker...");
 			process = DebugPlugin.exec((String[]) cmdLine
-					.toArray(new String[cmdLine.size()]), null);
+					.toArray(new String[cmdLine.size()]), null, env);
 
 			monitor.worked(1);
 
@@ -216,14 +228,14 @@ public class TclChecker {
 				}
 				TclCheckerProblem problem = TclCheckerHelper.parseProblem(line,
 						filter);
+				if (monitor.isCanceled()) {
+					process.destroy();
+					return;
+				}
 				if (line.startsWith(SCANNING)) {
 					String fileName = line.substring(SCANNING.length() + 1)
 							.trim();
 					fileName = Path.fromOSString(fileName).lastSegment();
-					if (monitor.isCanceled()) {
-						process.destroy();
-						return;
-					}
 					monitor
 							.subTask(MessageFormat
 									.format(
@@ -271,10 +283,6 @@ public class TclChecker {
 					}
 
 					fileName = Path.fromOSString(fileName).lastSegment();
-					if (monitor.isCanceled()) {
-						process.destroy();
-						return;
-					}
 					monitor
 							.subTask(MessageFormat
 									.format(
@@ -320,6 +328,10 @@ public class TclChecker {
 					console.write((line + "\n").getBytes());
 				}
 				errorMessage.append(line).append("\n");
+				if (monitor.isCanceled()) {
+					process.destroy();
+					return;
+				}
 			}
 			String error = errorMessage.toString();
 			if (error.length() > 0) {
@@ -340,7 +352,9 @@ public class TclChecker {
 				try {
 					input.close();
 				} catch (IOException e) {
-					e.printStackTrace();
+					if (DLTKCore.DEBUG) {
+						e.printStackTrace();
+					}
 				}
 			}
 		}

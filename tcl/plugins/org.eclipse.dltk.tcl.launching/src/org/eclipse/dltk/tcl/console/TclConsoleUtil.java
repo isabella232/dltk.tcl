@@ -17,7 +17,7 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.dltk.console.ScriptConsoleServer;
 import org.eclipse.dltk.core.DLTKCore;
-import org.eclipse.dltk.core.environment.EnvironmentsManager;
+import org.eclipse.dltk.core.environment.EnvironmentManager;
 import org.eclipse.dltk.core.environment.IExecutionEnvironment;
 import org.eclipse.dltk.core.environment.IFileHandle;
 import org.eclipse.dltk.launching.ScriptLaunchUtil;
@@ -35,7 +35,7 @@ public class TclConsoleUtil {
 		String[] args = new String[] { "127.0.0.1", port, id };
 
 		// TODO: Add support for environments
-		IExecutionEnvironment exeEnv = (IExecutionEnvironment) EnvironmentsManager
+		IExecutionEnvironment exeEnv = (IExecutionEnvironment) EnvironmentManager
 				.getLocalEnvironment().getAdapter(IExecutionEnvironment.class);
 
 		IFileHandle scriptFile = TclLaunchingPlugin.getDefault()

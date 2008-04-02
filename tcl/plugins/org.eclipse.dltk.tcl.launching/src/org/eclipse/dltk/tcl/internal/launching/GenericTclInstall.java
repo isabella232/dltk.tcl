@@ -17,6 +17,9 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.dltk.core.DLTKCore;
+import org.eclipse.dltk.core.environment.IDeployment;
+import org.eclipse.dltk.core.environment.IExecutionEnvironment;
+import org.eclipse.dltk.core.environment.IFileHandle;
 import org.eclipse.dltk.launching.AbstractInterpreterInstall;
 import org.eclipse.dltk.launching.IInterpreterInstallType;
 import org.eclipse.dltk.launching.IInterpreterRunner;
@@ -24,21 +27,27 @@ import org.eclipse.dltk.launching.InterpreterConfig;
 import org.eclipse.dltk.launching.ScriptLaunchUtil;
 import org.eclipse.dltk.tcl.core.TclNature;
 import org.eclipse.dltk.tcl.launching.TclLaunchingPlugin;
-import org.eclipse.dltk.utils.DeployHelper;
 
 public class GenericTclInstall extends AbstractInterpreterInstall {
 	public class BuiltinsHelper {
 		StringBuffer source = new StringBuffer();
 
 		void load() throws IOException, CoreException {
-			final IPath builder = DeployHelper.deploy(TclLaunchingPlugin
-					.getDefault(), "scripts/builtins.tcl"); //$NON-NLS-1$
+			IExecutionEnvironment exeEnv = getExecEnvironment();
+			if (exeEnv == null)
+				return;
 
+			IDeployment deployment = exeEnv.createDeployment();
+
+			final IPath builder = deployment.add(TclLaunchingPlugin
+					.getDefault().getBundle(), "scripts/builtins.tcl"); //$NON-NLS-1$
+
+			IFileHandle builderFile = deployment.getFile(builder);
 			InterpreterConfig config = ScriptLaunchUtil
-					.createInterpreterConfig(builder.toFile(), builder
-							.removeLastSegments(1).toFile(), null);
+					.createInterpreterConfig(exeEnv, builderFile, builderFile
+							.getParent());
 			// config.addInterpreterArg("-KU"); //$NON-NLS-1$
-			Process process = ScriptLaunchUtil.runScriptWithInterpreter(
+			Process process = ScriptLaunchUtil.runScriptWithInterpreter(exeEnv,
 					GenericTclInstall.this.getInstallLocation()
 							.getAbsolutePath(), config);
 

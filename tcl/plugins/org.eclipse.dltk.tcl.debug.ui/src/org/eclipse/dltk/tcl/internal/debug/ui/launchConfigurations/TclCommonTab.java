@@ -43,7 +43,7 @@ import org.eclipse.debug.ui.DebugUITools;
 import org.eclipse.debug.ui.IDebugUIConstants;
 import org.eclipse.debug.ui.ILaunchGroup;
 import org.eclipse.debug.ui.StringVariableSelectionDialog;
-import org.eclipse.dltk.core.environment.EnvironmentsManager;
+import org.eclipse.dltk.core.environment.EnvironmentManager;
 import org.eclipse.dltk.core.environment.IEnvironment;
 import org.eclipse.dltk.core.environment.IExecutionEnvironment;
 import org.eclipse.dltk.core.environment.IFileHandle;
@@ -962,7 +962,7 @@ public class TclCommonTab extends AbstractLaunchConfigurationTab {
 
 	private IExecutionEnvironment getExecEnvironment() {
 		// TODO: Add environments support
-		IEnvironment env = EnvironmentsManager.getLocalEnvironment();
+		IEnvironment env = EnvironmentManager.getLocalEnvironment();
 		return (IExecutionEnvironment) env
 				.getAdapter(IExecutionEnvironment.class);
 	}

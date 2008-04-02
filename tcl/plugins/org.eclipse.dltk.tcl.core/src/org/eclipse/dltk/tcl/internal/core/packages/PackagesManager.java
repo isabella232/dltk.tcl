@@ -348,7 +348,8 @@ public class PackagesManager {
 			return (IPath[]) els.toArray(new IPath[els.size()]);
 		}
 		// Retrieve paths from interpreter with all dependencies.
-		TclPackage[] srcs = DLTKTclHelper.getSrcs(install.getInstallLocation(),
+		TclPackage[] srcs = DLTKTclHelper.getSrcs(install.getExecEnvironment(),
+				install.getInstallLocation(),
 				install.getEnvironmentVariables(), packageName);
 
 		PackageInformation resultInfo = null;
@@ -475,7 +476,8 @@ public class PackagesManager {
 			return (IPath[]) paths.toArray(new IPath[paths.size()]);
 		}
 		// Retrieve paths from interpreter with all dependencies.
-		TclPackage[] srcs = DLTKTclHelper.getSrcs(install.getInstallLocation(),
+		TclPackage[] srcs = DLTKTclHelper.getSrcs(install.getExecEnvironment(),
+				install.getInstallLocation(),
 				install.getEnvironmentVariables(), buf.toString());
 		Set result = new HashSet();
 		for (int i = 0; i < srcs.length; i++) {

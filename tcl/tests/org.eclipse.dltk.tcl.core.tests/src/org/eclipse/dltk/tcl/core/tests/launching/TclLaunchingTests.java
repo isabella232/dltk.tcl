@@ -11,7 +11,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
-import org.eclipse.dltk.core.environment.EnvironmentsManager;
+import org.eclipse.dltk.core.environment.EnvironmentManager;
 import org.eclipse.dltk.core.environment.IFileHandle;
 import org.eclipse.dltk.core.tests.launching.IFileVisitor;
 import org.eclipse.dltk.core.tests.launching.PathFilesContainer;
@@ -157,7 +157,7 @@ public class TclLaunchingTests extends ScriptLaunchingTests {
 		boolean inDefault = true;
 		if (!file.exists()) {
 			PathFilesContainer container = new PathFilesContainer(
-					EnvironmentsManager.getLocalEnvironment());
+					EnvironmentManager.getLocalEnvironment());
 			Searcher searcher = new Searcher();
 			container.accept(searcher);
 			path = searcher.getPath();

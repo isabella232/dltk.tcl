@@ -339,8 +339,7 @@ public class PackagesManager {
 	 */
 	public synchronized IPath[] getPathsForPackage(IInterpreterInstall install,
 			String packageName) {
-		PackageKey key = makeKey(packageName, install.getInstallLocation()
-				.getAbsolutePath());
+		PackageKey key = makeKey(packageName, getInterpreterKey(install));
 		if (this.packages.containsKey(key)) {
 			PackageInformation info = (PackageInformation) this.packages
 					.get(key);
@@ -355,8 +354,8 @@ public class PackagesManager {
 		PackageInformation resultInfo = null;
 		for (int i = 0; i < srcs.length; i++) {
 			Set paths2 = srcs[i].getPaths();
-			PackageKey okey = makeKey(srcs[i].getName(), install
-					.getInstallLocation().getAbsolutePath());
+			PackageKey okey = makeKey(srcs[i].getName(),
+					getInterpreterKey(install));
 			PackageInformation info;
 			if (this.packages.containsKey(okey)) {
 				info = (PackageInformation) this.packages.get(okey);
@@ -396,7 +395,7 @@ public class PackagesManager {
 	}
 
 	private PackageKey makeKey(String pkgName, IInterpreterInstall install) {
-		return makeKey(pkgName, install.getInstallLocation().getAbsolutePath());
+		return makeKey(pkgName, getInterpreterKey(install));
 	}
 
 	private synchronized void traverseDependencies(Map packages,
@@ -407,8 +406,7 @@ public class PackagesManager {
 			String pkgName = (String) iterator.next();
 			if (!checkedPackages.contains(pkgName)) {
 				checkedPackages.add(pkgName);
-				PackageKey pkgKey = makeKey(pkgName, install
-						.getInstallLocation().getAbsolutePath());
+				PackageKey pkgKey = makeKey(pkgName, getInterpreterKey(install));
 				if (this.packages.containsKey(pkgKey)) {
 					PackageInformation depInfo = (PackageInformation) this.packages
 							.get(pkgKey);
@@ -421,7 +419,7 @@ public class PackagesManager {
 	}
 
 	public synchronized Set getPackageNames(IInterpreterInstall install) {
-		String key = install.getInstallLocation().getAbsolutePath();
+		String key = getInterpreterKey(install);
 		if (this.interpreterToPackages.containsKey(key)) {
 			Set set = (Set) this.interpreterToPackages.get(key);
 			return set;
@@ -433,10 +431,15 @@ public class PackagesManager {
 		return packages;
 	}
 
+	private String getInterpreterKey(IInterpreterInstall install) {
+		return install.getInstallLocation().getAbsolutePath() + ":"
+				+ install.getEnvironment().getId();
+	}
+
 	public synchronized Set getInternalPackageNames(
 			IInterpreterInstall install, IScriptProject project) {
 		String key = "internal|||" + project.getElementName() + "|||"
-				+ install.getInstallLocation().getAbsolutePath();
+				+ getInterpreterKey(install);
 		if (this.interpreterToPackages.containsKey(key)) {
 			Set set = (Set) this.interpreterToPackages.get(key);
 			return set;
@@ -446,8 +449,7 @@ public class PackagesManager {
 
 	public synchronized void setInternalPackageNames(
 			IInterpreterInstall install, Set names) {
-		String key = "internal|||"
-				+ install.getInstallLocation().getAbsolutePath();
+		String key = "internal|||" + getInterpreterKey(install);
 		Set values = new HashSet();
 		values.addAll(names);
 		this.interpreterToPackages.put(key, values);
@@ -466,8 +468,7 @@ public class PackagesManager {
 		for (int i = 0; i < pkgs.length; i++) {
 			buf.append(pkgs[i]).append(" ");
 		}
-		PackageKey key = makeKey(buf.toString(), install.getInstallLocation()
-				.getAbsolutePath());
+		PackageKey key = makeKey(buf.toString(), getInterpreterKey(install));
 
 		if (this.packages.containsKey(key)) {
 			PackageInformation info = (PackageInformation) this.packages
@@ -482,8 +483,8 @@ public class PackagesManager {
 		Set result = new HashSet();
 		for (int i = 0; i < srcs.length; i++) {
 			Set paths2 = srcs[i].getPaths();
-			PackageKey okey = makeKey(srcs[i].getName(), install
-					.getInstallLocation().getAbsolutePath());
+			PackageKey okey = makeKey(srcs[i].getName(),
+					getInterpreterKey(install));
 			PackageInformation info = null;
 			if (this.packages.containsKey(okey)) {
 				info = (PackageInformation) this.packages.get(okey);
@@ -501,8 +502,7 @@ public class PackagesManager {
 		this.packages.put(key, info);
 
 		for (int i = 0; i < pkgs.length; i++) {
-			PackageKey lkey = makeKey(pkgs[i], install.getInstallLocation()
-					.getAbsolutePath());
+			PackageKey lkey = makeKey(pkgs[i], getInterpreterKey(install));
 			if (!this.packages.containsKey(lkey)) {
 				this.packages.put(lkey, new PackageInformation());
 			}
@@ -534,7 +534,7 @@ public class PackagesManager {
 	 */
 	public synchronized void removeInterprterInfo(IInterpreterInstall install) {
 		// Remove interpreter to packages set
-		String interpreterPath = install.getInstallLocation().getAbsolutePath();
+		String interpreterPath = getInterpreterKey(install);
 		this.interpreterToPackages.remove(interpreterPath);
 		// Remove all values stored for interpreter packages
 		for (Iterator iterator = this.packages.keySet().iterator(); iterator

@@ -37,19 +37,31 @@ import org.xml.sax.helpers.DefaultHandler;
 
 public class DLTKTclHelper {
 	public static List getScriptOutput(Process process) {
-		List elements = new ArrayList();
-		try {
-			final BufferedReader input = new BufferedReader(
-					new InputStreamReader(process.getInputStream()));
-			while (true) {
-				String line = input.readLine();
-				if (line == null) {
-					break;
+		final List elements = new ArrayList();
+		final BufferedReader input = new BufferedReader(new InputStreamReader(
+				process.getInputStream()));
+		Thread t = new Thread(new Runnable() {
+			public void run() {
+				try {
+					while (true) {
+						String line;
+						line = input.readLine();
+						if (line == null) {
+							break;
+						}
+						elements.add(line);
+					}
+				} catch (IOException e) {
+					if (DLTKCore.DEBUG) {
+						e.printStackTrace();
+					}
 				}
-				elements.add(line);
 			}
-			return elements;
-		} catch (IOException e) {
+		});
+		t.start();
+		try {
+			t.join(5000);// No more then 5 seconds
+		} catch (InterruptedException e) {
 			if (DLTKCore.DEBUG) {
 				e.printStackTrace();
 			}
@@ -298,9 +310,7 @@ public class DLTKTclHelper {
 		StringBuffer newList = new StringBuffer();
 		for (Iterator iterator = content.iterator(); iterator.hasNext();) {
 			String line = (String) iterator.next();
-			if (!(line.startsWith("NOTICE") || line.startsWith("WARN")
-					|| line.startsWith("ERROR") || line.startsWith("INFO") || line
-					.startsWith("DEBUG"))) {
+			if (line.trim().startsWith("<")) {
 				newList.append(line).append("\n");
 			}
 		}

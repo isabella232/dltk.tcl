@@ -37,6 +37,7 @@ import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ModelException;
+import org.eclipse.dltk.core.environment.IEnvironment;
 import org.eclipse.jface.preference.IPreferenceStore;
 
 public class TclChecker {
@@ -93,48 +94,21 @@ public class TclChecker {
 	private ISourceModule checkingModule;
 	private IPreferenceStore store;
 
-	private TclCheckerMessageFilter filter;
-
-	private static void parseProblems(IResource res, String code,
-			String[] output, TclCheckerMessageFilter filter)
-			throws CoreException {
-		TclCheckerCodeModel model = new TclCheckerCodeModel(code);
-
-		for (int i = 0; i < output.length; ++i) {
-			TclCheckerProblem problem = TclCheckerHelper.parseProblem(
-					output[i], filter);
-
-			if (problem == null) {
-				continue;
-			}
-
-			TclCheckerProblemDescription desc = problem.getDescription();
-
-			int[] bounds = model.getBounds(problem.getLineNumber() - 1);
-
-			if (TclCheckerProblemDescription.isError(desc.getCategory()))
-				reportErrorProblem(res, problem, bounds[0], bounds[1]);
-			else if (TclCheckerProblemDescription.isWarning(desc.getCategory()))
-				reportWarningProblem(res, problem, bounds[0], bounds[1]);
-		}
-	}
-
 	public TclChecker(IPreferenceStore store) {
 		if (store == null) {
 			throw new NullPointerException("store cannot be null");
 		}
 
 		this.store = store;
-		this.filter = new StaticTclCheckerMessageFilter();
 	}
 
-	public boolean canCheck() {
-		return TclCheckerHelper.canExecuteTclChecker(store);
+	public boolean canCheck(IEnvironment environment) {
+		return TclCheckerHelper.canExecuteTclChecker(store, environment);
 	}
 
 	public void check(final List sourceModules, IProgressMonitor monitor,
-			OutputStream console) {
-		if (!canCheck()) {
+			OutputStream console, IEnvironment environment) { 
+		if (!canCheck(environment)) {
 			throw new IllegalStateException("TclChecker cannot be executed");
 		}
 
@@ -163,7 +137,7 @@ public class TclChecker {
 			return;
 		}
 		List cmdLine = new ArrayList();
-		TclCheckerHelper.passOriginalArguments(store, cmdLine);
+		TclCheckerHelper.passOriginalArguments(store, cmdLine, environment);
 		IPath stateLocation = TclCheckerPlugin.getDefault().getStateLocation();
 		IPath patternFile = stateLocation.append("pattern.txt");
 		try {
@@ -201,7 +175,6 @@ public class TclChecker {
 		Map map = DebugPlugin.getDefault().getLaunchManager()
 				.getNativeEnvironmentCasePreserved();
 
-		TclCheckerHelper.passEnvironment(map, store);
 		String[] env = new String[map.size()];
 		int i = 0;
 		for (Iterator iterator = map.keySet().iterator(); iterator.hasNext();) {
@@ -226,8 +199,7 @@ public class TclChecker {
 				if (console != null) {
 					console.write((line + "\n").getBytes());
 				}
-				TclCheckerProblem problem = TclCheckerHelper.parseProblem(line,
-						filter);
+				TclCheckerProblem problem = TclCheckerHelper.parseProblem(line);
 				if (monitor.isCanceled()) {
 					process.destroy();
 					return;

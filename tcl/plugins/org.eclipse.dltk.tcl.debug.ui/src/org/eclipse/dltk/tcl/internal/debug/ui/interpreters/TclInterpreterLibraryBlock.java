@@ -36,7 +36,7 @@ public class TclInterpreterLibraryBlock extends AbstractInterpreterLibraryBlock 
 	}
 
 	protected LibraryContentProvider createLibraryContentProvider() {
-		return new LibraryContentProvider();
+		return new LibraryContentProvider(getInterpreterInstall().getEnvironment());
 //		return new TclLibraryContentProvider();
 	}
 

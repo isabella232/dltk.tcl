@@ -36,7 +36,7 @@ public class TclInterpreterLibraryBlock extends AbstractInterpreterLibraryBlock 
 	}
 
 	protected LibraryContentProvider createLibraryContentProvider() {
-		return new LibraryContentProvider(getInterpreterInstall().getEnvironment());
+		return new LibraryContentProvider(fDialog.getEnvironment());
 //		return new TclLibraryContentProvider();
 	}
 

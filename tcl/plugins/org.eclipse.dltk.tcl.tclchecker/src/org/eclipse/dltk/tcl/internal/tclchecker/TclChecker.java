@@ -9,13 +9,14 @@
  *******************************************************************************/
 package org.eclipse.dltk.tcl.internal.tclchecker;
 
-import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.net.URI;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,7 +38,9 @@ import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ModelException;
+import org.eclipse.dltk.core.environment.IDeployment;
 import org.eclipse.dltk.core.environment.IEnvironment;
+import org.eclipse.dltk.core.environment.IExecutionEnvironment;
 import org.eclipse.jface.preference.IPreferenceStore;
 
 public class TclChecker {
@@ -107,7 +110,7 @@ public class TclChecker {
 	}
 
 	public void check(final List sourceModules, IProgressMonitor monitor,
-			OutputStream console, IEnvironment environment) { 
+			OutputStream console, IEnvironment environment) {
 		if (!canCheck(environment)) {
 			throw new IllegalStateException("TclChecker cannot be executed");
 		}
@@ -126,7 +129,14 @@ public class TclChecker {
 					e.printStackTrace();
 				}
 			}
-			String loc = module.getResource().getLocation().toOSString();
+			IPath location = module.getResource().getLocation();
+			String loc = null; 
+			if (location == null) {
+				URI locationURI = module.getResource().getLocationURI();
+				loc = environment.getFile(locationURI).getAbsolutePath();
+			} else {
+				loc = location.toOSString();
+			}
 			pathToSource.put(loc, module);
 			arguments.add(loc);
 		}
@@ -138,16 +148,18 @@ public class TclChecker {
 		}
 		List cmdLine = new ArrayList();
 		TclCheckerHelper.passOriginalArguments(store, cmdLine, environment);
-		IPath stateLocation = TclCheckerPlugin.getDefault().getStateLocation();
-		IPath patternFile = stateLocation.append("pattern.txt");
+		IExecutionEnvironment execEnvironment = (IExecutionEnvironment) environment
+				.getAdapter(IExecutionEnvironment.class);
+		IDeployment deployment = execEnvironment.createDeployment();
+//		IPath stateLocation = TclCheckerPlugin.getDefault().getStateLocation();
+//		IPath patternFile = stateLocation.append("pattern.txt");
+		ByteArrayOutputStream baros = new ByteArrayOutputStream();
 		try {
-			BufferedOutputStream locs = new BufferedOutputStream(
-					new FileOutputStream(patternFile.toFile(), false));
 			for (Iterator arg = arguments.iterator(); arg.hasNext();) {
 				String path = (String) arg.next();
-				locs.write((path + "\n").getBytes());
+				baros.write((path + "\n").getBytes());
 			}
-			locs.close();
+			baros.close();
 		} catch (FileNotFoundException e1) {
 			if (DLTKCore.DEBUG) {
 				e1.printStackTrace();
@@ -157,8 +169,21 @@ public class TclChecker {
 				e.printStackTrace();
 			}
 		}
+		IPath pattern;
+		try {
+			pattern = deployment.add(new ByteArrayInputStream(baros
+					.toByteArray()), new Path("pattern.txt"));
+		} catch (IOException e1) {
+			if (DLTKCore.DEBUG) {
+				TclCheckerPlugin.getDefault().getLog().log(
+						new Status(IStatus.ERROR, TclCheckerPlugin.PLUGIN_ID,
+								"Failed to deploy file list", e1));
+				e1.printStackTrace();
+			}
+			return;
+		}
 		cmdLine.add("-@");
-		cmdLine.add(patternFile.toOSString());
+		cmdLine.add(deployment.getFile(pattern).getAbsolutePath());
 		Process process;
 		BufferedReader input = null;
 		String checkingFile = null;
@@ -185,8 +210,11 @@ public class TclChecker {
 		}
 		try {
 			monitor.subTask("Launching TclChecker...");
-			process = DebugPlugin.exec((String[]) cmdLine
+			process = execEnvironment.exec((String[]) cmdLine
 					.toArray(new String[cmdLine.size()]), null, env);
+
+			// process = DebugPlugin.exec((String[]) cmdLine
+			// .toArray(new String[cmdLine.size()]), null, env);
 
 			monitor.worked(1);
 

@@ -47,25 +47,46 @@ public class GenericTclInstall extends AbstractInterpreterInstall {
 					.createInterpreterConfig(exeEnv, builderFile, builderFile
 							.getParent());
 			// config.addInterpreterArg("-KU"); //$NON-NLS-1$
-			Process process = ScriptLaunchUtil.runScriptWithInterpreter(exeEnv,
-					GenericTclInstall.this.getInstallLocation()
+			final Process process = ScriptLaunchUtil.runScriptWithInterpreter(
+					exeEnv, GenericTclInstall.this.getInstallLocation()
 							.getAbsolutePath(), config);
+			Thread readerThread = new Thread(new Runnable() {
+				public void run() {
+					BufferedReader input = null;
+					try {
+						input = new BufferedReader(new InputStreamReader(
+								process.getInputStream()));
 
-			BufferedReader input = null;
-			try {
-				input = new BufferedReader(new InputStreamReader(process
-						.getInputStream()));
-
-				String line = null;
-				while ((line = input.readLine()) != null) {
-					source.append(line);
-					source.append("\n");
+						String line = null;
+						while ((line = input.readLine()) != null) {
+							source.append(line);
+							source.append("\n");
+						}
+					} catch (IOException e) {
+						if (DLTKCore.DEBUG) {
+							e.printStackTrace();
+						}
+					} finally {
+						if (input != null) {
+							try {
+								input.close();
+							} catch (IOException e) {
+								if (DLTKCore.DEBUG) {
+									e.printStackTrace();
+								}
+							}
+						}
+					}
 				}
-			} finally {
-				if (input != null) {
-					input.close();
+			});
+			try {
+				readerThread.join(10000);
+			} catch (InterruptedException e) {
+				if (DLTKCore.DEBUG) {
+					e.printStackTrace();
 				}
 			}
+
 		}
 	}
 

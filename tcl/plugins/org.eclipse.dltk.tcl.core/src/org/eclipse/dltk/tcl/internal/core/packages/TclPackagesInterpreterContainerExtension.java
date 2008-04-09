@@ -1,7 +1,6 @@
 package org.eclipse.dltk.tcl.internal.core.packages;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -9,7 +8,6 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.IAccessRule;
 import org.eclipse.dltk.core.IBuildpathAttribute;
@@ -17,8 +15,8 @@ import org.eclipse.dltk.core.IBuildpathEntry;
 import org.eclipse.dltk.core.IInterpreterContainerExtension;
 import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.environment.EnvironmentManager;
+import org.eclipse.dltk.core.environment.EnvironmentPathUtils;
 import org.eclipse.dltk.core.environment.IEnvironment;
-import org.eclipse.dltk.core.environment.IFileHandle;
 import org.eclipse.dltk.internal.core.BuildpathEntry;
 import org.eclipse.dltk.launching.IInterpreterInstall;
 import org.eclipse.dltk.launching.InterpreterContainerHelper;
@@ -56,30 +54,33 @@ public class TclPackagesInterpreterContainerExtension implements
 			Set packages = InterpreterContainerHelper
 					.getPackageContainerPackageNames(project);
 
+			IEnvironment env = EnvironmentManager.getEnvironment(project);
+
 			Set allPaths = new HashSet();
 			for (Iterator iterator = packages.iterator(); iterator.hasNext();) {
 				String pkgName = (String) iterator.next();
 				IPath[] libs = PackagesManager.getInstance()
 						.getPathsForPackageWithDeps(install, pkgName);
-				if (libs != null) {
-					allPaths.addAll(Arrays.asList(libs));
+				for (int i = 0; i < libs.length; i++) {
+					IPath fullPath = EnvironmentPathUtils.getFullPath(env,
+							libs[i]);
+					allPaths.add(fullPath);
 				}
 			}
 
 			Set rawEntries = new HashSet(allPaths.size());
-			IEnvironment env = EnvironmentManager.getEnvironment(project);
 			for (Iterator iterator = allPaths.iterator(); iterator.hasNext();) {
 				IPath entryPath = (IPath) iterator.next();
 
 				if (!entryPath.isEmpty()) {
-
+					// TODO Check this
 					// resolve symlink
-					{
-						IFileHandle f = env.getFile(entryPath);
-						if (f == null)
-							continue;
-						entryPath = new Path(f.getCanonicalPath());
-					}
+					// {
+					// IFileHandle f = env.getFile(entryPath);
+					// if (f == null)
+					// continue;
+					// entryPath = new Path(f.getCanonicalPath());
+					// }
 					if (rawEntries.contains(entryPath))
 						continue;
 
@@ -94,13 +95,14 @@ public class TclPackagesInterpreterContainerExtension implements
 						IPath otherPath = (IPath) iterator2.next();
 						if (otherPath.isEmpty())
 							continue;
+						// TODO Check this
 						// resolve symlink
-						{
-							IFileHandle f = env.getFile(entryPath);
-							if (f == null)
-								continue;
-							entryPath = new Path(f.getCanonicalPath());
-						}
+						// {
+						// IFileHandle f = env.getFile(entryPath);
+						// if (f == null)
+						// continue;
+						// entryPath = new Path(f.getCanonicalPath());
+						// }
 						// compare, if it contains some another
 						if (entryPath.isPrefixOf(otherPath)
 								&& !otherPath.equals(entryPath)) {
@@ -123,8 +125,8 @@ public class TclPackagesInterpreterContainerExtension implements
 					}
 					if (!inInterpreter) {
 						// Check for interpreter container libraries.
-						buildpathEntries.add(DLTKCore.newLibraryEntry(entryPath,
-								EMPTY_RULES, attributes,
+						buildpathEntries.add(DLTKCore.newLibraryEntry(
+								entryPath, EMPTY_RULES, attributes,
 								BuildpathEntry.INCLUDE_ALL, (IPath[]) excluded
 										.toArray(new IPath[excluded.size()]),
 								false, true));

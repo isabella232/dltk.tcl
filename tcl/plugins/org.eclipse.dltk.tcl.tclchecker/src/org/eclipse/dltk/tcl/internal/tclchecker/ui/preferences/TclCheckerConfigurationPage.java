@@ -329,28 +329,28 @@ public class TclCheckerConfigurationPage extends ValidatorConfigurationPage
 				SWT.NULL);
 		pathColumn.getColumn().setText("Path:");
 		pathColumn.getColumn().setWidth(conv.convertWidthInCharsToPixels(20));
-//		pathColumn.setEditingSupport(new EditingSupport(pathViewer) {
-//			protected boolean canEdit(Object element) {
-//				return true;
-//			}
-//
-//			protected CellEditor getCellEditor(Object element) {
-//				return new TextCellEditor() {
-//
-//					protected Control createControl(Composite parent) {
-//						return super.createControl(parent);
-//					}
-//				};
-//			}
-//
-//			protected Object getValue(Object element) {
-//				return paths.get(getEnvironment());
-//			}
-//
-//			protected void setValue(Object element, Object value) {
-//				paths.put(getEnvironment(), value);
-//			}
-//		});
+		pathColumn.setEditingSupport(new EditingSupport(pathViewer) {
+			protected boolean canEdit(Object element) {
+				return true;
+			}
+
+			protected CellEditor getCellEditor(Object element) {
+				return new TextCellEditor() {
+
+					protected Control createControl(Composite parent) {
+						return super.createControl(parent);
+					}
+				};
+			}
+
+			protected Object getValue(Object element) {
+				return paths.get(getEnvironment());
+			}
+
+			protected void setValue(Object element, Object value) {
+				paths.put(getEnvironment(), value);
+			}
+		});
 
 		pathViewer.setLabelProvider(new PathLabelProvider());
 		pathViewer.setContentProvider(new IStructuredContentProvider() {

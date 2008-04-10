@@ -20,7 +20,6 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.dltk.core.environment.EnvironmentManager;
 import org.eclipse.dltk.core.environment.IEnvironment;
 import org.eclipse.dltk.core.internal.environment.LocalEnvironment;
-import org.eclipse.dltk.internal.ui.util.SWTUtil;
 import org.eclipse.dltk.internal.ui.util.TableLayoutComposite;
 import org.eclipse.dltk.tcl.internal.tclchecker.TclCheckerConstants;
 import org.eclipse.dltk.tcl.internal.tclchecker.TclCheckerHelper;
@@ -55,9 +54,7 @@ import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
@@ -272,13 +269,13 @@ public class TclCheckerConfigurationPage extends ValidatorConfigurationPage
 		layout.marginHeight = 0;
 		layout.marginWidth = 0;
 		buttons.setLayout(layout);
-
-		fEditButton = SWTUtil.createPushButton(buttons, "Edit", null);
-		fEditButton.addListener(SWT.Selection, new Listener() {
-			public void handleEvent(Event evt) {
-				editPath();
-			}
-		});
+//
+//		fEditButton = SWTUtil.createPushButton(buttons, "Edit", null);
+//		fEditButton.addListener(SWT.Selection, new Listener() {
+//			public void handleEvent(Event evt) {
+//				editPath();
+//			}
+//		});
 	}
 
 	protected void editPDX() {
@@ -335,10 +332,35 @@ public class TclCheckerConfigurationPage extends ValidatorConfigurationPage
 			}
 
 			protected CellEditor getCellEditor(Object element) {
-				return new TextCellEditor() {
+				return new TextCellEditor(pathTable) {
+					private Button browse;
 
 					protected Control createControl(Composite parent) {
-						return super.createControl(parent);
+						Composite composite = new Composite(parent,SWT.NONE);
+						composite.setBackground(parent.getBackground());
+						GridLayout layout = new GridLayout(2, false);
+						layout.marginLeft = -4;
+						layout.marginTop = -4;
+						layout.marginBottom = -4;
+						layout.marginRight = -4;
+						composite.setLayout(layout);
+						super.createControl(composite);
+						text.setLayoutData(new GridData(SWT.FILL,SWT.DEFAULT, true, false));
+						browse = new Button(composite,SWT.PUSH);
+						browse.setText(":::");
+						browse.setLayoutData(new GridData(SWT.DEFAULT,SWT.FILL, false, true));
+						browse.addSelectionListener(new SelectionAdapter() {
+							public void widgetSelected(SelectionEvent e) {
+								editPath();
+							}
+						});
+						return composite;
+					}
+
+					protected void focusLost() {
+						if(!text.isFocusControl() && !browse.isFocusControl()) {
+							super.focusLost();
+						}
 					}
 				};
 			}
@@ -349,6 +371,7 @@ public class TclCheckerConfigurationPage extends ValidatorConfigurationPage
 
 			protected void setValue(Object element, Object value) {
 				paths.put(getEnvironment(), value);
+				pathViewer.refresh();
 			}
 		});
 

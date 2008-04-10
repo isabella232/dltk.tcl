@@ -179,22 +179,14 @@ public final class TclCheckerHelper {
 	}
 
 	public static Map getPaths(IPreferenceStore store) {
-		Map results = new HashMap();
-		IEnvironment[] environments = EnvironmentManager.getEnvironments();
-		for (int i = 0; i < environments.length; i++) {
-			results.put(environments[i], store
-					.getString(TclCheckerConstants.PREF_PATH + "/"
-							+ environments[i].getId()));
-		}
+		String prefix = TclCheckerConstants.PREF_PATH;
+		Map results = getEnvironmentValues(store, prefix);
 		return results;
 	}
 
 	public static void setPaths(IPreferenceStore store, Map paths) {
-		for (Iterator iterator = paths.keySet().iterator(); iterator.hasNext();) {
-			IEnvironment environment = (IEnvironment) iterator.next();
-			store.setValue(TclCheckerConstants.PREF_PATH + "/"
-					+ environment.getId(), (String) paths.get(environment));
-		}
+		String prefix = TclCheckerConstants.PREF_PATH;
+		setEnvironmentValues(store, paths, prefix);
 	}
 
 	public static boolean canExecuteTclChecker(IPreferenceStore store,
@@ -213,6 +205,30 @@ public final class TclCheckerHelper {
 	}
 
 	public static Map getNoPCX(IPreferenceStore store) {
-		return new HashMap();
+		return getEnvironmentValues(store, TclCheckerConstants.PREF_NO_PCX);
+	}
+	public static void setNoPCX(IPreferenceStore store, Map paths) {
+		setEnvironmentValues(store, paths, TclCheckerConstants.PREF_NO_PCX);
+	}
+
+	private static Map getEnvironmentValues(IPreferenceStore store,
+			String prefix) {
+		Map results = new HashMap();
+		IEnvironment[] environments = EnvironmentManager.getEnvironments();
+		for (int i = 0; i < environments.length; i++) {
+			results.put(environments[i], store
+					.getString(prefix + "/"
+							+ environments[i].getId()));
+		}
+		return results;
+	}
+
+	private static void setEnvironmentValues(IPreferenceStore store, Map paths,
+			String prefix) {
+		for (Iterator iterator = paths.keySet().iterator(); iterator.hasNext();) {
+			IEnvironment environment = (IEnvironment) iterator.next();
+			store.setValue(prefix + "/"
+					+ environment.getId(), (String) paths.get(environment));
+		}
 	}
 }

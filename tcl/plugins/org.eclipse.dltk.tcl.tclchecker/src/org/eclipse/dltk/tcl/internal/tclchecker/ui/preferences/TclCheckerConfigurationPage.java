@@ -85,8 +85,6 @@ public class TclCheckerConfigurationPage extends ValidatorConfigurationPage
 
 	private SelectionAdapter noPCXSelectionListener;
 
-	private Button fEditButton;
-
 	private Map noPCXValues;
 
 	private Group pcxGroup;
@@ -312,7 +310,7 @@ public class TclCheckerConfigurationPage extends ValidatorConfigurationPage
 					private Button browse;
 
 					protected Control createControl(Composite parent) {
-						Composite composite = new Composite(parent,SWT.NONE);
+						Composite composite = new Composite(parent, SWT.NONE);
 						composite.setBackground(parent.getBackground());
 						GridLayout layout = new GridLayout(2, false);
 						layout.marginLeft = -4;
@@ -321,12 +319,14 @@ public class TclCheckerConfigurationPage extends ValidatorConfigurationPage
 						layout.marginRight = -4;
 						composite.setLayout(layout);
 						super.createControl(composite);
-						text.setLayoutData(new GridData(SWT.FILL,SWT.DEFAULT, true, false));
-						browse = new Button(composite,SWT.PUSH);
+						text.setLayoutData(new GridData(SWT.FILL, SWT.DEFAULT,
+								true, false));
+						browse = new Button(composite, SWT.PUSH);
 						browse.setText("...");
 						Font font = new Font(parent.getDisplay(), "arial", 6, 0);
 						browse.setFont(font);
-						browse.setLayoutData(new GridData(SWT.DEFAULT,SWT.FILL, false, true));
+						browse.setLayoutData(new GridData(SWT.DEFAULT,
+								SWT.FILL, false, true));
 						browse.addSelectionListener(new SelectionAdapter() {
 							public void widgetSelected(SelectionEvent e) {
 								editPath();
@@ -336,7 +336,7 @@ public class TclCheckerConfigurationPage extends ValidatorConfigurationPage
 					}
 
 					protected void focusLost() {
-						if(!text.isFocusControl() && !browse.isFocusControl()) {
+						if (!text.isFocusControl() && !browse.isFocusControl()) {
 							super.focusLost();
 						}
 					}
@@ -461,6 +461,8 @@ public class TclCheckerConfigurationPage extends ValidatorConfigurationPage
 		noPCXSelectionListener = new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				boolean selection = noPCX.getSelection();
+				noPCXValues.put(getEnvironment(), new Boolean(selection)
+						.toString());
 
 				IStructuredSelection pathSelection = (IStructuredSelection) pathViewer
 						.getSelection();
@@ -630,15 +632,12 @@ public class TclCheckerConfigurationPage extends ValidatorConfigurationPage
 		IPreferenceStore store = doGetPreferenceStore();
 
 		// Path
-		// path.setText(store.getString(TclCheckerConstants.PREF_PATH));
 		this.paths = TclCheckerHelper.getPaths(store);
 		this.pathViewer.refresh();
 		this.pcxPaths = TclCheckerHelper.getPcxPaths(store);
 		this.noPCXValues = TclCheckerHelper.getNoPCX(store);
 
-		// this.noPCX.setSelection(store
-		// .getBoolean(TclCheckerConstants.PREF_NO_PCX));
-		// noPCXSelectionListener.widgetSelected(null);
+		noPCXSelectionListener.widgetSelected(null);
 
 		lview.setInput(this.pcxPaths);
 		updatePCX();
@@ -663,13 +662,9 @@ public class TclCheckerConfigurationPage extends ValidatorConfigurationPage
 		IPreferenceStore store = doGetPreferenceStore();
 
 		// Path
-		// store.setValue(TclCheckerConstants.PREF_PATH, path.getText());
-		// store.setValue(TclCheckerConstants.PREF_PCX_PATH, pcxPath.getText());
 		TclCheckerHelper.setPaths(store, paths);
 		TclCheckerHelper.setPcxPaths(store, pcxPaths);
-
-		// store.setValue(TclCheckerConstants.PREF_NO_PCX, this.noPCX
-		// .getSelection());
+		TclCheckerHelper.setNoPCX(store, noPCXValues);
 
 		// Mode
 		store.setValue(TclCheckerConstants.PREF_MODE, getModeSelection());
@@ -694,6 +689,12 @@ public class TclCheckerConfigurationPage extends ValidatorConfigurationPage
 	}
 
 	private void updatePCX() {
+		String value = (String) this.noPCXValues.get(getEnvironment());
+		if ("true".equals(value)) {
+			noPCX.setSelection(true);
+		} else {
+			noPCX.setSelection(false);
+		}
 		lview.refresh();
 		noPCXSelectionListener.widgetSelected(null);
 	}

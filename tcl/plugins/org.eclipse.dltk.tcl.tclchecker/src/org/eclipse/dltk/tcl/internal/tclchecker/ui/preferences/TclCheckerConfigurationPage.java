@@ -20,7 +20,6 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.dltk.core.environment.EnvironmentManager;
 import org.eclipse.dltk.core.environment.IEnvironment;
 import org.eclipse.dltk.core.internal.environment.LocalEnvironment;
-import org.eclipse.dltk.internal.ui.util.TableLayoutComposite;
 import org.eclipse.dltk.tcl.internal.tclchecker.TclCheckerConstants;
 import org.eclipse.dltk.tcl.internal.tclchecker.TclCheckerHelper;
 import org.eclipse.dltk.tcl.internal.tclchecker.TclCheckerPlugin;
@@ -46,6 +45,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
@@ -255,27 +255,13 @@ public class TclCheckerConfigurationPage extends ValidatorConfigurationPage
 		group.setLayoutData(data);
 
 		GridLayout layout = new GridLayout();
-		layout.numColumns = 2;
+		layout.numColumns = 1;
 		group.setLayout(layout);
 		GridData dt = new GridData(SWT.FILL, SWT.FILL, true, true);
-		dt.horizontalSpan = 2;
+		dt.horizontalSpan = 1;
 		group.setLayoutData(dt);
 
 		createPathTable(parent, group);
-
-		Composite buttons = new Composite(group, SWT.NULL);
-		buttons.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
-		layout = new GridLayout();
-		layout.marginHeight = 0;
-		layout.marginWidth = 0;
-		buttons.setLayout(layout);
-//
-//		fEditButton = SWTUtil.createPushButton(buttons, "Edit", null);
-//		fEditButton.addListener(SWT.Selection, new Listener() {
-//			public void handleEvent(Event evt) {
-//				editPath();
-//			}
-//		});
 	}
 
 	protected void editPDX() {
@@ -300,19 +286,13 @@ public class TclCheckerConfigurationPage extends ValidatorConfigurationPage
 
 	private void createPathTable(final Composite parent, Group group) {
 		PixelConverter conv = new PixelConverter(parent);
-		GridData gData = new GridData(GridData.FILL_BOTH);
-		gData.widthHint = conv.convertWidthInCharsToPixels(50);
-		gData.heightHint = conv.convertHeightInCharsToPixels(5);
-		TableLayoutComposite tblComposite = new TableLayoutComposite(group,
-				SWT.NONE);
-		tblComposite.setLayoutData(gData);
 
-		pathTable = new Table(tblComposite, SWT.SINGLE | SWT.BORDER
+		pathTable = new Table(group, SWT.SINGLE | SWT.BORDER
 				| SWT.FULL_SELECTION);
 		pathTable.setHeaderVisible(true);
 		pathTable.setLinesVisible(true);
-		GridData tableData = new GridData(SWT.FILL, SWT.FILL, true, true);
-		tableData.heightHint = conv.convertHeightInCharsToPixels(15);
+		GridData tableData = new GridData(SWT.FILL, SWT.DEFAULT, true, false);
+		tableData.heightHint = conv.convertHeightInCharsToPixels(8);
 		pathTable.setLayoutData(tableData);
 
 		pathViewer = new TableViewer(pathTable);
@@ -325,7 +305,7 @@ public class TclCheckerConfigurationPage extends ValidatorConfigurationPage
 		TableViewerColumn pathColumn = new TableViewerColumn(pathViewer,
 				SWT.NULL);
 		pathColumn.getColumn().setText("Path:");
-		pathColumn.getColumn().setWidth(conv.convertWidthInCharsToPixels(20));
+		pathColumn.getColumn().setWidth(conv.convertWidthInCharsToPixels(70));
 		pathColumn.setEditingSupport(new EditingSupport(pathViewer) {
 			protected boolean canEdit(Object element) {
 				return true;
@@ -347,7 +327,9 @@ public class TclCheckerConfigurationPage extends ValidatorConfigurationPage
 						super.createControl(composite);
 						text.setLayoutData(new GridData(SWT.FILL,SWT.DEFAULT, true, false));
 						browse = new Button(composite,SWT.PUSH);
-						browse.setText(":::");
+						browse.setText("...");
+						Font font = new Font(parent.getDisplay(), "arial", 6, 0);
+						browse.setFont(font);
 						browse.setLayoutData(new GridData(SWT.DEFAULT,SWT.FILL, false, true));
 						browse.addSelectionListener(new SelectionAdapter() {
 							public void widgetSelected(SelectionEvent e) {

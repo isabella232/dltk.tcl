@@ -62,10 +62,6 @@ import org.eclipse.ui.IWorkbench;
 
 public class TclCheckerConfigurationPage extends ValidatorConfigurationPage
 		implements ISelectionChangedListener {
-	// private static final String PREFERENCES_ID =
-	// "org.eclipse.dltk.tcl.tclchecker.ui.preferences.TclCheckerPreferences";
-
-	// private Text path;
 	private Table pathTable;
 	private TableViewer pathViewer;
 
@@ -348,11 +344,11 @@ public class TclCheckerConfigurationPage extends ValidatorConfigurationPage
 			}
 
 			protected Object getValue(Object element) {
-				return paths.get(getEnvironment());
+				return paths.get(element);
 			}
 
 			protected void setValue(Object element, Object value) {
-				paths.put(getEnvironment(), value);
+				paths.put(element, value);
 				pathViewer.refresh();
 			}
 		});

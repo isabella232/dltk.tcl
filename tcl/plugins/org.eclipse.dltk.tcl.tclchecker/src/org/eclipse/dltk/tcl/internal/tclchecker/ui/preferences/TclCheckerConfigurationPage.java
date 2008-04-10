@@ -10,7 +10,6 @@
 package org.eclipse.dltk.tcl.internal.tclchecker.ui.preferences;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -24,12 +23,10 @@ import org.eclipse.dltk.tcl.internal.tclchecker.TclCheckerConstants;
 import org.eclipse.dltk.tcl.internal.tclchecker.TclCheckerHelper;
 import org.eclipse.dltk.tcl.internal.tclchecker.TclCheckerPlugin;
 import org.eclipse.dltk.tcl.internal.tclchecker.TclCheckerProblemDescription;
+import org.eclipse.dltk.ui.environment.EnvironmentPathBlock;
 import org.eclipse.dltk.ui.environment.IEnvironmentUI;
-import org.eclipse.dltk.ui.util.PixelConverter;
 import org.eclipse.dltk.validators.ui.ValidatorConfigurationPage;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.viewers.CellEditor;
-import org.eclipse.jface.viewers.EditingSupport;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
@@ -38,14 +35,10 @@ import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.jface.viewers.TableViewerColumn;
-import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
@@ -62,13 +55,8 @@ import org.eclipse.ui.IWorkbench;
 
 public class TclCheckerConfigurationPage extends ValidatorConfigurationPage
 		implements ISelectionChangedListener {
-	private Table pathTable;
-	private TableViewer pathViewer;
 
-	/**
-	 * Environment to path association.
-	 */
-	Map paths = new HashMap();
+	EnvironmentPathBlock environmentPathBlock;
 	private Map pcxPaths;
 
 	private Button errorsMode;
@@ -90,32 +78,6 @@ public class TclCheckerConfigurationPage extends ValidatorConfigurationPage
 	private Group pcxGroup;
 	private Button pcxAdd;
 	private Button pcxRemove;
-
-	private class PathLabelProvider extends LabelProvider implements
-			ITableLabelProvider {
-
-		public Image getColumnImage(Object element, int columnIndex) {
-			return null;
-		}
-
-		public String getColumnText(Object element, int columnIndex) {
-			if (element instanceof IEnvironment) {
-				switch (columnIndex) {
-				case 0:
-					return ((IEnvironment) element).getName();
-				case 1:
-					Object path = paths.get(((IEnvironment) element));
-					if (path != null) {
-						return (String) path;
-					}
-					return "(undefined)";
-				default:
-					break;
-				}
-			}
-			return null;
-		}
-	}
 
 	public void createControl(Composite parent, int columns) {
 		Composite c = new Composite(parent, SWT.NONE);
@@ -255,122 +217,12 @@ public class TclCheckerConfigurationPage extends ValidatorConfigurationPage
 		dt.horizontalSpan = 1;
 		group.setLayoutData(dt);
 
-		createPathTable(parent, group);
+		environmentPathBlock = new EnvironmentPathBlock();
+		environmentPathBlock.createControl(group);
 	}
 
 	protected void editPDX() {
 
-	}
-
-	protected void editPath() {
-		ISelection selection = pathViewer.getSelection();
-		if (selection instanceof IStructuredSelection) {
-			IStructuredSelection sel = (IStructuredSelection) selection;
-			IEnvironment environment = (IEnvironment) sel.getFirstElement();
-			IEnvironmentUI ui = (IEnvironmentUI) environment
-					.getAdapter(IEnvironmentUI.class);
-			String file = ui.selectFile(this.pathTable.getShell(),
-					IEnvironmentUI.EXECUTABLE);
-			if (file != null) {
-				this.paths.put(environment, file);
-				this.pathViewer.refresh();
-			}
-		}
-	}
-
-	private void createPathTable(final Composite parent, Group group) {
-		PixelConverter conv = new PixelConverter(parent);
-
-		pathTable = new Table(group, SWT.SINGLE | SWT.BORDER
-				| SWT.FULL_SELECTION);
-		pathTable.setHeaderVisible(true);
-		pathTable.setLinesVisible(true);
-		GridData tableData = new GridData(SWT.FILL, SWT.DEFAULT, true, false);
-		tableData.heightHint = conv.convertHeightInCharsToPixels(8);
-		pathTable.setLayoutData(tableData);
-
-		pathViewer = new TableViewer(pathTable);
-
-		TableViewerColumn environmentsColumn = new TableViewerColumn(
-				pathViewer, SWT.NULL);
-		environmentsColumn.getColumn().setText("Environment:");
-		environmentsColumn.getColumn().setWidth(
-				conv.convertWidthInCharsToPixels(20));
-		TableViewerColumn pathColumn = new TableViewerColumn(pathViewer,
-				SWT.NULL);
-		pathColumn.getColumn().setText("Path:");
-		pathColumn.getColumn().setWidth(conv.convertWidthInCharsToPixels(70));
-		pathColumn.setEditingSupport(new EditingSupport(pathViewer) {
-			protected boolean canEdit(Object element) {
-				return true;
-			}
-
-			protected CellEditor getCellEditor(Object element) {
-				return new TextCellEditor(pathTable) {
-					private Button browse;
-
-					protected Control createControl(Composite parent) {
-						Composite composite = new Composite(parent, SWT.NONE);
-						composite.setBackground(parent.getBackground());
-						GridLayout layout = new GridLayout(2, false);
-						layout.marginLeft = -4;
-						layout.marginTop = -4;
-						layout.marginBottom = -4;
-						layout.marginRight = -4;
-						composite.setLayout(layout);
-						super.createControl(composite);
-						text.setLayoutData(new GridData(SWT.FILL, SWT.DEFAULT,
-								true, false));
-						browse = new Button(composite, SWT.PUSH);
-						browse.setText("...");
-						Font font = new Font(parent.getDisplay(), "arial", 6, 0);
-						browse.setFont(font);
-						browse.setLayoutData(new GridData(SWT.DEFAULT,
-								SWT.FILL, false, true));
-						browse.addSelectionListener(new SelectionAdapter() {
-							public void widgetSelected(SelectionEvent e) {
-								editPath();
-							}
-						});
-						return composite;
-					}
-
-					protected void focusLost() {
-						if (!text.isFocusControl() && !browse.isFocusControl()) {
-							super.focusLost();
-						}
-					}
-				};
-			}
-
-			protected Object getValue(Object element) {
-				return paths.get(element);
-			}
-
-			protected void setValue(Object element, Object value) {
-				paths.put(element, value);
-				pathViewer.refresh();
-			}
-		});
-
-		pathViewer.setLabelProvider(new PathLabelProvider());
-		pathViewer.setContentProvider(new IStructuredContentProvider() {
-			public Object[] getElements(Object inputElement) {
-				if (inputElement instanceof IEnvironment[]) {
-					return (Object[]) inputElement;
-				}
-				return new Object[0];
-			}
-
-			public void dispose() {
-			}
-
-			public void inputChanged(Viewer viewer, Object oldInput,
-					Object newInput) {
-			}
-		});
-		pathViewer.setInput(EnvironmentManager.getEnvironments());
-		pathViewer.addSelectionChangedListener(this);
 	}
 
 	protected void createPCXPathGroup(final Composite parent, Object data) {
@@ -464,7 +316,7 @@ public class TclCheckerConfigurationPage extends ValidatorConfigurationPage
 				noPCXValues.put(getEnvironment(), new Boolean(selection)
 						.toString());
 
-				IStructuredSelection pathSelection = (IStructuredSelection) pathViewer
+				IStructuredSelection pathSelection = (IStructuredSelection) environmentPathBlock
 						.getSelection();
 				boolean enabled = !pathSelection.isEmpty();
 
@@ -477,7 +329,7 @@ public class TclCheckerConfigurationPage extends ValidatorConfigurationPage
 	}
 
 	protected IEnvironment getEnvironment() {
-		IStructuredSelection selection = (IStructuredSelection) pathViewer
+		IStructuredSelection selection = (IStructuredSelection) environmentPathBlock
 				.getSelection();
 		if (selection.isEmpty()) {
 			return EnvironmentManager
@@ -632,8 +484,7 @@ public class TclCheckerConfigurationPage extends ValidatorConfigurationPage
 		IPreferenceStore store = doGetPreferenceStore();
 
 		// Path
-		this.paths = TclCheckerHelper.getPaths(store);
-		this.pathViewer.refresh();
+		environmentPathBlock.setPaths(TclCheckerHelper.getPaths(store));
 		this.pcxPaths = TclCheckerHelper.getPcxPaths(store);
 		this.noPCXValues = TclCheckerHelper.getNoPCX(store);
 
@@ -662,7 +513,7 @@ public class TclCheckerConfigurationPage extends ValidatorConfigurationPage
 		IPreferenceStore store = doGetPreferenceStore();
 
 		// Path
-		TclCheckerHelper.setPaths(store, paths);
+		TclCheckerHelper.setPaths(store, environmentPathBlock.getPaths());
 		TclCheckerHelper.setPcxPaths(store, pcxPaths);
 		TclCheckerHelper.setNoPCX(store, noPCXValues);
 
@@ -678,7 +529,7 @@ public class TclCheckerConfigurationPage extends ValidatorConfigurationPage
 	}
 
 	public void selectionChanged(SelectionChangedEvent event) {
-		IStructuredSelection selection = (IStructuredSelection) pathViewer
+		IStructuredSelection selection = (IStructuredSelection) environmentPathBlock
 				.getSelection();
 		boolean enabled = !selection.isEmpty();
 		pcxGroup.setEnabled(enabled);

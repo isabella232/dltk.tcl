@@ -30,10 +30,15 @@ import org.eclipse.swt.widgets.Group;
 
 public class TclTestingMainLaunchConfigurationTab extends
 		TclMainLaunchConfigurationTab {
+
 	private Button detect;
 	private Combo engineType;
 	private Map nameToId = new HashMap();
 
+	public TclTestingMainLaunchConfigurationTab(String mode) {
+		super(mode);
+	}
+	
 	protected void doCreateControl(Composite composite) {
 		createMainModuleEditor(composite,
 				DLTKLaunchConfigurationsMessages.mainTab_mainModule);
@@ -144,7 +149,7 @@ public class TclTestingMainLaunchConfigurationTab extends
 				e.printStackTrace();
 			}
 		}
-		if (id == null && id.length() == 0) {
+		if (id == null || id.length() == 0) {
 			handleDetectButtonSelected();
 		} else {
 			// this.engineType.select(0);

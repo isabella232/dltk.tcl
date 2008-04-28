@@ -33,6 +33,7 @@ import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.core.SourceParserUtil;
 import org.eclipse.dltk.core.builder.IScriptBuilder;
+import org.eclipse.dltk.core.environment.EnvironmentPathUtils;
 import org.eclipse.dltk.launching.IInterpreterInstall;
 import org.eclipse.dltk.launching.ScriptRuntime;
 import org.eclipse.dltk.tcl.core.TclNature;
@@ -46,8 +47,8 @@ public class TclCheckBuilder implements IScriptBuilder {
 
 	public IStatus buildModelElements(IScriptProject project, List elements,
 			IProgressMonitor monitor, int status) {
-		this.project = project;
 		int est = estimateElementsToBuild(elements);
+		this.project = project;
 		if (est == 0) {
 			if (monitor != null) {
 				monitor.done();
@@ -129,7 +130,10 @@ public class TclCheckBuilder implements IScriptBuilder {
 				TclPackageDeclaration pkg = (TclPackageDeclaration) iterator2
 						.next();
 				checkPackage(pkg, packageNames, reporter, model, manager,
-						install, buildpath, project);
+						install, buildpath, project, monitor);
+				if (monitor != null && monitor.isCanceled()) {
+					return null;
+				}
 			}
 		}
 
@@ -151,7 +155,8 @@ public class TclCheckBuilder implements IScriptBuilder {
 		for (int i = 0; i < resolvedBuildpath.length; i++) {
 			if (resolvedBuildpath[i].getEntryKind() == IBuildpathEntry.BPE_LIBRARY
 					&& resolvedBuildpath[i].isExternal()) {
-				buildpath.add(resolvedBuildpath[i].getPath());
+				buildpath.add(EnvironmentPathUtils
+						.getLocalPath(resolvedBuildpath[i].getPath()));
 			}
 		}
 		return buildpath;
@@ -271,7 +276,8 @@ public class TclCheckBuilder implements IScriptBuilder {
 	public static void checkPackage(TclPackageDeclaration pkg,
 			Set packageNames, IProblemReporter reporter, CodeModel model,
 			PackagesManager manager, IInterpreterInstall install,
-			Set buildpath, IScriptProject scriptProject) {
+			Set buildpath, IScriptProject scriptProject,
+			IProgressMonitor monitor) {
 		if (pkg.getStyle() == TclPackageDeclaration.STYLE_REQUIRE) {
 			String packageName = pkg.getName();
 
@@ -309,6 +315,9 @@ public class TclCheckBuilder implements IScriptBuilder {
 			Map dependencies = manager.getDependencies(packageName, install);
 			for (Iterator iterator = dependencies.keySet().iterator(); iterator
 					.hasNext();) {
+				if (monitor != null && monitor.isCanceled()) {
+					return;
+				}
 				String pkgName = (String) iterator.next();
 				boolean fail = checkPackage(pkg, reporter, model, manager,
 						install, buildpath, pkgName, scriptProject);
@@ -401,7 +410,7 @@ public class TclCheckBuilder implements IScriptBuilder {
 
 	public static void checkPackage(TclPackageDeclaration pkg,
 			IProblemReporter reporter, IScriptProject scriptProject,
-			CodeModel model) {
+			CodeModel model, IProgressMonitor monitor) {
 		IInterpreterInstall install = null;
 		try {
 			install = ScriptRuntime.getInterpreterInstall(scriptProject);
@@ -417,7 +426,7 @@ public class TclCheckBuilder implements IScriptBuilder {
 		PackagesManager manager = PackagesManager.getInstance();
 		Set packageNames = manager.getPackageNames(install);
 		checkPackage(pkg, packageNames, reporter, model, manager, install,
-				buildpath, scriptProject);
+				buildpath, scriptProject, monitor);
 	}
 
 	public Set getDependencies(IScriptProject project, Set resources,

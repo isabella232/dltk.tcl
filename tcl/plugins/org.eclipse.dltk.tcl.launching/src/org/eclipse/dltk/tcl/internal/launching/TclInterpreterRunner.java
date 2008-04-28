@@ -9,15 +9,22 @@
  *******************************************************************************/
 package org.eclipse.dltk.tcl.internal.launching;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.dltk.console.ScriptConsoleServer;
 import org.eclipse.dltk.core.DLTKCore;
+import org.eclipse.dltk.core.environment.IDeployment;
+import org.eclipse.dltk.core.environment.IExecutionEnvironment;
+import org.eclipse.dltk.core.environment.IFileHandle;
+import org.eclipse.dltk.debug.core.DLTKDebugPlugin;
+import org.eclipse.dltk.internal.launching.execution.DeploymentManager;
 import org.eclipse.dltk.launching.AbstractInterpreterRunner;
 import org.eclipse.dltk.launching.IInterpreterInstall;
 import org.eclipse.dltk.launching.InterpreterConfig;
@@ -42,7 +49,7 @@ public class TclInterpreterRunner extends AbstractInterpreterRunner {
 			try {
 				useTclConsole = configuration
 						.getAttribute(
-								ScriptLaunchConfigurationConstants.ATTR_USE_DLTK_OUTPUT,
+								ScriptLaunchConfigurationConstants.ATTR_USE_INTERACTIVE_CONSOLE,
 								false);
 			} catch (CoreException e) {
 				if (DLTKCore.DEBUG) {
@@ -54,16 +61,37 @@ public class TclInterpreterRunner extends AbstractInterpreterRunner {
 				String port = Integer.toString(server.getPort());
 
 				try {
-					File scriptFile = TclLaunchingPlugin.getDefault()
-							.getConsoleProxy().toFile();
+					IExecutionEnvironment executionEnvironment = config
+							.getExecutionEnvironment();
+					IDeployment deployment = executionEnvironment
+							.createDeployment();
+					DeploymentManager.getInstance().addDeployment(launch, deployment);
+					IPath path = deployment.add(TclLaunchingPlugin.getDefault()
+							.getBundle(), TclLaunchingPlugin.getDefault()
+							.getConsoleProxy());
+					IFileHandle scriptFile = deployment.getFile(path);
+
 					String id = configuration
 							.getAttribute(
 									ScriptLaunchConfigurationConstants.ATTR_DLTK_CONSOLE_ID,
 									(String) null);
-					config.addInterpreterArg(scriptFile.getAbsolutePath());
-					config.addInterpreterArg("127.0.0.1");
+					config.addInterpreterArg(scriptFile.toOSString());
+					config.addInterpreterArg(DLTKDebugPlugin.getDefault()
+							.getBindAddress());
+					IPath scriptFilePath = config.getScriptFilePath();
+					if (scriptFilePath == null) {
+						config.setScriptFile(new Path("--noscript"));
+						config.setNoFile(true);
+					}
 					config.addInterpreterArg(port);
-					config.addInterpreterArg(id);
+					if (id != null) {
+						config.addInterpreterArg(id);
+					} else {
+						throw new CoreException(
+								new Status(IStatus.ERROR,
+										TclLaunchingPlugin.PLUGIN_ID,
+										"Error to obtain console ID. Please update launch configuratin."));
+					}
 				} catch (IOException e) {
 					if (DLTKCore.DEBUG) {
 						e.printStackTrace();

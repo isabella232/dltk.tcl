@@ -9,13 +9,9 @@
  *******************************************************************************/
 package org.eclipse.dltk.tcl.launching;
 
-import java.io.IOException;
-
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.dltk.utils.DeployHelper;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -72,8 +68,7 @@ public class TclLaunchingPlugin extends Plugin {
 				.getMessage(), e));
 	}
 
-	// Deploying of sources
-	public IPath getConsoleProxy() throws IOException {
-		return DeployHelper.deploy(this, "console/ConsoleProxy.tcl");
+	public String getConsoleProxy() {
+		return "console/ConsoleProxy.tcl";
 	}
 }

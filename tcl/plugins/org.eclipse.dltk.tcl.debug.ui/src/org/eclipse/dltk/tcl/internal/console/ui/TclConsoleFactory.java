@@ -108,7 +108,8 @@ public class TclConsoleFactory extends ScriptConsoleFactoryBase implements
 			}
 		}
 
-		return makeConsole((TclInterpreter) interpreter, id);
+		TclConsole makeConsole = makeConsole((TclInterpreter) interpreter, id);
+		return makeConsole;
 	}
 
 	protected ScriptConsole createConsoleInstance() {
@@ -118,7 +119,8 @@ public class TclConsoleFactory extends ScriptConsoleFactoryBase implements
 	public TclConsoleFactory() {
 	}
 
-	public void openConsole(IScriptInterpreter interpreter, String id, ILaunch launch) {
+	public void openConsole(IScriptInterpreter interpreter, String id,
+			ILaunch launch) {
 		TclConsole tclConsole = createConsoleInstance(interpreter, id);
 		tclConsole.setLaunch(launch);
 		registerAndOpenConsole(tclConsole);

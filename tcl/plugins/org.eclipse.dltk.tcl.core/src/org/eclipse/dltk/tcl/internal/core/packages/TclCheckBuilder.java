@@ -14,6 +14,9 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.dltk.ast.ASTVisitor;
 import org.eclipse.dltk.ast.declarations.ModuleDeclaration;
 import org.eclipse.dltk.ast.parser.ISourceParserConstants;
@@ -32,6 +35,7 @@ import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.core.SourceParserUtil;
+import org.eclipse.dltk.core.SourceParserUtil.IContentAction;
 import org.eclipse.dltk.core.builder.IScriptBuilder;
 import org.eclipse.dltk.core.environment.EnvironmentPathUtils;
 import org.eclipse.dltk.launching.IInterpreterInstall;
@@ -47,12 +51,13 @@ public class TclCheckBuilder implements IScriptBuilder {
 
 	public IStatus buildModelElements(IScriptProject project, List elements,
 			IProgressMonitor monitor, int status) {
+		if (monitor == null) {
+			monitor = new NullProgressMonitor();
+		}
 		int est = estimateElementsToBuild(elements);
 		this.project = project;
 		if (est == 0) {
-			if (monitor != null) {
-				monitor.done();
-			}
+			monitor.done();
 			return null;
 		}
 		IDLTKLanguageToolkit toolkit;
@@ -60,9 +65,7 @@ public class TclCheckBuilder implements IScriptBuilder {
 		if (!toolkit.getNatureId().equals(TclNature.NATURE_ID)) {
 			return null;
 		}
-		if (monitor != null) {
-			monitor.beginTask("Perfoming code checks", est);
-		}
+		monitor.beginTask("Perfoming code checks", 101);
 
 		Map resourceToPackagesList = new HashMap();
 		Set packagesInBuild = new HashSet();
@@ -90,22 +93,41 @@ public class TclCheckBuilder implements IScriptBuilder {
 				packageNamesInProject.addAll(names);
 			}
 		}
-		processSources(elements, monitor, resourceToPackagesList,
-				packagesInBuild, packageNamesInProject);
+		Map codeModels = new HashMap();
+		processSources(elements, new SubProgressMonitor(monitor, 50),
+				resourceToPackagesList, packagesInBuild, packageNamesInProject,
+				codeModels);
 
 		manager.setInternalPackageNames(install, packageNamesInProject);
 
 		// This method will populate all required paths.
 		manager.getPathsForPackages(install, packagesInBuild);
 
+		// Cache packages information.
+		SubProgressMonitor spm = new SubProgressMonitor(monitor, 1);
+		spm.beginTask("Seaching for packages information...", 1);
+		PackagesManager.getInstance().getPathsForPackagesWithDeps(install,
+				packagesInBuild);
+		spm.worked(1);
+		spm.done();
+
 		Set keySet = resourceToPackagesList.keySet();
 		IProblemFactory factory;
 		factory = DLTKLanguageManager.getProblemFactory(toolkit.getNatureId());
+		IProgressMonitor subMonitor = new SubProgressMonitor(monitor, 50);
+		int i = 0;
+		subMonitor.beginTask("Setting markers", keySet.size());
 		for (Iterator iterator = keySet.iterator(); iterator.hasNext();) {
-			if (monitor != null && monitor.isCanceled()) {
-				return null;
+			if (subMonitor.isCanceled()) {
+				return Status.CANCEL_STATUS;
 			}
 			ISourceModule module = (ISourceModule) iterator.next();
+			String taskTitle = "Setting markers for "
+					+ project.getElementName() + " (" + (keySet.size() - i)
+					+ "):" + module.getElementName();
+			++i;
+			subMonitor.subTask(taskTitle);
+
 			try {
 				cleanMarkers(module.getResource());
 			} catch (CoreException e1) {
@@ -115,13 +137,17 @@ public class TclCheckBuilder implements IScriptBuilder {
 			}
 			List pkgs = (List) resourceToPackagesList.get(module);
 			CodeModel model = null;
-			try {
-				model = new CodeModel(module.getSource());
-			} catch (ModelException e) {
-				if (DLTKCore.DEBUG) {
-					e.printStackTrace();
+			// Obtain cached.
+			model = (CodeModel) codeModels.get(module);
+			if (model == null) {
+				try {
+					model = new CodeModel(module.getSource());
+				} catch (ModelException e) {
+					if (DLTKCore.DEBUG) {
+						e.printStackTrace();
+					}
+					continue;
 				}
-				continue;
 			}
 
 			IProblemReporter reporter = factory.createReporter(module
@@ -130,16 +156,15 @@ public class TclCheckBuilder implements IScriptBuilder {
 				TclPackageDeclaration pkg = (TclPackageDeclaration) iterator2
 						.next();
 				checkPackage(pkg, packageNames, reporter, model, manager,
-						install, buildpath, project, monitor);
-				if (monitor != null && monitor.isCanceled()) {
+						install, buildpath, project, subMonitor);
+				if (subMonitor.isCanceled()) {
 					return null;
 				}
 			}
+			subMonitor.worked(1);
 		}
-
-		if (monitor != null) {
-			monitor.done();
-		}
+		subMonitor.done();
+		monitor.done();
 		return null;
 	}
 
@@ -164,27 +189,28 @@ public class TclCheckBuilder implements IScriptBuilder {
 
 	private void processSources(List elements, IProgressMonitor monitor,
 			Map resourceToPackagesList, Set packagesInBuild,
-			Set packageNamesInProject) {
+			Set packageNamesInProject, final Map codeModels) {
+		monitor.beginTask("Performing code checks", FULL_BUILD);
 		for (int i = 0; i < elements.size(); i++) {
+			if (monitor.isCanceled()) {
+				return;
+			}
 			IModelElement element = (IModelElement) elements.get(i);
 			if (element.getElementType() == IModelElement.SOURCE_MODULE) {
 				IProjectFragment projectFragment = (IProjectFragment) element
 						.getAncestor(IModelElement.PROJECT_FRAGMENT);
 				if (!projectFragment.isExternal()) {
 					try {
-						if (monitor != null) {
-							String taskTitle = "Performing code checks for "
-									+ project.getElementName() + " ("
-									+ (elements.size() - i) + "):"
-									+ element.getElementName();
-							monitor.subTask(taskTitle);
-						}
+						String taskTitle = "Performing code checks for "
+								+ project.getElementName() + " ("
+								+ (elements.size() - i) + "):"
+								+ element.getElementName();
+						monitor.subTask(taskTitle);
+
 						IDLTKLanguageToolkit toolkit = DLTKLanguageManager
 								.getLanguageToolkit(element);
 						if (toolkit == null) {
-							if (monitor != null) {
-								monitor.worked(1);
-							}
+							monitor.worked(1);
 							continue;
 						}
 
@@ -192,18 +218,27 @@ public class TclCheckBuilder implements IScriptBuilder {
 						// IResource resource = module.getResource();
 						// cleanMarkers(resource);
 
+						IContentAction action = new IContentAction() {
+							public void run(ISourceModule cmodule,
+									char[] content) {
+								codeModels.put(cmodule, new CodeModel(
+										new String(content)));
+							}
+						};
 						ModuleDeclaration declaration = SourceParserUtil
 								.getModuleDeclaration(module, null,
-										ISourceParserConstants.RUNTIME_MODEL);
+										ISourceParserConstants.RUNTIME_MODEL,
+										action);
+						if (declaration == null) {
+							return;
+						}
 
 						final ArrayList list = new ArrayList();
 						resourceToPackagesList.put(module, list);
 						fillPackagesDeclarations(declaration, list,
 								packagesInBuild, packageNamesInProject);
 
-						if (monitor != null) {
-							monitor.worked(1);
-						}
+						monitor.worked(1);
 					} catch (CoreException e) {
 						if (DLTKCore.DEBUG) {
 							e.printStackTrace();
@@ -216,6 +251,7 @@ public class TclCheckBuilder implements IScriptBuilder {
 				}
 			}
 		}
+		monitor.done();
 	}
 
 	public static void cleanMarkers(IResource resource) throws CoreException {

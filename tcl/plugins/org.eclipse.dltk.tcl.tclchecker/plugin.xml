@@ -113,6 +113,7 @@
                class="org.eclipse.dltk.tcl.internal.tclchecker.TclCheckerCheckSelectionWithConsoleAction"
                id="org.eclipse.dltk.tcl.scriptchecker.validate"
                label="Validate with TclChecker"
+               icon="icons/goto_input.gif"
                menubarPath="org.eclipse.dltk.validators.ui.menu/bottom">
          </action>
           <visibility>

@@ -138,8 +138,8 @@ public class XOTclSelectionExtension implements ISelectionExtension {
 							IType type = (IType) eParent;
 							try {
 								String[] superClasses = type.getSuperClasses();
-								String command = TclParseUtil
-										.getNameFromNode(commandExpr);
+								// String command = TclParseUtil
+								// .getNameFromNode(commandExpr);
 								if (superClasses != null) {
 									for (int j = 0; j < superClasses.length; j++) {
 

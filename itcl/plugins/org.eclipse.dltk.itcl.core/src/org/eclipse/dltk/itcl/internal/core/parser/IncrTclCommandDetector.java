@@ -19,12 +19,13 @@ import org.eclipse.dltk.itcl.internal.core.search.mixin.model.IncrTclClass;
 import org.eclipse.dltk.tcl.ast.TclStatement;
 import org.eclipse.dltk.tcl.core.ITclCommandDetector;
 import org.eclipse.dltk.tcl.core.ITclCommandDetectorExtension;
+import org.eclipse.dltk.tcl.core.ITclCommandDetectorExtension2;
 import org.eclipse.dltk.tcl.core.ITclParser;
 import org.eclipse.dltk.tcl.core.TclParseUtil;
 import org.eclipse.dltk.tcl.internal.core.search.mixin.TclMixinModel;
 
 public class IncrTclCommandDetector implements ITclCommandDetector,
-		ITclCommandDetectorExtension {
+		ITclCommandDetectorExtension, ITclCommandDetectorExtension2 {
 	private final static String[] itclCommands = new String[] { "class",
 			"body", "code", "configbody", "delete", "ensemble", "find",
 			"local", "scope" };
@@ -42,6 +43,7 @@ public class IncrTclCommandDetector implements ITclCommandDetector,
 		public IModelElement resolveElement() {
 			IMixinElement[] find = TclMixinModel
 					.getInstance()
+					.getMixin(null)
 					.find(
 							name.replaceAll("::",
 									IMixinRequestor.MIXIN_NAME_SEPARATOR), 1000);

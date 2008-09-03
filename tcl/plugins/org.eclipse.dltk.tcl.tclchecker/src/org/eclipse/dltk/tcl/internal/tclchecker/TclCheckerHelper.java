@@ -110,10 +110,17 @@ public final class TclCheckerHelper {
 				List pcxPath = (List) pcxPaths.get(environment);
 				for (Iterator iterator = pcxPath.iterator(); iterator.hasNext();) {
 					String pcx = (String) iterator.next();
+					IFileHandle handle = PlatformFileUtils
+							.findAbsoluteOrEclipseRelativeFile(environment,
+									new Path(pcx));
 					cmdLine.add(PCX_OPTION);
+					if (handle.exists()) {
+						cmdLine.add(handle.toOSString());
+					} else {
 					cmdLine.add(pcx);
 				}
 			}
+		}
 		}
 		return true;
 	}

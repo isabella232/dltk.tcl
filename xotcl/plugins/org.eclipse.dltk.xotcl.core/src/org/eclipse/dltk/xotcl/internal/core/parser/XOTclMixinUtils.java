@@ -1,13 +1,16 @@
 package org.eclipse.dltk.xotcl.internal.core.parser;
 
+import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.mixin.IMixinElement;
 import org.eclipse.dltk.core.mixin.IMixinRequestor;
 import org.eclipse.dltk.tcl.internal.core.search.mixin.TclMixinModel;
 import org.eclipse.dltk.xotcl.internal.core.search.mixin.model.XOTclClass;
 
 public class XOTclMixinUtils {
-	public static XOTclClass findMixinElement(String commandNameValue) {
-		IMixinElement[] find = TclMixinModel.getInstance().find(
+	public static XOTclClass findMixinElement(String commandNameValue,
+			IScriptProject project) {
+		IMixinElement[] find = TclMixinModel.getInstance().getMixin(project)
+				.find(
 				commandNameValue.replaceAll("::",
 						IMixinRequestor.MIXIN_NAME_SEPARATOR), 1000);
 		if (find.length > 0) {

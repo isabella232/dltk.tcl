@@ -248,7 +248,7 @@ public class TclEditor extends ScriptEditor {
 
 	protected void configureSourceViewerDecorationSupport(
 			SourceViewerDecorationSupport support) {
-		bracketMatcher = new TclPairMatcher(BRACKETS, this);
+		bracketMatcher = new TclPairMatcher();
 		support.setCharacterPairMatcher(bracketMatcher);
 		support.setMatchingCharacterPainterPreferenceKeys(MATCHING_BRACKETS,
 				MATCHING_BRACKETS_COLOR);

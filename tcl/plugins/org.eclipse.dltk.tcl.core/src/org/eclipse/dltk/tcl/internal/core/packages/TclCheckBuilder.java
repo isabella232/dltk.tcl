@@ -227,7 +227,7 @@ public class TclCheckBuilder implements IScriptBuilder {
 						};
 						ModuleDeclaration declaration = SourceParserUtil
 								.getModuleDeclaration(module, null,
-										ISourceParserConstants.RUNTIME_MODEL,
+										ISourceParserConstants.DEFAULT,
 										action);
 						if (declaration == null) {
 							return;

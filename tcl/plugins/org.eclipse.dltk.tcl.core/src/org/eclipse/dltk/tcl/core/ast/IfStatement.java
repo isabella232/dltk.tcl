@@ -11,7 +11,6 @@ package org.eclipse.dltk.tcl.core.ast;
 
 import org.eclipse.dltk.ast.ASTNode;
 import org.eclipse.dltk.ast.ASTVisitor;
-import org.eclipse.dltk.ast.DLTKToken;
 import org.eclipse.dltk.ast.statements.Block;
 import org.eclipse.dltk.ast.statements.Statement;
 import org.eclipse.dltk.utils.CorePrinter;
@@ -38,15 +37,9 @@ public class IfStatement extends Statement {
 	public IfStatement(int start, int end ) {
 		super(start, end);
 	}
-	public IfStatement(DLTKToken ifToken, Statement condition,
-			Statement thenStatement) {
 
-		super(ifToken);
-		this.fCondition = condition;
-		this.fThenStatement = thenStatement;
-	}
-
-	public IfStatement(Statement condition, Statement thenStatement, Statement elseStatement) {
+	public IfStatement(Statement condition, Statement thenStatement,
+			Statement elseStatement) {
 		this.fCondition = condition;
 		this.fThenStatement = thenStatement;
 		this.fElseStatement = elseStatement;
@@ -70,14 +63,6 @@ public class IfStatement extends Statement {
 
 	public int getKind() {
 		return S_IF;
-	}
-
-	// TODO: Replace to acceptElse for similarity.
-	/**
-	 * @deprecated
-	 */
-	public void setElse(Statement elses) {
-		this.acceptElse(elses);
 	}
 
 	/**
@@ -117,7 +102,7 @@ public class IfStatement extends Statement {
 	}
 
 	public void printNode(CorePrinter output) {
-		output.formatPrintLn("if: ");
+		output.formatPrintLn("if: "); //$NON-NLS-1$
 		if (this.fCondition != null) {
 			this.fCondition.printNode(output);
 		}
@@ -131,7 +116,7 @@ public class IfStatement extends Statement {
 			}
 		}
 		if (this.fElseStatement != null) {
-			output.formatPrintLn("else:");
+			output.formatPrintLn("else:"); //$NON-NLS-1$
 			if (!(this.fElseStatement instanceof Block)) {
 				output.indent();
 			}

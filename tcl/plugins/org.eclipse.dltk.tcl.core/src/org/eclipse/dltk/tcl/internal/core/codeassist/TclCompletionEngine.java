@@ -10,7 +10,6 @@
 package org.eclipse.dltk.tcl.internal.core.codeassist;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -666,7 +665,7 @@ public class TclCompletionEngine extends ScriptCompletionEngine {
 		String pattern = tok.replaceAll("::",
 				IMixinRequestor.MIXIN_NAME_SEPARATOR);
 		IModelElement[] elements = TclMixinUtils.findModelElementsFromMixin(
-				pattern, mixinClass);
+				pattern, mixinClass, this.scriptProject);
 		for (int i = 0; i < elements.length; i++) {
 			// We should filter external source modules with same
 			// external path.
@@ -681,7 +680,7 @@ public class TclCompletionEngine extends ScriptCompletionEngine {
 		String pattern = tok.replaceAll("::",
 				IMixinRequestor.MIXIN_NAME_SEPARATOR);
 		IModelElement[] elements = TclMixinUtils.findModelElementsFromMixin(
-				pattern, mixinClass);
+				pattern, mixinClass, this.scriptProject);
 		// long start = System.currentTimeMillis();
 		for (int i = 0; i < elements.length; i++) {
 			// We should filter external source modules with same
@@ -734,7 +733,7 @@ public class TclCompletionEngine extends ScriptCompletionEngine {
 	}
 
 	public List toList(Set types) {
-		return Arrays.asList(types.toArray());
+		return new ArrayList(types);
 	}
 
 	protected void search(String patternString, int searchFor, int limitTo,

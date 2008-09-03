@@ -31,6 +31,7 @@ import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.IDLTKLanguageToolkit;
 import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.IParent;
+import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.core.mixin.IMixinElement;
 import org.eclipse.dltk.core.mixin.IMixinRequestor;
@@ -247,7 +248,7 @@ public class TclSelectionEngine extends ScriptSelectionEngine {
 
 				IModelElement methodElement = TclResolver.findChildrenByName(
 						method.getName(), (IParent) parent);
-				this.selectionElements.add(methodElement);
+				addSelectionElement(methodElement);
 				return true;
 			}
 		}
@@ -337,7 +338,7 @@ public class TclSelectionEngine extends ScriptSelectionEngine {
 					IModelElement field = TclResolver.findChildrenByName(
 							varName, (IParent) type);
 					if (field != null) {
-						this.selectionElements.add(field);
+						addSelectionElement(field);
 					}
 				}
 			} catch (ModelException e) {
@@ -391,14 +392,15 @@ public class TclSelectionEngine extends ScriptSelectionEngine {
 	}
 
 	protected void findFieldMixin(String pattern, String name) {
-		IMixinElement[] find = TclMixinModel.getInstance().find(pattern);
+		IMixinElement[] find = TclMixinModel.getInstance().getMixin(
+				this.sourceModule.getScriptProject()).find(pattern);
 		for (int i = 0; i < find.length; i++) {
 			Object[] allObjects = find[i].getAllObjects();
 			for (int j = 0; j < allObjects.length; j++) {
 				if (allObjects[j] != null && allObjects[j] instanceof TclField) {
 					TclField field = (TclField) allObjects[j];
 					if (name.equals(field.getName())) {
-						this.selectionElements.add(field.getModelElement());
+						addSelectionElement(field.getModelElement());
 						return;
 					}
 				}
@@ -407,14 +409,15 @@ public class TclSelectionEngine extends ScriptSelectionEngine {
 	}
 
 	public void findMethodMixin(String pattern, String name) {
-		IMixinElement[] find = TclMixinModel.getInstance().find(pattern);
+		IMixinElement[] find = TclMixinModel.getInstance().getMixin(
+				this.sourceModule.getScriptProject()).find(pattern);
 		for (int i = 0; i < find.length; i++) {
 			Object[] allObjects = find[i].getAllObjects();
 			for (int j = 0; j < allObjects.length; j++) {
 				if (allObjects[j] != null && allObjects[j] instanceof TclProc) {
 					TclProc field = (TclProc) allObjects[j];
 					if (name.equals(field.getName())) {
-						this.selectionElements.add(field.getModelElement());
+						addSelectionElement(field.getModelElement());
 						return;
 					}
 				}
@@ -803,12 +806,18 @@ public class TclSelectionEngine extends ScriptSelectionEngine {
 		return this.sourceModule;
 	}
 
+	public IScriptProject getScriptProject() {
+		return this.sourceModule.getScriptProject();
+	}
+
 	public int getActualSelectionStart() {
 		return this.actualSelectionStart;
 	}
 
 	public void addSelectionElement(IModelElement element) {
+		if (!selectionElements.contains(element)) {
 		this.selectionElements.add(element);
+	}
 	}
 
 	public int getSelectionElementsSize() {

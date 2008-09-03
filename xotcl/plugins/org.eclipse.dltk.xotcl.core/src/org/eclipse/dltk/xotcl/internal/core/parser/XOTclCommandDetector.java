@@ -13,6 +13,7 @@ import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.tcl.ast.TclStatement;
 import org.eclipse.dltk.tcl.core.ITclCommandDetector;
 import org.eclipse.dltk.tcl.core.ITclCommandDetectorExtension;
+import org.eclipse.dltk.tcl.core.ITclCommandDetectorExtension2;
 import org.eclipse.dltk.tcl.core.ITclParser;
 import org.eclipse.dltk.tcl.core.TclParseUtil;
 import org.eclipse.dltk.xotcl.core.IXOTclModifiers;
@@ -22,7 +23,7 @@ import org.eclipse.dltk.xotcl.internal.core.XOTclKeywords;
 import org.eclipse.dltk.xotcl.internal.core.search.mixin.model.XOTclClass;
 
 public class XOTclCommandDetector implements ITclCommandDetector,
-		ITclCommandDetectorExtension {
+		ITclCommandDetectorExtension, ITclCommandDetectorExtension2 {
 	// Options
 	public static boolean INTERPRET_CLASS_UNKNOWN_AS_CREATE = true;
 	public static boolean INTERPRET_OBJECT_UNKNOWN_AS_CREATE = true;
@@ -38,7 +39,7 @@ public class XOTclCommandDetector implements ITclCommandDetector,
 		}
 
 		public IModelElement resolveElement() {
-			XOTclClass e = XOTclMixinUtils.findMixinElement(name);
+			XOTclClass e = XOTclMixinUtils.findMixinElement(name, null);
 			if (e != null) {
 				return e.getModelElement();
 			}

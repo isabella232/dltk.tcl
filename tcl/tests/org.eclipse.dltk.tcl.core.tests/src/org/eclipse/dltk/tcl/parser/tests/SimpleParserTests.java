@@ -11,16 +11,10 @@ package org.eclipse.dltk.tcl.parser.tests;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.channels.WritableByteChannel;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
@@ -28,16 +22,11 @@ import java.util.List;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 
 import junit.framework.TestCase;
 
-import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.dltk.core.tests.xml.DOMSerializer;
 import org.eclipse.dltk.launching.LaunchingMessages;
 import org.eclipse.dltk.tcl.core.tests.model.Activator;
 import org.eclipse.dltk.tcl.internal.parsers.raw.BracesSubstitution;
@@ -61,21 +50,23 @@ public class SimpleParserTests extends TestCase {
 
 	private String getContents(URL url) throws IOException {
 		InputStream input = null;
-		String result = "";
+		StringBuffer result = new StringBuffer(512);
 		try {
 			input = new BufferedInputStream(url.openStream());
 
 			// Simple copy
 			int ch = -1;
 			while ((ch = input.read()) != -1) {
-				result += (char) ch;
+				if (ch != '\r') {
+					result.append((char) ch);
+				}
 			}
 		} finally {
 			if (input != null) {
 				input.close();
 			}
 		}
-		return result;
+		return result.toString();
 	}
 
 	private void print(TclWord s) {
@@ -140,18 +131,7 @@ public class SimpleParserTests extends TestCase {
 	 */
 	public static String serializeDocument(Document doc) throws IOException,
 			TransformerException {
-		ByteArrayOutputStream s = new ByteArrayOutputStream();
-
-		TransformerFactory factory = TransformerFactory.newInstance();
-		Transformer transformer = factory.newTransformer();
-		transformer.setOutputProperty(OutputKeys.METHOD, "xml"); //$NON-NLS-1$
-		transformer.setOutputProperty(OutputKeys.INDENT, "yes"); //$NON-NLS-1$
-
-		DOMSource source = new DOMSource(doc);
-		StreamResult outputTarget = new StreamResult(s);
-		transformer.transform(source, outputTarget);
-
-		return s.toString("UTF8"); //$NON-NLS-1$			
+		return new DOMSerializer().serialize(doc).trim();
 	}
 
 	private String getCodeRange(String code, int start, int end) {
@@ -182,7 +162,7 @@ public class SimpleParserTests extends TestCase {
 		}
 		return doc;
 	}
-	
+
 	private Document createXMLFromSource(String source, TclScript s) {
 		Document doc;
 		try {
@@ -191,7 +171,7 @@ public class SimpleParserTests extends TestCase {
 			return doc;
 		} catch (ParserConfigurationException e) {
 			e.printStackTrace();
-		} 
+		}
 		return null;
 	}
 
@@ -313,29 +293,11 @@ public class SimpleParserTests extends TestCase {
 			TclScript s = SimpleTclParser.parse(content);
 
 			Document docFromSource = createXMLFromSource(content, s);
-			String resXML = serializeDocument(docFromSource);
-			String rightXML = getContents(ans);
-			Document docFromFile = parseXML(rightXML);
-			rightXML = serializeDocument(docFromFile);
-			
-			// Some operations
-//			resXML = resXML.replaceAll(" ", "");
-//			rightXML = rightXML.replaceAll(" ", "");
-//			resXML = resXML.replaceAll("\n", "");
-//			rightXML = rightXML.replaceAll("\n", "");
-//			resXML = resXML.replaceAll("\t", "");
-//			rightXML = rightXML.replaceAll("\t", "");
-			
-			// compare results
-//			assertDocumentsEquals(docFromFile, docFromSource);
-			assertEquals(rightXML.trim(), resXML.trim());
-//			URL resolve = FileLocator.resolve(ans);
-//			File file = new File( resolve.getFile() );
-//			FileWriter fileWriter = new FileWriter(file);
-//			fileWriter.write(resXML);
-//			fileWriter.close();
-//			assertTrue (docFromFile.equals(docFromSource));
-			
+			String resultXML = serializeDocument(docFromSource);
+			String expectedXML = serializeDocument(parseXML(getContents(ans)));
+
+			assertEquals(expectedXML, resultXML);
+
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -444,7 +406,7 @@ public class SimpleParserTests extends TestCase {
 	}
 
 	public void _testUtil() throws Exception { // used to visually in-place
-												// debug
+		// debug
 		// String content = "{ \r\n variable asdf\r\n variable {[<>#%\"]} \r\n
 		// \r\n \r\n proc foo {} {\r\n \n }\n \n}";
 		String content = "lreplace $list $index $index $newValue";

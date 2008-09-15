@@ -65,6 +65,9 @@ public class TclNamespaceProcessor extends AbstractTclCommandProcessor {
 				return null;
 			}
 			final int FIRST_ARGUMENT_POSITION = 3;
+			if (statement.getCount() < 4) {
+				return null;
+			}
 
 			// List statements = new ArrayList(statement.getCount() -
 			// FIRST_ARGUMENT_POSITION);
@@ -91,10 +94,12 @@ public class TclNamespaceProcessor extends AbstractTclCommandProcessor {
 				if (expr instanceof TclBlockExpression) {
 					TclBlockExpression block = (TclBlockExpression) expr;
 					String blockContent = block.getBlock();
+					if (blockContent.length() > 2) {
 					blockContent = blockContent.substring(1, blockContent
 							.length() - 1);
 					parser.parse(blockContent, block.sourceStart() + 1
 							- parser.getStartPos(), code);
+					}
 					// code.getStatements().addAll(bl.getStatements());
 				} else {
 					code.getStatements().add(expr);

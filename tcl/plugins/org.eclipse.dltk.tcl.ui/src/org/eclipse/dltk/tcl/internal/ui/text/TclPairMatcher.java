@@ -20,6 +20,7 @@ import org.eclipse.dltk.ast.parser.ISourceParser;
 import org.eclipse.dltk.ast.statements.Block;
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.DLTKLanguageManager;
+import org.eclipse.dltk.tcl.ast.expressions.TclBlockExpression;
 import org.eclipse.dltk.tcl.ast.expressions.TclExecuteExpression;
 import org.eclipse.dltk.tcl.core.TclNature;
 import org.eclipse.dltk.tcl.core.ast.TclAdvancedExecuteExpression;
@@ -35,17 +36,65 @@ import org.eclipse.jface.text.source.ICharacterPairMatcher;
  */
 public final class TclPairMatcher implements ICharacterPairMatcher {
 
+	private final boolean DEBUG = false;
+
+	private static final int MAX_PARSE_WAIT_TIME = 100;
+	private static final int MIN_PARSE_INTERVAL = 2500;
+
+	private final Object lock = new Object();
+
+	private class ParserThread extends Thread {
+
+		final String content;
+		final long newTimestamp;
+		final long newHashcode;
+		final long startTime = System.currentTimeMillis();
+
+		/**
+		 * @param content
+		 * @param newTimestamp
+		 * @param newHashcode
+		 */
+		public ParserThread(String content, long newTimestamp, long newHashcode) {
+			super(ParserThread.class.getName());
+			this.content = content;
+			this.newTimestamp = newTimestamp;
+			this.newHashcode = newHashcode;
+		}
+
+		public void run() {
+			try {
+				if (DEBUG) {
+					System.out.println("ParserThread - BEGIN"); //$NON-NLS-1$
+				}
+				final PairBlock[] pairs = computePairRanges(content);
+				synchronized (lock) {
+					cachedPairs = pairs;
+					cachedHash = newHashcode;
+					cachedStamp = newTimestamp;
+					parsedAt = startTime;
+				}
+				if (DEBUG) {
+					System.out
+							.println("ParserThread - END " + (System.currentTimeMillis() - startTime)); //$NON-NLS-1$
+				}
+			} finally {
+				synchronized (lock) {
+					thread = null;
+				}
+			}
+		}
+
+	}
+
+	private ParserThread thread = null;
+	private long parsedAt = 0;
+
 	private IDocument fDocument;
 
-	private int fOffset;
-
-	private int fStartPos;
-
-	private int fEndPos;
-
 	private int fAnchor;
-	
-	private class PairBlock {
+
+	private static class PairBlock {
 		public PairBlock(int start, int end, char c) {
 			this.start = start;
 			this.end = end;
@@ -63,12 +112,12 @@ public final class TclPairMatcher implements ICharacterPairMatcher {
 
 	private long cachedStamp = -1;
 
-	private long cachedHash = -1;
+	private long cachedHash = Long.MAX_VALUE;
 
 	public TclPairMatcher() {
 	}
 
-	private PairBlock[] computePairRanges(final int offset, String contents) {
+	private static PairBlock[] computePairRanges(final String contents) {
 		/*
 		 * ISourceModule returned by editor.getInputModelElement() could be
 		 * inconsistent with current editor contents so we always reparse.
@@ -83,28 +132,34 @@ public final class TclPairMatcher implements ICharacterPairMatcher {
 		final List result = new ArrayList();
 		try {
 			md.traverse(new ASTVisitor() {
-				public boolean visitGeneral(ASTNode node) throws Exception {
-					if (node instanceof StringLiteral) {
-						StringLiteral be = (StringLiteral) node;
-						result.add(new PairBlock(offset + be.sourceStart(),
-								offset + be.sourceEnd() - 1, '\"'));
-					} else if (node instanceof TclExecuteExpression) {
-						TclExecuteExpression be = (TclExecuteExpression) node;
-						result.add(new PairBlock(offset + be.sourceStart(),
-								offset + be.sourceEnd() - 1, '['));
-					} else if (node instanceof TclAdvancedExecuteExpression) {
-						Block be = (Block) node;
-						result.add(new PairBlock(offset + be.sourceStart()-1,
-								offset + be.sourceEnd(), '['));
-					} else if (node instanceof Block) {
-						Block be = (Block) node;
-						int start = offset + be.sourceStart();
+				public boolean visitGeneral(ASTNode be) throws Exception {
+					if (be instanceof StringLiteral) {
+						result.add(new PairBlock(be.sourceStart(), be
+								.sourceEnd() - 1, '\"'));
+					} else if (be instanceof TclExecuteExpression) {
+						result.add(new PairBlock(be.sourceStart(), be
+								.sourceEnd() - 1, '['));
+					} else if (be instanceof TclAdvancedExecuteExpression) {
+						result.add(new PairBlock(be.sourceStart() - 1, be
+								.sourceEnd(), '['));
+					} else if (be instanceof Block) {
+						int start = be.sourceStart();
 						if (start != 0) {
-						result.add(new PairBlock(offset + be.sourceStart(),
-								offset + be.sourceEnd() - 1, '{'));
+							result.add(new PairBlock(start, be.sourceEnd() - 1,
+									'{'));
+						}
+					} else if (be instanceof TclBlockExpression) {
+						int start = be.sourceStart();
+						int end = be.sourceEnd();
+						if (start >= 0 && start < end
+								&& start < contents.length()
+								&& end <= contents.length()
+								&& contents.charAt(start) == '{'
+								&& contents.charAt(end - 1) == '}') {
+							result.add(new PairBlock(start, end - 1, '{'));
+						}
 					}
-					}
-					return super.visitGeneral(node);
+					return super.visitGeneral(be);
 				}
 			});
 		} catch (Exception e) {
@@ -122,15 +177,20 @@ public final class TclPairMatcher implements ICharacterPairMatcher {
 	 * @param doc
 	 * @throws BadLocationException
 	 */
-	private void recalc() throws BadLocationException {
-		String content = fDocument.get(0, fDocument.getLength());
-		cachedPairs = computePairRanges(0, content);
-
-		if (fDocument instanceof IDocumentExtension4) {
-			cachedStamp = ((IDocumentExtension4) fDocument)
-					.getModificationStamp();
-		} else {
-			cachedHash = content.hashCode();
+	private void recalc(final String content, long newTimestamp,
+			long newHashcode) throws BadLocationException {
+		final ParserThread t;
+		synchronized (lock) {
+			if (thread != null) {
+				return;
+			}
+			thread = t = new ParserThread(content, newTimestamp, newHashcode);
+		}
+		t.start();
+		try {
+			t.join(MAX_PARSE_WAIT_TIME);
+		} catch (InterruptedException e) {
+			// ignore
 		}
 	}
 
@@ -138,22 +198,30 @@ public final class TclPairMatcher implements ICharacterPairMatcher {
 	 * Recalcs pairs for the document, only if it is required
 	 */
 	private void updatePairs() throws BadLocationException {
-		if (fDocument instanceof IDocumentExtension4) {
-			IDocumentExtension4 document = (IDocumentExtension4) fDocument;
-
-			if (document.getModificationStamp() == cachedStamp) {
-				return;
-			}
-
-		} else {
-			String content = fDocument.get(0, fDocument.getLength());
-
-			if (content.hashCode() == cachedHash) {
+		synchronized (lock) {
+			if (System.currentTimeMillis() < parsedAt + MIN_PARSE_INTERVAL) {
 				return;
 			}
 		}
-
-		recalc();
+		if (fDocument instanceof IDocumentExtension4) {
+			final IDocumentExtension4 document = (IDocumentExtension4) fDocument;
+			final long newTimestamp = document.getModificationStamp();
+			synchronized (lock) {
+				if (newTimestamp == cachedStamp) {
+					return;
+				}
+			}
+			recalc(fDocument.get(), newTimestamp, Long.MAX_VALUE);
+		} else {
+			final String content = fDocument.get();
+			final int newHashCode = content.hashCode();
+			synchronized (lock) {
+				if (newHashCode == cachedHash) {
+					return;
+				}
+			}
+			recalc(content, -1, newHashCode);
+		}
 	}
 
 	private static boolean isBrace(char c) {
@@ -188,7 +256,6 @@ public final class TclPairMatcher implements ICharacterPairMatcher {
 		}
 
 		try {
-			fOffset = offset;
 			fDocument = document;
 
 			if (!isBraceAt(document, offset)) {
@@ -196,9 +263,7 @@ public final class TclPairMatcher implements ICharacterPairMatcher {
 			}
 
 			updatePairs();
-
-			if (matchPairsAt() && fStartPos != fEndPos)
-				return new Region(fStartPos, fEndPos - fStartPos + 1);
+			return matchPairsAt(offset);
 		} catch (BadLocationException e) {
 			if (DLTKCore.DEBUG_PARSER)
 				e.printStackTrace();
@@ -224,29 +289,26 @@ public final class TclPairMatcher implements ICharacterPairMatcher {
 	public void clear() {
 	}
 
-	private boolean matchPairsAt() {
-
-		fStartPos = -1;
-		fEndPos = -1;
-
-		for (int i = 0; i < cachedPairs.length; i++) {
-			PairBlock block = cachedPairs[i];
-
-			if (fOffset == block.end + 1) {
-				fStartPos = block.start - 1;
-				fEndPos = block.start;
-				fAnchor = LEFT;
-				return true;
-			}
-			if (fOffset == block.start + 1) {
-				fStartPos = block.end - 1;
-				fEndPos = block.end;
-				fAnchor = LEFT;
-				return true;
-			}
-
+	private IRegion matchPairsAt(int offset) {
+		final PairBlock[] pairs;
+		synchronized (lock) {
+			pairs = cachedPairs;
 		}
-
-		return false;
+		if (pairs == null) {
+			return null;
+		}
+		// TODO pairs should be sorted somehow...
+		for (int i = 0, size = pairs.length; i < size; i++) {
+			final PairBlock block = pairs[i];
+			if (offset == block.end + 1) {
+				fAnchor = LEFT;
+				return new Region(block.start, 1);
+			}
+			if (offset == block.start + 1) {
+				fAnchor = LEFT;
+				return new Region(block.end, 1);
+			}
+		}
+		return null;
 	}
 }

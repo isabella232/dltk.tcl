@@ -33,6 +33,8 @@ public class TclPackagesInterpreterContainerExtension implements
 	public void processEntres(IScriptProject project, List buildpathEntries) {
 		IPath[] locations = null;
 		IInterpreterInstall install = null;
+		buildpathEntries.add(DLTKCore.newSpecialEntry(PackagesFragment.PATH,
+				false, true));
 		try {
 			install = ScriptRuntime.getInterpreterInstall(project);
 			List locs = new ArrayList();
@@ -43,8 +45,8 @@ public class TclPackagesInterpreterContainerExtension implements
 						&& entry.isExternal()) {
 					locs.add(entry.getPath());
 				}
-				locations = (IPath[]) locs.toArray(new IPath[locs.size()]);
 			}
+			locations = (IPath[]) locs.toArray(new IPath[locs.size()]);
 		} catch (CoreException e) {
 			if (DLTKCore.DEBUG) {
 				e.printStackTrace();

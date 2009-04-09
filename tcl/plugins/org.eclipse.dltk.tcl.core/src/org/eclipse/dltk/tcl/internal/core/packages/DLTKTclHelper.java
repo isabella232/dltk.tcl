@@ -2,6 +2,7 @@ package org.eclipse.dltk.tcl.internal.core.packages;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -30,6 +31,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
@@ -210,6 +212,7 @@ public class DLTKTclHelper {
 
 		private Set paths = new HashSet();
 		private Set dependencies = new HashSet();
+		private Set sources = new HashSet();
 
 		public TclPackage(String name) {
 			this.name = name;
@@ -239,18 +242,24 @@ public class DLTKTclHelper {
 			this.dependencies = dependencies;
 		}
 
+		public Set getSources() {
+			return sources;
+		}
+
 		public String toString() {
 			StringBuffer sb = new StringBuffer(128);
 			sb.append("TclPackage"); //$NON-NLS-1$
-			sb.append('{');
+			sb.append('{');//$NON-NLS-1$
 			sb.append("name=").append(name); //$NON-NLS-1$
-			sb.append(' ');
+			sb.append(' ');//$NON-NLS-1$
 			sb.append("paths=").append(paths); //$NON-NLS-1$
-			sb.append(' ');
+			sb.append(' ');//$NON-NLS-1$
 			sb.append("dependencies=").append(dependencies); //$NON-NLS-1$
-			sb.append('}');
+			sb.append("sources").append(sources);//$NON-NLS-1$
+			sb.append('}');//$NON-NLS-1$
 			return sb.toString();
 		}
+
 	};
 
 	public static TclPackage[] getPackagePath(List content) {
@@ -302,6 +311,7 @@ public class DLTKTclHelper {
 				String name = el.getAttribute("name"); //$NON-NLS-1$
 				IPath path = new Path(name).removeLastSegments(1);
 				tclPackage.getPaths().add(path);
+				tclPackage.getSources().add(name);
 			} else if (isElementName(nde, "require")) { //$NON-NLS-1$
 				Element el = (Element) nde;
 				String name = el.getAttribute("name"); //$NON-NLS-1$
@@ -315,11 +325,13 @@ public class DLTKTclHelper {
 			DocumentBuilder parser = DocumentBuilderFactory.newInstance()
 					.newDocumentBuilder();
 			parser.setErrorHandler(new DefaultHandler());
-			Document document = parser.parse(new ByteArrayInputStream(text
-					.getBytes()));
+			InputSource source = new InputSource(new StringReader(text));
+			Document document = parser.parse(source);
 			return document;
 		} catch (IOException e) {
-
+			if (DLTKCore.DEBUG) {
+				e.printStackTrace();
+			}
 		} catch (ParserConfigurationException e) {
 			if (DLTKCore.DEBUG) {
 				e.printStackTrace();

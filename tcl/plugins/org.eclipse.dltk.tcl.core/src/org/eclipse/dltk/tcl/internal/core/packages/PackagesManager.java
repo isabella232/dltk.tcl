@@ -46,6 +46,7 @@ import org.xml.sax.SAXException;
  * interpreter package to path associations.
  */
 public class PackagesManager {
+	private static final String LOCATION_ATTR = "location";
 	private static final String DEPENDENCY_TAG = "dependency"; //$NON-NLS-1$
 	private static final String INTERPRETER_TAG = "interpreter"; //$NON-NLS-1$
 	private static final String VALUE_ATTR = "value"; //$NON-NLS-1$
@@ -53,10 +54,12 @@ public class PackagesManager {
 
 	private static final String PACKAGES_TAG = "packages"; //$NON-NLS-1$
 	private static final String PACKAGES_VERSION_ATTR = "version"; //$NON-NLS-1$
-	private static final String PACKAGES_VERSION_NUMBER = "20081208T1911"; //$NON-NLS-1$
+	private static final String PACKAGES_VERSION_NUMBER = "20090409T1315"; //$NON-NLS-1$
 
 	private static final String PACKAGE_TAG = "package"; //$NON-NLS-1$
 	private static final String PACKAGE_VERSION_ATTR = "version"; //$NON-NLS-1$
+
+	private static final String PACKAGE_SOURCE = "source";
 
 	private static final String INTERPRETER_ATTR = INTERPRETER_TAG;
 	private static final String NAME_ATTR = "name"; //$NON-NLS-1$
@@ -143,6 +146,7 @@ public class PackagesManager {
 	public static class PackageInformation {
 		private final Set paths = new HashSet();
 		private final Set dependencies = new HashSet();
+		private final Set sources = new HashSet();
 		private String version;
 
 		public Set getPaths() {
@@ -161,6 +165,9 @@ public class PackagesManager {
 			this.version = version;
 		}
 
+		public Set getSources() {
+			return sources;
+		}
 	}
 
 	private void initialize() {
@@ -274,6 +281,13 @@ public class PackagesManager {
 				pkgElement.setAttribute(NAME_ATTR, pkgName);
 				packageElement.appendChild(pkgElement);
 			}
+			Set sources = info.getSources();
+			for (Iterator iterator3 = sources.iterator(); iterator3.hasNext();) {
+				String source = (String) iterator3.next();
+				Element pkgElement = doc.createElement(PACKAGE_SOURCE);
+				pkgElement.setAttribute(LOCATION_ATTR, source);
+				packageElement.appendChild(pkgElement);
+			}
 			packagesElement.appendChild(packageElement);
 		}
 		for (Iterator iterator = this.interpreterToPackages.keySet().iterator(); iterator
@@ -328,6 +342,11 @@ public class PackagesManager {
 								String pkgName = ((Element) path)
 										.getAttribute(NAME_ATTR);
 								packageInfo.getDependencies().add(pkgName);
+							} else if (path.getNodeName().equalsIgnoreCase(
+									PACKAGE_SOURCE)) {
+								String source = ((Element) path)
+										.getAttribute(LOCATION_ATTR);
+								packageInfo.getSources().add(source);
 							}
 						}
 					}
@@ -556,6 +575,7 @@ public class PackagesManager {
 			info.setVersion(srcs[i].getVersion());
 			info.getPaths().addAll(paths2);
 			info.getDependencies().addAll(srcs[i].getDependencies());
+			info.getSources().addAll(srcs[i].getSources());
 			this.packages.put(okey, info);
 		}
 
@@ -685,5 +705,15 @@ public class PackagesManager {
 				&& packageName.indexOf('$') == -1
 				&& packageName.indexOf('[') == -1
 				&& packageName.indexOf(']') == -1;
+	}
+
+	public PackageInformation getPacakgeInfo(String packageName,
+			IInterpreterInstall install) {
+		PackageKey key = makeKey(packageName, install);
+		PackageInformation info = (PackageInformation) this.packages.get(key);
+		if (info != null) {
+			return info;
+		}
+		return null;
 	}
 }

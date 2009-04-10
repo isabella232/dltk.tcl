@@ -17,7 +17,8 @@ public class PackagesModelProvider implements IModelProvider {
 	public void buildStructure(IModelElement parentElement, List children) {
 		if (parentElement.getElementType() == IModelElement.SCRIPT_PROJECT) {
 			// Just add packages to project from list of all project packages.
-		//	children.add(new PackagesFragment((ScriptProject) parentElement));
+			// children.add(new PackagesFragment((ScriptProject)
+			// parentElement));
 		}
 		System.out.println(parentElement + ":" + children);
 	}
@@ -31,7 +32,7 @@ public class PackagesModelProvider implements IModelProvider {
 
 	public IProjectFragment getProjectFragment(IPath entryPath,
 			IScriptProject project) {
-		if (entryPath.equals(PackagesFragment.PATH)) {
+		if (entryPath.segment(0).equals(PackagesFragment.PATH.toString())) {
 			return new PackagesFragment((ScriptProject) project);
 		}
 		return null;

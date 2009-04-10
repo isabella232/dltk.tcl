@@ -251,4 +251,8 @@ public class PackageElement extends Openable implements IScriptFolder {
 		}
 		return null;
 	}
+
+	public String getVersion() {
+		return this.packageVersion;
+	}
 }

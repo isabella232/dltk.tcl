@@ -1,6 +1,7 @@
 package org.eclipse.dltk.tcl.internal.core.packages;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -18,10 +19,14 @@ import org.eclipse.dltk.core.IScriptFolder;
 import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.core.WorkingCopyOwner;
+import org.eclipse.dltk.core.environment.EnvironmentManager;
+import org.eclipse.dltk.core.environment.EnvironmentPathUtils;
+import org.eclipse.dltk.core.environment.IEnvironment;
 import org.eclipse.dltk.internal.core.MementoModelElementUtil;
 import org.eclipse.dltk.internal.core.ModelElement;
 import org.eclipse.dltk.internal.core.Openable;
 import org.eclipse.dltk.internal.core.OpenableElementInfo;
+import org.eclipse.dltk.internal.core.ScriptFolder;
 import org.eclipse.dltk.internal.core.ScriptProject;
 import org.eclipse.dltk.internal.core.util.MementoTokenizer;
 import org.eclipse.dltk.launching.IInterpreterInstall;
@@ -33,13 +38,30 @@ import org.eclipse.dltk.utils.CorePrinter;
 public class PackagesFragment extends Openable implements IProjectFragment {
 	public static final IPath PATH = new Path(IBuildpathEntry.BUILDPATH_SPECIAL
 			+ "@packages@");
+	private IPath currentPath;
 
 	protected PackagesFragment(ScriptProject project) {
 		super(project);
+		IEnvironment environment = EnvironmentManager.getEnvironment(this);
+		Set dependencies = InterpreterContainerHelper
+				.getInterpreterContainerDependencies(getScriptProject());
+		IPath path = PATH.append(PackageUtils.packagesToKey(dependencies));
+		this.currentPath = EnvironmentPathUtils.getFullPath(environment, path);
 	}
 
 	public String getElementName() {
-		return "@packages@";
+		return currentPath.toString();
+	}
+
+	public boolean equals(Object o) {
+		if (this == o)
+			return true;
+		if (!(o instanceof PackagesFragment))
+			return false;
+
+		PackagesFragment other = (PackagesFragment) o;
+		return this.currentPath.equals(other.currentPath)
+				&& this.parent.equals(other.parent);
 	}
 
 	protected boolean buildStructure(OpenableElementInfo info,
@@ -60,14 +82,18 @@ public class PackagesFragment extends Openable implements IProjectFragment {
 		Set packages = InterpreterContainerHelper
 				.getInterpreterContainerDependencies(project);
 		List children = new ArrayList();
+
 		if (packages != null) {
+			// Fill all dependencies
+			packages = PackagesManager.getInstance().getPackagesDeps(install,
+					packages);
 			String names[] = (String[]) packages.toArray(new String[packages
 					.size()]);
 			for (int i = 0; i < names.length; i++) {
 				PackageInformation pkgInfo = PackagesManager.getInstance()
 						.getPacakgeInfo(names[i], install);
 				if (pkgInfo != null) {
-					children.add(new PackageElement(this, names[i], ""));
+					children.add(new PackageElement(this, names[i], pkgInfo.getVersion()));
 				}
 			}
 		}
@@ -171,7 +197,7 @@ public class PackagesFragment extends Openable implements IProjectFragment {
 	}
 
 	public IPath getPath() {
-		return PATH;
+		return currentPath;
 	}
 
 	public IResource getResource() {

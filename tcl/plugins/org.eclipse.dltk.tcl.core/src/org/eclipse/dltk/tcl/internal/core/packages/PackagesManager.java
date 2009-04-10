@@ -716,4 +716,30 @@ public class PackagesManager {
 		}
 		return null;
 	}
+
+	/**
+	 * Calculate all package dependencies
+	 */
+	public Set getPackagesDeps(IInterpreterInstall install, Set packages) {
+		Set result = new HashSet();
+		List toProcess = new ArrayList();
+		toProcess.addAll(packages);
+		while (!toProcess.isEmpty()) {
+			String pkgName = (String) toProcess.remove(0);
+			if (result.add(pkgName)) {
+				PackageInformation info = getPacakgeInfo(pkgName, install);
+				if (info != null) {
+					Set dependencies = info.getDependencies();
+					for (Iterator iterator = dependencies.iterator(); iterator
+							.hasNext();) {
+						String dep = (String) iterator.next();
+						if (!result.contains(dep)) {
+							toProcess.add(dep);
+						}
+					}
+				}
+			}
+		}
+		return result;
+	}
 }

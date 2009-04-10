@@ -21,6 +21,7 @@ import org.eclipse.dltk.internal.core.BuildpathEntry;
 import org.eclipse.dltk.launching.IInterpreterInstall;
 import org.eclipse.dltk.launching.InterpreterContainerHelper;
 import org.eclipse.dltk.launching.ScriptRuntime;
+import org.eclipse.dltk.tcl.core.TclCorePreferences;
 
 public class TclPackagesInterpreterContainerExtension implements
 		IInterpreterContainerExtension {
@@ -33,10 +34,34 @@ public class TclPackagesInterpreterContainerExtension implements
 	public void processEntres(IScriptProject project, List buildpathEntries) {
 		IPath[] locations = null;
 		IInterpreterInstall install = null;
-		buildpathEntries.add(DLTKCore.newSpecialEntry(PackagesFragment.PATH,
-				false, true));
+		IEnvironment env = EnvironmentManager.getEnvironment(project);
+		if (env == null) {
+			return;
+		}
 		try {
 			install = ScriptRuntime.getInterpreterInstall(project);
+		} catch (CoreException e) {
+			if (DLTKCore.DEBUG) {
+				e.printStackTrace();
+			}
+			return;
+		}
+		if (install != null) {
+			Set packages = InterpreterContainerHelper
+					.getInterpreterContainerDependencies(project);
+			if (packages.size() == 0) {
+				return;
+			}
+			if (TclCorePreferences.USE_PACKAGE_CONCEPT) {
+				buildpathEntries
+						.add(DLTKCore.newSpecialEntry(EnvironmentPathUtils
+								.getFullPath(env, PackagesFragment.PATH
+										.append(PackageUtils
+												.packagesToKey(packages))),
+								false, true));
+				return;
+			}
+
 			List locs = new ArrayList();
 			for (Iterator iterator = buildpathEntries.iterator(); iterator
 					.hasNext();) {
@@ -47,21 +72,7 @@ public class TclPackagesInterpreterContainerExtension implements
 				}
 			}
 			locations = (IPath[]) locs.toArray(new IPath[locs.size()]);
-		} catch (CoreException e) {
-			if (DLTKCore.DEBUG) {
-				e.printStackTrace();
-			}
-		}
-		if (install != null) {
-			Set packages = InterpreterContainerHelper
-					.getInterpreterContainerDependencies(project);
-			if (packages.size() == 0) {
-				return;
-			}
-			IEnvironment env = EnvironmentManager.getEnvironment(project);
-			if (env == null) {
-				return;
-			}
+
 			// This is very slow if no information is available.
 			Set allPaths = new HashSet();
 			// for (Iterator iterator = packages.iterator();

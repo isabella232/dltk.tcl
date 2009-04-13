@@ -9,18 +9,14 @@ import org.eclipse.dltk.core.IProjectFragment;
 import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.internal.core.ScriptProject;
 
-public class PackagesModelProvider implements IModelProvider {
+public class TclPackagesModelProvider implements IModelProvider {
 
-	public PackagesModelProvider() {
+	public TclPackagesModelProvider() {
 	}
 
 	public void buildStructure(IModelElement parentElement, List children) {
 		if (parentElement.getElementType() == IModelElement.SCRIPT_PROJECT) {
-			// Just add packages to project from list of all project packages.
-			// children.add(new PackagesFragment((ScriptProject)
-			// parentElement));
 		}
-		System.out.println(parentElement + ":" + children);
 	}
 
 	public boolean providesFor(IModelElement modelElement, IPath path) {
@@ -32,8 +28,8 @@ public class PackagesModelProvider implements IModelProvider {
 
 	public IProjectFragment getProjectFragment(IPath entryPath,
 			IScriptProject project) {
-		if (entryPath.segment(0).equals(PackagesFragment.PATH.toString())) {
-			return new PackagesFragment((ScriptProject) project);
+		if (entryPath.segment(0).equals(TclPackagesFragment.PATH.toString())) {
+			return new TclPackagesFragment((ScriptProject) project);
 		}
 		return null;
 	}

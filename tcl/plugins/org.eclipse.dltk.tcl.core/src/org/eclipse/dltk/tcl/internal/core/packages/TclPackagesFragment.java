@@ -35,18 +35,17 @@ import org.eclipse.dltk.launching.ScriptRuntime;
 import org.eclipse.dltk.tcl.internal.core.packages.PackagesManager.PackageInformation;
 import org.eclipse.dltk.utils.CorePrinter;
 
-public class PackagesFragment extends Openable implements IProjectFragment {
+public class TclPackagesFragment extends Openable implements IProjectFragment {
 	public static final IPath PATH = new Path(IBuildpathEntry.BUILDPATH_SPECIAL
 			+ "@packages@");
 	private IPath currentPath;
 
-	protected PackagesFragment(ScriptProject project) {
+	protected TclPackagesFragment(ScriptProject project) {
 		super(project);
-		IEnvironment environment = EnvironmentManager.getEnvironment(this);
 		Set dependencies = InterpreterContainerHelper
 				.getInterpreterContainerDependencies(getScriptProject());
 		IPath path = PATH.append(PackageUtils.packagesToKey(dependencies));
-		this.currentPath = EnvironmentPathUtils.getFullPath(environment, path);
+		this.currentPath = path;
 	}
 
 	public String getElementName() {
@@ -56,10 +55,10 @@ public class PackagesFragment extends Openable implements IProjectFragment {
 	public boolean equals(Object o) {
 		if (this == o)
 			return true;
-		if (!(o instanceof PackagesFragment))
+		if (!(o instanceof TclPackagesFragment))
 			return false;
 
-		PackagesFragment other = (PackagesFragment) o;
+		TclPackagesFragment other = (TclPackagesFragment) o;
 		return this.currentPath.equals(other.currentPath)
 				&& this.parent.equals(other.parent);
 	}
@@ -93,7 +92,8 @@ public class PackagesFragment extends Openable implements IProjectFragment {
 				PackageInformation pkgInfo = PackagesManager.getInstance()
 						.getPacakgeInfo(names[i], install);
 				if (pkgInfo != null) {
-					children.add(new PackageElement(this, names[i], pkgInfo.getVersion()));
+					children.add(new TclPackageElement(this, names[i], pkgInfo
+							.getVersion()));
 				}
 			}
 		}
@@ -164,10 +164,26 @@ public class PackagesFragment extends Openable implements IProjectFragment {
 	}
 
 	public IScriptFolder getScriptFolder(IPath path) {
-		return null;
+		if (path.segmentCount() != 1) {
+			return null;
+		}
+		String name = path.segment(0);
+		return getScriptFolder(name);
 	}
 
-	public IScriptFolder getScriptFolder(String path) {
+	public IScriptFolder getScriptFolder(String name) {
+		try {
+			IModelElement[] elements = getChildren();
+			for (int i = 0; i < elements.length; i++) {
+				if (elements[i].getElementName().equals(name)) {
+					return (IScriptFolder) elements[i];
+				}
+			}
+		} catch (ModelException e) {
+			if (DLTKCore.DEBUG) {
+				e.printStackTrace();
+			}
+		}
 		return null;
 	}
 

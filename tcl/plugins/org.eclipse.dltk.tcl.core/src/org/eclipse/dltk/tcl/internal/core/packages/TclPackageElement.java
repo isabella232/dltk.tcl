@@ -30,17 +30,16 @@ import org.eclipse.dltk.internal.core.Openable;
 import org.eclipse.dltk.internal.core.OpenableElementInfo;
 import org.eclipse.dltk.internal.core.ScriptFolderInfo;
 import org.eclipse.dltk.internal.core.util.MementoTokenizer;
-import org.eclipse.dltk.internal.core.util.Util;
 import org.eclipse.dltk.launching.IInterpreterInstall;
 import org.eclipse.dltk.launching.ScriptRuntime;
 import org.eclipse.dltk.tcl.internal.core.packages.PackagesManager.PackageInformation;
 import org.eclipse.dltk.utils.CorePrinter;
 
-public class PackageElement extends Openable implements IScriptFolder {
+public class TclPackageElement extends Openable implements IScriptFolder {
 	private String packageName;
 	private String packageVersion;
 
-	protected PackageElement(ModelElement parent, String name, String version) {
+	protected TclPackageElement(ModelElement parent, String name, String version) {
 		super(parent);
 		this.packageName = name;
 		this.packageVersion = version;
@@ -69,10 +68,10 @@ public class PackageElement extends Openable implements IScriptFolder {
 	public boolean equals(Object o) {
 		if (this == o)
 			return true;
-		if (!(o instanceof PackageElement))
+		if (!(o instanceof TclPackageElement))
 			return false;
 
-		PackageElement other = (PackageElement) o;
+		TclPackageElement other = (TclPackageElement) o;
 		return this.packageName.equals(other.packageName);
 	}
 
@@ -108,20 +107,9 @@ public class PackageElement extends Openable implements IScriptFolder {
 					IPath path = new Path(paths[i]);
 					ExternalEntryFile storage = new ExternalEntryFile(
 							EnvironmentPathUtils.getFile(environment, path));
-					ExternalSourceModule module = new ExternalSourceModule(
+					ExternalSourceModule module = new TclPackageSourceModule(
 							this, path.lastSegment(),
-							DefaultWorkingCopyOwner.PRIMARY, storage) {
-						public IPath getPath() {
-							IEnvironment environment = EnvironmentManager
-									.getEnvironment(this);
-							return EnvironmentPathUtils.getFullPath(
-									environment, getStorage().getFullPath());
-						}
-
-						public IPath getFullPath() {
-							return getPath();
-						}
-					};
+							DefaultWorkingCopyOwner.PRIMARY, storage);
 					vChildren.add(module);
 				}
 			}
@@ -238,7 +226,7 @@ public class PackageElement extends Openable implements IScriptFolder {
 			children = getChildren();
 			for (int i = 0; i < children.length; i++) {
 				IModelElement child = children[i];
-				if (child instanceof IScriptFolder) {
+				if (child instanceof ISourceModule) {
 					if (name.equals(child.getElementName())) {
 						return (ISourceModule) child;
 					}

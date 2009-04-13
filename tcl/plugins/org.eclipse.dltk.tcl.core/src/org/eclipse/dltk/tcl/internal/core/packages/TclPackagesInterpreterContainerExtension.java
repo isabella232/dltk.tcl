@@ -53,12 +53,9 @@ public class TclPackagesInterpreterContainerExtension implements
 				return;
 			}
 			if (TclCorePreferences.USE_PACKAGE_CONCEPT) {
-				buildpathEntries
-						.add(DLTKCore.newSpecialEntry(EnvironmentPathUtils
-								.getFullPath(env, PackagesFragment.PATH
-										.append(PackageUtils
-												.packagesToKey(packages))),
-								false, true));
+				buildpathEntries.add(DLTKCore.newSpecialEntry(
+						TclPackagesFragment.PATH.append(PackageUtils
+								.packagesToKey(packages)), false, true));
 				return;
 			}
 

@@ -19,7 +19,7 @@ import org.eclipse.jface.text.IDocument;
 /**
  * Tcl code templates preference page
  */
-public class TclCodeTemplatesPreferencePage extends
+public class TclTemplatesPreferencePage extends
 		ScriptTemplatePreferencePage {
 
 	/*
@@ -34,7 +34,7 @@ public class TclCodeTemplatesPreferencePage extends
 	/*
 	 * @see org.eclipse.dltk.ui.templates.ScriptTemplatePreferencePage#setDocumentParticioner(org.eclipse.jface.text.IDocument)
 	 */
-	protected void setDocumentParticioner(IDocument document) {
+	protected void setDocumentPartitioner(IDocument document) {
 		getTextTools().setupDocumentPartitioner(document,
 				TclPartitions.TCL_PARTITIONING);
 	}

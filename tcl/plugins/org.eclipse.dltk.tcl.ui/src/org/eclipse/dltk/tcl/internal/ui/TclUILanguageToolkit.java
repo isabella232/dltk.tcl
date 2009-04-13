@@ -16,9 +16,10 @@ import org.eclipse.dltk.core.IScriptFolder;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.tcl.core.TclConstants;
 import org.eclipse.dltk.tcl.core.TclLanguageToolkit;
-import org.eclipse.dltk.tcl.internal.core.packages.PackageElement;
-import org.eclipse.dltk.tcl.internal.core.packages.PackagesFragment;
+import org.eclipse.dltk.tcl.internal.core.packages.TclPackageElement;
+import org.eclipse.dltk.tcl.internal.core.packages.TclPackagesFragment;
 import org.eclipse.dltk.tcl.internal.ui.text.SimpleTclSourceViewerConfiguration;
+import org.eclipse.dltk.ui.AbstractDLTKUILanguageToolkit;
 import org.eclipse.dltk.ui.IDLTKUILanguageToolkit;
 import org.eclipse.dltk.ui.ScriptElementLabels;
 import org.eclipse.dltk.ui.text.ScriptSourceViewerConfiguration;
@@ -27,7 +28,7 @@ import org.eclipse.dltk.ui.viewsupport.ScriptUILabelProvider;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.preference.IPreferenceStore;
 
-public class TclUILanguageToolkit implements IDLTKUILanguageToolkit {
+public class TclUILanguageToolkit extends AbstractDLTKUILanguageToolkit {
 
 	private static TclUILanguageToolkit sToolkit = null;
 
@@ -54,7 +55,7 @@ public class TclUILanguageToolkit implements IDLTKUILanguageToolkit {
 
 		public void getProjectFragmentLabel(IProjectFragment root, long flags,
 				StringBuffer buf) {
-			if (root instanceof PackagesFragment) {
+			if (root instanceof TclPackagesFragment) {
 				buf.append("Packages");
 				return;
 			}
@@ -63,8 +64,8 @@ public class TclUILanguageToolkit implements IDLTKUILanguageToolkit {
 
 		protected void getScriptFolderLabel(IScriptFolder folder,
 				StringBuffer buf) {
-			if (folder instanceof PackageElement) {
-				PackageElement pkg = (PackageElement) folder;
+			if (folder instanceof TclPackageElement) {
+				TclPackageElement pkg = (TclPackageElement) folder;
 				buf.append(folder.getElementName()).append(" ").append(
 						pkg.getVersion());
 				return;

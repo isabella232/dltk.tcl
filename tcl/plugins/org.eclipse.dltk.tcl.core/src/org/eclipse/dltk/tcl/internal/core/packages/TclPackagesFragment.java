@@ -1,7 +1,6 @@
 package org.eclipse.dltk.tcl.internal.core.packages;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -19,14 +18,10 @@ import org.eclipse.dltk.core.IScriptFolder;
 import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.core.WorkingCopyOwner;
-import org.eclipse.dltk.core.environment.EnvironmentManager;
-import org.eclipse.dltk.core.environment.EnvironmentPathUtils;
-import org.eclipse.dltk.core.environment.IEnvironment;
 import org.eclipse.dltk.internal.core.MementoModelElementUtil;
 import org.eclipse.dltk.internal.core.ModelElement;
 import org.eclipse.dltk.internal.core.Openable;
 import org.eclipse.dltk.internal.core.OpenableElementInfo;
-import org.eclipse.dltk.internal.core.ScriptFolder;
 import org.eclipse.dltk.internal.core.ScriptProject;
 import org.eclipse.dltk.internal.core.util.MementoTokenizer;
 import org.eclipse.dltk.launching.IInterpreterInstall;
@@ -49,7 +44,7 @@ public class TclPackagesFragment extends Openable implements IProjectFragment {
 	}
 
 	public String getElementName() {
-		return currentPath.toString();
+		return "Packages";
 	}
 
 	public boolean equals(Object o) {
@@ -152,14 +147,7 @@ public class TclPackagesFragment extends Openable implements IProjectFragment {
 	}
 
 	public IBuildpathEntry getRawBuildpathEntry() throws ModelException {
-		IScriptProject project = getScriptProject();
-		IBuildpathEntry[] rawBuildpath = project.getRawBuildpath();
-		for (int i = 0; i < rawBuildpath.length; i++) {
-			if (rawBuildpath[i].getPath().segment(0).equals(
-					ScriptRuntime.INTERPRETER_CONTAINER)) {
-				return rawBuildpath[i];
-			}
-		}
+		// return DLTKCore.newSpecialEntry(getPath(), false, true);
 		return null;
 	}
 

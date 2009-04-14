@@ -46,7 +46,7 @@ public class TclPackageElement extends Openable implements IScriptFolder {
 	}
 
 	public String getElementName() {
-		return this.packageName;
+		return PackageUtils.packageToPath(packageName, this.packageVersion);
 	}
 
 	protected Object createElementInfo() {
@@ -199,7 +199,8 @@ public class TclPackageElement extends Openable implements IScriptFolder {
 	}
 
 	public IPath getPath() {
-		return getParent().getPath().append(packageName);
+		return getParent().getPath().append(
+				PackageUtils.packageToPath(packageName, this.packageVersion));
 	}
 
 	public void copy(IModelElement container, IModelElement sibling,

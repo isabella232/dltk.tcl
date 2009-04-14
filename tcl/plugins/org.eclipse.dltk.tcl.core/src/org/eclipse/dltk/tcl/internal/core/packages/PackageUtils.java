@@ -13,6 +13,15 @@ public class PackageUtils {
 			String object = (String) iterator.next();
 			buffer.append("_").append(object);
 		}
-		return buffer.toString();
+		return buffer.toString().replaceAll(":", "_");
+
+	}
+
+	static String packageToPath(String packageName, String packageVersion) {
+		String result = packageName.replaceAll(":", "_");
+		if (packageVersion != null) {
+			result += packageVersion.replaceAll("\\.", "_");
+		}
+		return result;
 	}
 }

@@ -175,14 +175,6 @@
       </mixin>
    </extension>
    <extension
-         point="org.eclipse.dltk.core.interpreterContainerExtension">
-      <interpreterContainerExtension
-            class="org.eclipse.dltk.tcl.internal.core.packages.TclPackagesInterpreterContainerExtension"
-            nature="org.eclipse.dltk.tcl.core.nature"
-            priority="0">
-      </interpreterContainerExtension>
-   </extension>
-   <extension
          point="org.eclipse.core.runtime.preferences">
       <initializer
             class="org.eclipse.dltk.tcl.internal.core.TclCorePreferenceInitializer">

@@ -669,4 +669,11 @@
             nature="org.eclipse.dltk.tcl.core.nature">
       </correctionProcessor>
 </extension>
+<extension
+      point="org.eclipse.dltk.ui.modelContentProvider">
+   <modelContentProvider
+         class="org.eclipse.dltk.tcl.internal.ui.navigation.TclModelContentProvider"
+         id="org.eclipse.dltk.tcl.ui.tclModelContentProvider">
+   </modelContentProvider>
+</extension>
 </plugin>

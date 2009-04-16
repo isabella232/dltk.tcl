@@ -66,8 +66,11 @@ public class TclUILanguageToolkit extends AbstractDLTKUILanguageToolkit {
 				StringBuffer buf) {
 			if (folder instanceof TclPackageElement) {
 				TclPackageElement pkg = (TclPackageElement) folder;
-				buf.append(folder.getElementName()).append(" ").append(
-						pkg.getVersion());
+				buf.append(pkg.getPackageName());
+				if (pkg.getVersion() != null) {
+					buf.append(" ").append(pkg.getVersion());
+				}
+
 				return;
 			}
 			super.getScriptFolderLabel(folder, buf);

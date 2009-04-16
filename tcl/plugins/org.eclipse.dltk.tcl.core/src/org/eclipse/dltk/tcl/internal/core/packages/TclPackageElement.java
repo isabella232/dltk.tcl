@@ -244,4 +244,8 @@ public class TclPackageElement extends Openable implements IScriptFolder {
 	public String getVersion() {
 		return this.packageVersion;
 	}
+
+	public String getPackageName() {
+		return this.packageName;
+	}
 }

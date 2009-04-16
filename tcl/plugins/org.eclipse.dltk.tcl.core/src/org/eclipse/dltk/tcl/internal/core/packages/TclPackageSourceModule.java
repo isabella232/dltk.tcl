@@ -27,7 +27,7 @@ public class TclPackageSourceModule extends ExternalSourceModule {
 	}
 
 	public IPath getFullPath() {
-		return getPath();
+		return getStorage().getFullPath();
 	}
 
 	protected IPath getBufferPath() {

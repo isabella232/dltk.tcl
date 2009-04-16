@@ -32,15 +32,12 @@ import org.eclipse.dltk.utils.CorePrinter;
 
 public class TclPackagesFragment extends Openable implements IProjectFragment {
 	public static final IPath PATH = new Path(IBuildpathEntry.BUILDPATH_SPECIAL
-			+ "@packages@");
+			+ "packages#");
 	private IPath currentPath;
 
 	protected TclPackagesFragment(ScriptProject project) {
 		super(project);
-		Set dependencies = InterpreterContainerHelper
-				.getInterpreterContainerDependencies(getScriptProject());
-		IPath path = PATH.append(PackageUtils.packagesToKey(dependencies));
-		this.currentPath = path;
+		this.currentPath = PATH;
 	}
 
 	public String getElementName() {

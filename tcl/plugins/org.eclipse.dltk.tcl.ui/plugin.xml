@@ -676,4 +676,12 @@
          id="org.eclipse.dltk.tcl.ui.tclModelContentProvider">
    </modelContentProvider>
 </extension>
+<extension
+      point="org.eclipse.dltk.ui.modelLabelProvider">
+   <modelLabelProvider
+         class="org.eclipse.dltk.tcl.internal.ui.navigation.TclModelLabelProvider"
+         id="org.eclipse.dltk.tcl.ui.tclModelLabelProvider"
+         language="org.eclipse.dltk.tcl.core.nature">
+   </modelLabelProvider>
+</extension>
 </plugin>

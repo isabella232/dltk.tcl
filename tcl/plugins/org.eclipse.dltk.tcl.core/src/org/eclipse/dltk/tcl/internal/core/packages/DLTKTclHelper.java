@@ -249,17 +249,17 @@ public class DLTKTclHelper {
 		public String toString() {
 			StringBuffer sb = new StringBuffer(128);
 			sb.append("TclPackage"); //$NON-NLS-1$
-			sb.append('{');//$NON-NLS-1$
+			sb.append('{');
 			sb.append("name=").append(name); //$NON-NLS-1$
-			sb.append(' ');//$NON-NLS-1$
+			sb.append(' ');
 			sb.append("paths=").append(paths); //$NON-NLS-1$
-			sb.append(' ');//$NON-NLS-1$
+			sb.append(' ');
 			sb.append("dependencies=").append(dependencies); //$NON-NLS-1$
+			sb.append('}');
 			sb.append("sources").append(sources);//$NON-NLS-1$
 			sb.append('}');//$NON-NLS-1$
 			return sb.toString();
 		}
-
 	};
 
 	public static TclPackage[] getPackagePath(List content) {

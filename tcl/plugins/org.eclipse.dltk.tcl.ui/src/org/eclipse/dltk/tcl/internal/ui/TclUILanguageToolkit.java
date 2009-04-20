@@ -17,7 +17,7 @@ import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.tcl.core.TclConstants;
 import org.eclipse.dltk.tcl.core.TclLanguageToolkit;
 import org.eclipse.dltk.tcl.internal.core.packages.TclPackageElement;
-import org.eclipse.dltk.tcl.internal.core.packages.TclPackagesFragment;
+import org.eclipse.dltk.tcl.internal.core.packages.TclPackageFragment;
 import org.eclipse.dltk.tcl.internal.ui.text.SimpleTclSourceViewerConfiguration;
 import org.eclipse.dltk.ui.AbstractDLTKUILanguageToolkit;
 import org.eclipse.dltk.ui.IDLTKUILanguageToolkit;

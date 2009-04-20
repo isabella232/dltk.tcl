@@ -12,7 +12,7 @@ import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.internal.ui.scriptview.BuildPathContainer;
 import org.eclipse.dltk.launching.ScriptRuntime;
 import org.eclipse.dltk.tcl.internal.core.packages.TclPackageElement;
-import org.eclipse.dltk.tcl.internal.core.packages.TclPackagesFragment;
+import org.eclipse.dltk.tcl.internal.core.packages.TclPackageFragment;
 import org.eclipse.dltk.ui.IModelContentProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 
@@ -36,8 +36,8 @@ public class TclModelContentProvider implements IModelContentProvider {
 			try {
 				fragments = project.getProjectFragments();
 				for (int i = 0; i < fragments.length; i++) {
-					if (fragments[i] instanceof TclPackagesFragment) {
-						TclPackagesFragment fragment = (TclPackagesFragment) fragments[i];
+					if (fragments[i] instanceof TclPackageFragment) {
+						TclPackageFragment fragment = (TclPackageFragment) fragments[i];
 						children.addAll(Arrays.asList(fragment.getChildren()));
 					}
 
@@ -52,7 +52,7 @@ public class TclModelContentProvider implements IModelContentProvider {
 
 	public Object getParentElement(Object element,
 			ITreeContentProvider iTreeContentProvider) {
-		if (element instanceof TclPackagesFragment
+		if (element instanceof TclPackageFragment
 				|| element instanceof TclPackageElement) {
 			// We need to return buildpath container here.
 			IScriptProject project = ((IModelElement) element)

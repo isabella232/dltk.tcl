@@ -14,6 +14,7 @@ import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.IBuildpathEntry;
 import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.IProjectFragment;
+import org.eclipse.dltk.core.IProjectFragmentTimestamp;
 import org.eclipse.dltk.core.IScriptFolder;
 import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.ModelException;
@@ -30,12 +31,13 @@ import org.eclipse.dltk.launching.ScriptRuntime;
 import org.eclipse.dltk.tcl.internal.core.packages.PackagesManager.PackageInformation;
 import org.eclipse.dltk.utils.CorePrinter;
 
-public class TclPackagesFragment extends Openable implements IProjectFragment {
+public class TclPackageFragment extends Openable implements IProjectFragment,
+		IProjectFragmentTimestamp {
 	public static final IPath PATH = new Path(IBuildpathEntry.BUILDPATH_SPECIAL
 			+ "packages#");
 	private IPath currentPath;
 
-	protected TclPackagesFragment(ScriptProject project) {
+	protected TclPackageFragment(ScriptProject project) {
 		super(project);
 		this.currentPath = PATH;
 	}
@@ -47,10 +49,10 @@ public class TclPackagesFragment extends Openable implements IProjectFragment {
 	public boolean equals(Object o) {
 		if (this == o)
 			return true;
-		if (!(o instanceof TclPackagesFragment))
+		if (!(o instanceof TclPackageFragment))
 			return false;
 
-		TclPackagesFragment other = (TclPackagesFragment) o;
+		TclPackageFragment other = (TclPackageFragment) o;
 		return this.currentPath.equals(other.currentPath)
 				&& this.parent.equals(other.parent);
 	}
@@ -203,5 +205,15 @@ public class TclPackagesFragment extends Openable implements IProjectFragment {
 
 	public IResource getResource() {
 		return null;
+	}
+
+	public long getTimeStamp() {
+		Set set = InterpreterContainerHelper
+				.getInterpreterContainerDependencies(getScriptProject());
+		if (set.size() == 0) {
+			return 0;
+		}
+		String key = PackageUtils.packagesToKey(set);
+		return key.hashCode();
 	}
 }

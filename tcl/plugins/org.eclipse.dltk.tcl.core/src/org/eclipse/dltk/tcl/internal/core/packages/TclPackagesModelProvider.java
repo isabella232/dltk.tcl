@@ -12,7 +12,7 @@ public class TclPackagesModelProvider implements IModelProvider {
 
 	public void provideModelChanges(IModelElement parentElement, List children) {
 		if (parentElement.getElementType() == IModelElement.SCRIPT_PROJECT) {
-			TclPackagesFragment fragment = new TclPackagesFragment(
+			TclPackageFragment fragment = new TclPackageFragment(
 					(ScriptProject) parentElement);
 			if (!children.contains(fragment)) {
 				children.add(fragment);

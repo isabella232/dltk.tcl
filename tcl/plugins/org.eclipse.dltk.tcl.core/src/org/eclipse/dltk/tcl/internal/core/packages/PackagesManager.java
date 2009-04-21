@@ -29,12 +29,15 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.launching.IInterpreterInstall;
+import org.eclipse.dltk.launching.IInterpreterInstallType;
+import org.eclipse.dltk.launching.ScriptRuntime;
 import org.eclipse.dltk.tcl.core.TclPlugin;
 import org.eclipse.dltk.tcl.internal.core.packages.DLTKTclHelper.TclPackage;
 import org.w3c.dom.Document;
@@ -57,7 +60,7 @@ public class PackagesManager {
 
 	private static final String PACKAGES_TAG = "packages"; //$NON-NLS-1$
 	private static final String PACKAGES_VERSION_ATTR = VERSION_ATTR; //$NON-NLS-1$
-	private static final String PACKAGES_VERSION_NUMBER = "20090409T1315"; //$NON-NLS-1$
+	private static final String PACKAGES_VERSION_NUMBER = "20090521T1353"; //$NON-NLS-1$
 
 	private static final String PACKAGE_TAG = "package"; //$NON-NLS-1$
 	private static final String PACKAGE_VERSION_ATTR = VERSION_ATTR; //$NON-NLS-1$
@@ -73,6 +76,7 @@ public class PackagesManager {
 		private String packageName;
 		private String packageVersion;
 		private ISourceModule module;
+		private String moduleHandle;
 
 		public PackageInfo() {
 		}
@@ -82,6 +86,13 @@ public class PackagesManager {
 			this.packageName = packageName;
 			this.packageVersion = packageVersion;
 			this.module = module;
+		}
+
+		public PackageInfo(String packageName, String packageVersion,
+				String moduleHandle) {
+			this.packageName = packageName;
+			this.packageVersion = packageVersion;
+			this.moduleHandle = moduleHandle;
 		}
 
 		public PackageInfo(String packageName) {
@@ -97,6 +108,9 @@ public class PackagesManager {
 		}
 
 		public ISourceModule getModule() {
+			if (module == null && moduleHandle != null) {
+				module = (ISourceModule) DLTKCore.create(moduleHandle);
+			}
 			return module;
 		}
 
@@ -148,12 +162,12 @@ public class PackagesManager {
 	/**
 	 * Contains association of PackageKey to PackageInformation
 	 */
-	private Map<PackageKey, PackageInformation> packages = new HashMap<PackageKey, PackageInformation>();
+	private Map<InterpreterPairKey, PackageInformation> packages = new HashMap<InterpreterPairKey, PackageInformation>();
 
 	/**
 	 * Contains set of interpreter to list of packages association.
 	 */
-	private Map<String, Set<PackageInfo>> interpreterToPackages = new HashMap<String, Set<PackageInfo>>();
+	private Map<InterpreterPairKey, Set<PackageInfo>> interpreterToPackages = new HashMap<InterpreterPairKey, Set<PackageInfo>>();
 	private Map<String, IPath[]> packsWithDeps = new HashMap<String, IPath[]>();
 
 	public static PackagesManager getInstance() {
@@ -167,8 +181,8 @@ public class PackagesManager {
 		initialize();
 	}
 
-	private static class PackageKey {
-		private String packageName;
+	private static class InterpreterPairKey {
+		private String value;
 		private String interpreterPath;
 
 		public int hashCode() {
@@ -178,8 +192,7 @@ public class PackagesManager {
 					* result
 					+ ((interpreterPath == null) ? 0 : interpreterPath
 							.hashCode());
-			result = prime * result
-					+ ((packageName == null) ? 0 : packageName.hashCode());
+			result = prime * result + ((value == null) ? 0 : value.hashCode());
 			return result;
 		}
 
@@ -190,26 +203,26 @@ public class PackagesManager {
 				return false;
 			if (getClass() != obj.getClass())
 				return false;
-			PackageKey other = (PackageKey) obj;
+			InterpreterPairKey other = (InterpreterPairKey) obj;
 			if (interpreterPath == null) {
 				if (other.interpreterPath != null)
 					return false;
 			} else if (!interpreterPath.equals(other.interpreterPath))
 				return false;
-			if (packageName == null) {
-				if (other.packageName != null)
+			if (value == null) {
+				if (other.value != null)
 					return false;
-			} else if (!packageName.equals(other.packageName))
+			} else if (!value.equals(other.value))
 				return false;
 			return true;
 		}
 
-		public String getPackageName() {
-			return packageName;
+		public String getValue() {
+			return value;
 		}
 
-		public void setPackageName(String packageName) {
-			this.packageName = packageName;
+		public void setValue(String packageName) {
+			this.value = packageName;
 		}
 
 		public String getInterpreterPath() {
@@ -279,6 +292,50 @@ public class PackagesManager {
 				}
 			}
 		}
+		cleanBrokenElements();
+	}
+
+	private void cleanBrokenElements() {
+		Set<InterpreterPairKey> keysToRemove = new HashSet<InterpreterPairKey>();
+		for (InterpreterPairKey key : this.interpreterToPackages.keySet()) {
+			String path = key.getInterpreterPath();
+			boolean found = false;
+			String projectName = key.getValue();
+			if (projectName.length() != 0) {
+				IProject project = ResourcesPlugin.getWorkspace().getRoot()
+						.getProject(projectName);
+				if (!project.isAccessible()) {
+					keysToRemove.add(key);
+					continue;
+				}
+			}
+			// Check for install existance
+			IInterpreterInstallType[] types = ScriptRuntime
+					.getInterpreterInstallTypes();
+			for (IInterpreterInstallType iInterpreterInstallType : types) {
+				IInterpreterInstall[] installs = iInterpreterInstallType
+						.getInterpreterInstalls();
+				for (IInterpreterInstall iInterpreterInstall : installs) {
+					if (path.equals(iInterpreterInstall.getInstallLocation()
+							.toString())) {
+						found = true;
+						break;
+					}
+				}
+				if (found) {
+					break;
+				}
+			}
+			if (!found) {
+				keysToRemove.add(key);
+			}
+		}
+		for (InterpreterPairKey interpreterPairKey : keysToRemove) {
+			this.interpreterToPackages.remove(interpreterPairKey);
+		}
+		if (!keysToRemove.isEmpty()) {
+			save();
+		}
 	}
 
 	private void save() {
@@ -330,12 +387,12 @@ public class PackagesManager {
 		packagesElement.setAttribute(PACKAGES_VERSION_ATTR,
 				PACKAGES_VERSION_NUMBER);
 		doc.appendChild(packagesElement);
-		for (Iterator<PackageKey> iterator = this.packages.keySet().iterator(); iterator
-				.hasNext();) {
-			PackageKey key = iterator.next();
+		for (Iterator<InterpreterPairKey> iterator = this.packages.keySet()
+				.iterator(); iterator.hasNext();) {
+			InterpreterPairKey key = iterator.next();
 
 			Element packageElement = doc.createElement(PACKAGE_TAG);
-			packageElement.setAttribute(NAME_ATTR, key.getPackageName());
+			packageElement.setAttribute(NAME_ATTR, key.getValue());
 			packageElement.setAttribute(INTERPRETER_ATTR, key
 					.getInterpreterPath());
 
@@ -370,13 +427,15 @@ public class PackagesManager {
 			}
 			packagesElement.appendChild(packageElement);
 		}
-		for (Iterator<String> iterator = this.interpreterToPackages.keySet()
-				.iterator(); iterator.hasNext();) {
-			String interpreter = iterator.next();
+		for (Iterator<InterpreterPairKey> iterator = this.interpreterToPackages
+				.keySet().iterator(); iterator.hasNext();) {
+			InterpreterPairKey key = iterator.next();
 
 			Element interpreterElement = doc.createElement(INTERPRETER_TAG);
-			interpreterElement.setAttribute(NAME_ATTR, interpreter);
-			Set<PackageInfo> pkgs = this.interpreterToPackages.get(interpreter);
+			interpreterElement.setAttribute(NAME_ATTR, key.getValue());
+			interpreterElement.setAttribute(INTERPRETER_ATTR, key
+					.getInterpreterPath());
+			Set<PackageInfo> pkgs = this.interpreterToPackages.get(key);
 			for (Iterator<PackageInfo> iterator2 = pkgs.iterator(); iterator2
 					.hasNext();) {
 				PackageInfo info = iterator2.next();
@@ -444,7 +503,10 @@ public class PackagesManager {
 				} else if (child.getNodeName()
 						.equalsIgnoreCase(INTERPRETER_TAG)) {
 					Element e = (Element) child;
-					String interpreter = e.getAttribute(NAME_ATTR);
+					String interpreterLocation = e
+							.getAttribute(INTERPRETER_ATTR);
+					String name = e.getAttribute(NAME_ATTR);
+					InterpreterPairKey key = makeKey(name, interpreterLocation);
 					NodeList paths = e.getChildNodes();
 					Set<PackageInfo> packagesSet = new HashSet<PackageInfo>();
 					for (int j = 0; j < paths.getLength(); j++) {
@@ -461,25 +523,23 @@ public class PackagesManager {
 									version = null;
 								}
 								String handle = element.getAttribute("handle");
-								ISourceModule module = null;
-								if (handle.trim().length() != 0) {
-									module = (ISourceModule) DLTKCore
-											.create(handle);
+								if (handle.trim().length() == 0) {
+									handle = null;
 								}
 								packagesSet.add(new PackageInfo(
-										packageNameValue, version, module));
+										packageNameValue, version, handle));
 							}
 						}
 					}
-					this.interpreterToPackages.put(interpreter, packagesSet);
+					this.interpreterToPackages.put(key, packagesSet);
 				}
 			}
 		}
 	}
 
-	private PackageKey makeKey(String packageName, String interpreter) {
-		PackageKey key = new PackageKey();
-		key.setPackageName(packageName);
+	private InterpreterPairKey makeKey(String value, String interpreter) {
+		InterpreterPairKey key = new InterpreterPairKey();
+		key.setValue(value);
 		key.setInterpreterPath(interpreter);
 		return key;
 	}
@@ -489,7 +549,7 @@ public class PackagesManager {
 	 */
 	public synchronized IPath[] getPathsForPackage(IInterpreterInstall install,
 			String packageName) {
-		PackageKey key = makeKey(packageName, getInterpreterKey(install));
+		InterpreterPairKey key = makeKey(packageName, install);
 		if (this.packages.containsKey(key)) {
 			PackageInformation info = this.packages.get(key);
 			Set<IPath> els = info.getPaths();
@@ -503,8 +563,7 @@ public class PackagesManager {
 		PackageInformation resultInfo = null;
 		for (int i = 0; i < srcs.length; i++) {
 			Set<IPath> paths2 = srcs[i].getPaths();
-			PackageKey okey = makeKey(srcs[i].getName(),
-					getInterpreterKey(install));
+			InterpreterPairKey okey = makeKey(srcs[i].getName(), install);
 			PackageInformation info;
 			if (this.packages.containsKey(okey)) {
 				info = this.packages.get(okey);
@@ -536,7 +595,7 @@ public class PackagesManager {
 			String packageName) {
 		getPathsForPackage(install, packageName);
 		final PackageInformation info = this.packages.get(makeKey(packageName,
-				getInterpreterKey(install)));
+				install));
 		if (info != null) {
 			return info.getVersion();
 		} else {
@@ -548,7 +607,7 @@ public class PackagesManager {
 			String pkgName, IInterpreterInstall install) {
 		Set<String> checkedPackages = new HashSet<String>();
 		Map<String, PackageInformation> packagesSet = new HashMap<String, PackageInformation>();
-		PackageKey key = makeKey(pkgName, install);
+		InterpreterPairKey key = makeKey(pkgName, install);
 		PackageInformation info = this.packages.get(key);
 		if (info != null) {
 			traverseDependencies(packagesSet, checkedPackages, info, install);
@@ -556,8 +615,8 @@ public class PackagesManager {
 		return packagesSet;
 	}
 
-	private PackageKey makeKey(String pkgName, IInterpreterInstall install) {
-		return makeKey(pkgName, getInterpreterKey(install));
+	private InterpreterPairKey makeKey(String value, IInterpreterInstall install) {
+		return makeKey(value, install.getInstallLocation().toString());
 	}
 
 	private synchronized void traverseDependencies(
@@ -570,7 +629,7 @@ public class PackagesManager {
 			String pkgName = iterator.next();
 			if (!checkedPackages.contains(pkgName)) {
 				checkedPackages.add(pkgName);
-				PackageKey pkgKey = makeKey(pkgName, getInterpreterKey(install));
+				InterpreterPairKey pkgKey = makeKey(pkgName, install);
 				if (this.packages.containsKey(pkgKey)) {
 					PackageInformation depInfo = this.packages.get(pkgKey);
 					packagesSet.put(pkgName, depInfo);
@@ -583,7 +642,7 @@ public class PackagesManager {
 
 	public synchronized Set<PackageInfo> getPackageNames(
 			IInterpreterInstall install) {
-		String key = getInterpreterKey(install);
+		InterpreterPairKey key = getInterpreterKey(install);
 		if (this.interpreterToPackages.containsKey(key)) {
 			return this.interpreterToPackages.get(key);
 		}
@@ -594,18 +653,13 @@ public class PackagesManager {
 		return packs;
 	}
 
-	private String getInterpreterKey(IInterpreterInstall install) {
-		if (install == null) {
-			return "";
-		}
-		return install.getInstallLocation().toOSString() + ":" //$NON-NLS-1$
-				+ install.getEnvironment().getId();
+	private InterpreterPairKey getInterpreterKey(IInterpreterInstall install) {
+		return makeKey("", install);
 	}
 
-	private String getInterpreterProjectKey(IInterpreterInstall install,
-			String projectName) {
-		return "internal|||" + projectName + "|||" //$NON-NLS-1$ //$NON-NLS-2$
-				+ getInterpreterKey(install);
+	private InterpreterPairKey getInterpreterProjectKey(
+			IInterpreterInstall install, String projectName) {
+		return makeKey(projectName, install);
 	}
 
 	public Set<PackageInfo> getInternalPackageNames(
@@ -620,7 +674,8 @@ public class PackagesManager {
 
 	public synchronized Set<PackageInfo> getInternalPackageNames(
 			IInterpreterInstall install, String projectName) {
-		final String key = getInterpreterProjectKey(install, projectName);
+		final InterpreterPairKey key = getInterpreterProjectKey(install,
+				projectName);
 		if (this.interpreterToPackages.containsKey(key)) {
 			return this.interpreterToPackages.get(key);
 		}
@@ -630,7 +685,8 @@ public class PackagesManager {
 	public synchronized void setInternalPackageNames(
 			IInterpreterInstall install, IScriptProject project,
 			Set<PackageInfo> names) {
-		String key = getInterpreterProjectKey(install, project.getElementName());
+		InterpreterPairKey key = getInterpreterProjectKey(install, project
+				.getElementName());
 		// TODO compare and save only if there are changes
 		this.interpreterToPackages.put(key, new HashSet<PackageInfo>(names));
 		save();
@@ -648,7 +704,7 @@ public class PackagesManager {
 		for (int i = 0; i < pkgs.length; i++) {
 			buf.append(pkgs[i].getPackageName()).append(" "); //$NON-NLS-1$
 		}
-		PackageKey key = makeKey(buf.toString(), getInterpreterKey(install));
+		InterpreterPairKey key = makeKey(buf.toString(), install);
 
 		if (this.packages.containsKey(key)) {
 			PackageInformation info = this.packages.get(key);
@@ -665,8 +721,7 @@ public class PackagesManager {
 		}
 		for (int i = 0; i < srcs.length; i++) {
 			Set<IPath> paths2 = srcs[i].getPaths();
-			PackageKey okey = makeKey(srcs[i].getName(),
-					getInterpreterKey(install));
+			InterpreterPairKey okey = makeKey(srcs[i].getName(), install);
 			PackageInformation info = null;
 			if (this.packages.containsKey(okey)) {
 				info = this.packages.get(okey);
@@ -686,8 +741,7 @@ public class PackagesManager {
 		this.packages.put(key, info);
 
 		for (int i = 0; i < pkgs.length; i++) {
-			PackageKey lkey = makeKey(pkgs[i].getPackageName(),
-					getInterpreterKey(install));
+			InterpreterPairKey lkey = makeKey(pkgs[i].getPackageName(), install);
 			if (!this.packages.containsKey(lkey)) {
 				this.packages.put(lkey, new PackageInformation());
 			}
@@ -719,12 +773,12 @@ public class PackagesManager {
 	 */
 	public synchronized void removeInterprterInfo(IInterpreterInstall install) {
 		// Remove interpreter to packages set
-		String interpreterPath = getInterpreterKey(install);
+		InterpreterPairKey interpreterPath = getInterpreterKey(install);
 		this.interpreterToPackages.remove(interpreterPath);
 		// Remove all values stored for interpreter packages
-		for (Iterator<PackageKey> iterator = this.packages.keySet().iterator(); iterator
-				.hasNext();) {
-			PackageKey key = iterator.next();
+		for (Iterator<InterpreterPairKey> iterator = this.packages.keySet()
+				.iterator(); iterator.hasNext();) {
+			InterpreterPairKey key = iterator.next();
 			String path = key.getInterpreterPath();
 			if (path.equals(interpreterPath)) {
 				iterator.remove();
@@ -820,7 +874,7 @@ public class PackagesManager {
 
 	public PackageInformation getPackageInfo(String packageName,
 			IInterpreterInstall install) {
-		PackageKey key = makeKey(packageName, install);
+		InterpreterPairKey key = makeKey(packageName, install);
 		PackageInformation info = this.packages.get(key);
 		if (info != null) {
 			return info;

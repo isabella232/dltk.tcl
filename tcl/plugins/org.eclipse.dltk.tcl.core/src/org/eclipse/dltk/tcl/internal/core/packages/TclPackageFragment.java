@@ -3,10 +3,8 @@ package org.eclipse.dltk.tcl.internal.core.packages;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
@@ -16,7 +14,6 @@ import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.IProjectFragment;
 import org.eclipse.dltk.core.IProjectFragmentTimestamp;
 import org.eclipse.dltk.core.IScriptFolder;
-import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.core.WorkingCopyOwner;
 import org.eclipse.dltk.internal.core.MementoModelElementUtil;
@@ -26,8 +23,6 @@ import org.eclipse.dltk.internal.core.OpenableElementInfo;
 import org.eclipse.dltk.internal.core.ScriptProject;
 import org.eclipse.dltk.internal.core.util.MementoTokenizer;
 import org.eclipse.dltk.launching.IInterpreterInstall;
-import org.eclipse.dltk.launching.InterpreterContainerHelper;
-import org.eclipse.dltk.launching.ScriptRuntime;
 import org.eclipse.dltk.tcl.internal.core.packages.PackagesManager.PackageInformation;
 import org.eclipse.dltk.utils.CorePrinter;
 
@@ -36,10 +31,16 @@ public class TclPackageFragment extends Openable implements IProjectFragment,
 	public static final IPath PATH = new Path(IBuildpathEntry.BUILDPATH_SPECIAL
 			+ "packages#");
 	private IPath currentPath;
+	private IInterpreterInstall install;
+	private String packageName;
 
-	protected TclPackageFragment(ScriptProject project) {
+	protected TclPackageFragment(ScriptProject project, String packageName,
+			IInterpreterInstall install) {
 		super(project);
-		this.currentPath = PATH;
+		this.install = install;
+		this.packageName = packageName;
+		this.currentPath = PATH.append(install.getInstallLocation().getPath())
+				.append("@").append(packageName);
 	}
 
 	public String getElementName() {
@@ -60,36 +61,12 @@ public class TclPackageFragment extends Openable implements IProjectFragment,
 	protected boolean buildStructure(OpenableElementInfo info,
 			IProgressMonitor pm, Map newElements, IResource underlyingResource)
 			throws ModelException {
-		IScriptProject project = getScriptProject();
-		IInterpreterInstall install = null;
-		try {
-			install = ScriptRuntime.getInterpreterInstall(project);
-		} catch (CoreException e) {
-			if (DLTKCore.DEBUG) {
-				e.printStackTrace();
-			}
-		}
-		if (install == null) {
-			return false;
-		}
-		Set packages = InterpreterContainerHelper
-				.getInterpreterContainerDependencies(project);
 		List children = new ArrayList();
-
-		if (packages != null) {
-			// Fill all dependencies
-			packages = PackagesManager.getInstance().getPackagesDeps(install,
-					packages);
-			String names[] = (String[]) packages.toArray(new String[packages
-					.size()]);
-			for (int i = 0; i < names.length; i++) {
-				PackageInformation pkgInfo = PackagesManager.getInstance()
-						.getPackageInfo(names[i], install);
-				if (pkgInfo != null) {
-					children.add(new TclPackageElement(this, names[i], pkgInfo
-							.getVersion()));
-				}
-			}
+		PackageInformation pkgInfo = PackagesManager.getInstance()
+				.getPackageInfo(this.packageName, install);
+		if (pkgInfo != null) {
+			children.add(new TclPackageElement(this, this.packageName, pkgInfo
+					.getVersion()));
 		}
 		info.setChildren((IModelElement[]) children
 				.toArray(new IModelElement[children.size()]));
@@ -208,12 +185,6 @@ public class TclPackageFragment extends Openable implements IProjectFragment,
 	}
 
 	public long getTimeStamp() {
-		Set set = InterpreterContainerHelper
-				.getInterpreterContainerDependencies(getScriptProject());
-		if (set.size() == 0) {
-			return 0;
-		}
-		String key = PackageUtils.packagesToKey(set);
-		return key.hashCode();
+		return currentPath.hashCode();
 	}
 }

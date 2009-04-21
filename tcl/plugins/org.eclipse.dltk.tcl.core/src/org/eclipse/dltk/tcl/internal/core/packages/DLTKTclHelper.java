@@ -368,7 +368,7 @@ public class DLTKTclHelper {
 		TclPackage[] packagePath = getPackagePath(content);
 		for (int i = 0; i < packagePath.length; i++) {
 			packages.add(new PackageInfo(packagePath[i].getName(),
-					packagePath[i].getVersion(), null));
+					packagePath[i].getVersion(), (String)null));
 		}
 		return packages;
 	}

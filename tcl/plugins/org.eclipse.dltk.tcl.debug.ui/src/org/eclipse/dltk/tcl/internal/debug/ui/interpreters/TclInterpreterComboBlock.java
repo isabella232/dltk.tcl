@@ -11,7 +11,6 @@ package org.eclipse.dltk.tcl.internal.debug.ui.interpreters;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -44,6 +43,7 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -206,6 +206,16 @@ public class TclInterpreterComboBlock extends AbstractInterpreterComboBlock {
 						}
 					}
 				});
+		this.fElements.setComparator(new ViewerComparator() {
+			@Override
+			public int compare(Viewer viewer, Object e1, Object e2) {
+
+				if (e1 instanceof String && e2 instanceof String) {
+					return ((String) e1).compareToIgnoreCase((String) e2);
+				}
+				return super.compare(viewer, e1, e2);
+			}
+		});
 		remove.setEnabled(false);
 
 		this.addPropertyChangeListener(new IPropertyChangeListener() {
@@ -266,14 +276,13 @@ public class TclInterpreterComboBlock extends AbstractInterpreterComboBlock {
 							LocalEnvironment.ENVIRONMENT_ID));
 		}
 		if (install != null) {
-			final List<PackageInfo> names = new ArrayList<PackageInfo>(
+			List<PackageInfo> packages = new ArrayList<PackageInfo>(
 					PackagesManager.getInstance().getPackageNames(install));
-			Collections.sort(names, new Comparator<PackageInfo>() {
-				public int compare(PackageInfo o1, PackageInfo o2) {
-					return o1.getPackageName().compareToIgnoreCase(
-							o2.getPackageName());
-				}
-			});
+			final List<String> names = new ArrayList<String>();
+			for (PackageInfo info : packages) {
+				names.add(info.getPackageName());
+			}
+			Collections.sort(names);
 			ListDialog dialog = new ListDialog(this.fElements.getControl()
 					.getShell());
 			dialog.setContentProvider(new IStructuredContentProvider() {

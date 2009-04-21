@@ -5,12 +5,12 @@ import java.util.Set;
 import java.util.TreeSet;
 
 public class PackageUtils {
-	public static String packagesToKey(Set packages) {
-		Set sorted = new TreeSet();
+	public static String packagesToKey(Set<String> packages) {
+		Set<String> sorted = new TreeSet<String>();
 		sorted.addAll(packages);
 		StringBuffer buffer = new StringBuffer();
-		for (Iterator iterator = sorted.iterator(); iterator.hasNext();) {
-			String object = (String) iterator.next();
+		for (Iterator<String> iterator = sorted.iterator(); iterator.hasNext();) {
+			String object = iterator.next();
 			buffer.append("_").append(object);
 		}
 		return buffer.toString().replaceAll(":", "_");

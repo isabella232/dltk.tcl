@@ -84,7 +84,7 @@ public class TclPackageFragment extends Openable implements IProjectFragment,
 					.size()]);
 			for (int i = 0; i < names.length; i++) {
 				PackageInformation pkgInfo = PackagesManager.getInstance()
-						.getPacakgeInfo(names[i], install);
+						.getPackageInfo(names[i], install);
 				if (pkgInfo != null) {
 					children.add(new TclPackageElement(this, names[i], pkgInfo
 							.getVersion()));

@@ -93,14 +93,13 @@ public class TclPackageElement extends Openable implements IScriptFolder {
 		}
 		if (install != null) {
 			// add modules from resources
-			HashSet vChildren = new HashSet();
+			Set<IModelElement> vChildren = new HashSet<IModelElement>();
 			// Add external source module here.
 			PackageInformation information = PackagesManager.getInstance()
-					.getPacakgeInfo(this.packageName, install);
-			Set sources = information.getSources();
+					.getPackageInfo(this.packageName, install);
+			Set<String> sources = information.getSources();
 			if (!sources.isEmpty()) {
-				String[] paths = (String[]) sources.toArray(new String[sources
-						.size()]);
+				String[] paths = sources.toArray(new String[sources.size()]);
 				IEnvironment environment = EnvironmentManager
 						.getEnvironment(getScriptProject());
 				for (int i = 0; i < paths.length; i++) {
@@ -113,8 +112,8 @@ public class TclPackageElement extends Openable implements IScriptFolder {
 					vChildren.add(module);
 				}
 			}
-			info.setChildren((IModelElement[]) vChildren
-					.toArray(new IModelElement[vChildren.size()]));
+			info.setChildren(vChildren.toArray(new IModelElement[vChildren
+					.size()]));
 		}
 		return true;
 	}

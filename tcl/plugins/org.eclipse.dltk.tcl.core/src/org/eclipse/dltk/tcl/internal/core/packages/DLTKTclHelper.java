@@ -27,6 +27,7 @@ import org.eclipse.dltk.launching.IInterpreterInstall;
 import org.eclipse.dltk.launching.InterpreterConfig;
 import org.eclipse.dltk.launching.ScriptLaunchUtil;
 import org.eclipse.dltk.tcl.core.TclPlugin;
+import org.eclipse.dltk.tcl.internal.core.packages.PackagesManager.PackageInfo;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -41,7 +42,7 @@ public class DLTKTclHelper {
 
 	public static final String END_OF_STREAM = "DLTK-TCL-HELPER-9E7A168E-5EEF-4a46-A86D-0C82E90686E4-END-OF-STREAM";
 
-	private static List deployExecute(IExecutionEnvironment exeEnv,
+	private static List<String> deployExecute(IExecutionEnvironment exeEnv,
 			String installLocation, String[] arguments,
 			EnvironmentVariable[] env) {
 		IDeployment deployment = exeEnv.createDeployment();
@@ -70,9 +71,9 @@ public class DLTKTclHelper {
 			}
 		}
 		if (process == null) {
-			return new ArrayList();
+			return new ArrayList<String>();
 		}
-		List output = ProcessOutputCollector.execute(process);
+		List<String> output = ProcessOutputCollector.execute(process);
 		deployment.dispose();
 		return output;
 	}
@@ -152,7 +153,7 @@ public class DLTKTclHelper {
 		if (process == null) {
 			return null;
 		}
-		List output = ProcessOutputCollector.execute(process);
+		List<String> output = ProcessOutputCollector.execute(process);
 		deployment.dispose();
 		return getPackagePath(output);
 	}
@@ -168,28 +169,28 @@ public class DLTKTclHelper {
 		return false;
 	}
 
-	private static String[] getAutoPath(List content) {
-		String text = getXMLContent(content);
-		Document document = getDocument(text);
-
-		Set paths = new HashSet();
-		if (document != null) {
-			Element element = document.getDocumentElement();
-			NodeList childNodes = element.getChildNodes();
-			int len = childNodes.getLength();
-			for (int i = 0; i < len; i++) {
-				Node nde = childNodes.item(i);
-				if (isElementName(nde, "path")) { //$NON-NLS-1$
-					Element el = (Element) nde;
-					String path = el.getAttribute("name"); //$NON-NLS-1$
-					if (path.length() > 0) {
-						paths.add(path);
-					}
-				}
-			}
-		}
-		return (String[]) paths.toArray(new String[paths.size()]);
-	}
+//	private static String[] getAutoPath(List<String> content) {
+//		String text = getXMLContent(content);
+//		Document document = getDocument(text);
+//
+//		Set<String> paths = new HashSet<String>();
+//		if (document != null) {
+//			Element element = document.getDocumentElement();
+//			NodeList childNodes = element.getChildNodes();
+//			int len = childNodes.getLength();
+//			for (int i = 0; i < len; i++) {
+//				Node nde = childNodes.item(i);
+//				if (isElementName(nde, "path")) { //$NON-NLS-1$
+//					Element el = (Element) nde;
+//					String path = el.getAttribute("name"); //$NON-NLS-1$
+//					if (path.length() > 0) {
+//						paths.add(path);
+//					}
+//				}
+//			}
+//		}
+//		return paths.toArray(new String[paths.size()]);
+//	}
 
 	public static class TclPackage {
 		private String name;
@@ -210,9 +211,9 @@ public class DLTKTclHelper {
 			this.version = version;
 		}
 
-		private Set paths = new HashSet();
-		private Set dependencies = new HashSet();
-		private Set sources = new HashSet();
+		private Set<IPath> paths = new HashSet<IPath>();
+		private Set<String> dependencies = new HashSet<String>();
+		private Set<String> sources = new HashSet<String>();
 
 		public TclPackage(String name) {
 			this.name = name;
@@ -226,23 +227,23 @@ public class DLTKTclHelper {
 			this.name = name;
 		}
 
-		public Set getPaths() {
+		public Set<IPath> getPaths() {
 			return paths;
 		}
 
-		public void setPaths(Set paths) {
+		public void setPaths(Set<IPath> paths) {
 			this.paths = paths;
 		}
 
-		public Set getDependencies() {
+		public Set<String> getDependencies() {
 			return dependencies;
 		}
 
-		public void setDependencies(Set dependencies) {
+		public void setDependencies(Set<String> dependencies) {
 			this.dependencies = dependencies;
 		}
 
-		public Set getSources() {
+		public Set<String> getSources() {
 			return sources;
 		}
 
@@ -262,11 +263,11 @@ public class DLTKTclHelper {
 		}
 	};
 
-	public static TclPackage[] getPackagePath(List content) {
+	public static TclPackage[] getPackagePath(List<String> content) {
 		String text = getXMLContent(content);
 		Document document = getDocument(text);
 
-		Map packages = new HashMap();
+		Map<String, TclPackage> packages = new HashMap<String, TclPackage>();
 		if (document != null) {
 			Element element = document.getDocumentElement();
 			NodeList childNodes = element.getChildNodes();
@@ -285,11 +286,11 @@ public class DLTKTclHelper {
 				}
 			}
 		}
-		return (TclPackage[]) packages.values().toArray(
-				new TclPackage[packages.size()]);
+		return packages.values().toArray(new TclPackage[packages.size()]);
 	}
 
-	private static void populatePackage(Map packages, Node pkgNde) {
+	private static void populatePackage(Map<String, TclPackage> packages,
+			Node pkgNde) {
 		Element pkg = (Element) pkgNde;
 		final String pkgName = pkg.getAttribute("name"); //$NON-NLS-1$
 		if (pkgName == null || pkgName.length() == 0) {
@@ -297,7 +298,7 @@ public class DLTKTclHelper {
 		}
 		final TclPackage tclPackage;
 		if (packages.containsKey(pkgName)) {
-			tclPackage = (TclPackage) packages.get(pkgName);
+			tclPackage = packages.get(pkgName);
 		} else {
 			tclPackage = new TclPackage(pkgName);
 			packages.put(pkgName, tclPackage);
@@ -344,11 +345,12 @@ public class DLTKTclHelper {
 		return null;
 	}
 
-	private static String getXMLContent(List content) {
+	private static String getXMLContent(List<String> content) {
 		StringBuffer newList = new StringBuffer();
 		if (content != null) {
-			for (Iterator iterator = content.iterator(); iterator.hasNext();) {
-				String line = (String) iterator.next();
+			for (Iterator<String> iterator = content.iterator(); iterator
+					.hasNext();) {
+				String line = iterator.next();
 				if (line.trim().startsWith("<")) { //$NON-NLS-1$
 					newList.append(line).append("\n"); //$NON-NLS-1$
 				}
@@ -357,15 +359,16 @@ public class DLTKTclHelper {
 		return newList.toString();
 	}
 
-	public static Set getPackages(IInterpreterInstall install) {
+	public static Set<PackageInfo> getPackages(IInterpreterInstall install) {
 		IExecutionEnvironment exeEnv = install.getExecEnvironment();
-		List content = deployExecute(exeEnv, install.getInstallLocation()
+		List<String> content = deployExecute(exeEnv, install.getInstallLocation()
 				.toOSString(), new String[] { "get-pkgs" }, install //$NON-NLS-1$
 				.getEnvironmentVariables());
-		Set packages = new HashSet();
+		Set<PackageInfo> packages = new HashSet<PackageInfo>();
 		TclPackage[] packagePath = getPackagePath(content);
 		for (int i = 0; i < packagePath.length; i++) {
-			packages.add(packagePath[i].getName());
+			packages.add(new PackageInfo(packagePath[i].getName(),
+					packagePath[i].getVersion(), null));
 		}
 		return packages;
 	}

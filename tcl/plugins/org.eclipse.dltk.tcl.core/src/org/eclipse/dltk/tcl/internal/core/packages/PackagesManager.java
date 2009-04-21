@@ -333,12 +333,10 @@ public class PackagesManager {
 		for (InterpreterPairKey interpreterPairKey : keysToRemove) {
 			this.interpreterToPackages.remove(interpreterPairKey);
 		}
-		if (!keysToRemove.isEmpty()) {
-			save();
-		}
 	}
 
 	private void save() {
+		cleanBrokenElements();
 		IPath packagesPath = TclPlugin.getDefault().getStateLocation().append(
 				PACKAGES_FILE);
 		File packagesFile = packagesPath.toFile();

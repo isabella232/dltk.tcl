@@ -222,26 +222,6 @@ public class PackageRequireSourceAnalyser implements IBuildParticipant,
 		addInfoForModule(context, module, null);
 	}
 
-	private TclModuleInfo collectCachedInfo(ISourceModule module) {
-		TclModuleInfo info = null;
-		IContentCache cache = ModelManager.getModelManager().getCoreCache();
-		IFileHandle handle = EnvironmentPathUtils.getFile(module);
-		InputStream stream = cache.getCacheEntryAttribute(handle,
-				TclASTCache.TCL_PKG_INFO);
-		if (stream != null) {
-			Resource res = new BinaryResourceImpl();
-			try {
-				res.load(stream, null);
-				stream.close();
-				info = (TclModuleInfo) res.getContents().get(0);
-			} catch (IOException e) {
-				if (DLTKCore.DEBUG) {
-					e.printStackTrace();
-				}
-			}
-		}
-		return info;
-	}
 
 	private void addInfoForModule(IBuildContext context, ISourceModule module,
 			TclModuleInfo info) {
@@ -335,10 +315,28 @@ public class PackageRequireSourceAnalyser implements IBuildParticipant,
 			List<TclModuleInfo> result = new ArrayList<TclModuleInfo>();
 			// Clean modules without required items
 			for (TclModuleInfo tclModuleInfo : mods) {
+				// Clean old corrections.
+				EList<UserCorrection> pkgCorrections = tclModuleInfo
+						.getPackageCorrections();
+				if (!pkgCorrections.isEmpty()) {
+					List<UserCorrection> toRemove = new ArrayList<UserCorrection>();
+					EList<TclSourceEntry> required = tclModuleInfo
+							.getRequired();
+					processCleanCorrections(pkgCorrections, toRemove, required);
+				}
+				EList<UserCorrection> sourceCorrections = tclModuleInfo
+						.getSourceCorrections();
+				if (!sourceCorrections.isEmpty()) {
+					List<UserCorrection> toRemove = new ArrayList<UserCorrection>();
+					EList<TclSourceEntry> sourced = tclModuleInfo.getSourced();
+					processCleanCorrections(sourceCorrections, toRemove,
+							sourced);
+				}
 				if (!(tclModuleInfo.getProvided().isEmpty()
 						&& tclModuleInfo.getRequired().isEmpty()
-						&& tclModuleInfo.getSourced().isEmpty() && tclModuleInfo
-						.getSourceCorrections().isEmpty())) {
+						&& tclModuleInfo.getSourced().isEmpty()
+						&& sourceCorrections.isEmpty() && pkgCorrections
+						.isEmpty())) {
 					result.add(tclModuleInfo);
 				}
 			}
@@ -365,6 +363,24 @@ public class PackageRequireSourceAnalyser implements IBuildParticipant,
 		}
 	}
 
+	private void processCleanCorrections(EList<UserCorrection> pkgCorrections,
+			List<UserCorrection> toRemove, EList<TclSourceEntry> required) {
+		for (UserCorrection userCorrection : pkgCorrections) {
+			boolean found = false;
+			for (TclSourceEntry tclSourceEntry : required) {
+				if (tclSourceEntry.getValue().equals(
+						userCorrection.getOriginalValue())) {
+					found = true;
+					break;
+				}
+			}
+			if (!found) {
+				toRemove.add(userCorrection);
+			}
+		}
+		pkgCorrections.removeAll(toRemove);
+	}
+
 	private void checkSources(IEnvironment environment, ModuleInfo moduleInfo) {
 		IPath folder = moduleInfo.moduleLocation.removeLastSegments(1);
 		// Convert path to real path.
@@ -382,58 +398,55 @@ public class PackageRequireSourceAnalyser implements IBuildParticipant,
 							sourcedPath = Path.fromOSString(userValue);
 						} else {
 							userValue = userValue.replace('\\', '/');
-							sourcedPath = Path.fromPortableString(source
-									.getValue());
+							sourcedPath = Path.fromPortableString(userValue);
 						}
 						sourcedPaths.add(sourcedPath);
 					}
 				}
 			}
-			for (IPath sourcedPath : sourcedPaths) {
-				if (sourcedPath == null) {
-					sourcedPath = resolveSourceValue(folder, source,
-							environment);
+			if (sourcedPaths.isEmpty()) {
+				IPath sourcedPath = resolveSourceValue(folder, source,
+						environment);
+				if (sourcedPath != null) {
+					sourcedPaths.add(sourcedPath);
 					needToAddCorrection = true;
 				}
-				if (sourcedPath != null) {
-					IFileHandle file = environment.getFile(sourcedPath);
-					if (file != null) {
-						if (!file.exists()) {
+			}
+			for (IPath sourcedPath : sourcedPaths) {
+				IFileHandle file = environment.getFile(sourcedPath);
+				if (file != null) {
+					if (!file.exists()) {
+						reportSourceProblem(
+								source,
+								moduleInfo.reporter,
+								NLS
+										.bind(
+												Messages.PackageRequireSourceAnalyser_CouldNotLocateSourcedFile,
+												file.toOSString()), source
+										.getValue(), moduleInfo.lineTracker);
+					} else {
+						if (file.isDirectory()) {
 							reportSourceProblem(
 									source,
 									moduleInfo.reporter,
-									NLS
-											.bind(
-													Messages.PackageRequireSourceAnalyser_CouldNotLocateSourcedFile,
-													file.toOSString()), source
-											.getValue(), moduleInfo.lineTracker);
-						} else {
-							if (file.isDirectory()) {
+									Messages.PackageRequireSourceAnalyser_FolderSourcingNotSupported,
+									source.getValue(), moduleInfo.lineTracker);
+						} else
+						// Add user correction if not specified yet.
+						if (needToAddCorrection) {
+							if (!isAutoAddPackages()) {
 								reportSourceProblem(
 										source,
 										moduleInfo.reporter,
-										Messages.PackageRequireSourceAnalyser_FolderSourcingNotSupported,
+										Messages.PackageRequireSourceAnalyser_SourceNotAddedToBuildpath,
 										source.getValue(),
 										moduleInfo.lineTracker);
-							} else
-							// Add user correction if not specified yet.
-							if (needToAddCorrection) {
-								if (!isAutoAddPackages()) {
-									reportSourceProblem(
-											source,
-											moduleInfo.reporter,
-											Messages.PackageRequireSourceAnalyser_SourceNotAddedToBuildpath,
-											source.getValue(),
-											moduleInfo.lineTracker);
-								} else {
-									UserCorrection correction = TclPackagesFactory.eINSTANCE
-											.createUserCorrection();
-									correction.setOriginalValue(source
-											.getValue());
-									correction.getUserValue().add(
-											file.toString());
-									corrections.add(correction);
-								}
+							} else {
+								UserCorrection correction = TclPackagesFactory.eINSTANCE
+										.createUserCorrection();
+								correction.setOriginalValue(source.getValue());
+								correction.getUserValue().add(file.toString());
+								corrections.add(correction);
 							}
 						}
 					}

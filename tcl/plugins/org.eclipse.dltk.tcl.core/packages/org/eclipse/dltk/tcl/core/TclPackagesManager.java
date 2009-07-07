@@ -21,6 +21,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.dltk.core.DLTKCore;
+import org.eclipse.dltk.core.RuntimePerformanceMonitor;
+import org.eclipse.dltk.core.RuntimePerformanceMonitor.PerformanceNode;
 import org.eclipse.dltk.core.environment.IDeployment;
 import org.eclipse.dltk.core.environment.IExecutionEnvironment;
 import org.eclipse.dltk.core.environment.IFileHandle;
@@ -57,40 +59,57 @@ public class TclPackagesManager {
 	private static Resource infos = null;
 	private static final Map<String, Resource> projectInfos = new HashMap<String, Resource>();
 
-	public static synchronized List<TclPackageInfo> getPackageInfos(
+	public static List<TclPackageInfo> getPackageInfos(
 			IInterpreterInstall install, Set<String> packageNames,
 			boolean fetchIfRequired) {
 		initialize();
 		TclInterpreterInfo interpreterInfo = getTclInterpreter(install);
-		return Collections.unmodifiableList(getPackagesForInterpreter(
-				packageNames, fetchIfRequired, interpreterInfo, install));
+		List<TclPackageInfo> collection = null;
+		synchronized (TclPackagesManager.class) {
+			collection = Collections
+					.unmodifiableList(new ArrayList<TclPackageInfo>(
+							getPackagesForInterpreter(packageNames,
+									fetchIfRequired, interpreterInfo, install)));
+		}
+		return collection;
 	}
 
-	public static synchronized List<TclPackageInfo> getPackageInfos(
+	public static List<TclPackageInfo> getPackageInfos(
 			IInterpreterInstall install) {
 		initialize();
 		TclInterpreterInfo interpreterInfo = getTclInterpreter(install);
-		return Collections.unmodifiableList(interpreterInfo.getPackages());
+		List<TclPackageInfo> collection = null;
+		synchronized (TclPackagesManager.class) {
+			collection = Collections
+					.unmodifiableList(new ArrayList<TclPackageInfo>(
+							interpreterInfo.getPackages()));
+		}
+		return collection;
 	}
 
-	public static synchronized TclPackageInfo getPackageInfo(
-			IInterpreterInstall install, String name, boolean fetchIfRequired) {
+	public static TclPackageInfo getPackageInfo(IInterpreterInstall install,
+			String name, boolean fetchIfRequired) {
 		initialize();
 		TclInterpreterInfo interpreterInfo = getTclInterpreter(install);
 		EList<TclPackageInfo> packages = interpreterInfo.getPackages();
-		for (TclPackageInfo tclPackageInfo : packages) {
-			if (name.equals(tclPackageInfo.getName())) {
-				if (tclPackageInfo.isFetched() || !fetchIfRequired) {
-					return tclPackageInfo;
-				} else {
-					Set<TclPackageInfo> toFetch = new HashSet<TclPackageInfo>();
-					toFetch.add(tclPackageInfo);
-					fetchSources(toFetch, install, interpreterInfo);
-					return tclPackageInfo;
+		Set<TclPackageInfo> toFetch = new HashSet<TclPackageInfo>();
+		TclPackageInfo result = null;
+
+		synchronized (TclPackagesManager.class) {
+			for (TclPackageInfo tclPackageInfo : packages) {
+				if (name.equals(tclPackageInfo.getName())) {
+					if (tclPackageInfo.isFetched() || !fetchIfRequired) {
+						return tclPackageInfo;
+					} else {
+						toFetch.add(tclPackageInfo);
+						fetchSources(toFetch, install, interpreterInfo);
+						result = tclPackageInfo;
+						break;
+					}
 				}
 			}
 		}
-		return null;
+		return result;
 	}
 
 	public static Set<TclPackageInfo> getDependencies(
@@ -112,33 +131,42 @@ public class TclPackagesManager {
 		return null;
 	}
 
-	private static synchronized TclInterpreterInfo getTclInterpreter(
+	private static TclInterpreterInfo getTclInterpreter(
 			IInterpreterInstall install) {
-		EList<EObject> contents = infos.getContents();
+		return getTclInterpreter(install, true);
+	}
+
+	private static TclInterpreterInfo getTclInterpreter(
+			IInterpreterInstall install, boolean allowCreate) {
 		TclInterpreterInfo interpreterInfo = null;
 		String interpreterLocation = install.getInstallLocation().toOSString();
 		String environmentId = install.getInstallLocation().getEnvironmentId();
-		for (EObject eObject : contents) {
-			if (eObject instanceof TclInterpreterInfo) {
-				TclInterpreterInfo info = (TclInterpreterInfo) eObject;
-				String location = info.getInstallLocation();
-				String name = info.getName();
-				String env = info.getEnvironment();
-				if (interpreterLocation.equals(location)
-						&& install.getName().equals(name) && env != null
-						&& env.equals(environmentId)) {
-					interpreterInfo = info;
-					break;
+		synchronized (TclPackagesManager.class) {
+			for (EObject eObject : infos.getContents()) {
+				if (eObject instanceof TclInterpreterInfo) {
+					TclInterpreterInfo info = (TclInterpreterInfo) eObject;
+					String location = info.getInstallLocation();
+					String name = info.getName();
+					String env = info.getEnvironment();
+					if (interpreterLocation.equals(location)
+							&& install.getName().equals(name) && env != null
+							&& env.equals(environmentId)) {
+						interpreterInfo = info;
+						break;
+					}
 				}
 			}
-		}
-		if (interpreterInfo == null) {
-			interpreterInfo = TclPackagesFactory.eINSTANCE
-					.createTclInterpreterInfo();
-			interpreterInfo.setInstallLocation(interpreterLocation);
-			interpreterInfo.setName(install.getName());
-			interpreterInfo.setEnvironment(environmentId);
-			infos.getContents().add(interpreterInfo);
+			if (interpreterInfo == null) {
+				if (!allowCreate) {
+					return null;
+				}
+				interpreterInfo = TclPackagesFactory.eINSTANCE
+						.createTclInterpreterInfo();
+				interpreterInfo.setInstallLocation(interpreterLocation);
+				interpreterInfo.setName(install.getName());
+				interpreterInfo.setEnvironment(environmentId);
+				infos.getContents().add(interpreterInfo);
+			}
 		}
 		if (!interpreterInfo.isFetched()
 				|| interpreterInfo.getFetchedAt() == null
@@ -183,17 +211,23 @@ public class TclPackagesManager {
 
 	private static void fetchPackagesForInterpreter(
 			IInterpreterInstall install, TclInterpreterInfo interpreterInfo) {
+		PerformanceNode p = RuntimePerformanceMonitor.begin();
 		IExecutionEnvironment exeEnv = install.getExecEnvironment();
-		List<String> content = deployExecute(exeEnv, install
-				.getInstallLocation().toOSString(),
+		if (exeEnv == null) {
+			return;
+		}
+		List<String> content = deployExecute(exeEnv, install,
 				new String[] { "get-pkgs" }, install //$NON-NLS-1$
 						.getEnvironmentVariables());
-		if (content != null) {
-			processContent(content, false, true, interpreterInfo);
-			interpreterInfo.setFetched(true);
-			interpreterInfo.setFetchedAt(new Date());
-			save();
+		synchronized (TclPackagesManager.class) {
+			if (content != null) {
+				processContent(content, false, true, interpreterInfo);
+				interpreterInfo.setFetched(true);
+				interpreterInfo.setFetchedAt(new Date());
+				save();
+			}
 		}
+		p.done("Tcl", "Fetch interpreter packages info", 0);
 	}
 
 	public static void save() {
@@ -201,7 +235,9 @@ public class TclPackagesManager {
 			try {
 				infos.save(null);
 			} catch (IOException e) {
-				TclPlugin.error(e);
+				if (DLTKCore.DEBUG) {
+					// TclPlugin.error(e);
+				}
 			}
 		}
 		synchronized (projectInfos) {
@@ -255,7 +291,7 @@ public class TclPackagesManager {
 		return null;
 	}
 
-	private static void processContent(List<String> content,
+	private static synchronized void processContent(List<String> content,
 			boolean markAsFetched, boolean purgePackages,
 			TclInterpreterInfo info) {
 		String text = getXMLContent(content);
@@ -298,8 +334,8 @@ public class TclPackagesManager {
 		}
 	}
 
-	private static TclPackageInfo getCreatePackage(TclInterpreterInfo info,
-			String name) {
+	private static synchronized TclPackageInfo getCreatePackage(
+			TclInterpreterInfo info, String name) {
 		TclPackageInfo packageInfo = null;
 		for (TclPackageInfo pkgInfo : info.getPackages()) {
 			if (pkgInfo.getName().equals(name)) {
@@ -342,15 +378,21 @@ public class TclPackagesManager {
 			TclInterpreterInfo interpreterInfo, IInterpreterInstall install) {
 		Set<TclPackageInfo> result = new HashSet<TclPackageInfo>();
 		Set<TclPackageInfo> toFetch = new HashSet<TclPackageInfo>();
-		for (TclPackageInfo tclPackageInfo : interpreterInfo.getPackages()) {
-			if (packageName.contains(tclPackageInfo.getName())) {
-				processPackage(tclPackageInfo, result, toFetch, fetchIfRequired);
+		synchronized (TclPackagesManager.class) {
+			for (TclPackageInfo tclPackageInfo : interpreterInfo.getPackages()) {
+				if (packageName.contains(tclPackageInfo.getName())) {
+					processPackage(tclPackageInfo, result, toFetch,
+							fetchIfRequired);
+				}
 			}
 		}
 		fetchSources(toFetch, install, interpreterInfo);
-		for (TclPackageInfo tclPackageInfo : interpreterInfo.getPackages()) {
-			if (packageName.contains(tclPackageInfo.getName())) {
-				processPackage(tclPackageInfo, result, toFetch, fetchIfRequired);
+		synchronized (TclPackagesManager.class) {
+			for (TclPackageInfo tclPackageInfo : interpreterInfo.getPackages()) {
+				if (packageName.contains(tclPackageInfo.getName())) {
+					processPackage(tclPackageInfo, result, toFetch,
+							fetchIfRequired);
+				}
 			}
 		}
 		List<TclPackageInfo> resultList = new ArrayList<TclPackageInfo>();
@@ -381,10 +423,16 @@ public class TclPackagesManager {
 		if (toFetch.size() == 0) {
 			return;
 		}
+		PerformanceNode p = RuntimePerformanceMonitor.begin();
 		IExecutionEnvironment exeEnv = install.getExecEnvironment();
 		IDeployment deployment = exeEnv.createDeployment();
+		if (deployment == null) {
+			return;
+		}
 		IFileHandle script = deploy(deployment);
+
 		if (script == null) {
+			deployment.dispose();
 			return;
 		}
 
@@ -404,6 +452,7 @@ public class TclPackagesManager {
 			if (DLTKCore.DEBUG) {
 				e1.printStackTrace();
 			}
+			deployment.dispose();
 			return;
 		}
 		IFileHandle file = deployment.getFile(packagesPath);
@@ -422,19 +471,23 @@ public class TclPackagesManager {
 			if (DLTKCore.DEBUG) {
 				e.printStackTrace();
 			}
+			deployment.dispose();
 		}
 		if (process == null) {
+			deployment.dispose();
 			return;
 		}
 		List<String> output = ProcessOutputCollector.execute(process);
-		deployment.dispose();
+		// deployment.dispose();
 		processContent(output, true, false, interpreterInfo);
 
 		// Mark all toFetch as fetched.
 		for (TclPackageInfo info : toFetch) {
 			info.setFetched(true);
 		}
+		deployment.dispose();
 		save();
+		p.done("Tcl", "Fetch interpreter package sources", 0);
 	}
 
 	private static URI getInfoLocation() {
@@ -457,7 +510,7 @@ public class TclPackagesManager {
 		}
 	}
 
-	private static void initialize() {
+	private synchronized static void initialize() {
 		if (infos == null) {
 			final URI location = getInfoLocation();
 			infos = new XMIResourceImpl(location);
@@ -503,7 +556,7 @@ public class TclPackagesManager {
 	}
 
 	private static List<String> deployExecute(IExecutionEnvironment exeEnv,
-			String installLocation, String[] arguments,
+			IInterpreterInstall install, String[] arguments,
 			EnvironmentVariable[] env) {
 		IDeployment deployment = exeEnv.createDeployment();
 		if (deployment == null) {
@@ -511,6 +564,7 @@ public class TclPackagesManager {
 		}
 		IFileHandle script = deploy(deployment);
 		if (script == null) {
+			deployment.dispose();
 			return null;
 		}
 
@@ -526,14 +580,15 @@ public class TclPackagesManager {
 
 		Process process = null;
 		try {
-			process = ScriptLaunchUtil.runScriptWithInterpreter(exeEnv,
-					installLocation, config);
+			process = ScriptLaunchUtil.runScriptWithInterpreter(exeEnv, install
+					.getInstallLocation().toOSString(), config);
 		} catch (CoreException e) {
 			if (DLTKCore.DEBUG) {
 				e.printStackTrace();
 			}
 		}
 		if (process == null) {
+			deployment.dispose();
 			return null;
 		}
 		List<String> output = ProcessOutputCollector.execute(process);
@@ -603,13 +658,16 @@ public class TclPackagesManager {
 	public static synchronized void removeInterpreterInfo(
 			IInterpreterInstall install) {
 		initialize();
-		TclInterpreterInfo info = getTclInterpreter(install);
-		info.getPackages().clear();
-		infos.getContents().remove(info);
-		save();
+		final TclInterpreterInfo info = getTclInterpreter(install, false);
+		if (info != null) {
+			info.getPackages().clear();
+			info.setFetched(false);
+			info.setFetchedAt(null);
+			save();
+		}
 	}
 
-	public static synchronized Set<String> getPackageInfosAsString(
+	public static Set<String> getPackageInfosAsString(
 			IInterpreterInstall install) {
 		initialize();
 		Set<String> result = new HashSet<String>();
@@ -619,4 +677,5 @@ public class TclPackagesManager {
 		}
 		return result;
 	}
+
 }

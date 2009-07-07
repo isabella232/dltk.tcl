@@ -25,14 +25,22 @@ public class TclModelLabelProvider extends LabelProvider {
 			}
 			return result;
 		} else if (element instanceof TclPackageSourceModule) {
-			return ((TclPackageSourceModule) element).getElementName();
+			final TclPackageSourceModule module = (TclPackageSourceModule) element;
+			return module.getElementName() + " ("
+					+ module.getStorage().getFullPath().toString() + ")";
 		} else if (element instanceof TclSourcesSourceModule) {
 			IEnvironment environment = EnvironmentManager
 					.getEnvironment(((TclSourcesSourceModule) element)
 							.getScriptProject());
-			return environment
+			TclSourcesSourceModule module = (TclSourcesSourceModule) element;
+			String originalName = module.getOriginalName();
+			String convertedPath = environment
 					.convertPathToString(((TclSourcesSourceModule) element)
 							.getFullPath());
+			if (originalName != null && !originalName.equals(convertedPath)) {
+				return originalName + " (" + convertedPath + ")";
+			}
+			return convertedPath;
 		}
 		return null;
 	}

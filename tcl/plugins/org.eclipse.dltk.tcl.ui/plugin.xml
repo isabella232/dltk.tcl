@@ -294,17 +294,6 @@
       </enabledWhen>
     </page>
     <page
-      category="org.eclipse.dltk.tcl.propertyPage"
-      name="%TclGlobalVariablesPropertyPage.name"
-      class="org.eclipse.dltk.tcl.internal.ui.preferences.TclGlobalVariablesPropertyPage"
-      id="org.eclipse.dltk.tcl.globalVariables.propertyPage">
-      <enabledWhen>
-        <adapt type="org.eclipse.core.resources.IProject">
-          <test property="org.eclipse.core.resources.projectNature" value="org.eclipse.dltk.tcl.core.nature"/>
-        </adapt>         
-      </enabledWhen>
-    </page>
-    <page
       name="%TclPropertyPage.name"
       class="org.eclipse.dltk.tcl.internal.ui.preferences.TclPropertyPage"
       id="org.eclipse.dltk.tcl.propertyPage">
@@ -492,7 +481,9 @@
     	    class="org.eclipse.dltk.tcl.internal.ui.text.completion.TclTypeCompletionProposalComputer"
 	        toolkitId="org.eclipse.dltk.tcl.core.nature">
 			<partition type="__dftl_partition_content_type"/>
-		    <partition type="__tcl_string"/>
+   <partition
+         type="__tcl_string">
+   </partition>
 		</scriptCompletionProposalComputer>
 	</extension> 
   <extension
@@ -683,5 +674,21 @@
          nature="org.eclipse.dltk.tcl.core.nature"
          label="Tcl Source/Package information hover">
    </hover>
+</extension>
+<extension
+      point="org.eclipse.ui.popupMenus">
+   <objectContribution
+         adaptable="true"
+         id="org.eclipse.dltk.tcl.ui.sourcesContribution"
+         objectClass="org.eclipse.dltk.tcl.internal.core.sources.TclSourcesSourceModule">
+      <action
+            class="org.eclipse.dltk.tcl.internal.ui.actions.RemoveSourceAssociation"
+            enablesFor="1"
+            icon="icons/etool16/delete.gif"
+            id="org.eclipse.dltk.tcl.ui.removeSource"
+            label="Remove source association"
+            menubarPath="org.eclipse.dltk.ui.refactoring.menu">
+      </action>
+   </objectContribution>
 </extension>
 </plugin>

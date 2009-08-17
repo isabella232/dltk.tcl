@@ -21,6 +21,7 @@ import org.eclipse.dltk.core.WorkingCopyOwner;
 import org.eclipse.dltk.core.environment.EnvironmentManager;
 import org.eclipse.dltk.core.environment.EnvironmentPathUtils;
 import org.eclipse.dltk.core.environment.IEnvironment;
+import org.eclipse.dltk.core.environment.IFileHandle;
 import org.eclipse.dltk.internal.core.DefaultWorkingCopyOwner;
 import org.eclipse.dltk.internal.core.ExternalEntryFile;
 import org.eclipse.dltk.internal.core.ExternalSourceModule;
@@ -114,14 +115,15 @@ public class TclSourcesElement extends Openable implements IScriptFolder {
 
 				for (int i = 0; i < paths.length; i++) {
 					IPath path = paths[i];
-					ExternalEntryFile storage = new ExternalEntryFile(
-							EnvironmentPathUtils.getFile(environment, path));
+					IFileHandle file = EnvironmentPathUtils.getFile(
+							environment, path);
+					ExternalEntryFile storage = new ExternalEntryFile(file);
+					String modulePath = environment.convertPathToString(path)
+							.replace(environment.getSeparatorChar(), '_')
+							.replace(':', '_');
 					ExternalSourceModule module = new TclSourcesSourceModule(
-							this, environment.convertPathToString(path)
-									.replace(environment.getSeparatorChar(),
-											'_'),
-							DefaultWorkingCopyOwner.PRIMARY, storage,
-							originalNames.get(path));
+							this, modulePath, DefaultWorkingCopyOwner.PRIMARY,
+							storage, originalNames.get(path));
 					vChildren.add(module);
 				}
 			}
@@ -252,5 +254,13 @@ public class TclSourcesElement extends Openable implements IScriptFolder {
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * @since 2.0
+	 */
+	@Override
+	public boolean isReadOnly() {
+		return true;
 	}
 }

@@ -49,28 +49,13 @@ public class RemoveSourceAssociation implements IWorkbenchWindowActionDelegate {
 	}
 
 	private boolean checkEnablement(IStructuredSelection selection2) {
-		Iterator iterator = selection.iterator();
-		for (; iterator.hasNext();) {
+		for (Iterator<?> iterator = selection.iterator(); iterator.hasNext();) {
 			TclSourcesSourceModule module = (TclSourcesSourceModule) iterator
 					.next();
 			// Check for direct source references
 			String originalName = module.getOriginalName();
 			if (!originalName.contains("$")) {
 				return false;
-			}
-			// Check for global variable related references
-
-			// IScriptProject scriptProject = ((ISourceModule) module)
-			// .getScriptProject();
-			// TclVariableResolver variableResolver = new TclVariableResolver(
-			// new DefaultVariablesRegistry(scriptProject));
-			// String value = variableResolver.resolve(originalName);
-			String value = originalName;
-
-			// if( value.equals())
-			if (value == null || !value.contains("$")) {
-				return false; // This is resolved variable. We can't delete
-				// such associations.
 			}
 		}
 		return true;

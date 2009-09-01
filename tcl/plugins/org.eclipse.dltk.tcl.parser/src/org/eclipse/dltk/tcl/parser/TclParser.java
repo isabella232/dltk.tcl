@@ -25,6 +25,7 @@ import org.eclipse.dltk.tcl.ast.ComplexString;
 import org.eclipse.dltk.tcl.ast.Script;
 import org.eclipse.dltk.tcl.ast.StringArgument;
 import org.eclipse.dltk.tcl.ast.Substitution;
+import org.eclipse.dltk.tcl.ast.TclArgumentKind;
 import org.eclipse.dltk.tcl.ast.TclArgument;
 import org.eclipse.dltk.tcl.ast.TclArgumentList;
 import org.eclipse.dltk.tcl.ast.TclCodeModel;
@@ -333,12 +334,12 @@ public class TclParser implements ITclParserOptions {
 			} else if (original instanceof StringArgument) {
 				StringArgument sArg = (StringArgument) original;
 				String value = sArg.getValue();
-				list.setKind(0);
+				list.setKind(TclArgumentKind.SIMPLE);
 				if (value.startsWith("{") && value.endsWith("}")) {
-					list.setKind(1);
+					list.setKind(TclArgumentKind.BRACED);
 				}
 				if (value.startsWith("\"") && value.endsWith("\"")) {
-					list.setKind(2);
+					list.setKind(TclArgumentKind.QUOTED);
 				}
 			}
 
@@ -374,6 +375,7 @@ public class TclParser implements ITclParserOptions {
 			script.setEnd(blockCode.getEnd() + globalOffset);
 			String wordText = blockCode.getValue();
 			if (wordText.startsWith("{") && wordText.endsWith("}")
+					|| wordText.startsWith("[") && wordText.endsWith("]")
 					|| wordText.startsWith("\"") && wordText.endsWith("\"")) {
 				script.setContentStart(script.getStart() + 1 + globalOffset);
 				script.setContentEnd(script.getEnd() - 1 + globalOffset);
@@ -534,12 +536,15 @@ public class TclParser implements ITclParserOptions {
 		literal.setStart(offset + start + globalOffset);
 		literal.setEnd(offset + end + 1 + globalOffset);
 		String value = content.substring(offset + start, offset + end + 1);
-		literal.setKind(0);
+		literal.setKind(TclArgumentKind.SIMPLE);
+		int add = 0;
 		if (value.startsWith("{") && value.endsWith("}")) {
-			literal.setKind(1);
+			literal.setKind(TclArgumentKind.BRACED);
+			add = 1;
 		}
 		if (value.startsWith("\"") && value.endsWith("\"")) {
-			literal.setKind(2);
+			literal.setKind(TclArgumentKind.QUOTED);
+			add = 1;
 		}
 		// literal.setValue(value);
 		int pos = start;
@@ -549,9 +554,10 @@ public class TclParser implements ITclParserOptions {
 				String st = (String) oo;
 				StringArgument a = factory.createStringArgument();
 				a.setValue(st);
-				a.setStart(pos + offset + globalOffset);
+				a.setStart(pos + offset + globalOffset + (i != 0 ? add : 0));
 				pos += st.length();
-				a.setEnd(pos + offset + globalOffset);
+				a.setEnd(pos + offset + globalOffset + add
+						+ ((add > 0 && (i == contents.size() - 1)) ? 1 : 0));
 				literal.getArguments().add(a);
 			} else if (oo instanceof ISubstitution && oo instanceof TclElement) {
 				TclElement bs = (TclElement) oo;

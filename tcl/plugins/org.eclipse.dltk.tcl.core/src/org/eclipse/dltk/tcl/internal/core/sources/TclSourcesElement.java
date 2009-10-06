@@ -1,6 +1,5 @@
 package org.eclipse.dltk.tcl.internal.core.sources;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -40,12 +39,22 @@ import org.eclipse.dltk.utils.CorePrinter;
 /**
  * Element to represent sourced files.
  */
+@SuppressWarnings("restriction")
 public class TclSourcesElement extends Openable implements IScriptFolder {
 	private String name;
 
 	protected TclSourcesElement(ModelElement parent) {
 		super(parent);
-		this.name = "Sourced files@" + getScriptProject().getElementName();
+		this.name = generateDefaultName(getScriptProject());
+	}
+
+	private static String generateDefaultName(IScriptProject project) {
+		return "Sourced files@" + project.getElementName();
+	}
+
+	protected TclSourcesElement(ModelElement parent, String name) {
+		super(parent);
+		this.name = name;
 	}
 
 	public String getElementName() {
@@ -85,9 +94,12 @@ public class TclSourcesElement extends Openable implements IScriptFolder {
 		return true;
 	}
 
+	@Override
 	protected boolean buildStructure(OpenableElementInfo info,
 			IProgressMonitor pm, Map newElements, IResource underlyingResource)
 			throws ModelException {
+		if (!exists())
+			throw newNotPresentException();
 		// check whether this folder can be opened
 		IInterpreterInstall install = null;
 		IScriptProject scriptProject = getScriptProject();
@@ -130,8 +142,8 @@ public class TclSourcesElement extends Openable implements IScriptFolder {
 			}
 			if (pseudoElements.size() > 0) {
 				for (String name : pseudoElements) {
-					vChildren.add(new TclSourcesPseudoSourceModule(this,
-							name, DefaultWorkingCopyOwner.PRIMARY));
+					vChildren.add(new TclSourcesPseudoSourceModule(this, name,
+							DefaultWorkingCopyOwner.PRIMARY));
 				}
 			}
 			info.setChildren(vChildren.toArray(new IModelElement[vChildren
@@ -203,7 +215,7 @@ public class TclSourcesElement extends Openable implements IScriptFolder {
 	}
 
 	public boolean exists() {
-		return true;
+		return name.equals(generateDefaultName(getScriptProject()));
 	}
 
 	public ISourceModule[] getSourceModules() throws ModelException {

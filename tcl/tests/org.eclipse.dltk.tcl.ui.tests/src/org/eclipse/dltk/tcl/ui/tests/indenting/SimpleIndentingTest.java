@@ -9,6 +9,8 @@
  *******************************************************************************/
 package org.eclipse.dltk.tcl.ui.tests.indenting;
 
+import java.io.IOException;
+
 import junit.framework.TestCase;
 
 import org.eclipse.dltk.tcl.internal.ui.text.TclAutoEditStrategy;
@@ -17,18 +19,22 @@ import org.eclipse.dltk.tcl.ui.TclPreferenceConstants;
 import org.eclipse.dltk.tcl.ui.tests.TclUITestsPlugin;
 import org.eclipse.dltk.tcl.ui.text.TclPartitions;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.DocumentCommand;
 import org.eclipse.jface.text.DocumentRewriteSession;
 import org.eclipse.jface.text.DocumentRewriteSessionType;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITypedRegion;
 import org.eclipse.jface.text.TextUtilities;
 import org.eclipse.jface.text.rules.FastPartitioner;
 
+@SuppressWarnings("nls")
 public class SimpleIndentingTest extends TestCase {
 
-	private IPreferenceStore fStore;
+	private final IPreferenceStore fStore = TclUITestsPlugin.getDefault()
+			.getPreferenceStore();
 
 	private TclAutoEditStrategy strategy;
 
@@ -48,12 +54,12 @@ public class SimpleIndentingTest extends TestCase {
 				partitioner);
 	}
 
+	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
-		fStore = TclUITestsPlugin.getDefault().getPreferenceStore();
 		TclPreferenceConstants.initializeDefaultValues(fStore);
-		String fPartitioning = TclPartitions.TCL_PARTITIONING;
-		strategy = new TclAutoEditStrategy(fStore, fPartitioning);
+		strategy = new TclAutoEditStrategy(fStore,
+				TclPartitions.TCL_PARTITIONING);
 	}
 
 	public void testParts() throws Exception {
@@ -161,9 +167,7 @@ public class SimpleIndentingTest extends TestCase {
 
 		int offset = temp.getLineOffset(3) + temp.getLineLength(3) - 1;
 
-		DocumentCommand c = new DocumentCommand() {
-		};
-		c.doit = true;
+		DocumentCommand c = new DocCmd();
 		c.caretOffset = -1;
 		c.shiftsCaret = true;
 		c.length = 0;
@@ -201,9 +205,7 @@ public class SimpleIndentingTest extends TestCase {
 
 		int offset = temp.getLineOffset(3) + temp.getLineLength(3);
 
-		DocumentCommand c = new DocumentCommand() {
-		};
-		c.doit = true;
+		DocumentCommand c = new DocCmd();
 		c.caretOffset = -1;
 		c.shiftsCaret = true;
 		c.length = 0;
@@ -233,7 +235,7 @@ public class SimpleIndentingTest extends TestCase {
 		session = temp
 				.startRewriteSession(DocumentRewriteSessionType.STRICTLY_SEQUENTIAL);
 
-		c.doit = true;
+		c = new DocCmd();
 		c.caretOffset = -1;
 		c.shiftsCaret = true;
 		c.length = 0;
@@ -269,9 +271,7 @@ public class SimpleIndentingTest extends TestCase {
 
 		int offset = temp.getLineOffset(0) + temp.getLineLength(0);
 
-		DocumentCommand c = new DocumentCommand() {
-		};
-		c.doit = true;
+		DocumentCommand c = new DocCmd();
 		c.caretOffset = -1;
 		c.shiftsCaret = true;
 		c.length = 0;
@@ -306,9 +306,7 @@ public class SimpleIndentingTest extends TestCase {
 
 		int offset = temp.getLineOffset(0) + temp.getLineLength(0);
 
-		DocumentCommand c = new DocumentCommand() {
-		};
-		c.doit = true;
+		DocumentCommand c = new DocCmd();
 		c.caretOffset = -1;
 		c.shiftsCaret = true;
 		c.length = 0;
@@ -340,16 +338,12 @@ public class SimpleIndentingTest extends TestCase {
 		DocumentRewriteSession session = temp
 				.startRewriteSession(DocumentRewriteSessionType.STRICTLY_SEQUENTIAL);
 		installStuff(temp);
-		DocumentCommand c = new DocumentCommand() {
-			{
-				this.doit = true;
-				this.caretOffset = -1;
-				this.shiftsCaret = true;
-				this.length = 0;
-				this.offset = temp.getLineOffset(1) + temp.getLineLength(1);
-				this.text = "\n";
-			}
-		};
+		DocumentCommand c = new DocCmd();
+		c.caretOffset = -1;
+		c.shiftsCaret = true;
+		c.length = 0;
+		c.offset = temp.getLineOffset(1) + temp.getLineLength(1);
+		c.text = "\n";
 
 		strategy.customizeDocumentCommand(temp, c);
 
@@ -411,18 +405,15 @@ public class SimpleIndentingTest extends TestCase {
 				.startRewriteSession(DocumentRewriteSessionType.STRICTLY_SEQUENTIAL);
 		installStuff(temp);
 
-		DocumentCommand c = new DocumentCommand() {
-			{
-				this.doit = true;
-				this.caretOffset = -1;
-				this.shiftsCaret = true;
-				this.length = 0;
-				this.offset = 0;
-				this.text = text0;
-			}
-		};
+		DocumentCommand c = new DocCmd();
+		c.caretOffset = -1;
+		c.shiftsCaret = true;
+		c.length = 0;
+		c.offset = 0;
+		c.text = text0;
 
-		fStore.setValue(TclPreferenceConstants.EDITOR_SMART_PASTE_MODE, 2);
+		fStore.setValue(TclPreferenceConstants.EDITOR_SMART_PASTE_MODE,
+				TclPreferenceConstants.EDITOR_SMART_PASTE_MODE_FULL);
 		strategy.customizeDocumentCommand(temp, c);
 
 		// execute
@@ -432,8 +423,14 @@ public class SimpleIndentingTest extends TestCase {
 
 		// check document
 		assertEquals('#', temp.getChar(0));
-		assertEquals('i', temp.getChar(temp.getLineOffset(2944) + 1));
-		assertEquals('a', temp.getChar(temp.getLineOffset(1990) + 1));
+		// line numbers are starting at 0
+		final IRegion line2944 = temp.getLineInformation(2944);
+		assertEquals("\t" + "interp delete $i", temp.get(line2944.getOffset(),
+				line2944.getLength()));
+		final IRegion line1990 = temp.getLineInformation(1990);
+		assertEquals("\t" + "a alias exec foo" + "\t\t"
+				+ ";# Relies on exec being a string command!", temp.get(
+				line1990.getOffset(), line1990.getLength()));
 	}
 
 	public void testIndent06_jumping() throws Exception {
@@ -443,16 +440,12 @@ public class SimpleIndentingTest extends TestCase {
 				.startRewriteSession(DocumentRewriteSessionType.STRICTLY_SEQUENTIAL);
 		installStuff(temp);
 
-		DocumentCommand c = new DocumentCommand() {
-			{
-				this.doit = true;
-				this.caretOffset = -1;
-				this.shiftsCaret = true;
-				this.length = 0;
-				this.offset = temp.getLineOffset(2);
-				this.text = "\t";
-			}
-		};
+		DocumentCommand c = new DocCmd();
+		c.caretOffset = -1;
+		c.shiftsCaret = true;
+		c.length = 0;
+		c.offset = temp.getLineOffset(2);
+		c.text = "\t";
 
 		strategy.customizeDocumentCommand(temp, c);
 
@@ -481,16 +474,12 @@ public class SimpleIndentingTest extends TestCase {
 				.startRewriteSession(DocumentRewriteSessionType.STRICTLY_SEQUENTIAL);
 		installStuff(temp);
 
-		DocumentCommand c = new DocumentCommand() {
-			{
-				this.doit = true;
-				this.caretOffset = -1;
-				this.shiftsCaret = true;
-				this.length = 0;
-				this.offset = temp.getLineOffset(1) + 15;
-				this.text = "\n";
-			}
-		};
+		DocumentCommand c = new DocCmd();
+		c.caretOffset = -1;
+		c.shiftsCaret = true;
+		c.length = 0;
+		c.offset = temp.getLineOffset(1) + 15;
+		c.text = "\n";
 
 		strategy.customizeDocumentCommand(temp, c);
 
@@ -616,6 +605,48 @@ public class SimpleIndentingTest extends TestCase {
 		assertEquals("proc foo{} {\n" + "	set a 5\n" + "	set b 6\n" + "}\n\n",
 				d.get());
 
+	}
+
+	public void testSmartPaste289072() throws IOException, BadLocationException {
+		fStore.setValue(TclPreferenceConstants.EDITOR_SMART_PASTE_MODE,
+				TclPreferenceConstants.EDITOR_SMART_PASTE_MODE_FULL);
+		String content = TclUITestsPlugin.getDefault().getPluginFileContent(
+				"/tcls/bug289072.tcl");
+		DocumentCommand c = new DocCmd();
+		c.caretOffset = -1;
+		c.shiftsCaret = true;
+		c.length = 0;
+		c.offset = content.indexOf("[]") + 1;
+		c.text = "fakeproc";
+		String expected = content.replaceAll("\\[\\]", "\\[" + c.text + "\\]");
+
+		Document doc = new Document(content);
+
+		strategy.customizeDocumentCommand(doc, c);
+		doc.replace(c.offset, c.length, c.text);
+		assertEquals(expected, doc.get());
+	}
+
+	public void testSmartPaste289072a() throws IOException,
+			BadLocationException {
+		fStore.setValue(TclPreferenceConstants.EDITOR_SMART_PASTE_MODE,
+				TclPreferenceConstants.EDITOR_SMART_PASTE_MODE_FULL);
+		String content = TclUITestsPlugin.getDefault().getPluginFileContent(
+				"/tcls/bug289072.tcl");
+		Document doc = new Document(content);
+
+		DocumentCommand c = new DocCmd();
+		c.caretOffset = -1;
+		c.shiftsCaret = true;
+		c.length = 0;
+		c.offset = doc.getLineOffset(doc.getLineOfOffset(content
+				.indexOf("set x")) + 1);
+		c.text = "fakeproc\n";
+		String expected = content.substring(0, c.offset) + ("\t\t" + c.text)
+				+ content.substring(c.offset);
+		strategy.customizeDocumentCommand(doc, c);
+		doc.replace(c.offset, c.length, c.text);
+		assertEquals(expected, doc.get());
 	}
 
 }

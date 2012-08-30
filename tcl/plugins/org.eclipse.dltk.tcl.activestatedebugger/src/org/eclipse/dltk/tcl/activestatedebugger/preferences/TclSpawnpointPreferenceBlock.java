@@ -26,6 +26,7 @@ import org.eclipse.dltk.tcl.activestatedebugger.spawnpoint.SpawnpointCommandMana
 import org.eclipse.dltk.tcl.activestatedebugger.spawnpoint.SpawnpointCommands;
 import org.eclipse.dltk.ui.dialogs.StatusInfo;
 import org.eclipse.dltk.ui.preferences.IPreferenceDelegate;
+import org.eclipse.dltk.ui.preferences.PreferenceKey;
 import org.eclipse.jface.dialogs.StatusDialog;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
@@ -146,7 +147,7 @@ public class TclSpawnpointPreferenceBlock implements IListAdapter,
 	private static final int IDX_REMOVE = 2;
 
 	private final IShellProvider shellProvider;
-	private final IPreferenceDelegate delegate;
+	private final IPreferenceDelegate<PreferenceKey> delegate;
 	private final Set<String> contributed;
 
 	/**
@@ -155,7 +156,7 @@ public class TclSpawnpointPreferenceBlock implements IListAdapter,
 	 * @param container
 	 */
 	public TclSpawnpointPreferenceBlock(IShellProvider shellProvider,
-			IPreferenceDelegate delegate) {
+			IPreferenceDelegate<PreferenceKey> delegate) {
 		this.shellProvider = shellProvider;
 		this.delegate = delegate;
 		this.contributed = SpawnpointCommandManager.getContributedCommands();

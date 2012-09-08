@@ -77,12 +77,12 @@
          version="0.0.0"
          unpack="false"/>
 
-   <plugin
+   <!--plugin
          id="org.eclipse.dltk.tcl.doc.user.source"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>
+         unpack="false"/-->
 
    <plugin
          id="org.eclipse.dltk.tcl.parser.source"
@@ -98,11 +98,11 @@
          version="0.0.0"
          unpack="false"/>
 
-   <plugin
+   <!--plugin
          id="org.eclipse.dltk.tcl.tcllib.source"
          download-size="0"
          install-size="0"
-         version="0.0.0"/>
+         version="0.0.0"/-->
 
    <plugin
          id="org.eclipse.dltk.tcl.formatter.source"

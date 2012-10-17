@@ -3,9 +3,13 @@ package org.eclipse.dltk.tcl.internal.core;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedList;
+import java.util.Queue;
 
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.dltk.ast.parser.IASTCache;
 import org.eclipse.dltk.ast.parser.IModuleDeclaration;
 import org.eclipse.dltk.compiler.problem.IProblemReporter;
@@ -21,59 +25,76 @@ import org.eclipse.dltk.tcl.ast.TclModuleDeclaration;
 import org.eclipse.dltk.tcl.internal.core.serialization.TclASTLoader;
 import org.eclipse.dltk.tcl.internal.core.serialization.TclASTSaver;
 import org.eclipse.dltk.tcl.internal.parser.NewTclSourceParser;
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.util.EcoreUtil.Copier;
 
+@SuppressWarnings("restriction")
 public class TclASTCache implements IASTCache {
 	public static final String TCL_AST_ATTRIBUTE = "_ast";
 	public static final String TCL_PKG_INFO = "_pinf";
 	public static final String TCL_STRUCTURE_INDEX = IContentCache.STRUCTURE_INDEX;
 	public static final String TCL_MIXIN_INDEX = IContentCache.MIXIN_INDEX;
 
-	private class StoreEntry {
+	private static class StoreEntry {
 		ProblemCollector problems;
 		IFileHandle handle;
 		TclModule module;
 	}
 
-	List<StoreEntry> entriesToStore = new ArrayList<StoreEntry>();
+	private static class TclCacheSaver extends Job {
 
-	private Thread storeASTThread = new Thread("Tcl Cache Saver") {
-		public void run() {
-			while (true) {
-				synchronized (entriesToStore) {
-					if (entriesToStore.isEmpty()) {
-						try {
-							entriesToStore.wait(100);
-						} catch (InterruptedException e) {
-							if (DLTKCore.DEBUG) {
-								e.printStackTrace();
-							}
-						}
-					} else {
-						StoreEntry entry = entriesToStore.remove(0);
-						IContentCache cache = ModelManager.getModelManager()
-								.getCoreCache();
-						OutputStream stream = cache
-								.getCacheEntryAttributeOutputStream(
-										entry.handle, TCL_AST_ATTRIBUTE);
+		final Queue<StoreEntry> queue = new LinkedList<StoreEntry>();
 
-						storeTclEntryInCache(entry.problems, entry.module,
-								stream);
-						try {
-							stream.close();
-						} catch (IOException e) {
-						}
-					}
+		public TclCacheSaver() {
+			super("Tcl Cache Saver");
+			setSystem(true);
+			setPriority(SHORT);
+		}
+
+		@Override
+		protected IStatus run(IProgressMonitor monitor) {
+			for (;;) {
+				final StoreEntry entry;
+				synchronized (queue) {
+					entry = queue.poll();
+				}
+				if (entry == null) {
+					break;
+				}
+				IContentCache cache = ModelManager.getModelManager()
+						.getCoreCache();
+				OutputStream stream = cache.getCacheEntryAttributeOutputStream(
+						entry.handle, TCL_AST_ATTRIBUTE);
+
+				storeTclEntryInCache(entry.problems, entry.module, stream);
+				try {
+					stream.close();
+				} catch (IOException e) {
 				}
 			}
-		};
-	};
+			return Status.OK_STATUS;
+		}
 
-	public TclASTCache() {
-		storeASTThread.setDaemon(true);
-		storeASTThread.start();
+		@Override
+		public boolean shouldRun() {
+			synchronized (queue) {
+				return !queue.isEmpty();
+			}
+		}
+
+		void addToQueue(StoreEntry entry) {
+			final int prevSize;
+			synchronized (queue) {
+				prevSize = queue.size();
+				if (prevSize <= 256) {
+					queue.add(entry);
+				}
+			}
+			if ((prevSize & 0x0F) == 0) {
+				schedule();
+			}
+		}
 	}
+
+	private final TclCacheSaver cacheSaverJob = new TclCacheSaver();
 
 	public ASTCacheEntry restoreModule(ISourceModule module) {
 		IFileHandle handle = EnvironmentPathUtils.getFile(module);
@@ -123,13 +144,6 @@ public class TclASTCache implements IASTCache {
 		return null;
 	}
 
-	public static EObject copy(EObject eObject) {
-		Copier copier = new Copier(true, false);
-		EObject result = copier.copy(eObject);
-		copier.copyReferences();
-		return result;
-	}
-
 	public void storeModule(ISourceModule module,
 			IModuleDeclaration moduleDeclaration, ProblemCollector problems) {
 		IFileHandle handle = EnvironmentPathUtils.getFile(module, false);
@@ -147,10 +161,7 @@ public class TclASTCache implements IASTCache {
 					entry.problems = new ProblemCollector();
 					problems.copyTo(entry.problems);
 				}
-				synchronized (entriesToStore) {
-					entriesToStore.add(entry);
-					entriesToStore.notifyAll();
-				}
+				cacheSaverJob.addToQueue(entry);
 			}
 		}
 	}

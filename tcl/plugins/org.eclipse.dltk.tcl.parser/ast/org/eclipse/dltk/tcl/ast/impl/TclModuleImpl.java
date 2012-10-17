@@ -287,7 +287,7 @@ public class TclModuleImpl extends EObjectImpl implements TclModule {
 		result.append(" (size: "); //$NON-NLS-1$
 		result.append(size);
 		result.append(')');
-		result.append(SimpleCodePrinter.getCommandsString(getStatements()));
+		result.append(SimpleCodePrinter.getCommandsString(getStatements(),false));
 		return result.toString();
 	}
 

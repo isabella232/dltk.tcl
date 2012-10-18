@@ -18,6 +18,7 @@ import java.util.List;
 
 import org.eclipse.dltk.compiler.ISourceElementRequestorExtension;
 import org.eclipse.dltk.compiler.SourceElementRequestorAdaptor;
+import org.eclipse.dltk.compiler.SourceElementRequestorMode;
 import org.eclipse.dltk.core.caching.StructureModelCollector;
 
 public class Collector extends StructureModelCollector implements
@@ -129,8 +130,8 @@ public class Collector extends StructureModelCollector implements
 		// ignore
 	}
 
-	public int getMode() {
-		return MODE_STRUCTURE;
+	public SourceElementRequestorMode getMode() {
+		return SourceElementRequestorMode.STRUCTURE;
 	}
 
 }

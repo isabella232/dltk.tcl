@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.dltk.compiler.ISourceElementRequestor;
-import org.eclipse.dltk.compiler.SourceElementRequestorKind;
+import org.eclipse.dltk.compiler.SourceElementRequestorMode;
 import org.eclipse.dltk.compiler.env.IModuleSource;
 import org.eclipse.dltk.compiler.problem.IProblemReporter;
 import org.eclipse.dltk.compiler.problem.ProblemSeverity;
@@ -101,7 +101,7 @@ public class TclSourceElementParser2 extends TclSourceElementParser implements
 	@Override
 	public void parseSourceModule(IModuleSource module) {
 		final ISourceElementRequestor requestor = getRequestor();
-		if (USE_NEW && SourceElementRequestorKind.STRUCTURE.matches(requestor)) {
+		if (USE_NEW && SourceElementRequestorMode.STRUCTURE.matches(requestor)) {
 			initDetectors();
 			final IProblemReporter reporter = getProblemReporter();
 			// TODO load from disk cache

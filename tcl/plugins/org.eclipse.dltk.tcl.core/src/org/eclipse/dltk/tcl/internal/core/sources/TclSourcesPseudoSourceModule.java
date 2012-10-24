@@ -6,7 +6,6 @@ package org.eclipse.dltk.tcl.internal.core.sources;
 import java.util.Map;
 
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.dltk.core.IDLTKLanguageToolkit;
@@ -75,7 +74,7 @@ public class TclSourcesPseudoSourceModule extends AbstractSourceModule {
 	}
 
 	@Override
-	protected String getNatureId() throws CoreException {
+	protected String getNatureId() {
 		return TclNature.NATURE_ID;
 	}
 

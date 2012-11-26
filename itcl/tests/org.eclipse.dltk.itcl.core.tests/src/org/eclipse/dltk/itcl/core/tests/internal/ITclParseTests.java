@@ -14,7 +14,6 @@ import junit.framework.Test;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.dltk.ast.declarations.MethodDeclaration;
 import org.eclipse.dltk.ast.declarations.ModuleDeclaration;
-import org.eclipse.dltk.ast.parser.ISourceParserConstants;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.SourceParserUtil;
 import org.eclipse.dltk.core.tests.model.AbstractModelTests;

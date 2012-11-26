@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Tests
+Bundle-SymbolicName: org.eclipse.dltk.tcl.launching.tests
+Bundle-Version: 5.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.ui,
+ org.eclipse.debug.core,
+ org.eclipse.dltk.core,
+ org.eclipse.dltk.launching,
+ org.eclipse.dltk.core.tests,
+ org.junit;bundle-version="3.8.2",
+ org.eclipse.dltk.tcl.core,
+ org.eclipse.dltk.tcl.launching,
+ org.eclipse.dltk.tcl.debug,
+ org.eclipse.dltk.tcl.activestatedebugger

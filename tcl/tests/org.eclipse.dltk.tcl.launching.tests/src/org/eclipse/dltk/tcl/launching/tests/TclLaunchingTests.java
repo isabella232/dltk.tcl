@@ -1,4 +1,4 @@
-package org.eclipse.dltk.tcl.core.tests.launching;
+package org.eclipse.dltk.tcl.launching.tests;
 
 import java.io.File;
 import java.util.ArrayList;

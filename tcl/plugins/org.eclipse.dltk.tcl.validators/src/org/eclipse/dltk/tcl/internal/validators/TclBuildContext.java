@@ -61,8 +61,7 @@ public class TclBuildContext {
 			return module;
 		}
 		// Parse and store statements here.
-		ISourceModuleInfoCache infoCache = ModelManager.getModelManager()
-				.getSourceModuleInfoCache();
+		ISourceModuleInfoCache infoCache = SourceParserUtil.getCache();
 		ISourceModuleInfo info = infoCache.get(context.getSourceModule());
 		ProblemCollector collector = new ProblemCollector();
 		IModuleDeclaration cache = SourceParserUtil.getModuleFromCache(info,

@@ -23,7 +23,6 @@ import org.eclipse.dltk.internal.core.ModelManager;
 import org.eclipse.dltk.launching.IInterpreterInstall;
 import org.eclipse.dltk.launching.InterpreterContainerHelper;
 import org.eclipse.dltk.launching.ScriptRuntime;
-import org.eclipse.dltk.launching.ScriptRuntime.DefaultInterpreterEntry;
 import org.eclipse.dltk.tcl.core.TclNature;
 import org.eclipse.dltk.tcl.core.TclPackagesManager;
 import org.eclipse.dltk.tcl.core.packages.TclModuleInfo;
@@ -67,10 +66,8 @@ final class TclRequirePackageCorrectionMarkerResolution implements
 		public PackagesLabelProvider(IInterpreterInstall install) {
 			this.install = install;
 			if (install == null) {
-				install = ScriptRuntime
-						.getDefaultInterpreterInstall(new DefaultInterpreterEntry(
-								TclNature.NATURE_ID,
-								LocalEnvironment.ENVIRONMENT_ID));
+				install = ScriptRuntime.getDefaultInterpreterInstall(
+						TclNature.NATURE_ID, LocalEnvironment.getInstance());
 			}
 		}
 

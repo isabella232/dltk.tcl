@@ -27,7 +27,6 @@ import org.eclipse.dltk.internal.debug.ui.interpreters.IInterpreterComboBlockCon
 import org.eclipse.dltk.launching.IInterpreterInstall;
 import org.eclipse.dltk.launching.InterpreterContainerHelper;
 import org.eclipse.dltk.launching.ScriptRuntime;
-import org.eclipse.dltk.launching.ScriptRuntime.DefaultInterpreterEntry;
 import org.eclipse.dltk.tcl.core.TclNature;
 import org.eclipse.dltk.tcl.core.TclPackagesManager;
 import org.eclipse.dltk.ui.DLTKPluginImages;
@@ -82,9 +81,8 @@ public class TclInterpreterComboBlock extends AbstractInterpreterComboBlock {
 				IInterpreterInstall install = getInterpreter();
 				if (install == null) {
 					install = ScriptRuntime
-							.getDefaultInterpreterInstall(new DefaultInterpreterEntry(
-									TclNature.NATURE_ID,
-									LocalEnvironment.ENVIRONMENT_ID));
+							.getDefaultInterpreterInstall(TclNature.NATURE_ID,
+									LocalEnvironment.getInstance());
 				}
 				if (install != null) {
 					final Set<String> names = TclPackagesManager
@@ -445,10 +443,8 @@ public class TclInterpreterComboBlock extends AbstractInterpreterComboBlock {
 	protected void addPackage() {
 		IInterpreterInstall install = this.getInterpreter();
 		if (install == null) {
-			install = ScriptRuntime
-					.getDefaultInterpreterInstall(new DefaultInterpreterEntry(
-							TclNature.NATURE_ID,
-							LocalEnvironment.ENVIRONMENT_ID));
+			install = ScriptRuntime.getDefaultInterpreterInstall(
+					TclNature.NATURE_ID, LocalEnvironment.getInstance());
 		}
 		if (install != null) {
 			Set<String> packages = TclPackagesManager

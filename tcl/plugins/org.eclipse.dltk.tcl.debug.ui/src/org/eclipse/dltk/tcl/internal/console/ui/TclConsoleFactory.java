@@ -24,7 +24,6 @@ import org.eclipse.dltk.debug.ui.DLTKDebugUIPlugin;
 import org.eclipse.dltk.launching.IInterpreterInstall;
 import org.eclipse.dltk.launching.LaunchingMessages;
 import org.eclipse.dltk.launching.ScriptRuntime;
-import org.eclipse.dltk.launching.ScriptRuntime.DefaultInterpreterEntry;
 import org.eclipse.dltk.tcl.console.TclConsoleConstants;
 import org.eclipse.dltk.tcl.console.TclConsoleUtil;
 import org.eclipse.dltk.tcl.console.TclInterpreter;
@@ -97,15 +96,12 @@ public class TclConsoleFactory extends ScriptConsoleFactoryBase implements
 				id = "default"; //$NON-NLS-1$
 				interpreter = new TclInterpreter();
 
-				if (ScriptRuntime
-						.getDefaultInterpreterInstall(new DefaultInterpreterEntry(
-								TclNature.NATURE_ID,
-								LocalEnvironment.ENVIRONMENT_ID)) == null) {
+				if (ScriptRuntime.getDefaultInterpreterInstall(
+						TclNature.NATURE_ID, LocalEnvironment.getInstance()) == null) {
 					showQuestion();
 					if (ScriptRuntime
-							.getDefaultInterpreterInstall(new DefaultInterpreterEntry(
-									TclNature.NATURE_ID,
-									LocalEnvironment.ENVIRONMENT_ID)) == null) {
+							.getDefaultInterpreterInstall(TclNature.NATURE_ID,
+									LocalEnvironment.getInstance()) == null) {
 						return null;
 					}
 				}

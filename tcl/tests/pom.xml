@@ -20,5 +20,6 @@
 		<module>org.eclipse.dltk.tcl.formatter.tests</module>
 		<module>org.eclipse.dltk.tcl.validators.tests</module>
 		<module>org.eclipse.dltk.tcl.ui.tests</module>
+		<module>org.eclipse.dltk.tcl.activestatedebugger.tests</module>
 	</modules>
 </project>

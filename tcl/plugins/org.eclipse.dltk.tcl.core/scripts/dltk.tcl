@@ -9,6 +9,10 @@ exec tclsh "$0" ${1+"$@"}
 # to ignore proc renames.
 #checker -scope global exclude warnRedefine
 
+proc hasCommand cmdName {
+    return [expr [llength [info commands $cmdName]] > 0];
+}
+
 ## Begin renaming of core tcl cmds
 rename package package-org
 proc package {subcmd args} {
@@ -98,7 +102,9 @@ proc source {args} {
     return [uplevel 1 "::source-org $args"]
 } ;# End of proc source
 
-rename load load-org
+if [hasCommand load] {
+    rename load load-org
+}
 proc load {args} {
     global pkg_load_tmp pkg_stack
     global file_load_tmp

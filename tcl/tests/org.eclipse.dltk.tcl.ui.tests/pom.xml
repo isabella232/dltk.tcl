@@ -1,35 +1,55 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <artifactId>tcl.tests</artifactId>
-    <groupId>org.eclipse.dltk.tcl</groupId>
-    <version>5.0.0-SNAPSHOT</version>
-    <relativePath>../</relativePath>
-  </parent>
-  <groupId>org.eclipse.dltk.tcl</groupId>
-  <artifactId>org.eclipse.dltk.tcl.ui.tests</artifactId>
-  <version>5.0.0-SNAPSHOT</version>
-  <packaging>eclipse-test-plugin</packaging>
-  <build>
-	  <plugins>
-		  <plugin>
-			  <groupId>org.eclipse.tycho</groupId>
-			  <artifactId>tycho-surefire-plugin</artifactId>
-			  <version>${tycho-version}</version>
-			  <configuration>
-				  <testSuite>${project.artifactId}</testSuite>
-				  <testClass>org.eclipse.dltk.tcl.ui.tests.AllTests</testClass>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<artifactId>tcl.tests</artifactId>
+		<groupId>org.eclipse.dltk.tcl</groupId>
+		<version>5.0.0-SNAPSHOT</version>
+		<relativePath>../</relativePath>
+	</parent>
+	<groupId>org.eclipse.dltk.tcl</groupId>
+	<artifactId>org.eclipse.dltk.tcl.ui.tests</artifactId>
+	<version>5.0.0-SNAPSHOT</version>
+	<packaging>eclipse-test-plugin</packaging>
+	<properties>
+		<os-jvm-flags></os-jvm-flags>
+	</properties>
+
+	<profiles>
+		<profile>
+			<id>macosx-jvm-flags</id>
+			<activation>
+				<os>
+					<family>mac</family>
+				</os>
+			</activation>
+			<properties>
+				<os-jvm-flags>-XstartOnFirstThread</os-jvm-flags>
+			</properties>
+		</profile>
+	</profiles>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-surefire-plugin</artifactId>
+				<version>${tycho-version}</version>
+				<configuration>
+					<testSuite>${project.artifactId}</testSuite>
+					<testClass>org.eclipse.dltk.tcl.ui.tests.AllTests</testClass>
 					<useUIHarness>true</useUIHarness>
-				  <dependencies>
-					  <dependency>
-						  <type>p2-installable-unit</type>
-						  <artifactId>org.eclipse.platform.feature.group</artifactId>
-					  </dependency>
-				  </dependencies>
-			  </configuration>
-		  </plugin>
-	  </plugins>
-  </build>
+					<useUIThread>true</useUIThread>
+					<argLine>-Xms40m -Xmx1G ${os-jvm-flags}</argLine>
+					<dependencies>
+						<dependency>
+							<type>p2-installable-unit</type>
+							<artifactId>org.eclipse.platform.feature.group</artifactId>
+						</dependency>
+					</dependencies>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 </project>

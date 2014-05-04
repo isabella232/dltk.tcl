@@ -19,6 +19,8 @@
       version="5.1.0.qualifier"
       provider-name="%providerName"
       image="eclipse_update_120.jpg"
+      license-feature="org.eclipse.license"
+      license-feature-version="1.0.1.qualifier"
       exclusive="true">
 
    <description url="http://www.eclipse.org/dltk">

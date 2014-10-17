@@ -5,12 +5,10 @@
   <parent>
     <artifactId>xotcl</artifactId>
     <groupId>org.eclipse.dltk.xotcl</groupId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>5.1.0-SNAPSHOT</version>
     <relativePath>../..</relativePath>
   </parent>
-  <groupId>org.eclipse.dltk.tcl</groupId>
   <artifactId>org.eclipse.dltk.xotcl.core.tests</artifactId>
-  <version>5.1.0-SNAPSHOT</version>
   <packaging>eclipse-test-plugin</packaging>
   <build>
 	  <plugins>

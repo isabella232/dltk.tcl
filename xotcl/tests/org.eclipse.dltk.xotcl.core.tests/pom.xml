@@ -19,18 +19,28 @@
 			  <configuration>
 				  <testSuite>${project.artifactId}</testSuite>
 				  <testClass>org.eclipse.dltk.xotcl.core.tests.AllTests</testClass>
-				  <dependencies>
-					  <dependency>
-						  <type>p2-installable-unit</type>
-						  <artifactId>org.eclipse.platform.feature.group</artifactId>
-					  </dependency>
-					  <dependency>
-						  <type>p2-installable-unit</type>
-						  <artifactId>org.eclipse.dltk.tcl.tcllib</artifactId>
-					  </dependency>
-				  </dependencies>
 			  </configuration>
 		  </plugin>
+		  <plugin>
+		      <groupId>org.eclipse.tycho</groupId>
+		      <artifactId>target-platform-configuration</artifactId>
+		      <configuration>
+			<dependency-resolution>
+			    <extraRequirements>
+				<requirement>
+				    <type>eclipse-feature</type>
+				    <id>org.eclipse.platform</id>
+				    <versionRange>0.0.0</versionRange>
+				</requirement>
+				<requirement>
+				    <type>eclipse-plugin</type>
+				    <id>org.eclipse.dltk.tcl.tcllib</id>
+				    <versionRange>0.0.0</versionRange>
+				</requirement>
+			    </extraRequirements>
+			</dependency-resolution>
+		    </configuration>
+		</plugin>
 	  </plugins>
   </build>
 </project>

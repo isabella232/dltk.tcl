@@ -1,4 +1,0 @@
-org.eclipse.dltk.tcl.ui.tests.swtbot/Interpreter = true
-org.eclipse.dltk.tcl.ui.tests.swtbot/Project = true
-org.eclipse.dltk.tcl.ui.tests.swtbot/ProjectContent = true
-org.eclipse.dltk.tcl.ui.tests.swtbot/Launch = true

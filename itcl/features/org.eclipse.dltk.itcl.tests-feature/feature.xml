@@ -3,7 +3,9 @@
       id="org.eclipse.dltk.itcl.tests"
       label="Tests_feature Feature"
       version="5.1.0.qualifier"
-      provider-name="xored software, Inc.">
+      provider-name="xored software, Inc."
+      license-feature="org.eclipse.license"
+      license-feature-version="0.0.0">
 
    <description url="http://www.example.com/description">
       [Enter Feature Description here.]

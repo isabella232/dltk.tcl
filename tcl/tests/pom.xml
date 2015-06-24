@@ -6,7 +6,7 @@
 	<parent>
 		<artifactId>tcl</artifactId>
 		<groupId>org.eclipse.dltk.tcl</groupId>
-		<version>5.2.0-SNAPSHOT</version>
+		<version>5.3.0-SNAPSHOT</version>
 		<relativePath>../</relativePath>
 	</parent>
 	<artifactId>tcl.tests</artifactId>

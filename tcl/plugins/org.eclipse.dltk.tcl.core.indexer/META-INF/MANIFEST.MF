@@ -1,6 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: DLTK Tcl Offline Indexer
+Bundle-Vendor: Eclipse DLTK
 Bundle-SymbolicName: org.eclipse.dltk.tcl.core.indexer;singleton:=true
 Bundle-Version: 5.5.0.qualifier
 Bundle-Activator: org.eclipse.dltk.tcl.core.indexer.Activator

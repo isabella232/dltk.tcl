@@ -1,6 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Tests Plug-in
+Bundle-Vendor: Eclipse DLTK
 Bundle-SymbolicName: org.eclipse.dltk.tcl.activestatedebugger.tests
 Bundle-Version: 5.5.0.qualifier
 Bundle-Activator: org.eclipse.dltk.tcl.activestatedebugger.tests.Activator

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 xored software, Inc.  
+ * Copyright (c) 2009, 2016 xored software, Inc and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -139,7 +139,10 @@ public class StructureParserTests extends TestCase {
 		@SuppressWarnings("unchecked")
 		Enumeration<URL> e = bundle.findEntries(path, pattern, true);
 		while (e.hasMoreElements()) {
-			suite.addTest(new StructureParserTests(e.nextElement()));
+			URL url = e.nextElement();
+			if (!url.getPath().startsWith("/META-INF")) {
+				suite.addTest(new StructureParserTests(url));
+			}
 		}
 		return suite;
 	}

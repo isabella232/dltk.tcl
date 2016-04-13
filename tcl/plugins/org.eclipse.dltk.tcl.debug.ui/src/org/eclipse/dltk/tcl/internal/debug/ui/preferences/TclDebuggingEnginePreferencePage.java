@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2016 Jae Gangemi and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Jae Gangemi - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.dltk.tcl.internal.debug.ui.preferences;
 
 import org.eclipse.core.resources.IProject;
@@ -17,83 +27,66 @@ import org.eclipse.ui.preferences.IWorkbenchPreferenceContainer;
 /**
  * Tcl debugging engine preference page
  */
-public class TclDebuggingEnginePreferencePage extends
-		AbstractConfigurationBlockPropertyAndPreferencePage {
+public class TclDebuggingEnginePreferencePage extends AbstractConfigurationBlockPropertyAndPreferencePage {
 
-	static PreferenceKey DEBUGGING_ENGINE = new PreferenceKey(
-			TclDebugPlugin.PLUGIN_ID, TclDebugConstants.DEBUGGING_ENGINE_ID_KEY);
+	static PreferenceKey DEBUGGING_ENGINE = new PreferenceKey(TclDebugPlugin.PLUGIN_ID,
+			TclDebugConstants.DEBUGGING_ENGINE_ID_KEY);
 
 	private final String PREFERENCE_PAGE_ID = "org.eclipse.dltk.tcl.preferences.debug.engines"; //$NON-NLS-1$
 	private final String PROPERTY_PAGE_ID = "org.eclipse.dltk.tcl.propertyPage.debug.engines"; //$NON-NLS-1$
 
-	/*
-	 * @see org.eclipse.dltk.ui.preferences.AbstractConfigurationBlockPropertyAndPreferencePage#createOptionsBlock(org.eclipse.dltk.ui.util.IStatusChangeListener,
-	 *      org.eclipse.core.resources.IProject,
-	 *      org.eclipse.ui.preferences.IWorkbenchPreferenceContainer)
-	 */
-	protected AbstractOptionsBlock createOptionsBlock(
-			IStatusChangeListener newStatusChangedListener, IProject project,
+	@Override
+	protected AbstractOptionsBlock createOptionsBlock(IStatusChangeListener newStatusChangedListener, IProject project,
 			IWorkbenchPreferenceContainer container) {
-		return new AbstractDebuggingEngineOptionsBlock(
-				newStatusChangedListener, project, getKeys(), container) {
+		return new AbstractDebuggingEngineOptionsBlock(newStatusChangedListener, project, getKeys(), container) {
 
+			@Override
 			protected String getNatureId() {
 				return TclNature.NATURE_ID;
 			}
 
+			@Override
 			protected PreferenceKey getSavedContributionKey() {
 				return DEBUGGING_ENGINE;
 			}
 		};
 	}
 
-	/*
-	 * @see org.eclipse.dltk.ui.preferences.AbstractConfigurationBlockPropertyAndPreferencePage#getHelpId()
-	 */
+	@Override
 	protected String getHelpId() {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
+	@Override
 	protected String getNatureId() {
 		return TclNature.NATURE_ID;
 	}
 
-	/*
-	 * @see org.eclipse.dltk.internal.ui.preferences.PropertyAndPreferencePage#getPreferencePageId()
-	 */
+	@Override
 	protected String getPreferencePageId() {
 		return PREFERENCE_PAGE_ID;
 	}
 
-	/*
-	 * @see org.eclipse.dltk.ui.preferences.AbstractConfigurationBlockPropertyAndPreferencePage#getProjectHelpId()
-	 */
+	@Override
 	protected String getProjectHelpId() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	/*
-	 * @see org.eclipse.dltk.internal.ui.preferences.PropertyAndPreferencePage#getPropertyPageId()
-	 */
+	@Override
 	protected String getPropertyPageId() {
 		return PROPERTY_PAGE_ID;
 	}
 
-	/*
-	 * @see org.eclipse.dltk.ui.preferences.AbstractConfigurationBlockPropertyAndPreferencePage#setDescription()
-	 */
+	@Override
 	protected void setDescription() {
 		setDescription(TclDebugPreferencesMessages.TclDebugEnginePreferencePage_description);
 	}
 
-	/*
-	 * @see org.eclipse.dltk.ui.preferences.AbstractConfigurationBlockPropertyAndPreferencePage#setPreferenceStore()
-	 */
+	@Override
 	protected void setPreferenceStore() {
-		setPreferenceStore(new PreferencesAdapter(TclDebugPlugin.getDefault()
-				.getPluginPreferences()));
+		setPreferenceStore(new PreferencesAdapter(TclDebugPlugin.getDefault().getPluginPreferences()));
 	}
 
 	private PreferenceKey[] getKeys() {

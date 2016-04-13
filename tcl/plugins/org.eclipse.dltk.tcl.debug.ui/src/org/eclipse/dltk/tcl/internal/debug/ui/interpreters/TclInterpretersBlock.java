@@ -1,11 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2007 IBM Corporation and others.
+ * Copyright (c) 2005, 2016 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- 
  *******************************************************************************/
 package org.eclipse.dltk.tcl.internal.debug.ui.interpreters;
 
@@ -42,6 +41,7 @@ import org.eclipse.swt.widgets.Composite;
 public class TclInterpretersBlock extends InterpretersBlock {
 	private Button fetchInterpreterInformation;
 
+	@Override
 	protected AddScriptInterpreterDialog createInterpreterDialog(
 			IInterpreterInstall standin) {
 		AddTclInterpreterDialog dialog = new AddTclInterpreterDialog(this,
@@ -51,6 +51,7 @@ public class TclInterpretersBlock extends InterpretersBlock {
 		return dialog;
 	}
 
+	@Override
 	protected String getCurrentNature() {
 		return TclNature.NATURE_ID;
 	}
@@ -128,7 +129,7 @@ public class TclInterpretersBlock extends InterpretersBlock {
 						}
 						smon0.subTask("Processing packages info ("
 								+ (lsize - s) + " left)");
-						Set<String> pkgs = new HashSet();
+						Set<String> pkgs = new HashSet<String>();
 						for (int i = s; i < s + part; i++) {
 							pkgs.add(list.get(i).getName());
 						}

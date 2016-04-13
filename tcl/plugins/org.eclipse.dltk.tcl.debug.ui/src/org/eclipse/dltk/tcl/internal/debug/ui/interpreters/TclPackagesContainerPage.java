@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2016 xored software, Inc.  and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     xored software, Inc. - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.dltk.tcl.internal.debug.ui.interpreters;
 
 import java.util.HashSet;
@@ -46,10 +56,12 @@ public class TclPackagesContainerPage extends NewElementWizardPage implements
 		IBuildpathContainerPage, IBuildpathContainerPageExtension {
 	public class PackagesLabelProvider extends LabelProvider {
 
+		@Override
 		public Image getImage(Object element) {
 			return DLTKPluginImages.get(DLTKPluginImages.IMG_OBJS_PACKAGE);
 		}
 
+		@Override
 		public String getText(Object element) {
 			if (element instanceof String) {
 				return (String) element;
@@ -59,8 +71,8 @@ public class TclPackagesContainerPage extends NewElementWizardPage implements
 
 	}
 
-	private Set packages = new HashSet();
-	private Set autoPackages = new HashSet();
+	private Set<String> packages = new HashSet<String>();
+	private Set<String> autoPackages = new HashSet<String>();
 
 	private class PackagesContentProvider implements ITreeContentProvider {
 
@@ -148,6 +160,7 @@ public class TclPackagesContainerPage extends NewElementWizardPage implements
 		add.setLayoutData(data2);
 		add.setText("Add");
 		add.addSelectionListener(new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				addPackage();
 			}
@@ -157,12 +170,14 @@ public class TclPackagesContainerPage extends NewElementWizardPage implements
 		addall.setLayoutData(data2);
 		addall.setText("Add all");
 		addall.addSelectionListener(new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				addAllPackages();
 			}
 		});
 		final Button remove = new Button(buttons, SWT.PUSH);
 		remove.addSelectionListener(new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				removePackage();
 			}
@@ -293,8 +308,8 @@ public class TclPackagesContainerPage extends NewElementWizardPage implements
 	public void initialize(IScriptProject project,
 			IBuildpathEntry[] currentEntries) {
 		this.scriptProject = project;
-		Set set = new HashSet();
-		Set autoSet = new HashSet();
+		Set<String> set = new HashSet<String>();
+		Set<String> autoSet = new HashSet<String>();
 		InterpreterContainerHelper.getInterpreterContainerDependencies(project,
 				set, autoSet);
 		this.packages.addAll(set);

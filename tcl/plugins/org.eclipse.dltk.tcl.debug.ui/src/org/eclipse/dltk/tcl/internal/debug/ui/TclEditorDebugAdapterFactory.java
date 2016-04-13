@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2016 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.dltk.tcl.internal.debug.ui;
 
 import org.eclipse.debug.ui.actions.IRunToLineTarget;
@@ -12,22 +22,23 @@ import org.eclipse.dltk.tcl.internal.debug.ui.actions.IToggleSpawnpointsTarget;
 public class TclEditorDebugAdapterFactory extends
 		ScriptEditorDebugAdapterFactory {
 
-	public Class[] getAdapterList() {
-		return new Class[] { IRunToLineTarget.class,
+	@Override
+	public Class<?>[] getAdapterList() {
+		return new Class<?>[] { IRunToLineTarget.class,
 				IToggleBreakpointsTarget.class, IToggleSpawnpointsTarget.class };
 	}
 
-	public Object getAdapter(Object adaptableObject, Class adapterType) {
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T> T getAdapter(Object adaptableObject, Class<T> adapterType) {
 		if (adapterType == IToggleSpawnpointsTarget.class) {
-			return getBreakpointAdapter();
+			return (T) getBreakpointAdapter();
 		} else {
 			return super.getAdapter(adaptableObject, adapterType);
 		}
 	}
 
-	/*
-	 * @see getBreakointAdapter()
-	 */
+	@Override
 	protected ScriptToggleBreakpointAdapter getBreakpointAdapter() {
 		return new TclToggleBreakpointAdapter();
 	}

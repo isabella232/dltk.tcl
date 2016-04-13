@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 xored software, Inc.
+ * Copyright (c) 2008, 2016 xored software, Inc. and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -35,6 +35,7 @@ public class TclAddWatchpointDialog extends StatusDialog {
 	private String expression = Util.EMPTY_STRING;
 	private Text expressionField;
 
+	@Override
 	protected Control createDialogArea(Composite parent) {
 		Composite composite = (Composite) super.createDialogArea(parent);
 		Composite inner = SWTFactory.createComposite(composite, composite
@@ -47,6 +48,7 @@ public class TclAddWatchpointDialog extends StatusDialog {
 		return composite;
 	}
 
+	@Override
 	protected void okPressed() {
 		final String s = expressionField.getText().trim();
 		if (s.length() == 0) {

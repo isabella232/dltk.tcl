@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2016 xored software, Inc.  and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     xored software, Inc. - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.dltk.tcl.internal.debug.ui;
 
 import java.util.Collections;
@@ -51,6 +61,7 @@ public class TclToggleBreakpointAdapter extends ScriptToggleBreakpointAdapter
 		return TclDebugConstants.DEBUG_MODEL_ID;
 	}
 
+	@Override
 	protected IScriptBreakpointLineValidator getValidator() {
 		return validator;
 	}
@@ -195,6 +206,7 @@ public class TclToggleBreakpointAdapter extends ScriptToggleBreakpointAdapter
 	public void toggleSpawnpoints(final IWorkbenchPart part,
 			final ITextSelection selection) throws CoreException {
 		Job job = new Job("Script Toggle Spawnpoint") { //$NON-NLS-1$
+			@Override
 			protected IStatus run(IProgressMonitor monitor) {
 				final ITextEditor editor = getTextEditor(part);
 				if (editor != null) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 xored software, Inc.
+ * Copyright (c) 2008, 2016 xored software, Inc. and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -68,17 +68,13 @@ public class ToggleSpawnpointAction extends Action implements IUpdate {
 		fRulerInfo = rulerInfo;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.jface.action.IAction#run()
-	 */
+	@Override
 	public void run() {
 		IDocument document = getDocument();
 		if (document == null) {
 			return;
 		}
-		IToggleSpawnpointsTarget adapter = (IToggleSpawnpointsTarget) fPart
+		IToggleSpawnpointsTarget adapter = fPart
 				.getAdapter(IToggleSpawnpointsTarget.class);
 		if (adapter == null) {
 			// attempt to force load adapter
@@ -148,7 +144,7 @@ public class ToggleSpawnpointAction extends Action implements IUpdate {
 				return provider.getDocument(editor.getEditorInput());
 		}
 
-		IDocument doc = (IDocument) fPart.getAdapter(IDocument.class);
+		IDocument doc = fPart.getAdapter(IDocument.class);
 		if (doc != null) {
 			return doc;
 		}
@@ -156,15 +152,10 @@ public class ToggleSpawnpointAction extends Action implements IUpdate {
 		return null;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ui.texteditor.IUpdate#update()
-	 */
 	public void update() {
 		IDocument document = getDocument();
 		if (document != null) {
-			IToggleSpawnpointsTarget adapter = (IToggleSpawnpointsTarget) fPart
+			IToggleSpawnpointsTarget adapter = fPart
 					.getAdapter(IToggleSpawnpointsTarget.class);
 			if (adapter == null) {
 				// attempt to force load adapter

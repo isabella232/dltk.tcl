@@ -1,11 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2007 IBM Corporation and others.
+ * Copyright (c) 2005, 2016 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- 
  *******************************************************************************/
 package org.eclipse.dltk.tcl.internal.console.ui;
 
@@ -78,10 +77,12 @@ public class TclConsoleCompletionProcessor extends
 		super(interpreterShell);
 	}
 
+	@Override
 	public char[] getCompletionProposalAutoActivationCharacters() {
 		return new char[] { '$' };
 	}
 
+	@Override
 	protected ICompletionProposal[] computeCompletionProposalsImpl(
 			IScriptConsoleViewer viewer, int offset) {
 
@@ -103,6 +104,7 @@ public class TclConsoleCompletionProcessor extends
 		return new ICompletionProposal[] {};
 	}
 
+	@Override
 	protected IContextInformation[] computeContextInformationImpl(
 			ITextViewer viewer, int offset) {
 		return null;

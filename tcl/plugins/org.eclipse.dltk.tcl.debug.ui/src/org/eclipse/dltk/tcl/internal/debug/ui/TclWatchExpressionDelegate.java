@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2016 xored software, Inc.  and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     xored software, Inc. - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.dltk.tcl.internal.debug.ui;
 
 import org.eclipse.debug.core.DebugException;
@@ -13,6 +23,7 @@ import org.eclipse.dltk.internal.debug.core.model.ScriptWatchExpressionDelegate;
 
 public class TclWatchExpressionDelegate extends ScriptWatchExpressionDelegate {
 
+	@Override
 	protected String prepareExpression(String expression) {
 		if (expression.startsWith("$")) { //$NON-NLS-1$
 			return "expr { " + expression + " }"; //$NON-NLS-1$ //$NON-NLS-2$
@@ -30,10 +41,12 @@ public class TclWatchExpressionDelegate extends ScriptWatchExpressionDelegate {
 			this.expression = expression;
 		}
 
+		@Override
 		public String getEvalName() {
 			return expression;
 		}
 
+		@Override
 		public IScriptEvaluationCommand createEvaluationCommand(
 				String messageTemplate, IScriptThread thread) {
 			return null;
@@ -98,6 +111,7 @@ public class TclWatchExpressionDelegate extends ScriptWatchExpressionDelegate {
 			this.expression = expression;
 		}
 
+		@Override
 		public void evaluationComplete(IScriptEvaluationResult result) {
 			if (result != null && result.getValue() != null) {
 				listener.watchEvaluationFinished(new TclWatchExpressionResult(
@@ -111,6 +125,7 @@ public class TclWatchExpressionDelegate extends ScriptWatchExpressionDelegate {
 
 	}
 
+	@Override
 	protected ListenerAdpater createListener(IWatchExpressionListener listener,
 			String expression) {
 		return new TclListenerAdapter(listener, expression);

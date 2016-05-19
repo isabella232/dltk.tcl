@@ -12,6 +12,9 @@
 	<groupId>org.eclipse.dltk.tcl</groupId>
 	<artifactId>tcl-all</artifactId>
 	<packaging>pom</packaging>
+	<properties>
+		<tycho.scmUrl>scm:git:git://git.eclipse.org/gitroot/dltk/org.eclipse.dltk.tcl.git</tycho.scmUrl>
+	</properties>
 
 	<modules>
 		<module>tcl</module>

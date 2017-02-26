@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2007 IBM Corporation and others.
+ * Copyright (c) 2005, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -41,20 +41,24 @@ public class TclBlockExpression extends Expression {
 		return processedArgument;
 	}
 
+	@Override
 	public int getKind() {
 		return TclConstants.TCL_BLOCK_EXPRESSION;
 	}
 
+	@Override
 	public void traverse(ASTVisitor visitor) throws Exception {
 		if (visitor.visit(this)) {
 			visitor.endvisit(this);
 		}
 	}
 
+	@Override
 	public void printNode(CorePrinter output) {
 		output.formatPrintLn("tcl block:" + this.fBlockContent);
 	}
 
+	@Override
 	public String toString() {
 		return "tcl block:" + this.fBlockContent;
 	}
@@ -76,15 +80,15 @@ public class TclBlockExpression extends Expression {
 			return null;
 		}
 
-		String content = this.fBlockContent.substring(1, this.fBlockContent
-				.length() - 1);
+		String content = this.fBlockContent.substring(1,
+				this.fBlockContent.length() - 1);
 		ITclSourceParser parser = null;
 		parser = (ITclSourceParser) DLTKLanguageManager
 				.getSourceParser(TclNature.NATURE_ID);
 		parser.setProcessorsState(useProcessors);
 		parser.setOffset(this.sourceStart() + 1);
-		ModuleDeclaration module = parser.parse(new ModuleSource(this.fileName,
-				content), null);
+		ModuleDeclaration module = parser
+				.parse(new ModuleSource(this.fileName, content), null);
 		return module.getStatements();
 	}
 }

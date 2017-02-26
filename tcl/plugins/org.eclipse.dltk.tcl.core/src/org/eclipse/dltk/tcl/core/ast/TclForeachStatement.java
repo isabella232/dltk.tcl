@@ -18,16 +18,18 @@ public class TclForeachStatement extends Statement {
 		super(start, end);
 	}
 
+	@Override
 	public int getKind() {
 		return S_FOREACH;
 	}
 
+	@Override
 	public void traverse(ASTVisitor visitor) throws Exception {
 		if (visitor.visit(this)) {
 			if (this.arguments != null) {
-				for (Iterator iterator = this.arguments.iterator(); iterator
-						.hasNext();) {
-					ASTNode node = (ASTNode) iterator.next();
+				for (Iterator<ASTNode> iterator = this.arguments
+						.iterator(); iterator.hasNext();) {
+					ASTNode node = iterator.next();
 					node.traverse(visitor);
 				}
 			}
@@ -57,9 +59,9 @@ public class TclForeachStatement extends Statement {
 	public void printNode(CorePrinter output) {
 		output.print("foreach ");
 		if (this.arguments != null) {
-			for (Iterator iterator = this.arguments.iterator(); iterator
-					.hasNext();) {
-				ASTNode node = (ASTNode) iterator.next();
+			for (Iterator<ASTNode> iterator = this.arguments
+					.iterator(); iterator.hasNext();) {
+				ASTNode node = iterator.next();
 				node.printNode(output);
 			}
 		}

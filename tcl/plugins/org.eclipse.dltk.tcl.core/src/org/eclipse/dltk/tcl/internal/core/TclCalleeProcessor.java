@@ -1,11 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2007 IBM Corporation and others.
+ * Copyright (c) 2005, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- 
  *******************************************************************************/
 package org.eclipse.dltk.tcl.internal.core;
 
@@ -50,8 +49,8 @@ public class TclCalleeProcessor implements ICalleeProcessor {
 		// this.scope = scope;
 	}
 
-	private class CaleeSourceElementRequestor extends
-			SourceElementRequestorAdaptor {
+	private class CaleeSourceElementRequestor
+			extends SourceElementRequestorAdaptor {
 		@Override
 		public void acceptMethodReference(String methodName, int argCount,
 				int sourcePosition, int sourceEndPosition) {
@@ -63,14 +62,15 @@ public class TclCalleeProcessor implements ICalleeProcessor {
 					e.printStackTrace();
 				}
 			}
-			SimpleReference ref = new SimpleReference(off + sourcePosition, off
-					+ sourceEndPosition, methodName);
-			IMethod[] methods = findMethods(methodName, argCount, off
-					+ sourcePosition);
+			SimpleReference ref = new SimpleReference(off + sourcePosition,
+					off + sourceEndPosition, methodName);
+			IMethod[] methods = findMethods(methodName, argCount,
+					off + sourcePosition);
 			fSearchResults.put(ref, methods);
 		}
 	}
 
+	@Override
 	public Map doOperation() {
 		try {
 			if (method.getSource() != null) {
@@ -97,7 +97,7 @@ public class TclCalleeProcessor implements ICalleeProcessor {
 
 	public IMethod[] findMethods(final String methodName, int argCount,
 			int sourcePosition) {
-		final List methods = new ArrayList();
+		final List<IModelElement> methods = new ArrayList<>();
 		ISourceModule module = this.method.getSourceModule();
 		try {
 			IModelElement[] elements = module.codeSelect(sourcePosition,
@@ -164,7 +164,7 @@ public class TclCalleeProcessor implements ICalleeProcessor {
 		// }
 		// }
 		// };
-		//		
+		//
 		// try {
 		// String pattern = methodName;
 		// if( pattern.startsWith("::")) {
@@ -183,7 +183,7 @@ public class TclCalleeProcessor implements ICalleeProcessor {
 		// e.printStackTrace();
 		// }
 
-		return (IMethod[]) methods.toArray(new IMethod[methods.size()]);
+		return methods.toArray(new IMethod[methods.size()]);
 	}
 
 	protected void search(String patternString, int searchFor, int limitTo,
@@ -203,8 +203,8 @@ public class TclCalleeProcessor implements ICalleeProcessor {
 		SearchPattern pattern = SearchPattern.createPattern(patternString,
 				searchFor, limitTo, matchRule, scope.getLanguageToolkit());
 		new SearchEngine().search(pattern,
-				new SearchParticipant[] { SearchEngine
-						.getDefaultSearchParticipant() }, scope, requestor,
-				null);
+				new SearchParticipant[] {
+						SearchEngine.getDefaultSearchParticipant() },
+				scope, requestor, null);
 	}
 }

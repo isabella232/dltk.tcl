@@ -18,8 +18,8 @@ public class CommandManager {
 			+ ".tclCommandDetector";
 	private static final String CLASS_ATTR = "class";
 
-	private static class SimpleExtensionManager extends
-			PriorityDLTKExtensionManager {
+	private static class SimpleExtensionManager
+			extends PriorityDLTKExtensionManager {
 		public SimpleExtensionManager(String extensionPoint) {
 			super(extensionPoint, ID_ATTR);
 		}
@@ -27,7 +27,7 @@ public class CommandManager {
 		public Object getInitObject(ElementInfo ext) {
 			try {
 				if (ext != null) {
-					IConfigurationElement cfg = (IConfigurationElement) ext.config;
+					IConfigurationElement cfg = ext.config;
 					return createObject(cfg);
 				}
 			} catch (CoreException e) {

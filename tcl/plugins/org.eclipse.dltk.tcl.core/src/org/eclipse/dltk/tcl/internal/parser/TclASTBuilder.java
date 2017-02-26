@@ -1,11 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2007 IBM Corporation and others.
+ * Copyright (c) 2005, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- 
  *******************************************************************************/
 package org.eclipse.dltk.tcl.internal.parser;
 
@@ -20,9 +19,9 @@ import org.eclipse.dltk.tcl.ast.TclModuleDeclaration;
 import org.eclipse.dltk.tcl.core.TclParseUtil;
 
 /**
- * 
+ *
  * @author haiodo
- * 
+ *
  */
 public class TclASTBuilder {
 	public static final int TYPE_MODULE = 0;
@@ -81,8 +80,8 @@ public class TclASTBuilder {
 						name = name.replaceAll("(::)+", "::");
 						String[] split = TclParseUtil.tclSplit(name);
 						methodDeclaration.setName(split[split.length - 1]);
-						TypeDeclaration type = searchCreateTypeDeclaration(
-								unit, split, method, 0);
+						TypeDeclaration type = searchCreateTypeDeclaration(unit,
+								split, method, 0);
 						if (type != null) {
 							unit.getStatements().remove(methodDeclaration);
 							unit.getFunctionList().remove(methodDeclaration);
@@ -96,8 +95,8 @@ public class TclASTBuilder {
 	}
 
 	private static TypeDeclaration searchCreateTypeDeclaration(
-			TclModuleDeclaration unit, String[] split,
-			MethodDeclaration method, int offset) {
+			TclModuleDeclaration unit, String[] split, MethodDeclaration method,
+			int offset) {
 		if (split.length - 1 <= offset) {
 			return null;
 		}
@@ -110,9 +109,9 @@ public class TclASTBuilder {
 			}
 		}
 		// not found, lets create one new.
-		TypeDeclaration decl = new TypeDeclaration(typeName, method
-				.getNameStart(), method.getNameEnd(), method.sourceStart(),
-				method.sourceEnd());
+		TypeDeclaration decl = new TypeDeclaration(typeName,
+				method.getNameStart(), method.getNameEnd(),
+				method.sourceStart(), method.sourceEnd());
 		unit.addStatement(decl);
 		unit.getTypeList().add(decl);
 		return searchCreateTypeDeclaration(decl, split, method, offset + 1);
@@ -133,9 +132,9 @@ public class TclASTBuilder {
 			}
 		}
 		// not found, lets create one new.
-		TypeDeclaration decl = new TypeDeclaration(typeName, method
-				.getNameStart(), method.getNameEnd(), method.sourceStart(),
-				method.sourceEnd());
+		TypeDeclaration decl = new TypeDeclaration(typeName,
+				method.getNameStart(), method.getNameEnd(),
+				method.sourceStart(), method.sourceEnd());
 		typeDeclaration.getStatements().add(decl);
 		typeDeclaration.getTypeList().add(decl);
 		return searchCreateTypeDeclaration(decl, split, method, offset + 1);

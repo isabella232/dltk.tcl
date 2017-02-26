@@ -4,6 +4,7 @@ import org.eclipse.dltk.ast.ASTNode;
 import org.eclipse.dltk.ast.ASTVisitor;
 import org.eclipse.dltk.ast.statements.Block;
 import org.eclipse.dltk.ast.statements.Statement;
+import org.eclipse.dltk.ast.statements.StatementConstants;
 
 public class TclSwitchStatement extends Statement {
 
@@ -25,10 +26,12 @@ public class TclSwitchStatement extends Statement {
 		this.fPattern = string;
 	}
 
+	@Override
 	public int getKind() {
-		return this.S_SWITCH;
+		return StatementConstants.S_SWITCH;
 	}
 
+	@Override
 	public void traverse(ASTVisitor visitor) throws Exception {
 		if (visitor.visit(this)) {
 			if (null != fPattern) {
@@ -48,6 +51,7 @@ public class TclSwitchStatement extends Statement {
 	public Block getAlternatives() {
 		return this.fAlternatives;
 	}
+
 	public void acceptBlock(Block bl) {
 		this.fAlternatives = bl;
 	}

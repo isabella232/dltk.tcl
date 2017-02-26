@@ -1,11 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2007 IBM Corporation and others.
+ * Copyright (c) 2005, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- 
+
  *******************************************************************************/
 package org.eclipse.dltk.tcl.internal.core.codeassist;
 
@@ -32,11 +32,11 @@ public class TclASTUtil {
 			return ((MethodDeclaration) node).getStatements();
 		} else if (node instanceof Block) {
 			return ((Block) node).getStatements();
-		}
-		else {
+		} else {
 			final List innerBlockStatements = new ArrayList();
 			// Lets traverse to see inner blocks.
 			ASTVisitor visitor = new ASTVisitor() {
+				@Override
 				public boolean visit(Expression s) throws Exception {
 					if (s instanceof Block) {
 						List tStatements = ((Block) s).getStatements();
@@ -45,10 +45,12 @@ public class TclASTUtil {
 					return false;
 				}
 
+				@Override
 				public boolean visit(MethodDeclaration s) throws Exception {
 					return false;
 				}
 
+				@Override
 				public boolean visit(TypeDeclaration s) throws Exception {
 					return false;
 				}
@@ -60,7 +62,7 @@ public class TclASTUtil {
 			}
 			return innerBlockStatements;
 		}
-//		return null;
+		// return null;
 	}
 
 	/**
@@ -88,10 +90,10 @@ public class TclASTUtil {
 		if (DLTKCore.DEBUG_COMPLETION) {
 			if (node.sourceEnd() != newValueEnd
 					|| node.sourceStart() != newValueStart) {
-//				System.out.println("Node Extended from:'"
-//						+ content.substring(node.sourceStart(), node
-//								.sourceEnd()) + "'" + "to '"
-//						+ content.substring(newValueStart, newValueEnd) + "'");
+				// System.out.println("Node Extended from:'"
+				// + content.substring(node.sourceStart(), node
+				// .sourceEnd()) + "'" + "to '"
+				// + content.substring(newValueStart, newValueEnd) + "'");
 			}
 		}
 		node.setStart(newValueStart);

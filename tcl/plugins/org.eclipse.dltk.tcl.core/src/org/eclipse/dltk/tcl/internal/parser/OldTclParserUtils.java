@@ -5,7 +5,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- 
+
  *******************************************************************************/
 package org.eclipse.dltk.tcl.internal.parser;
 
@@ -57,13 +57,15 @@ public class OldTclParserUtils {
 									ASTNode node = (ASTNode) elements.get(0);
 									Expression initializer = null;
 									if (elements.size() > 1) {
-										if (elements.get(1) instanceof Expression) {
+										if (elements
+												.get(1) instanceof Expression) {
 											initializer = (Expression) elements
 													.get(1);
 										}
 									}
 									if (node instanceof TclStatement
-											&& ((TclStatement) node).getCount() > 0) {
+											&& ((TclStatement) node)
+													.getCount() > 0) {
 										TclStatement stat = ((TclStatement) node);
 										node = stat.getAt(0);
 										if (stat.getCount() > 1) {
@@ -73,8 +75,8 @@ public class OldTclParserUtils {
 									if (node instanceof SimpleReference) {
 										Argument a = new Argument();
 										a.set((SimpleReference) node, null);
-										a
-												.setInitializationExpression(initializer);
+										a.setInitializationExpression(
+												initializer);
 										arguments.add(a);
 									} else if (node instanceof TclBlockExpression) {
 										String name = ((TclBlockExpression) node)
@@ -83,10 +85,10 @@ public class OldTclParserUtils {
 										Argument a = new Argument();
 										a.setStart(node.sourceStart() + 1);
 										a.setEnd(node.sourceEnd() + 1);
-										a.setArgumentName(nameFromBlock(name,
-												'{', '}'));
-										a
-												.setInitializationExpression(initializer);
+										a.setArgumentName(
+												nameFromBlock(name, '{', '}'));
+										a.setInitializationExpression(
+												initializer);
 										arguments.add(a);
 									} else if (node instanceof StringLiteral) {
 										String name = ((StringLiteral) node)
@@ -95,10 +97,10 @@ public class OldTclParserUtils {
 										Argument a = new Argument();
 										a.setStart(node.sourceStart() + 1);
 										a.setEnd(node.sourceEnd() + 1);
-										a.setArgumentName(nameFromBlock(name,
-												'"', '"'));
-										a
-												.setInitializationExpression(initializer);
+										a.setArgumentName(
+												nameFromBlock(name, '"', '"'));
+										a.setInitializationExpression(
+												initializer);
 										arguments.add(a);
 									} else if (node instanceof TclExecuteExpression) {
 										String name = ((TclExecuteExpression) node)
@@ -108,8 +110,8 @@ public class OldTclParserUtils {
 										a.setStart(node.sourceStart() + 1);
 										a.setEnd(node.sourceEnd() + 1);
 										a.setArgumentName(name);
-										a
-												.setInitializationExpression(initializer);
+										a.setInitializationExpression(
+												initializer);
 										arguments.add(a);
 									}
 								}
@@ -176,7 +178,7 @@ public class OldTclParserUtils {
 			return null;
 		}
 
-		List names = new ArrayList();
+		List<String> names = new ArrayList<>();
 
 		for (int k = 0; k < variableName.size(); ++k) {
 			if (variableName.get(k) instanceof SimpleReference) {
@@ -203,7 +205,7 @@ public class OldTclParserUtils {
 		if (names.size() == 0) {
 			return null;
 		}
-		return (String[]) names.toArray(new String[names.size()]);
+		return names.toArray(new String[names.size()]);
 	}
 
 	public static String returnVariableCheck(TclStatement s, int position) {
@@ -248,8 +250,8 @@ public class OldTclParserUtils {
 	public static SimpleReference extractVariableFromString(
 			StringLiteral literal, int pos) {
 		String content = nameFromBlock(literal.getValue(), '"', '"');
-		return extractVariableFromString(literal.sourceStart(), literal
-				.sourceEnd(), pos, content);
+		return extractVariableFromString(literal.sourceStart(),
+				literal.sourceEnd(), pos, content);
 	}
 
 	public static SimpleReference extractVariableFromString(int start, int end,
@@ -259,8 +261,8 @@ public class OldTclParserUtils {
 		if (index != -1 && index < position) {
 			String sub = content.substring(index, position);
 			if (sub.indexOf(' ') == -1) {
-				return new SimpleReference(start + index + 1, end + index + 1
-						+ sub.length(), sub);
+				return new SimpleReference(start + index + 1,
+						end + index + 1 + sub.length(), sub);
 			}
 		}
 		return null;
@@ -288,7 +290,8 @@ public class OldTclParserUtils {
 			start = 0;
 		}
 		if (start + 1 < content.length()
-				&& (content.charAt(start) == '$' && content.charAt(start + 1) == '{')
+				&& (content.charAt(start) == '$'
+						&& content.charAt(start + 1) == '{')
 				|| (start < content.length() && content.charAt(start) == '{')) {
 			while (content.charAt(end) != '}' && content.charAt(end) != '\\'
 					&& end < content.length())
@@ -456,7 +459,7 @@ public class OldTclParserUtils {
 
 	public static FieldDeclaration[] returnVariableDeclarations(
 			TclStatement statement) {
-		List fields = new ArrayList();
+		List<FieldDeclaration> fields = new ArrayList<>();
 
 		String[] vars = OldTclParserUtils.returnVariable(statement);
 		if (vars != null) {
@@ -478,8 +481,7 @@ public class OldTclParserUtils {
 						nEnd));
 			}
 		}
-		return (FieldDeclaration[]) fields.toArray(new FieldDeclaration[fields
-				.size()]);
+		return fields.toArray(new FieldDeclaration[fields.size()]);
 	}
 
 }

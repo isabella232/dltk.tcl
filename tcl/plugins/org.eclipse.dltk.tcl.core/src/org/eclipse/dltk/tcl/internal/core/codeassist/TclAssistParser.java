@@ -1,11 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2007 IBM Corporation and others.
+ * Copyright (c) 2005, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- 
  *******************************************************************************/
 package org.eclipse.dltk.tcl.internal.core.codeassist;
 
@@ -41,17 +40,19 @@ public abstract class TclAssistParser implements IAssistParser {
 		this.parser = DLTKLanguageManager.getSourceParser(TclNature.NATURE_ID);
 	}
 
+	@Override
 	public ASTNode getAssistNodeParent() {
 		return assistNodeParent;
 	}
 
-	protected void findElementsTo(List statements, ASTNode node, List elements) {
+	protected void findElementsTo(List<ASTNode> statements, ASTNode node,
+			List elements) {
 		if (statements == null) {
 			return;
 		}
-		Iterator i = statements.iterator();
+		Iterator<ASTNode> i = statements.iterator();
 		while (i.hasNext()) {
-			ASTNode n = (ASTNode) i.next();
+			ASTNode n = i.next();
 			if (n.equals(node)) {
 				elements.add(n);
 				return;
@@ -73,16 +74,18 @@ public abstract class TclAssistParser implements IAssistParser {
 				this.module = (ModuleDeclaration) astNodeParent;
 			}
 			elements.add(this.module);
-			findElementsTo(TclASTUtil.getStatements(this.module),
-					astNodeParent, elements);
+			findElementsTo(TclASTUtil.getStatements(this.module), astNodeParent,
+					elements);
 		}
 		return elements;
 	}
 
+	@Override
 	public void setSource(ModuleDeclaration unit) {
 		this.module = unit;
 	}
 
+	@Override
 	public ModuleDeclaration parse(IModuleSource sourceUnit) {
 		module = (ModuleDeclaration) this.parser.parse(sourceUnit, null);
 		module.rebuild();
@@ -92,6 +95,7 @@ public abstract class TclAssistParser implements IAssistParser {
 		return module;
 	}
 
+	@Override
 	public ModuleDeclaration getModule() {
 		return this.module;
 	}

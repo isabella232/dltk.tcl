@@ -1,11 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2007 IBM Corporation and others.
+ * Copyright (c) 2005, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- 
  *******************************************************************************/
 package org.eclipse.dltk.tcl.ast;
 
@@ -24,9 +23,10 @@ public class TclNamespaceDeclaration extends TypeDeclaration {
 		super(name, nameStart, nameEnd, start, end);
 	}
 
+	@Override
 	public FieldDeclaration[] getVariables() {
-		List variableNames = new ArrayList();
-		List variableDeclarations = new ArrayList();
+		List<String> variableNames = new ArrayList<>();
+		List<FieldDeclaration> variableDeclarations = new ArrayList<>();
 		List statements = this.getStatements();
 		Iterator i = statements.iterator();
 		while (i.hasNext()) {
@@ -46,7 +46,7 @@ public class TclNamespaceDeclaration extends TypeDeclaration {
 				}
 			}
 		}
-		return (FieldDeclaration[]) variableDeclarations
+		return variableDeclarations
 				.toArray(new FieldDeclaration[variableDeclarations.size()]);
 	}
 }

@@ -30,20 +30,19 @@ public class TclExtensionManager {
 		if (infos == null) {
 			return new ITclLanguageExtension[0];
 		}
-		List extensions = new ArrayList();
+		List<ITclLanguageExtension> extensions = new ArrayList<>();
 		for (int i = 0; i < infos.length; i++) {
 			Object object = manager.getInitObject(infos[i]);
 			if (object instanceof ITclLanguageExtension) {
-				extensions.add(object);
+				extensions.add((ITclLanguageExtension) object);
 			}
 		}
-		return (ITclLanguageExtension[]) extensions
-				.toArray(new ITclLanguageExtension[extensions.size()]);
+		return extensions.toArray(new ITclLanguageExtension[extensions.size()]);
 	}
 
 	public ISourceElementRequestVisitorExtension[] getSourceElementRequestoVisitorExtensions() {
 		ITclLanguageExtension[] extensions = getExtensions();
-		List result = new ArrayList();
+		List<ISourceElementRequestVisitorExtension> result = new ArrayList<>();
 		for (int i = 0; i < extensions.length; i++) {
 			ISourceElementRequestVisitorExtension visitorExtension = extensions[i]
 					.createSourceElementRequestVisitorExtension();
@@ -51,14 +50,13 @@ public class TclExtensionManager {
 				result.add(visitorExtension);
 			}
 		}
-		return (ISourceElementRequestVisitorExtension[]) result
-				.toArray(new ISourceElementRequestVisitorExtension[result
-						.size()]);
+		return result.toArray(
+				new ISourceElementRequestVisitorExtension[result.size()]);
 	}
 
 	public IMixinBuildVisitorExtension[] getMixinVisitorExtensions() {
 		ITclLanguageExtension[] extensions = getExtensions();
-		List result = new ArrayList();
+		List<IMixinBuildVisitorExtension> result = new ArrayList<>();
 		for (int i = 0; i < extensions.length; i++) {
 			IMixinBuildVisitorExtension visitorExtension = extensions[i]
 					.createMixinBuildVisitorExtension();
@@ -66,13 +64,12 @@ public class TclExtensionManager {
 				result.add(visitorExtension);
 			}
 		}
-		return (IMixinBuildVisitorExtension[]) result
-				.toArray(new IMixinBuildVisitorExtension[result.size()]);
+		return result.toArray(new IMixinBuildVisitorExtension[result.size()]);
 	}
 
 	public IMatchLocatorExtension[] getMatchLocatorExtensions() {
 		ITclLanguageExtension[] extensions = getExtensions();
-		List result = new ArrayList();
+		List<IMatchLocatorExtension> result = new ArrayList<>();
 		for (int i = 0; i < extensions.length; i++) {
 			IMatchLocatorExtension visitorExtension = extensions[i]
 					.createMatchLocatorExtension();
@@ -80,13 +77,12 @@ public class TclExtensionManager {
 				result.add(visitorExtension);
 			}
 		}
-		return (IMatchLocatorExtension[]) result
-				.toArray(new IMatchLocatorExtension[result.size()]);
+		return result.toArray(new IMatchLocatorExtension[result.size()]);
 	}
 
 	public ICompletionExtension[] getCompletionExtensions() {
 		ITclLanguageExtension[] extensions = getExtensions();
-		List result = new ArrayList();
+		List<ICompletionExtension> result = new ArrayList<>();
 		for (int i = 0; i < extensions.length; i++) {
 			ICompletionExtension visitorExtension = extensions[i]
 					.createCompletionExtension();
@@ -94,13 +90,12 @@ public class TclExtensionManager {
 				result.add(visitorExtension);
 			}
 		}
-		return (ICompletionExtension[]) result
-				.toArray(new ICompletionExtension[result.size()]);
+		return result.toArray(new ICompletionExtension[result.size()]);
 	}
 
 	public ISelectionExtension[] getSelectionExtensions() {
 		ITclLanguageExtension[] extensions = getExtensions();
-		List result = new ArrayList();
+		List<ISelectionExtension> result = new ArrayList<>();
 		for (int i = 0; i < extensions.length; i++) {
 			ISelectionExtension visitorExtension = extensions[i]
 					.createSelectionExtension();
@@ -108,7 +103,6 @@ public class TclExtensionManager {
 				result.add(visitorExtension);
 			}
 		}
-		return (ISelectionExtension[]) result
-				.toArray(new ISelectionExtension[result.size()]);
+		return result.toArray(new ISelectionExtension[result.size()]);
 	}
 }

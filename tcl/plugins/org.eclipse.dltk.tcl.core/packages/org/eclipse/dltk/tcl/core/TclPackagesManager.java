@@ -839,7 +839,7 @@ public class TclPackagesManager {
 
 		EList<TclModuleInfo> modules = info.getModules();
 		for (TclModuleInfo tclModuleInfo : modules) {
-			TclModuleInfo copy = (TclModuleInfo) EcoreUtil.copy(tclModuleInfo);
+			TclModuleInfo copy = EcoreUtil.copy(tclModuleInfo);
 			results.add(copy);
 		}
 		return Collections.unmodifiableList(results);

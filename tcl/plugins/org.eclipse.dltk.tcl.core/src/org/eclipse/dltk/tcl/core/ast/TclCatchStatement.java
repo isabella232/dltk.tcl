@@ -3,6 +3,7 @@ package org.eclipse.dltk.tcl.core.ast;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.dltk.ast.ASTNode;
 import org.eclipse.dltk.ast.ASTVisitor;
 import org.eclipse.dltk.ast.statements.Block;
 import org.eclipse.dltk.ast.statements.Statement;
@@ -19,6 +20,7 @@ public class TclCatchStatement extends Statement {
 		this.variable = variable;
 	}
 
+	@Override
 	public int getKind() {
 		return 0;
 	}
@@ -27,6 +29,7 @@ public class TclCatchStatement extends Statement {
 		return this.variable;
 	}
 
+	@Override
 	public void traverse(ASTVisitor visitor) throws Exception {
 		if (visitor.visit(this)) {
 			if (this.block != null) {
@@ -38,11 +41,11 @@ public class TclCatchStatement extends Statement {
 		}
 	}
 
-	public List getStatements() {
+	public List<ASTNode> getStatements() {
 		if (this.block != null) {
 			return this.block.getStatements();
 		}
-		return new ArrayList();
+		return new ArrayList<>();
 	}
 
 	@Override

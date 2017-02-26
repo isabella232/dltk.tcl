@@ -38,7 +38,8 @@ public class TclResolver {
 	private ISourceModule sourceModule;
 
 	public TclResolver(ISourceModule sourceModule,
-			ModuleDeclaration moduleDeclaration, IResolveElementParent resolver) {
+			ModuleDeclaration moduleDeclaration,
+			IResolveElementParent resolver) {
 		this(sourceModule, moduleDeclaration);
 		this.resolver = resolver;
 	}
@@ -76,8 +77,8 @@ public class TclResolver {
 				if (node instanceof MethodDeclaration) {
 					String oName = ((MethodDeclaration) node).getName();
 					if (oName.indexOf("::") != -1) {
-						String pName = oName.substring(0, oName
-								.lastIndexOf("::"));
+						String pName = oName.substring(0,
+								oName.lastIndexOf("::"));
 						pName = pName.replaceAll("::", "\\$");
 
 						if (pName.startsWith("$")) {
@@ -85,8 +86,9 @@ public class TclResolver {
 								element = sourceModule;
 							} else {
 								try {
-									element = findTypeFrom(sourceModule
-											.getChildren(), "", pName, '$');
+									element = findTypeFrom(
+											sourceModule.getChildren(), "",
+											pName, '$');
 								} catch (ModelException e) {
 									if (DLTKCore.DEBUG) {
 										e.printStackTrace();
@@ -141,9 +143,10 @@ public class TclResolver {
 					IModelElement e = findChildrenByName(typeName, element);
 					if (e == null && type.getName().startsWith("::")) {
 						try {
-							e = (IModelElement) findTypeFrom(sourceModule
-									.getChildren(), "", type.getName()
-									.replaceAll("::", "\\$"), '$');
+							e = (IModelElement) findTypeFrom(
+									sourceModule.getChildren(), "",
+									type.getName().replaceAll("::", "\\$"),
+									'$');
 						} catch (ModelException e1) {
 							// TODO Auto-generated catch block
 							e1.printStackTrace();
@@ -158,12 +161,12 @@ public class TclResolver {
 				} else if (nde instanceof MethodDeclaration) {
 					searchInMethod(node, element, nde, selectionElements);
 				} /*
-				 * else if (nde instanceof TclStatement) { TclStatement s =
-				 * (TclStatement) nde; Expression commandId = s.getAt(0); final
-				 * IParent e = element; if (commandId != null && commandId
-				 * instanceof SimpleReference) { String qname =
-				 * ((SimpleReference) commandId) .getName(); } }
-				 */
+					 * else if (nde instanceof TclStatement) { TclStatement s =
+					 * (TclStatement) nde; Expression commandId = s.getAt(0);
+					 * final IParent e = element; if (commandId != null &&
+					 * commandId instanceof SimpleReference) { String qname =
+					 * ((SimpleReference) commandId) .getName(); } }
+					 */
 				else {
 					final IParent e = element;
 					List statements2 = findExtractBlocks(nde);
@@ -275,20 +278,20 @@ public class TclResolver {
 		return null;
 	}
 
-	public void searchInMethod(final ASTNode node, IParent element,
-			ASTNode nde, List selectionElements) {
+	public void searchInMethod(final ASTNode node, IParent element, ASTNode nde,
+			List selectionElements) {
 		MethodDeclaration method = (MethodDeclaration) nde;
 		String methodName = method.getName();
 		if (methodName.indexOf("::") != -1) {
-			String pName = methodName
-					.substring(0, methodName.lastIndexOf("::"));
+			String pName = methodName.substring(0,
+					methodName.lastIndexOf("::"));
 			pName = pName.replaceAll("::", "\\$");
 			if (pName.equals("$")) {
 				element = sourceModule;
 			} else {
 				try {
-					element = TclResolver.findTypeFrom(sourceModule
-							.getChildren(), "", pName, '$');
+					element = TclResolver.findTypeFrom(
+							sourceModule.getChildren(), "", pName, '$');
 					if (element == null) {
 						return;
 					}
@@ -309,8 +312,8 @@ public class TclResolver {
 					element = sourceModule;
 				} else {
 					try {
-						element = TclResolver.findTypeFrom(sourceModule
-								.getChildren(), "", pName, '$');
+						element = TclResolver.findTypeFrom(
+								sourceModule.getChildren(), "", pName, '$');
 						if (element == null) {
 							return;
 						}
@@ -322,8 +325,7 @@ public class TclResolver {
 				methodName = TclResolver.getNodeChildName(nde);
 			}
 		}
-		IModelElement e = TclResolver.findChildrenByName(methodName,
-				(IParent) element);
+		IModelElement e = TclResolver.findChildrenByName(methodName, element);
 		if (e != null && e instanceof IParent) {
 			List stats = ((MethodDeclaration) nde).getStatements();
 			searchAddElementsTo(stats, node, (IParent) e, selectionElements);
@@ -333,6 +335,7 @@ public class TclResolver {
 	public static List findExtractBlocks(ASTNode node) {
 		final List statements2 = new ArrayList();
 		ASTVisitor visitor = new ASTVisitor() {
+			@Override
 			public boolean visit(Expression s) throws Exception {
 				if (s instanceof Block) {
 					statements2.addAll(((Block) s).getStatements());
@@ -424,7 +427,7 @@ public class TclResolver {
 
 	/**
 	 * Filter similar elements with "package require in current module"
-	 * 
+	 *
 	 * @param elements
 	 * @return
 	 */
@@ -439,8 +442,8 @@ public class TclResolver {
 		// Obtain duplicate named elements
 		for (int i = 0; i < elements.length; i++) {
 			IModelElement element = elements[i];
-			String fullyQualifiedName = TclParseUtil.getFQNFromModelElement(
-					element, "::");
+			String fullyQualifiedName = TclParseUtil
+					.getFQNFromModelElement(element, "::");
 			if (similars.containsKey(fullyQualifiedName)) {
 				List similar = (List) similars.get(fullyQualifiedName);
 				similar.add(element);

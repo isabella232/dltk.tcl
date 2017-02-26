@@ -1,11 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2007 IBM Corporation and others.
+ * Copyright (c) 2005, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
-
  *******************************************************************************/
 package org.eclipse.dltk.tcl.ast;
 
@@ -19,9 +18,9 @@ import org.eclipse.dltk.ast.statements.Statement;
 import org.eclipse.dltk.utils.CorePrinter;
 
 public class TclStatement extends Statement {
-	private List expressions;
+	private List<ASTNode> expressions;
 
-	public TclStatement(List expressions) {
+	public TclStatement(List<ASTNode> expressions) {
 		if (!expressions.isEmpty()) {
 			// First
 			Expression first = (Expression) expressions.get(0);
@@ -36,7 +35,7 @@ public class TclStatement extends Statement {
 		this.expressions = expressions;
 	}
 
-	public List getExpressions() {
+	public List<ASTNode> getExpressions() {
 		return this.expressions;
 	}
 
@@ -52,16 +51,18 @@ public class TclStatement extends Statement {
 		return this.expressions.size();
 	}
 
+	@Override
 	public int getKind() {
 		return TclConstants.TCL_STATEMENT;
 	}
 
+	@Override
 	public void traverse(ASTVisitor visitor) throws Exception {
 		if (visitor.visit(this)) {
 			if (this.expressions != null) {
 				int exprSize = this.expressions.size();
 				for (int i = 0; i < exprSize; i++) {
-					ASTNode node = (ASTNode) this.expressions.get(i);
+					ASTNode node = this.expressions.get(i);
 					node.traverse(visitor);
 				}
 			}
@@ -69,24 +70,26 @@ public class TclStatement extends Statement {
 		}
 	}
 
+	@Override
 	public void printNode(CorePrinter output) {
 		if (this.expressions != null) {
 			output.formatPrintLn("");
-			Iterator i = this.expressions.iterator();
+			Iterator<ASTNode> i = this.expressions.iterator();
 			while (i.hasNext()) {
-				ASTNode node = (ASTNode) i.next();
+				ASTNode node = i.next();
 				node.printNode(output);
 				output.formatPrintLn(" ");
 			}
 		}
 	}
 
+	@Override
 	public String toString() {
 		String value = "";
 		if (this.expressions != null) {
-			Iterator i = this.expressions.iterator();
+			Iterator<ASTNode> i = this.expressions.iterator();
 			while (i.hasNext()) {
-				ASTNode node = (ASTNode) i.next();
+				ASTNode node = i.next();
 				value += node.toString();
 				value += " ";
 			}
@@ -95,7 +98,7 @@ public class TclStatement extends Statement {
 		return value;
 	}
 
-	public void setExpressions(List asList) {
+	public void setExpressions(List<ASTNode> asList) {
 		this.expressions = asList;
 	}
 }

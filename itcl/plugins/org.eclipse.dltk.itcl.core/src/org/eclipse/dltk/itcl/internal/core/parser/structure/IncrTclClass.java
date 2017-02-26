@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2009 xored software, Inc.  
+ * Copyright (c) 2009, 2017 xored software, Inc. and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html  
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
  *     xored software, Inc. - initial API and Implementation (Alex Panchenko)
@@ -21,10 +21,10 @@ import org.eclipse.dltk.compiler.IElementRequestor.TypeInfo;
 import org.eclipse.dltk.itcl.internal.core.IIncrTclModifiers;
 import org.eclipse.dltk.itcl.internal.core.parser.structure.model.IClass;
 import org.eclipse.dltk.itcl.internal.core.parser.structure.model.IMember;
-import org.eclipse.dltk.itcl.internal.core.parser.structure.model.IMethod;
-import org.eclipse.dltk.itcl.internal.core.parser.structure.model.IVariable;
 import org.eclipse.dltk.itcl.internal.core.parser.structure.model.IMember.Visibility;
+import org.eclipse.dltk.itcl.internal.core.parser.structure.model.IMethod;
 import org.eclipse.dltk.itcl.internal.core.parser.structure.model.IMethod.MethodKind;
+import org.eclipse.dltk.itcl.internal.core.parser.structure.model.IVariable;
 import org.eclipse.dltk.itcl.internal.core.parser.structure.model.IVariable.VariableKind;
 import org.eclipse.dltk.itcl.internal.core.parser.structure.model.impl.ClassImpl;
 import org.eclipse.dltk.itcl.internal.core.parser.structure.model.impl.Method;
@@ -40,8 +40,8 @@ import org.eclipse.dltk.tcl.structure.TclModelProblem;
 
 public class IncrTclClass extends AbstractTclCommandModelBuilder {
 
-	public boolean process(TclCommand command, ITclModelBuildContext context)
-			throws TclModelProblem {
+	@Override
+	public boolean process(TclCommand command, ITclModelBuildContext context) throws TclModelProblem {
 		if (command.getArguments().size() != 2) {
 			return false;
 		}
@@ -51,8 +51,7 @@ public class IncrTclClass extends AbstractTclCommandModelBuilder {
 		}
 		final ClassImpl clazz = new ClassImpl();
 		// TODO parse without processors
-		final Script classBody = context.parse(command.getArguments().get(1),
-				ITclModelBuildContext.NO_TRAVERSE);
+		final Script classBody = context.parse(command.getArguments().get(1), ITclModelBuildContext.NO_TRAVERSE);
 		processContent(clazz, classBody.getCommands(), context);
 		final TypeInfo ti = new TypeInfo();
 		ti.declarationStart = command.getStart();
@@ -60,8 +59,8 @@ public class IncrTclClass extends AbstractTclCommandModelBuilder {
 		ti.nameSourceEnd = className.getEnd() - 1;
 		ti.modifiers = IIncrTclModifiers.AccIncrTcl;
 		ti.superclasses = clazz.getSuperClasses();
-		ITclTypeHandler resolvedType = context.get(ITclTypeResolver.class)
-				.resolveType(ti, command.getEnd(), asSymbol(className));
+		ITclTypeHandler resolvedType = context.get(ITclTypeResolver.class).resolveType(ti, command.getEnd(),
+				asSymbol(className));
 		context.enterNamespace(resolvedType);
 		clazz.setName(resolvedType.getNamespace());
 		IncrTclNames.create(context).addType(clazz);
@@ -98,15 +97,13 @@ public class IncrTclClass extends AbstractTclCommandModelBuilder {
 		return false;
 	}
 
-	private void processContent(IClass clazz, List<TclCommand> bodyCommands,
-			ITclModelBuildContext context) {
+	private void processContent(IClass clazz, List<TclCommand> bodyCommands, ITclModelBuildContext context) {
 		for (TclCommand cmd : bodyCommands) {
 			processContent(clazz, new CommandImpl(cmd), context);
 		}
 	}
 
-	private void processContent(IClass clazz, ICommand cmd,
-			ITclModelBuildContext context) {
+	private void processContent(IClass clazz, ICommand cmd, ITclModelBuildContext context) {
 		TclArgument cmdName = cmd.getName();
 		if (isSymbol(cmdName)) {
 			Handler handler = handlers.get(asSymbol(cmdName));
@@ -117,72 +114,24 @@ public class IncrTclClass extends AbstractTclCommandModelBuilder {
 	}
 
 	private interface Handler {
-		void handle(IClass clazz, ICommand command,
-				ITclModelBuildContext context);
+		void handle(IClass clazz, ICommand command, ITclModelBuildContext context);
 	}
 
-	private Map<String, Handler> handlers = new HashMap<String, Handler>();
+	private Map<String, Handler> handlers = new HashMap<>();
 	{
-		handlers.put("inherit", new Handler() {
-			public void handle(IClass clazz, ICommand command,
-					ITclModelBuildContext context) {
-				handleInherit(clazz, command);
-			}
-		});
-		handlers.put("constructor", new Handler() {
-			public void handle(IClass clazz, ICommand command,
-					ITclModelBuildContext context) {
-				handleConstructor(clazz, command);
-			}
-		});
-		handlers.put("destructor", new Handler() {
-			public void handle(IClass clazz, ICommand command,
-					ITclModelBuildContext context) {
-				handleDestructor(clazz, command);
-			}
-		});
-		handlers.put("method", new Handler() {
-			public void handle(IClass clazz, ICommand command,
-					ITclModelBuildContext context) {
-				handleProc(clazz, command, MethodKind.METHOD);
-			}
-		});
-		handlers.put("proc", new Handler() {
-			public void handle(IClass clazz, ICommand command,
-					ITclModelBuildContext context) {
-				handleProc(clazz, command, MethodKind.PROC);
-			}
-		});
-		handlers.put("variable", new Handler() {
-			public void handle(IClass clazz, ICommand command,
-					ITclModelBuildContext context) {
-				handleVariable(clazz, command, VariableKind.VARIABLE);
-			}
-		});
-		handlers.put("common", new Handler() {
-			public void handle(IClass clazz, ICommand command,
-					ITclModelBuildContext context) {
-				handleVariable(clazz, command, VariableKind.COMMON);
-			}
-		});
-		handlers.put("public", new Handler() {
-			public void handle(IClass clazz, ICommand command,
-					ITclModelBuildContext context) {
-				handleVisibility(clazz, command, context, Visibility.PUBLIC);
-			}
-		});
-		handlers.put("protected", new Handler() {
-			public void handle(IClass clazz, ICommand command,
-					ITclModelBuildContext context) {
-				handleVisibility(clazz, command, context, Visibility.PROTECTED);
-			}
-		});
-		handlers.put("private", new Handler() {
-			public void handle(IClass clazz, ICommand command,
-					ITclModelBuildContext context) {
-				handleVisibility(clazz, command, context, Visibility.PRIVATE);
-			}
-		});
+		handlers.put("inherit", (clazz, command, context) -> handleInherit(clazz, command));
+		handlers.put("constructor", (clazz, command, context) -> handleConstructor(clazz, command));
+		handlers.put("destructor", (clazz, command, context) -> handleDestructor(clazz, command));
+		handlers.put("method", (clazz, command, context) -> handleProc(clazz, command, MethodKind.METHOD));
+		handlers.put("proc", (clazz, command, context) -> handleProc(clazz, command, MethodKind.PROC));
+		handlers.put("variable", (clazz, command, context) -> handleVariable(clazz, command, VariableKind.VARIABLE));
+		handlers.put("common", (clazz, command, context) -> handleVariable(clazz, command, VariableKind.COMMON));
+		handlers.put("public",
+				(clazz, command, context) -> handleVisibility(clazz, command, context, Visibility.PUBLIC));
+		handlers.put("protected",
+				(clazz, command, context) -> handleVisibility(clazz, command, context, Visibility.PROTECTED));
+		handlers.put("private",
+				(clazz, command, context) -> handleVisibility(clazz, command, context, Visibility.PRIVATE));
 	}
 
 	/**
@@ -205,8 +154,7 @@ public class IncrTclClass extends AbstractTclCommandModelBuilder {
 	 * @param command
 	 * @param kind
 	 */
-	protected void handleVariable(IClass clazz, ICommand command,
-			VariableKind kind) {
+	protected void handleVariable(IClass clazz, ICommand command, VariableKind kind) {
 		if (command.getArgumentCount() == 0) {
 			return;
 		}
@@ -240,8 +188,7 @@ public class IncrTclClass extends AbstractTclCommandModelBuilder {
 			method.setKind(kind);
 			method.setVisibility(clazz.peekVisibility());
 			if (command.getArgumentCount() >= 2) {
-				parseRawParameters(command.getArgument(1), method
-						.getParameters());
+				parseRawParameters(command.getArgument(1), method.getParameters());
 			}
 			if (command.getArgumentCount() == 3) {
 				method.addBody(command.getArgument(2));
@@ -297,8 +244,8 @@ public class IncrTclClass extends AbstractTclCommandModelBuilder {
 	 * @param command
 	 * @param visibility
 	 */
-	protected void handleVisibility(IClass clazz, ICommand command,
-			ITclModelBuildContext context, Visibility visibility) {
+	protected void handleVisibility(IClass clazz, ICommand command, ITclModelBuildContext context,
+			Visibility visibility) {
 		if (command.getArgumentCount() == 0) {
 			return;
 		}

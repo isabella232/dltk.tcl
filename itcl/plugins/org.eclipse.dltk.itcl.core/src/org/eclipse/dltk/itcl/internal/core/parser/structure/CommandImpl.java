@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 xored software, Inc.
+ * Copyright (c) 2010, 2017 xored software, Inc. and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -23,26 +23,32 @@ class CommandImpl implements ICommand {
 		this.command = cmd;
 	}
 
+	@Override
 	public TclArgument getName() {
 		return command.getName();
 	}
 
+	@Override
 	public int getEnd() {
 		return command.getEnd();
 	}
 
+	@Override
 	public int getStart() {
 		return command.getStart();
 	}
 
+	@Override
 	public TclArgument getArgument(int index) {
 		return command.getArguments().get(index);
 	}
 
+	@Override
 	public int getArgumentCount() {
 		return command.getArguments().size();
 	}
 
+	@Override
 	public TclArgument[] getArguments() {
 		final EList<TclArgument> args = command.getArguments();
 		return args.toArray(new TclArgument[args.size()]);

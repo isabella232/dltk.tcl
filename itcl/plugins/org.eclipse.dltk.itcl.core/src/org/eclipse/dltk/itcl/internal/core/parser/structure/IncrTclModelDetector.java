@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2009 xored software, Inc.  
+ * Copyright (c) 2009, 2017 xored software, Inc. and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html  
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
  *     xored software, Inc. - initial API and Implementation (Alex Panchenko)
@@ -17,14 +17,10 @@ import org.eclipse.dltk.tcl.structure.ITclModelBuildContext;
 import org.eclipse.dltk.tcl.structure.ITclModelBuilderDetector;
 import org.eclipse.dltk.tcl.structure.TclModelBuilderUtil;
 
-public class IncrTclModelDetector extends TclModelBuilderUtil implements
-		ITclModelBuilderDetector {
+public class IncrTclModelDetector extends TclModelBuilderUtil implements ITclModelBuilderDetector {
 
-	@SuppressWarnings("nls")
-	private static final String[] NAMESPACES = new String[] { "::itcl::",
-			"itcl::" };
+	private static final String[] NAMESPACES = new String[] { "::itcl::", "itcl::" };
 
-	@SuppressWarnings("nls")
 	private static final String[] COMMANDS = new String[] { "class", "body" };
 
 	// ,
@@ -36,7 +32,7 @@ public class IncrTclModelDetector extends TclModelBuilderUtil implements
 
 	/**
 	 * Remove iTcl namespaces from the specified command name
-	 * 
+	 *
 	 * @param commandName
 	 * @return command name without namespace
 	 */
@@ -49,8 +45,8 @@ public class IncrTclModelDetector extends TclModelBuilderUtil implements
 		return commandName;
 	}
 
-	public String detect(String commandName, TclCommand command,
-			ITclModelBuildContext context) {
+	@Override
+	public String detect(String commandName, TclCommand command, ITclModelBuildContext context) {
 		if (commandName == null) {
 			return null;
 		}
@@ -69,8 +65,7 @@ public class IncrTclModelDetector extends TclModelBuilderUtil implements
 	 * @param context
 	 * @return
 	 */
-	private String checkInstanceOperations(TclCommand command,
-			String commandName, ITclModelBuildContext context) {
+	private String checkInstanceOperations(TclCommand command, String commandName, ITclModelBuildContext context) {
 		final IncrTclNames names = IncrTclNames.get(context);
 		if (names != null) {
 			final IClass type = names.resolve(commandName);

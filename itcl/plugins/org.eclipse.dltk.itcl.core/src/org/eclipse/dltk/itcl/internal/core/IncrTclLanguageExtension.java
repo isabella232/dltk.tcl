@@ -16,26 +16,32 @@ public class IncrTclLanguageExtension implements ITclLanguageExtension {
 	public IncrTclLanguageExtension() {
 	}
 
+	@Override
 	public ICompletionExtension createCompletionExtension() {
 		return new IncrTclCompletionExtension();
 	}
 
+	@Override
 	public IMatchLocatorExtension createMatchLocatorExtension() {
 		return new IncrTclMatchLocatorExtension();
 	}
 
+	@Override
 	public IMixinBuildVisitorExtension createMixinBuildVisitorExtension() {
 		return new IncrTclMixinBuildVisitorExtension();
 	}
 
+	@Override
 	public ISelectionExtension createSelectionExtension() {
 		return new IncrTclSelectionExtension();
 	}
 
+	@Override
 	public ISourceElementRequestVisitorExtension createSourceElementRequestVisitorExtension() {
 		return new IncrTclSourceElementRequestVisitorExtension();
 	}
 
+	@Override
 	public String getName() {
 		return "Itcl";
 	}

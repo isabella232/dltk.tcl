@@ -8,12 +8,13 @@ import org.eclipse.dltk.ast.references.SimpleReference;
 public class IncrTclMethodCallStatement extends CallExpression {
 	private FieldDeclaration instanceVariable;
 
-	public IncrTclMethodCallStatement(int start, int end, SimpleReference name,
-			FieldDeclaration var, CallArgumentsList args) {
+	public IncrTclMethodCallStatement(int start, int end, SimpleReference name, FieldDeclaration var,
+			CallArgumentsList args) {
 		super(start, end, var, name, args);
 		this.instanceVariable = var;
 	}
 
+	@Override
 	public int getKind() {
 		return 0;
 	}

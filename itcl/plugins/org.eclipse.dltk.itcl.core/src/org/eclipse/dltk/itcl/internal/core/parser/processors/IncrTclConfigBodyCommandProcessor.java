@@ -10,21 +10,18 @@ import org.eclipse.dltk.tcl.ast.TclStatement;
 import org.eclipse.dltk.tcl.core.AbstractTclCommandProcessor;
 import org.eclipse.dltk.tcl.core.ITclParser;
 
-public class IncrTclConfigBodyCommandProcessor extends
-		AbstractTclCommandProcessor {
+public class IncrTclConfigBodyCommandProcessor extends AbstractTclCommandProcessor {
 
 	public IncrTclConfigBodyCommandProcessor() {
 	}
 
-	public ASTNode process(TclStatement statement, ITclParser parser, 
-			ASTNode parent) {
-		if (statement == null
-				|| (statement != null && statement.getCount() == 0)) {
+	@Override
+	public ASTNode process(TclStatement statement, ITclParser parser, ASTNode parent) {
+		if (statement == null || (statement != null && statement.getCount() == 0)) {
 			return null;
 		}
 		if (statement.getCount() < 3) {
-			this.report(parser, "Wrong number of arguments", statement
-					.sourceStart(), statement.sourceEnd(),
+			this.report(parser, "Wrong number of arguments", statement.sourceStart(), statement.sourceEnd(),
 					ProblemSeverities.Error);
 			addToParent(parent, statement);
 			return statement;
@@ -33,16 +30,14 @@ public class IncrTclConfigBodyCommandProcessor extends
 
 		String sName = IncrTclUtils.extractMethodName(procName);
 		if (sName == null || sName.length() == 0) {
-			this.report(parser, "Wrong number of arguments", statement
-					.sourceStart(), statement.sourceEnd(),
+			this.report(parser, "Wrong number of arguments", statement.sourceStart(), statement.sourceEnd(),
 					ProblemSeverities.Error);
 			addToParent(parent, statement);
 			return statement;
 		}
 		Expression procCode = statement.getAt(2);
 
-		IncrTclConfigBody configBody = new IncrTclConfigBody(statement
-				.sourceStart(), statement.sourceEnd());
+		IncrTclConfigBody configBody = new IncrTclConfigBody(statement.sourceStart(), statement.sourceEnd());
 		configBody.setName(sName);
 		configBody.setNameStart(procName.sourceStart());
 		configBody.setNameEnd(procName.sourceEnd());

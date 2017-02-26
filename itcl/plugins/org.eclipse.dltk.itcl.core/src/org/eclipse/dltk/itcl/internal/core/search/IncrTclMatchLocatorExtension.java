@@ -15,25 +15,22 @@ import org.eclipse.dltk.tcl.internal.core.search.TclMatchLocator;
 
 public class IncrTclMatchLocatorExtension implements IMatchLocatorExtension {
 
-	public void visitGeneral(ASTNode node, PatternLocator locator,
-			MatchingNodeSet nodeSet) {
+	@Override
+	public void visitGeneral(ASTNode node, PatternLocator locator, MatchingNodeSet nodeSet) {
 
 		if (node instanceof IncrTclMethodCallStatement) {
 			IncrTclMethodCallStatement st = (IncrTclMethodCallStatement) node;
 			FieldDeclaration instanceVariable = st.getInstanceVariable();
-			CallExpression call = new CallExpression(instanceVariable, st
-					.getName(), null);
+			CallExpression call = new CallExpression(instanceVariable, st.getName(), null);
 			locator.match(call, nodeSet);
 		}
 	}
 
-	public IModelElement createMethodHandle(ISourceModule parent,
-			MethodDeclaration method, TclMatchLocator locator) {
+	@Override
+	public IModelElement createMethodHandle(ISourceModule parent, MethodDeclaration method, TclMatchLocator locator) {
 		if (method instanceof IncrTclBodyDeclaration) {
-			String methodName = method.getDeclaringTypeName() + "::"
-					+ method.getName();
-			return locator.createMethodHandle((ISourceModule) parent,
-					methodName);
+			String methodName = method.getDeclaringTypeName() + "::" + method.getName();
+			return locator.createMethodHandle(parent, methodName);
 		}
 		return null;
 	}

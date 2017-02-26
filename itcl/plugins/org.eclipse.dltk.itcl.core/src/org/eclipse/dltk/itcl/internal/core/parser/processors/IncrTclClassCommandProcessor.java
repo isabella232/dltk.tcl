@@ -21,10 +21,9 @@ import org.eclipse.dltk.tcl.core.TclParseUtil;
 import org.eclipse.dltk.tcl.core.ast.ExtendedTclMethodDeclaration;
 
 public class IncrTclClassCommandProcessor extends AbstractTclCommandProcessor {
-	public ASTNode process(TclStatement statement, ITclParser parser,
-			ASTNode parent) {
-		if (statement == null
-				|| (statement != null && statement.getCount() == 0)) {
+	@Override
+	public ASTNode process(TclStatement statement, ITclParser parser, ASTNode parent) {
+		if (statement == null || (statement != null && statement.getCount() == 0)) {
 			return null;
 		}
 		if (statement.getCount() != 3) {
@@ -33,13 +32,11 @@ public class IncrTclClassCommandProcessor extends AbstractTclCommandProcessor {
 		}
 		Expression classNameExpr = statement.getAt(1);
 		Expression blockExpr = statement.getAt(2);
-		if (classNameExpr instanceof SimpleReference
-				&& blockExpr instanceof TclBlockExpression) {
+		if (classNameExpr instanceof SimpleReference && blockExpr instanceof TclBlockExpression) {
 			TclBlockExpression block = (TclBlockExpression) blockExpr;
-			TypeDeclaration type = new TypeDeclaration(
-					((SimpleReference) classNameExpr).getName(), classNameExpr
-							.sourceStart(), classNameExpr.sourceEnd(),
-					statement.sourceStart(), statement.sourceEnd());
+			TypeDeclaration type = new TypeDeclaration(((SimpleReference) classNameExpr).getName(),
+					classNameExpr.sourceStart(), classNameExpr.sourceEnd(), statement.sourceStart(),
+					statement.sourceEnd());
 			type.setModifiers(IIncrTclModifiers.AccIncrTcl);
 			this.addToParent(parent, type);
 			// Report type to list of types.
@@ -52,22 +49,17 @@ public class IncrTclClassCommandProcessor extends AbstractTclCommandProcessor {
 					TclStatement st = (TclStatement) nde;
 					Expression commandName = st.getAt(0);
 					if (commandName instanceof SimpleReference) {
-						String commandNameStr = ((SimpleReference) commandName)
-								.getName();
+						String commandNameStr = ((SimpleReference) commandName).getName();
 						if ("inherit".equals(commandNameStr)) {
 							handleInherit(st, type, parser);
 						} else if ("public".equals(commandNameStr)) {
-							handleWithModifierSub(st, type,
-									Modifiers.AccPublic, parser);
+							handleWithModifierSub(st, type, Modifiers.AccPublic, parser);
 						} else if ("protected".equals(commandNameStr)) {
-							handleWithModifierSub(st, type,
-									Modifiers.AccProtected, parser);
+							handleWithModifierSub(st, type, Modifiers.AccProtected, parser);
 						} else if ("private".equals(commandNameStr)) {
-							handleWithModifierSub(st, type,
-									Modifiers.AccPrivate, parser);
+							handleWithModifierSub(st, type, Modifiers.AccPrivate, parser);
 						} else {
-							handleWithModifier(commandNameStr, st, type,
-									Modifiers.AccPrivate, parser);
+							handleWithModifier(commandNameStr, st, type, Modifiers.AccPrivate, parser);
 						}
 					}
 				}
@@ -77,33 +69,29 @@ public class IncrTclClassCommandProcessor extends AbstractTclCommandProcessor {
 		return null;
 	}
 
-	private void handleDestructor(TclStatement statement, TypeDeclaration type,
-			ITclParser parser) {
+	private void handleDestructor(TclStatement statement, TypeDeclaration type, ITclParser parser) {
 		if (statement.getCount() != 2) {
-			this.report(parser, "Wrong number of arguments", statement
-					.sourceStart(), statement.sourceEnd(),
+			this.report(parser, "Wrong number of arguments", statement.sourceStart(), statement.sourceEnd(),
 					ProblemSeverities.Error);
 			addToParent(type, statement);
 			return;
 		}
 		Expression procCode = statement.getAt(1);
 
-		ExtendedTclMethodDeclaration method = new ExtendedTclMethodDeclaration(
-				statement.sourceStart(), statement.sourceEnd());
+		ExtendedTclMethodDeclaration method = new ExtendedTclMethodDeclaration(statement.sourceStart(),
+				statement.sourceEnd());
 		method.setName("destructor");
 		Expression o = statement.getAt(0);
 		method.setNameStart(o.sourceStart());
 		method.setNameEnd(o.sourceEnd());
-		method.setModifier(IIncrTclModifiers.AccIncrTcl
-				| IIncrTclModifiers.AccDestructor);
+		method.setModifier(IIncrTclModifiers.AccIncrTcl | IIncrTclModifiers.AccDestructor);
 		method.setDeclaringType(type);
 		IncrTclUtils.parseBlockAdd(parser, procCode, method);
 		type.getMethodList().add(method);
 		this.addToParent(type, method);
 	}
 
-	private void handleWithModifierSub(TclStatement statement,
-			TypeDeclaration type, int modifier, ITclParser parser) {
+	private void handleWithModifierSub(TclStatement statement, TypeDeclaration type, int modifier, ITclParser parser) {
 		List expressions = statement.getExpressions();
 		List newExpressions = new ArrayList();
 		newExpressions.addAll(expressions);
@@ -113,16 +101,13 @@ public class IncrTclClassCommandProcessor extends AbstractTclCommandProcessor {
 		TclStatement sub = new TclStatement(newExpressions);
 		Expression commandName = sub.getAt(0);
 		if (commandName instanceof SimpleReference) {
-			handleWithModifier(((SimpleReference) commandName).getName(), sub,
-					type, modifier, parser);
+			handleWithModifier(((SimpleReference) commandName).getName(), sub, type, modifier, parser);
 		}
 	}
 
-	private void handleConstructor(TclStatement statement,
-			TypeDeclaration type, ITclParser parser) {
+	private void handleConstructor(TclStatement statement, TypeDeclaration type, ITclParser parser) {
 		if (statement.getCount() < 3) {
-			this.report(parser, "Wrong number of arguments", statement
-					.sourceStart(), statement.sourceEnd(),
+			this.report(parser, "Wrong number of arguments", statement.sourceStart(), statement.sourceEnd(),
 					ProblemSeverities.Error);
 			addToParent(type, statement);
 			return;
@@ -139,30 +124,27 @@ public class IncrTclClassCommandProcessor extends AbstractTclCommandProcessor {
 
 		List arguments = IncrTclUtils.extractMethodArguments(procArguments);
 
-		ExtendedTclMethodDeclaration method = new ExtendedTclMethodDeclaration(
-				statement.sourceStart(), statement.sourceEnd());
+		ExtendedTclMethodDeclaration method = new ExtendedTclMethodDeclaration(statement.sourceStart(),
+				statement.sourceEnd());
 		method.setDeclaringType(type);
 		method.setName("constructor");
 		Expression o = statement.getAt(0);
 		method.setNameStart(o.sourceStart());
 		method.setNameEnd(o.sourceEnd());
 		method.acceptArguments(arguments);
-		method.setModifier(IIncrTclModifiers.AccIncrTcl
-				| IIncrTclModifiers.AccConstructor);
+		method.setModifier(IIncrTclModifiers.AccIncrTcl | IIncrTclModifiers.AccConstructor);
 		IncrTclUtils.parseBlockAdd(parser, procCode, method);
 		type.getMethodList().add(method);
 		this.addToParent(type, method);
 	}
 
-	private void handleWithModifier(String commandNameStr,
-			TclStatement statement, TypeDeclaration type, int modifier,
+	private void handleWithModifier(String commandNameStr, TclStatement statement, TypeDeclaration type, int modifier,
 			ITclParser parser) {
 
 		if ("method".equals(commandNameStr)) {
 			handleMethod(statement, type, modifier, parser);
 		} else if ("proc".equals(commandNameStr)) {
-			handleMethod(statement, type, modifier
-					| IIncrTclModifiers.AccIncrTclProc, parser);
+			handleMethod(statement, type, modifier | IIncrTclModifiers.AccIncrTclProc, parser);
 		} else if ("variable".equals(commandNameStr)) {
 			handleVariable(statement, type, modifier, parser);
 		} else if ("common".equals(commandNameStr)) {
@@ -178,17 +160,13 @@ public class IncrTclClassCommandProcessor extends AbstractTclCommandProcessor {
 		}
 	}
 
-	private void handleSet(TclStatement statement, TypeDeclaration type,
-			int modifier, ITclParser parser) {
+	private void handleSet(TclStatement statement, TypeDeclaration type, int modifier, ITclParser parser) {
 		processVariable(statement, type, modifier, parser);
 	}
 
-	private void processVariable(TclStatement statement, TypeDeclaration type,
-			int modifier, ITclParser parser) {
+	private void processVariable(TclStatement statement, TypeDeclaration type, int modifier, ITclParser parser) {
 		if (statement.getCount() < 2) {
-			this.report(parser,
-					"Syntax error: at least one argument expected.", statement,
-					ProblemSeverities.Error);
+			this.report(parser, "Syntax error: at least one argument expected.", statement, ProblemSeverities.Error);
 			return;
 		}
 		Expression variableName = statement.getAt(1);
@@ -200,9 +178,8 @@ public class IncrTclClassCommandProcessor extends AbstractTclCommandProcessor {
 		}
 		SimpleReference variable = TclParseUtil.makeVariable(variableName);
 		if (variable != null) {
-			IncrTclFieldDeclaration var = new IncrTclFieldDeclaration(variable
-					.getName(), variable.sourceStart(), variable.sourceEnd(),
-					statement.sourceStart(), statement.sourceEnd());
+			IncrTclFieldDeclaration var = new IncrTclFieldDeclaration(variable.getName(), variable.sourceStart(),
+					variable.sourceEnd(), statement.sourceStart(), statement.sourceEnd());
 			var.setModifier(IIncrTclModifiers.AccIncrTcl | modifier);
 			var.setDeclaringType(type);
 			this.addToParent(type, var);
@@ -210,16 +187,13 @@ public class IncrTclClassCommandProcessor extends AbstractTclCommandProcessor {
 		}
 	}
 
-	private void handleArray(TclStatement statement, TypeDeclaration type,
-			int modifier) {
+	private void handleArray(TclStatement statement, TypeDeclaration type, int modifier) {
 		// processVariable(statement, type, modifier, parser);
 	}
 
-	private void handleCommon(TclStatement statement, TypeDeclaration type,
-			int modifier, ITclParser parser) {
+	private void handleCommon(TclStatement statement, TypeDeclaration type, int modifier, ITclParser parser) {
 		if (statement.getCount() < 2) {
-			this.report(parser, "Syntax error: one argument expected.",
-					statement, ProblemSeverities.Error);
+			this.report(parser, "Syntax error: one argument expected.", statement, ProblemSeverities.Error);
 			return;
 		}
 		Expression variableName = statement.getAt(1);
@@ -228,25 +202,21 @@ public class IncrTclClassCommandProcessor extends AbstractTclCommandProcessor {
 		}
 		SimpleReference variable = TclParseUtil.makeVariable(variableName);
 		if (variable != null) {
-			IncrTclFieldDeclaration var = new IncrTclFieldDeclaration(variable
-					.getName(), variable.sourceStart(), variable.sourceEnd(),
-					statement.sourceStart(), statement.sourceEnd());
+			IncrTclFieldDeclaration var = new IncrTclFieldDeclaration(variable.getName(), variable.sourceStart(),
+					variable.sourceEnd(), statement.sourceStart(), statement.sourceEnd());
 			var.setModifier(IIncrTclModifiers.AccIncrTcl | modifier);
 			var.setDeclaringType(type);
 			this.addToParent(type, var);
 		}
 	}
 
-	private void handleVariable(TclStatement statement, TypeDeclaration type,
-			int modifier, ITclParser parser) {
+	private void handleVariable(TclStatement statement, TypeDeclaration type, int modifier, ITclParser parser) {
 		processVariable(statement, type, modifier, parser);
 	}
 
-	private void handleMethod(TclStatement statement, TypeDeclaration type,
-			int modifier, ITclParser parser) {
+	private void handleMethod(TclStatement statement, TypeDeclaration type, int modifier, ITclParser parser) {
 		if (statement.getCount() < 2) {
-			this.report(parser, "Wrong number of arguments", statement
-					.sourceStart(), statement.sourceEnd(),
+			this.report(parser, "Wrong number of arguments", statement.sourceStart(), statement.sourceEnd(),
 					ProblemSeverities.Error);
 			addToParent(type, statement);
 			return;
@@ -255,8 +225,7 @@ public class IncrTclClassCommandProcessor extends AbstractTclCommandProcessor {
 
 		String sName = IncrTclUtils.extractMethodName(procName);
 		if (sName == null || sName.length() == 0) {
-			this.report(parser, "Wrong number of arguments", statement
-					.sourceStart(), statement.sourceEnd(),
+			this.report(parser, "Wrong number of arguments", statement.sourceStart(), statement.sourceEnd(),
 					ProblemSeverities.Error);
 			addToParent(type, statement);
 			return;
@@ -272,8 +241,7 @@ public class IncrTclClassCommandProcessor extends AbstractTclCommandProcessor {
 
 		List arguments = IncrTclUtils.extractMethodArguments(procArguments);
 
-		IncrTclMethodDeclaration method = new IncrTclMethodDeclaration(
-				statement.sourceStart(), statement.sourceEnd());
+		IncrTclMethodDeclaration method = new IncrTclMethodDeclaration(statement.sourceStart(), statement.sourceEnd());
 		method.setName(sName);
 		method.setNameStart(procName.sourceStart());
 		method.setNameEnd(procName.sourceEnd());
@@ -291,8 +259,7 @@ public class IncrTclClassCommandProcessor extends AbstractTclCommandProcessor {
 		this.addToParent(type, method);
 	}
 
-	private void handleInherit(TclStatement statement, TypeDeclaration type,
-			ITclParser parser) {
+	private void handleInherit(TclStatement statement, TypeDeclaration type, ITclParser parser) {
 		for (int i = 1; i < statement.getCount(); i++) {
 			Expression expr = statement.getAt(i);
 			if (expr instanceof SimpleReference) {

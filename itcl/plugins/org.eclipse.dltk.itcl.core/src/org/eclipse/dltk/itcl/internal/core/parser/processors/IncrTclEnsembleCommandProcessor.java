@@ -15,28 +15,24 @@ import org.eclipse.dltk.tcl.ast.expressions.TclBlockExpression;
 import org.eclipse.dltk.tcl.core.AbstractTclCommandProcessor;
 import org.eclipse.dltk.tcl.core.ITclParser;
 
-public class IncrTclEnsembleCommandProcessor extends
-		AbstractTclCommandProcessor {
+public class IncrTclEnsembleCommandProcessor extends AbstractTclCommandProcessor {
 
 	public IncrTclEnsembleCommandProcessor() {
 	}
 
-	public ASTNode process(TclStatement statement, ITclParser parser,
-			ASTNode parent) {
-		if (statement == null
-				|| (statement != null && statement.getCount() == 0)) {
+	@Override
+	public ASTNode process(TclStatement statement, ITclParser parser, ASTNode parent) {
+		if (statement == null || (statement != null && statement.getCount() == 0)) {
 			return null;
 		}
 		return processEnsemble(parent, statement, parser);
 	}
 
-	private ASTNode processEnsemble(ASTNode parent, TclStatement statement,
-			ITclParser parser) {
+	private ASTNode processEnsemble(ASTNode parent, TclStatement statement, ITclParser parser) {
 		Expression classNameExpr = statement.getAt(1);
 		Expression blockExpr = statement.getAt(2);
 		if (classNameExpr instanceof SimpleReference) {
-			IncrTclEnsemble ensamble = new IncrTclEnsemble(statement
-					.sourceStart(), statement.sourceEnd());
+			IncrTclEnsemble ensamble = new IncrTclEnsemble(statement.sourceStart(), statement.sourceEnd());
 			ensamble.setName(((SimpleReference) classNameExpr).getName());
 			ensamble.setNameStart(classNameExpr.sourceStart());
 			ensamble.setNameEnd(classNameExpr.sourceEnd());
@@ -53,8 +49,7 @@ public class IncrTclEnsembleCommandProcessor extends
 						TclStatement st = (TclStatement) nde;
 						Expression commandName = st.getAt(0);
 						if (commandName instanceof SimpleReference) {
-							String commandNameValue = ((SimpleReference) commandName)
-									.getName();
+							String commandNameValue = ((SimpleReference) commandName).getName();
 							if (commandNameValue.equals("ensemble")) {
 								processEnsemble(ensamble, st, parser);
 							} else if (commandNameValue.equals("part")) {
@@ -64,8 +59,8 @@ public class IncrTclEnsembleCommandProcessor extends
 					}
 				}
 			} else {
-				List expressions = statement.getExpressions();
-				List subList = expressions.subList(2, expressions.size());
+				List<ASTNode> expressions = statement.getExpressions();
+				List<ASTNode> subList = expressions.subList(2, expressions.size());
 				TclStatement subSt = new TclStatement(subList);
 				processPart(ensamble, subSt, parser);
 			}
@@ -74,11 +69,9 @@ public class IncrTclEnsembleCommandProcessor extends
 		return null;
 	}
 
-	private void processPart(IncrTclEnsemble ensamble, TclStatement statement,
-			ITclParser parser) {
+	private void processPart(IncrTclEnsemble ensamble, TclStatement statement, ITclParser parser) {
 		if (statement.getCount() < 2) {
-			this.report(parser, "Wrong number of arguments", statement
-					.sourceStart(), statement.sourceEnd(),
+			this.report(parser, "Wrong number of arguments", statement.sourceStart(), statement.sourceEnd(),
 					ProblemSeverities.Error);
 			addToParent(ensamble, statement);
 			return;
@@ -87,8 +80,7 @@ public class IncrTclEnsembleCommandProcessor extends
 
 		String sName = IncrTclUtils.extractMethodName(procName);
 		if (sName == null || sName.length() == 0) {
-			this.report(parser, "Wrong number of arguments", statement
-					.sourceStart(), statement.sourceEnd(),
+			this.report(parser, "Wrong number of arguments", statement.sourceStart(), statement.sourceEnd(),
 					ProblemSeverities.Error);
 			return;
 		}
@@ -103,30 +95,27 @@ public class IncrTclEnsembleCommandProcessor extends
 
 		List arguments = IncrTclUtils.extractMethodArguments(procArguments);
 
-		IncrTclEnsemblePart part = new IncrTclEnsemblePart(statement
-				.sourceStart(), statement.sourceEnd());
+		IncrTclEnsemblePart part = new IncrTclEnsemblePart(statement.sourceStart(), statement.sourceEnd());
 		part.setName(sName);
 		part.setNameStart(procName.sourceStart());
 		part.setNameEnd(procName.sourceEnd());
 		part.acceptArguments(arguments);
 		part.setModifier(IIncrTclModifiers.AccIncrTcl);
 		if (procCode != null) {
-			Block block = new Block(procCode.sourceStart(), procCode
-					.sourceEnd());
+			Block block = new Block(procCode.sourceStart(), procCode.sourceEnd());
 			part.acceptBody(block);
 			IncrTclUtils.parseAddToBlock(parser, procCode, block);
 		}
 		this.addToParent(ensamble, part);
 	}
 
+	@Override
 	public void addToParent(ASTNode parent, ASTNode node) {
-		if (parent instanceof IncrTclEnsemble
-				&& node instanceof IncrTclEnsemble) {
+		if (parent instanceof IncrTclEnsemble && node instanceof IncrTclEnsemble) {
 			IncrTclEnsemble ensemble = (IncrTclEnsemble) parent;
 			ensemble.addEnsamble((IncrTclEnsemble) node);
 		}
-		if (parent instanceof IncrTclEnsemble
-				&& node instanceof IncrTclEnsemblePart) {
+		if (parent instanceof IncrTclEnsemble && node instanceof IncrTclEnsemblePart) {
 			IncrTclEnsemble ensemble = (IncrTclEnsemble) parent;
 			ensemble.addPart((IncrTclEnsemblePart) node);
 		}

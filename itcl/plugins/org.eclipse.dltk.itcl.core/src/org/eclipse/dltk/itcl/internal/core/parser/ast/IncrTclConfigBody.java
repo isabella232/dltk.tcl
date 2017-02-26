@@ -38,6 +38,7 @@ public class IncrTclConfigBody extends Declaration {
 		return this.body;
 	}
 
+	@Override
 	public void traverse(ASTVisitor visitor) throws Exception {
 		if (visitor.visit(this)) {
 			// Body

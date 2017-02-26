@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2009 xored software, Inc.  
+ * Copyright (c) 2009, 2017 xored software, Inc. and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html  
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
  *     xored software, Inc. - initial API and Implementation (Alex Panchenko)
@@ -32,8 +32,8 @@ import org.eclipse.dltk.tcl.structure.TclModelProblem;
 
 public class IncrTclBody extends AbstractTclCommandModelBuilder {
 
-	public boolean process(TclCommand command, ITclModelBuildContext context)
-			throws TclModelProblem {
+	@Override
+	public boolean process(TclCommand command, ITclModelBuildContext context) throws TclModelProblem {
 		if (command.getArguments().size() != 3) {
 			throw new TclModelProblem("Wrong number of arguments");
 		}
@@ -54,11 +54,9 @@ public class IncrTclBody extends AbstractTclCommandModelBuilder {
 			clazz = names.resolve(className);
 		}
 		int procModifiers = IIncrTclModifiers.AccIncrTcl
-				| (TclVisibilityUtils.isPrivate(procName) ? Modifiers.AccPrivate
-						: Modifiers.AccPublic);
+				| (TclVisibilityUtils.isPrivate(procName) ? Modifiers.AccPrivate : Modifiers.AccPublic);
 		if (clazz == null) {
-			report(context, nameArg, "Class not found",
-					ProblemSeverities.Warning);
+			report(context, nameArg, "Class not found", ProblemSeverities.Warning);
 		} else {
 			className = clazz.getName();
 			if (className.startsWith("::")) {
@@ -68,8 +66,7 @@ public class IncrTclBody extends AbstractTclCommandModelBuilder {
 			if (method != null) {
 				procModifiers = method.getModifiers();
 			} else {
-				report(context, nameArg, "Method not found",
-						ProblemSeverities.Warning);
+				report(context, nameArg, "Method not found", ProblemSeverities.Warning);
 			}
 		}
 		TypeInfo ti = new TypeInfo();
@@ -80,15 +77,14 @@ public class IncrTclBody extends AbstractTclCommandModelBuilder {
 		if (clazz != null) {
 			ti.superclasses = clazz.getSuperClasses();
 		}
-		ITclTypeHandler resolvedType = context.get(ITclTypeResolver.class)
-				.resolveType(ti, command.getEnd(), className);
+		ITclTypeHandler resolvedType = context.get(ITclTypeResolver.class).resolveType(ti, command.getEnd(), className);
 		MethodInfo mi = new MethodInfo();
 		mi.declarationStart = command.getStart();
 		mi.nameSourceStart = nameArg.getStart();
 		mi.nameSourceEnd = nameArg.getEnd() - 1;
 		mi.modifiers = procModifiers;
 		mi.name = procName;
-		List<Parameter> parameters = new ArrayList<Parameter>();
+		List<Parameter> parameters = new ArrayList<>();
 		parseRawParameters(command.getArguments().get(1), parameters);
 		fillParameters(mi, parameters);
 		context.getRequestor().enterMethodRemoveSame(mi);

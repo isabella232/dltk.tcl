@@ -3,6 +3,7 @@ package org.eclipse.dltk.itcl.internal.core.parser;
 import java.util.List;
 
 import org.eclipse.dltk.ast.ASTListNode;
+import org.eclipse.dltk.ast.ASTNode;
 import org.eclipse.dltk.ast.declarations.Declaration;
 import org.eclipse.dltk.ast.declarations.FieldDeclaration;
 import org.eclipse.dltk.ast.declarations.MethodDeclaration;
@@ -16,9 +17,9 @@ import org.eclipse.dltk.tcl.core.extensions.ISourceElementRequestVisitorExtensio
 import org.eclipse.dltk.tcl.internal.parser.TclSourceElementRequestVisitor;
 import org.eclipse.dltk.tcl.internal.parser.TclSourceElementRequestVisitor.ExitFromType;
 
-public class IncrTclSourceElementRequestVisitorExtension implements
-		ISourceElementRequestVisitorExtension {
+public class IncrTclSourceElementRequestVisitorExtension implements ISourceElementRequestVisitorExtension {
 
+	@Override
 	public int getModifiers(Declaration s) {
 		if ((s.getModifiers() & IIncrTclModifiers.AccIncrTcl) != 0) {
 			// This is ordinary class.
@@ -27,22 +28,22 @@ public class IncrTclSourceElementRequestVisitorExtension implements
 		return 0;
 	}
 
-	public boolean visit(Statement statement,
-			TclSourceElementRequestVisitor original) {
+	@Override
+	public boolean visit(Statement statement, TclSourceElementRequestVisitor original) {
 		if (statement instanceof IncrTclMethodCallStatement) {
 			IncrTclMethodCallStatement call = (IncrTclMethodCallStatement) statement;
 			SimpleReference callName = call.getCallName();
 			int len = 0;
 			if (call.getArgs() != null) {
 				ASTListNode arguments = call.getArgs();
-				List childs = arguments.getChilds();
+				List<ASTNode> childs = arguments.getChilds();
 				if (childs != null) {
 					len = childs.size();
 				}
 			}
 
-			original.getRequestor().acceptMethodReference(callName.getName(),
-					len, call.sourceStart(), call.sourceEnd());
+			original.getRequestor().acceptMethodReference(callName.getName(), len, call.sourceStart(),
+					call.sourceEnd());
 			return true;
 
 			// Also lets add type references from here.
@@ -50,8 +51,8 @@ public class IncrTclSourceElementRequestVisitorExtension implements
 		return false;
 	}
 
-	public ExitFromType getExitExtended(MethodDeclaration method,
-			TclSourceElementRequestVisitor original) {
+	@Override
+	public ExitFromType getExitExtended(MethodDeclaration method, TclSourceElementRequestVisitor original) {
 		String tName = method.getDeclaringTypeName();
 		if (tName == null) {
 			tName = "";
@@ -59,8 +60,8 @@ public class IncrTclSourceElementRequestVisitorExtension implements
 		return original.resolveType(method, tName + "::dummy", false);
 	}
 
-	public boolean extendedExitRequired(MethodDeclaration method,
-			TclSourceElementRequestVisitor original) {
+	@Override
+	public boolean extendedExitRequired(MethodDeclaration method, TclSourceElementRequestVisitor original) {
 		if (method instanceof IncrTclBodyDeclaration) {
 			return true;
 		}
@@ -68,8 +69,8 @@ public class IncrTclSourceElementRequestVisitorExtension implements
 		// != 0;
 	}
 
-	public ExitFromType processField(FieldDeclaration decl,
-			TclSourceElementRequestVisitor original) {
+	@Override
+	public ExitFromType processField(FieldDeclaration decl, TclSourceElementRequestVisitor original) {
 		// TclParseUtil.getScopeParent(decl,)
 		MethodDeclaration method = original.getCurrentMethod();
 		if (method != null && method instanceof IncrTclBodyDeclaration) {
@@ -83,17 +84,17 @@ public class IncrTclSourceElementRequestVisitorExtension implements
 		return null;
 	}
 
-	public boolean skipMethod(MethodDeclaration method,
-			TclSourceElementRequestVisitor tclSourceElementRequestVisitor) {
+	@Override
+	public boolean skipMethod(MethodDeclaration method, TclSourceElementRequestVisitor tclSourceElementRequestVisitor) {
 		// if (method instanceof IncrTclBodyDeclaration) {
 		// return true;
 		// }
 		return false;
 	}
 
-	private static final int MOD_CONSTRUCTOR = IIncrTclModifiers.AccIncrTcl
-			| IIncrTclModifiers.AccConstructor;
+	private static final int MOD_CONSTRUCTOR = IIncrTclModifiers.AccIncrTcl | IIncrTclModifiers.AccConstructor;
 
+	@Override
 	public boolean isConstructor(MethodDeclaration declaration) {
 		if (declaration instanceof ExtendedTclMethodDeclaration
 				&& (declaration.getModifiers() & MOD_CONSTRUCTOR) == MOD_CONSTRUCTOR) {

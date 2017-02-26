@@ -7,18 +7,24 @@ import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.itcl.internal.core.IIncrTclModifiers;
 import org.eclipse.dltk.tcl.internal.core.search.mixin.model.TclMixinElement;
 
-
 public class IncrTclClass extends TclMixinElement implements IIncrTclMixinConstants {
 	private String namespaceKey;
+
+	@Override
 	public int getType() {
 		return ELEMENT_INCRTCL_CLASS;
 	}
+
+	@Override
 	public String toString() {
 		return "incrtclclass";
 	}
+
 	public void setNamespace(String namespacePrefix) {
 		this.namespaceKey = namespacePrefix;
 	}
+
+	@Override
 	protected boolean isValidModelElement(IModelElement element) {
 		if (!(element.getElementType() == IModelElement.TYPE)) {
 			return false;
@@ -29,7 +35,7 @@ public class IncrTclClass extends TclMixinElement implements IIncrTclMixinConsta
 				return true;
 			}
 		} catch (ModelException e) {
-			if( DLTKCore.DEBUG ) {
+			if (DLTKCore.DEBUG) {
 				e.printStackTrace();
 			}
 		}

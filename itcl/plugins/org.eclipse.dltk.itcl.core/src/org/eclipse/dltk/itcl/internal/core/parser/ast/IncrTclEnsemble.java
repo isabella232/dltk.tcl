@@ -8,43 +8,44 @@ import org.eclipse.dltk.ast.ASTVisitor;
 import org.eclipse.dltk.ast.declarations.Declaration;
 
 /**
- * 
+ *
  * ensemble ensName ?command arg arg...? or ensemble ensName {
- * 
+ *
  * part partName args body
- * 
+ *
  * ...
- * 
+ *
  * ensemble partName {
- * 
+ *
  * part subPartName args body
- * 
+ *
  * part subPartName args body
- * 
+ *
  * ... } }
- * 
+ *
  */
 public class IncrTclEnsemble extends Declaration {
-	private List ensembles;
-	private List parts;
+	private List<IncrTclEnsemble> ensembles;
+	private List<IncrTclEnsemblePart> parts;
 
 	public IncrTclEnsemble(int start, int end) {
 		super(start, end);
 	}
 
+	@Override
 	public void traverse(ASTVisitor visitor) throws Exception {
 		if (visitor.visit(this)) {
 			if (this.ensembles != null) {
-				Iterator it = this.ensembles.iterator();
+				Iterator<IncrTclEnsemble> it = this.ensembles.iterator();
 				while (it.hasNext()) {
-					IncrTclEnsemble arg = (IncrTclEnsemble) it.next();
+					IncrTclEnsemble arg = it.next();
 					arg.traverse(visitor);
 				}
 			}
 			if (this.parts != null) {
-				Iterator it = this.parts.iterator();
+				Iterator<IncrTclEnsemblePart> it = this.parts.iterator();
 				while (it.hasNext()) {
-					IncrTclEnsemblePart arg = (IncrTclEnsemblePart) it.next();
+					IncrTclEnsemblePart arg = it.next();
 					arg.traverse(visitor);
 				}
 			}
@@ -59,29 +60,29 @@ public class IncrTclEnsemble extends Declaration {
 
 	private void initialize() {
 		if (this.ensembles == null) {
-			this.ensembles = new ArrayList();
+			this.ensembles = new ArrayList<>();
 		}
 		if (this.parts == null) {
-			this.parts = new ArrayList();
+			this.parts = new ArrayList<>();
 		}
 	}
 
-	public List getEnsembles() {
+	public List<IncrTclEnsemble> getEnsembles() {
 		initialize();
 		return ensembles;
 	}
 
-	public void setEnsembles(List ensembles) {
+	public void setEnsembles(List<IncrTclEnsemble> ensembles) {
 		this.ensembles = ensembles;
 		initialize();
 	}
 
-	public List getParts() {
+	public List<IncrTclEnsemblePart> getParts() {
 		initialize();
 		return parts;
 	}
 
-	public void setParts(List parts) {
+	public void setParts(List<IncrTclEnsemblePart> parts) {
 		this.parts = parts;
 		initialize();
 	}

@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2009 xored software, Inc.  
+ * Copyright (c) 2009, 2017 xored software, Inc. and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html  
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
  *     xored software, Inc. - initial API and Implementation (Alex Panchenko)
@@ -24,8 +24,8 @@ import org.eclipse.dltk.tcl.structure.TclModelProblem;
 
 public class IncrTclNewInstance extends AbstractTclCommandModelBuilder {
 
-	public boolean process(TclCommand command, ITclModelBuildContext context)
-			throws TclModelProblem {
+	@Override
+	public boolean process(TclCommand command, ITclModelBuildContext context) throws TclModelProblem {
 		if (command.getArguments().isEmpty()) {
 			return false;
 		}
@@ -41,8 +41,8 @@ public class IncrTclNewInstance extends AbstractTclCommandModelBuilder {
 			fi.nameSourceEnd = varName.getEnd() - 1;
 			fi.name = asSymbol(varName);
 			fi.modifiers = IIncrTclModifiers.AccIncrTcl;
-			ITclTypeHandler typeHandler = context.get(ITclTypeResolver.class)
-					.resolveMemberType(fi, command.getEnd(), fi.name);
+			ITclTypeHandler typeHandler = context.get(ITclTypeResolver.class).resolveMemberType(fi, command.getEnd(),
+					fi.name);
 			if (context.getRequestor().enterFieldCheckDuplicates(fi)) {
 				context.getRequestor().exitField(command.getEnd());
 			}

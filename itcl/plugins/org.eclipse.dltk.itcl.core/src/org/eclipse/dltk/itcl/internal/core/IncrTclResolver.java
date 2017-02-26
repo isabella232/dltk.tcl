@@ -34,25 +34,19 @@ public class IncrTclResolver {
 			while (!supersToHandle.isEmpty()) {
 				String superClass = (String) supersToHandle.get(0);
 				supersToHandle.remove(0);
-				String memberkey = TclParseUtil.getFQNFromModelElement(parent
-						.getParent(), IMixinRequestor.MIXIN_NAME_SEPARATOR)
-						+ IMixinRequestor.MIXIN_NAME_SEPARATOR
-						+ TclParseUtil.tclNameTo(superClass,
-								IMixinRequestor.MIXIN_NAME_SEPARATOR);
+				String memberkey = TclParseUtil.getFQNFromModelElement(parent.getParent(),
+						IMixinRequestor.MIXIN_NAME_SEPARATOR) + IMixinRequestor.MIXIN_NAME_SEPARATOR
+						+ TclParseUtil.tclNameTo(superClass, IMixinRequestor.MIXIN_NAME_SEPARATOR);
 				if (memberkey.startsWith(IMixinRequestor.MIXIN_NAME_SEPARATOR)) {
-					memberkey = memberkey
-							.substring(IMixinRequestor.MIXIN_NAME_SEPARATOR
-									.length());
+					memberkey = memberkey.substring(IMixinRequestor.MIXIN_NAME_SEPARATOR.length());
 				}
 				String[] split = TclParseUtil.tclSplit(superClass);
-				IModelElement[] types = findTypeMixin(memberkey,
-						split[split.length - 1], method.getScriptProject());
+				IModelElement[] types = findTypeMixin(memberkey, split[split.length - 1], method.getScriptProject());
 				for (int j = 0; j < types.length; j++) {
 					IType type = (IType) types[j];
 					IMethod[] methods = type.getMethods();
 					for (int i = 0; i < methods.length; i++) {
-						if (methods[i].getElementName().equals(
-								method.getElementName())) {
+						if (methods[i].getElementName().equals(method.getElementName())) {
 							return methods[i];
 						}
 					}
@@ -84,25 +78,20 @@ public class IncrTclResolver {
 	}
 
 	public static ModuleDeclaration parseModule(IModelElement method) {
-		ISourceModule sourceModule = (ISourceModule) method
-				.getAncestor(IModelElement.SOURCE_MODULE);
+		ISourceModule sourceModule = (ISourceModule) method.getAncestor(IModelElement.SOURCE_MODULE);
 
-		ModuleDeclaration module = SourceParserUtil
-				.getModuleDeclaration(sourceModule);
+		ModuleDeclaration module = SourceParserUtil.getModuleDeclaration(sourceModule);
 		return module;
 
 	}
 
-	public static IModelElement[] findTypeMixin(String pattern, String name,
-			IScriptProject project) {
-		IMixinElement[] find = TclMixinModel.getInstance().getMixin(project)
-				.find(pattern + "*");
-		List elements = new ArrayList();
+	public static IModelElement[] findTypeMixin(String pattern, String name, IScriptProject project) {
+		IMixinElement[] find = TclMixinModel.getInstance().getMixin(project).find(pattern + "*");
+		List<IModelElement> elements = new ArrayList<>();
 		for (int i = 0; i < find.length; i++) {
 			Object[] allObjects = find[i].getAllObjects();
 			for (int j = 0; j < allObjects.length; j++) {
-				if (allObjects[j] != null
-						&& (allObjects[j] instanceof IncrTclClass)) {
+				if (allObjects[j] != null && (allObjects[j] instanceof IncrTclClass)) {
 					String name2 = null;
 					if (allObjects[j] instanceof IncrTclClass) {
 						IncrTclClass field = (IncrTclClass) allObjects[j];
@@ -110,13 +99,11 @@ public class IncrTclResolver {
 					}
 					if (name2 != null && name.equals(name2)) {
 						// this.selectionElements.add(field.getModelElement());
-						elements.add(((ITclMixinElement) allObjects[j])
-								.getModelElement());
+						elements.add(((ITclMixinElement) allObjects[j]).getModelElement());
 					}
 				}
 			}
 		}
-		return (IModelElement[]) elements.toArray(new IModelElement[elements
-				.size()]);
+		return elements.toArray(new IModelElement[elements.size()]);
 	}
 }

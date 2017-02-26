@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2008 xored software, Inc.  
+ * Copyright (c) 2008, 2017 xored software, Inc. and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html  
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
  *     xored software, Inc. - initial API and Implementation (Andrei Sobolev)
@@ -57,7 +57,7 @@ public class IncrTclClassesManager implements IResourceChangeListener {
 	private boolean dirty = false;
 	private int changes = 0;
 
-	private Set classNames = new HashSet();
+	private Set<String> classNames = new HashSet<>();
 
 	public void clean() {
 		this.classNames.clear();
@@ -87,17 +87,14 @@ public class IncrTclClassesManager implements IResourceChangeListener {
 	}
 
 	private synchronized void load() {
-		IPath packages = IncrTCLPlugin.getDefault().getStateLocation().append(
-				PATH_ITCL_CLASSES);
+		IPath packages = IncrTCLPlugin.getDefault().getStateLocation().append(PATH_ITCL_CLASSES);
 		File packagesFile = packages.toFile();
 		if (packagesFile.exists()) {
-			DocumentBuilderFactory factory = DocumentBuilderFactory
-					.newInstance();
+			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder builder;
 			try {
 				builder = factory.newDocumentBuilder();
-				BufferedInputStream stream = new BufferedInputStream(
-						new FileInputStream(packagesFile));
+				BufferedInputStream stream = new BufferedInputStream(new FileInputStream(packagesFile));
 				Document document = builder.parse(stream);
 				stream.close();
 				populate(document.getDocumentElement());
@@ -144,8 +141,7 @@ public class IncrTclClassesManager implements IResourceChangeListener {
 			return;
 		}
 		dirty = false;
-		IPath packages = IncrTCLPlugin.getDefault().getStateLocation().append(
-				PATH_ITCL_CLASSES);
+		IPath packages = IncrTCLPlugin.getDefault().getStateLocation().append(PATH_ITCL_CLASSES);
 		File packagesFile = packages.toFile();
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder;
@@ -188,10 +184,10 @@ public class IncrTclClassesManager implements IResourceChangeListener {
 	}
 
 	private void save(Document doc) {
-		Element packages = doc.createElement(CLASSES_TAG); //$NON-NLS-1$
+		Element packages = doc.createElement(CLASSES_TAG); // $NON-NLS-1$
 		doc.appendChild(packages);
-		for (Iterator iterator = this.classNames.iterator(); iterator.hasNext();) {
-			String value = (String) iterator.next();
+		for (Iterator<String> iterator = this.classNames.iterator(); iterator.hasNext();) {
+			String value = iterator.next();
 			Element el = doc.createElement(CLASS_TAG);
 			el.setAttribute("value", value);
 			packages.appendChild(el);
@@ -211,6 +207,7 @@ public class IncrTclClassesManager implements IResourceChangeListener {
 		return sInstance;
 	}
 
+	@Override
 	public void resourceChanged(IResourceChangeEvent event) {
 		// TODO Auto-generated method stub
 

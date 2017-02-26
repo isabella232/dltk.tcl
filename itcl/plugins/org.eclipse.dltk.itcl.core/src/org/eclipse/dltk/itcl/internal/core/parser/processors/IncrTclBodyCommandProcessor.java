@@ -24,14 +24,13 @@ public class IncrTclBodyCommandProcessor extends AbstractTclCommandProcessor {
 	public IncrTclBodyCommandProcessor() {
 	}
 
-	public ASTNode process(TclStatement statement, ITclParser parser,
-			ASTNode parent) {
+	@Override
+	public ASTNode process(TclStatement statement, ITclParser parser, ASTNode parent) {
 		if (statement == null || (statement.getCount() == 0)) {
 			return null;
 		}
 		if (statement.getCount() < 4) {
-			this.report(parser, "Wrong number of arguments", statement
-					.sourceStart(), statement.sourceEnd(),
+			this.report(parser, "Wrong number of arguments", statement.sourceStart(), statement.sourceEnd(),
 					ProblemSeverities.Error);
 			addToParent(parent, statement);
 			return statement;
@@ -40,8 +39,7 @@ public class IncrTclBodyCommandProcessor extends AbstractTclCommandProcessor {
 
 		String sName = IncrTclUtils.extractMethodName(procName);
 		if (sName == null || sName.length() == 0) {
-			this.report(parser, "Wrong number of arguments", statement
-					.sourceStart(), statement.sourceEnd(),
+			this.report(parser, "Wrong number of arguments", statement.sourceStart(), statement.sourceEnd(),
 					ProblemSeverities.Error);
 			addToParent(parent, statement);
 			return statement;
@@ -51,12 +49,11 @@ public class IncrTclBodyCommandProcessor extends AbstractTclCommandProcessor {
 
 		List arguments = IncrTclUtils.extractMethodArguments(procArguments);
 
-		IncrTclBodyDeclaration method = new IncrTclBodyDeclaration(statement
-				.sourceStart(), statement.sourceEnd());
+		IncrTclBodyDeclaration method = new IncrTclBodyDeclaration(statement.sourceStart(), statement.sourceEnd());
 		int index = sName.lastIndexOf("::");
 		if (index == -1) {
-			this.report(parser, "Wrong Class name", statement.sourceStart(),
-					statement.sourceEnd(), ProblemSeverities.Error);
+			this.report(parser, "Wrong Class name", statement.sourceStart(), statement.sourceEnd(),
+					ProblemSeverities.Error);
 			return statement;
 		}
 		String className = sName.substring(0, index);
@@ -73,15 +70,12 @@ public class IncrTclBodyCommandProcessor extends AbstractTclCommandProcessor {
 		// method.setModifier(IIncrTclModifiers.AccIncrTcl |
 		// IIncrTclModifiers.AccPublic);
 		if (TclVisibilityUtils.isPrivate(sName)) {
-			method.setModifier(IIncrTclModifiers.AccIncrTcl
-					| Modifiers.AccPrivate);
+			method.setModifier(IIncrTclModifiers.AccIncrTcl | Modifiers.AccPrivate);
 		} else {
-			method.setModifier(IIncrTclModifiers.AccIncrTcl
-					| Modifiers.AccPublic);
+			method.setModifier(IIncrTclModifiers.AccIncrTcl | Modifiers.AccPublic);
 		}
 		ModuleDeclaration module = this.getModuleDeclaration();
-		TypeDeclaration possiblyType = TclParseUtil.findTclTypeDeclarationFrom(
-				module, parent, className, false);
+		TypeDeclaration possiblyType = TclParseUtil.findTclTypeDeclarationFrom(module, parent, className, false);
 		if (possiblyType != null) {
 			MethodDeclaration[] methods = possiblyType.getMethods();
 			boolean found = false;
@@ -89,8 +83,7 @@ public class IncrTclBodyCommandProcessor extends AbstractTclCommandProcessor {
 				if (methods[i].getName().equals(methodName)) {
 					method.setModifiers(methods[i].getModifiers());
 					method.setDeclaringType(possiblyType);
-					method.setDeclaringTypeName(TclParseUtil.getElementFQN(
-							possiblyType, "::", module));
+					method.setDeclaringTypeName(TclParseUtil.getElementFQN(possiblyType, "::", module));
 					this.addToParent(parent, method);
 					found = true;
 					break;
@@ -99,16 +92,14 @@ public class IncrTclBodyCommandProcessor extends AbstractTclCommandProcessor {
 			if (!found) {
 				// May be not correct
 				this.addToParent(parent, method);
-				this.report(parser, "Function " + method.getName()
-						+ " is not defined in class " + possiblyType.getName(),
-						statement.sourceStart(), statement.sourceEnd(),
-						ProblemSeverities.Warning);
+				this.report(parser,
+						"Function " + method.getName() + " is not defined in class " + possiblyType.getName(),
+						statement.sourceStart(), statement.sourceEnd(), ProblemSeverities.Warning);
 			}
 		} else {
 			if (!IncrTclClassesManager.getDefault().isClass(className)) {
-				this.report(parser, "Body declaration for unknown class",
-						statement.sourceStart(), statement.sourceEnd(),
-						ProblemSeverities.Error);
+				this.report(parser, "Body declaration for unknown class", statement.sourceStart(),
+						statement.sourceEnd(), ProblemSeverities.Error);
 			}
 			this.addToParent(parent, method);
 		}

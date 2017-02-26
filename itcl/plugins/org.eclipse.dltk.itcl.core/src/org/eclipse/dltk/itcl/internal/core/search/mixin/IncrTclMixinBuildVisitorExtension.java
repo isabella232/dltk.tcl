@@ -22,9 +22,9 @@ import org.eclipse.dltk.tcl.internal.core.search.mixin.TclMixinBuildVisitor;
 import org.eclipse.dltk.tcl.internal.core.search.mixin.model.TclField;
 import org.eclipse.dltk.tcl.internal.core.search.mixin.model.TclProc;
 
-public class IncrTclMixinBuildVisitorExtension implements
-		IMixinBuildVisitorExtension {
+public class IncrTclMixinBuildVisitorExtension implements IMixinBuildVisitorExtension {
 
+	@Override
 	public boolean visit(MethodDeclaration s, TclMixinBuildVisitor original) {
 		if (s instanceof IncrTclMethodDeclaration) {
 			this.visitIncrTclMethod(s, original);
@@ -33,8 +33,7 @@ public class IncrTclMixinBuildVisitorExtension implements
 		return false;
 	}
 
-	private void visitIncrTclMethod(MethodDeclaration s,
-			TclMixinBuildVisitor original) {
+	private void visitIncrTclMethod(MethodDeclaration s, TclMixinBuildVisitor original) {
 		ExtendedTclMethodDeclaration method = (ExtendedTclMethodDeclaration) s;
 
 		ElementInfo info = new ElementInfo();
@@ -42,10 +41,8 @@ public class IncrTclMixinBuildVisitorExtension implements
 		String name = s.getName();
 		ASTNode declaringType = method.getDeclaringType();
 		if (declaringType != null && declaringType instanceof TypeDeclaration) {
-			List levels = TclParseUtil.findLevelsTo(original
-					.getModuleDeclaration(), declaringType);
-			info.key = original.getKeyFromLevels(levels)
-					+ IMixinRequestor.MIXIN_NAME_SEPARATOR
+			List<ASTNode> levels = TclParseUtil.findLevelsTo(original.getModuleDeclaration(), declaringType);
+			info.key = original.getKeyFromLevels(levels) + IMixinRequestor.MIXIN_NAME_SEPARATOR
 					+ original.tclNameToKey(name);
 		}
 		if (original.getSignature()) {
@@ -64,12 +61,12 @@ public class IncrTclMixinBuildVisitorExtension implements
 		// System.out.println("Report proc or instproc:" + info.key);
 	}
 
+	@Override
 	public boolean visit(TypeDeclaration s, TclMixinBuildVisitor original) {
 		if ((s.getModifiers() & IIncrTclModifiers.AccIncrTcl) != 0) {
 			ElementInfo info = new ElementInfo();
 
-			info.key = original.getNamespacePrefix()
-					+ original.tclNameToKey(s.getName());
+			info.key = original.getNamespacePrefix() + original.tclNameToKey(s.getName());
 			if (info.key.startsWith("{")) {
 				info.key = info.key.substring(1);
 			}
@@ -90,11 +87,11 @@ public class IncrTclMixinBuildVisitorExtension implements
 		return false;
 	}
 
+	@Override
 	public boolean visit(Statement s, TclMixinBuildVisitor original) {
 		if (s instanceof IncrTclInstanceVariable) {
 			IncrTclInstanceVariable instanceVar = (IncrTclInstanceVariable) s;
-			List levels = TclParseUtil.findLevelsTo(original
-					.getModuleDeclaration(), instanceVar);
+			List<ASTNode> levels = TclParseUtil.findLevelsTo(original.getModuleDeclaration(), instanceVar);
 			ElementInfo info = new ElementInfo();
 			info.key = original.getKeyFromLevels(levels);
 			if (original.getSignature()) {
@@ -106,12 +103,10 @@ public class IncrTclMixinBuildVisitorExtension implements
 			IncrTclFieldDeclaration var = (IncrTclFieldDeclaration) s;
 			String name = var.getName();
 			TypeDeclaration type = var.getDeclaringType();
-			List levels = TclParseUtil.findLevelsTo(original
-					.getModuleDeclaration(), type);
+			List<ASTNode> levels = TclParseUtil.findLevelsTo(original.getModuleDeclaration(), type);
 
 			ElementInfo info = new ElementInfo();
-			info.key = original.getKeyFromLevels(levels)
-					+ IMixinRequestor.MIXIN_NAME_SEPARATOR
+			info.key = original.getKeyFromLevels(levels) + IMixinRequestor.MIXIN_NAME_SEPARATOR
 					+ original.tclNameToKey(name);
 			if (original.getSignature()) {
 				info.object = new TclField();

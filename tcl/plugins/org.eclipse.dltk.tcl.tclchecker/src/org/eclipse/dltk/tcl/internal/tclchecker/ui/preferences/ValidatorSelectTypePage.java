@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 xored software, Inc.
+ * Copyright (c) 2009, 2017 xored software, Inc. and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -31,20 +31,13 @@ public class ValidatorSelectTypePage extends WizardPage {
 		// TODO Auto-generated constructor stub
 	}
 
-	/*
-	 * @see
-	 * org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets
-	 * .Composite)
-	 */
+	@Override
 	public void createControl(Composite parent) {
-		Composite control = SWTFactory.createComposite(parent,
-				parent.getFont(), 2, 1, GridData.FILL_BOTH);
+		Composite control = SWTFactory.createComposite(parent, parent.getFont(), 2, 1, GridData.FILL_BOTH);
 
 		Label label = SWTFactory.createLabel(control, "Validator Type", 1);
-		((GridData) label.getLayoutData()).widthHint = new PixelConverter(
-				parent).convertWidthInCharsToPixels(20);
-		SWTFactory.createCombo(control, SWT.BORDER | SWT.READ_ONLY, 1,
-				new String[] { "TclChecker" });
+		((GridData) label.getLayoutData()).widthHint = new PixelConverter(parent).convertWidthInCharsToPixels(20);
+		SWTFactory.createCombo(control, SWT.BORDER | SWT.READ_ONLY, 1, new String[] { "TclChecker" });
 		setControl(control);
 	}
 

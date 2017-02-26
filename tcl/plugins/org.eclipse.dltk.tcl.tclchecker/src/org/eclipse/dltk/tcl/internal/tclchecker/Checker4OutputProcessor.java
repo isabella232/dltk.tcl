@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 xored software, Inc.
+ * Copyright (c) 2008, 2017 xored software, Inc. and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -35,8 +35,7 @@ public class Checker4OutputProcessor extends AbstractOutputProcessor {
 	private final IValidatorOutput console;
 	private final ITclCheckerReporter reporter;
 
-	public Checker4OutputProcessor(IProgressMonitor monitor,
-			IValidatorOutput console, ITclCheckerReporter reporter) {
+	public Checker4OutputProcessor(IProgressMonitor monitor, IValidatorOutput console, ITclCheckerReporter reporter) {
 		super(monitor);
 		this.console = console;
 		this.reporter = reporter;
@@ -61,13 +60,13 @@ public class Checker4OutputProcessor extends AbstractOutputProcessor {
 
 	private ISourceModule currentModule = null;
 
+	@Override
 	public void processLine(String line) throws CoreException {
 		console.println(line);
 		if (line.startsWith(SCANNING)) {
 			String fileName = line.substring(SCANNING.length() + 1).trim();
 			fileName = Path.fromOSString(fileName).lastSegment();
-			subTask(NLS.bind(Messages.TclChecker_scanning, fileName, String
-					.valueOf(getModuleCount() - scanned)));
+			subTask(NLS.bind(Messages.TclChecker_scanning, fileName, String.valueOf(getModuleCount() - scanned)));
 			scanned++;
 		} else if (line.startsWith(CHECKING)) {
 			String fileName = line.substring(CHECKING.length() + 1).trim();
@@ -88,6 +87,7 @@ public class Checker4OutputProcessor extends AbstractOutputProcessor {
 		return currentModule != null;
 	}
 
+	@Override
 	public void processErrorLine(String line) {
 		console.println(line);
 	}

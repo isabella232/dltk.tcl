@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 xored software, Inc.
+ * Copyright (c) 2009, 2017 xored software, Inc. and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -31,19 +31,16 @@ public class TclCheckerOptional extends AbstractValidator {
 	 * @param name
 	 * @param type
 	 */
-	protected TclCheckerOptional(IEnvironment environment,
-			CheckerEnvironmentInstance environmentInstance,
+	protected TclCheckerOptional(IEnvironment environment, CheckerEnvironmentInstance environmentInstance,
 			CheckerConfig config, IValidatorType type) {
-		super(TclCheckerType.CHECKER_ID, environmentInstance.getInstance()
-				.getName()
-				+ " (" //$NON-NLS-1$
+		super(TclCheckerType.CHECKER_ID, environmentInstance.getInstance().getName() + " (" //$NON-NLS-1$
 				+ config.getName() + ")", type); //$NON-NLS-1$
 		this.environment = environment;
 		this.environmentInstance = environmentInstance;
 		this.config = config;
 	}
 
-	@SuppressWarnings("unchecked")
+	@Override
 	public Object getValidator(IScriptProject project, Class validatorType) {
 		if (ISourceModuleValidator.class.equals(validatorType)) {
 			// TODO project specific settings?
@@ -52,9 +49,9 @@ public class TclCheckerOptional extends AbstractValidator {
 		return null;
 	}
 
+	@Override
 	public boolean isValidatorValid(IScriptProject project) {
-		return TclCheckerHelper.canExecuteTclChecker(environmentInstance,
-				environment);
+		return TclCheckerHelper.canExecuteTclChecker(environmentInstance, environment);
 	}
 
 }

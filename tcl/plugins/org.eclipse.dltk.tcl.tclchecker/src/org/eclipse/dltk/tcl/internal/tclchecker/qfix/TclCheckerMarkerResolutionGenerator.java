@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 xored software, Inc.
+ * Copyright (c) 2008, 2017 xored software, Inc. and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -18,12 +18,12 @@ import org.eclipse.dltk.ui.text.ScriptMarkerResoltionUtils;
 import org.eclipse.ui.IMarkerResolution;
 import org.eclipse.ui.IMarkerResolutionGenerator;
 
-public class TclCheckerMarkerResolutionGenerator implements
-		IMarkerResolutionGenerator {
+public class TclCheckerMarkerResolutionGenerator implements IMarkerResolutionGenerator {
 
+	@Override
 	public IMarkerResolution[] getResolutions(IMarker marker) {
-		final String[] corrections = CorrectionEngine.decodeArguments(marker
-				.getAttribute(TclCheckerMarker.SUGGESTED_CORRECTIONS, null));
+		final String[] corrections = CorrectionEngine
+				.decodeArguments(marker.getAttribute(TclCheckerMarker.SUGGESTED_CORRECTIONS, null));
 		if (corrections != null) {
 			final IMarkerResolution[] result = new IMarkerResolution[corrections.length];
 			for (int i = 0; i < corrections.length; ++i) {

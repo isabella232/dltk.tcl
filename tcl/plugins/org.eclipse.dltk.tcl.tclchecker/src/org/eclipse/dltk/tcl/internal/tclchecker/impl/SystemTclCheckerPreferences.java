@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 xored software, Inc.
+ * Copyright (c) 2009, 2017 xored software, Inc. and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -21,28 +21,18 @@ public class SystemTclCheckerPreferences extends AbstractTclCheckerPreferences {
 		initialize();
 	}
 
-	/*
-	 * @see AbstractTclCheckerPreferences#readConfiguration()
-	 */
 	@Override
 	protected String readConfiguration() {
-		return ValidatorsCore.getDefault().getPluginPreferences().getString(
-				ValidatorRuntime.PREF_CONFIGURATION);
+		return ValidatorsCore.getDefault().getPluginPreferences().getString(ValidatorRuntime.PREF_CONFIGURATION);
 	}
 
-	/*
-	 * @see AbstractTclCheckerPreferences#writeConfiguration(String)
-	 */
 	@Override
 	protected void writeConfiguration(String value) {
-		ValidatorsCore.getDefault().getPluginPreferences().setValue(
-				ValidatorRuntime.PREF_CONFIGURATION, value);
+		ValidatorsCore.getDefault().getPluginPreferences().setValue(ValidatorRuntime.PREF_CONFIGURATION, value);
 		ValidatorsCore.getDefault().savePluginPreferences();
 	}
 
-	/*
-	 * @see ITclCheckerPreferences#delete()
-	 */
+	@Override
 	public void delete() {
 		writeConfiguration(Util.EMPTY_STRING);
 	}

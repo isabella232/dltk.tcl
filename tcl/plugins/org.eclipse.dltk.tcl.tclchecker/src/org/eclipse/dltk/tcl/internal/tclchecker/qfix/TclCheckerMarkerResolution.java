@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 xored software, Inc.
+ * Copyright (c) 2008, 2017 xored software, Inc. and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -23,8 +23,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IMarkerResolution;
 import org.eclipse.ui.IMarkerResolution2;
 
-public class TclCheckerMarkerResolution implements IMarkerResolution,
-		IMarkerResolution2 {
+public class TclCheckerMarkerResolution implements IMarkerResolution, IMarkerResolution2 {
 
 	private final String replacement;
 
@@ -32,10 +31,12 @@ public class TclCheckerMarkerResolution implements IMarkerResolution,
 		this.replacement = replacement;
 	}
 
+	@Override
 	public String getLabel() {
 		return TclCheckerFixUtils.getLabel(replacement);
 	}
 
+	@Override
 	public void run(IMarker marker) {
 		final IMarker target = TclCheckerFixUtils.verify(marker, null);
 		if (target != null) {
@@ -47,8 +48,7 @@ public class TclCheckerMarkerResolution implements IMarkerResolution,
 	 * @param marker
 	 */
 	private void fixMarker(IMarker marker) {
-		final ISourceModule module = (ISourceModule) DLTKCore
-				.create((IFile) marker.getResource());
+		final ISourceModule module = (ISourceModule) DLTKCore.create((IFile) marker.getResource());
 		if (module == null) {
 			return;
 		}
@@ -56,13 +56,9 @@ public class TclCheckerMarkerResolution implements IMarkerResolution,
 			module.becomeWorkingCopy(null, new NullProgressMonitor());
 			try {
 				IDocument document = new Document(module.getSource());
-				TclCheckerFixUtils.updateDocument(marker, document,
-						replacement, new ITclCheckerQFixReporter() {
-
-							public void showError(String message) {
-								// NOP
-							}
-						});
+				TclCheckerFixUtils.updateDocument(marker, document, replacement, message -> {
+					// NOP
+				});
 				module.getBuffer().setContents(document.get());
 				module.commitWorkingCopy(true, new NullProgressMonitor());
 			} finally {
@@ -75,10 +71,12 @@ public class TclCheckerMarkerResolution implements IMarkerResolution,
 		}
 	}
 
+	@Override
 	public String getDescription() {
 		return TclCheckerFixUtils.getDescription(replacement);
 	}
 
+	@Override
 	public Image getImage() {
 		return null;
 	}

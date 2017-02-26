@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 xored software, Inc.
+ * Copyright (c) 2008, 2017 xored software, Inc. and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -16,12 +16,14 @@ import java.util.List;
 
 public class ListToken implements IToken {
 
-	private final List<IToken> children = new ArrayList<IToken>();
+	private final List<IToken> children = new ArrayList<>();
 
+	@Override
 	public List<IToken> getChildren() {
 		return children;
 	}
 
+	@Override
 	public String getText() {
 		final StringBuilder sb = new StringBuilder();
 		for (IToken token : children) {
@@ -33,6 +35,7 @@ public class ListToken implements IToken {
 		return sb.toString();
 	}
 
+	@Override
 	public boolean hasChildren() {
 		return true;
 	}
@@ -53,7 +56,7 @@ public class ListToken implements IToken {
 			sb.append(token.toString());
 			++index;
 		}
-		sb.append("}"); //$NON-NLS-1$		
+		sb.append("}"); //$NON-NLS-1$
 		return sb.toString();
 	}
 }

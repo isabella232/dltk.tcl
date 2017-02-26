@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 xored software, Inc.
+ * Copyright (c) 2008, 2017 xored software, Inc. and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -39,8 +39,7 @@ public class Checker5OutputProcessor extends AbstractOutputProcessor {
 	private final ITclCheckerReporter reporter;
 	private final ILineTrackerFactory lineTrackerFactory;
 
-	public Checker5OutputProcessor(IProgressMonitor monitor,
-			IValidatorOutput console, ITclCheckerReporter reporter,
+	public Checker5OutputProcessor(IProgressMonitor monitor, IValidatorOutput console, ITclCheckerReporter reporter,
 			ILineTrackerFactory lineTrackerFactory) {
 		super(monitor);
 		this.console = console;
@@ -48,6 +47,7 @@ public class Checker5OutputProcessor extends AbstractOutputProcessor {
 		this.lineTrackerFactory = lineTrackerFactory;
 	}
 
+	@Override
 	public void processErrorLine(String line) {
 		console.println(line);
 	}
@@ -57,37 +57,30 @@ public class Checker5OutputProcessor extends AbstractOutputProcessor {
 	private int scanned = 0;
 	private int checked = 0;
 
+	@Override
 	public void processLine(String line) throws CoreException {
 		console.println(line);
 		buffer.append(line);
 		buffer.append("\n"); //$NON-NLS-1$
-		final List<IToken> tokens = new TclDictionaryParser()
-				.parseDictionary(buffer.toString());
+		final List<IToken> tokens = new TclDictionaryParser().parseDictionary(buffer.toString());
 		if (tokens != null) {
 			buffer.setLength(0);
 			if (tokens.size() >= 2 && !tokens.get(0).hasChildren()) {
-				if (CMD_MESSAGE.equals(tokens.get(0).getText())
-						&& tokens.get(1).hasChildren()) {
-					final Map<String, IToken> attributes = parseAttributes(tokens
-							.get(1).getChildren());
-					if (attributes.containsKey(ATTR_FILE)
-							&& attributes.containsKey(ATTR_LINE)
-							&& attributes.containsKey(ATTR_MESSAGE_ID)
-							&& attributes.containsKey(ATTR_MESSAGE_TEXT)) {
+				if (CMD_MESSAGE.equals(tokens.get(0).getText()) && tokens.get(1).hasChildren()) {
+					final Map<String, IToken> attributes = parseAttributes(tokens.get(1).getChildren());
+					if (attributes.containsKey(ATTR_FILE) && attributes.containsKey(ATTR_LINE)
+							&& attributes.containsKey(ATTR_MESSAGE_ID) && attributes.containsKey(ATTR_MESSAGE_TEXT)) {
 						processMessage(attributes);
 					}
-				} else if (tokens.size() == 3
-						&& CMD_PROGRESS.equals(tokens.get(0).getText())) {
+				} else if (tokens.size() == 3 && CMD_PROGRESS.equals(tokens.get(0).getText())) {
 					final String progressSubCmd = tokens.get(1).getText();
 					if (PROGRESS_SCANNING.equals(progressSubCmd)) {
-						subTask(NLS.bind(Messages.TclChecker_scanning, tokens
-								.get(2).getText(), String
-								.valueOf(getModuleCount() - scanned)));
+						subTask(NLS.bind(Messages.TclChecker_scanning, tokens.get(2).getText(),
+								String.valueOf(getModuleCount() - scanned)));
 						scanned++;
 					} else if (PROGRESS_CHECKING.equals(progressSubCmd)) {
-						subTask(NLS.bind(Messages.TclChecker_checking, tokens
-								.get(2).getText(), String
-								.valueOf(getModuleCount() - checked)));
+						subTask(NLS.bind(Messages.TclChecker_checking, tokens.get(2).getText(),
+								String.valueOf(getModuleCount() - checked)));
 						++checked;
 					}
 				}
@@ -95,8 +88,7 @@ public class Checker5OutputProcessor extends AbstractOutputProcessor {
 		}
 	}
 
-	private void processMessage(final Map<String, IToken> attributes)
-			throws IllegalArgumentException, CoreException {
+	private void processMessage(final Map<String, IToken> attributes) throws IllegalArgumentException, CoreException {
 		final String file = attributes.get(ATTR_FILE).getText();
 		final int lineNumber = parseInt(attributes.get(ATTR_LINE));
 		if (lineNumber < 0) {
@@ -107,18 +99,15 @@ public class Checker5OutputProcessor extends AbstractOutputProcessor {
 			return;
 		}
 		final String messageId = attributes.get(ATTR_MESSAGE_ID).getText();
-		final TclCheckerProblem problem = new TclCheckerProblem(file,
-				lineNumber, messageId, attributes.get(ATTR_MESSAGE_TEXT)
-						.getText());
-		final Coord commandStart = parseCoord(attributes
-				.get(ATTR_COMMAND_START));
+		final TclCheckerProblem problem = new TclCheckerProblem(file, lineNumber, messageId,
+				attributes.get(ATTR_MESSAGE_TEXT).getText());
+		final Coord commandStart = parseCoord(attributes.get(ATTR_COMMAND_START));
 		final Coord commandEnd = parseCoord(attributes.get(ATTR_COMMAND_END));
 		if (commandStart != null && commandEnd != null) {
 			problem.setRange(new CoordRange(commandStart, commandEnd));
 			if (attributes.containsKey(ATTR_SUGGESTED_CORRECTIONS)) {
 				final List<IToken> correctionList;
-				final IToken corrections = attributes
-						.get(ATTR_SUGGESTED_CORRECTIONS);
+				final IToken corrections = attributes.get(ATTR_SUGGESTED_CORRECTIONS);
 				if (corrections.hasChildren()) {
 					correctionList = corrections.getChildren();
 				} else {
@@ -128,19 +117,16 @@ public class Checker5OutputProcessor extends AbstractOutputProcessor {
 				for (int i = 0; i < correctionList.size(); ++i) {
 					suggestions[i] = correctionList.get(i).getText();
 				}
-				final ISourceLineTracker lineTracker = lineTrackerFactory
-						.getLineTracker(module);
+				final ISourceLineTracker lineTracker = lineTrackerFactory.getLineTracker(module);
 				problem.addAttribute(TclCheckerMarker.SUGGESTED_CORRECTIONS,
 						CorrectionEngine.encodeArguments(suggestions));
 				problem.addAttribute(TclCheckerMarker.COMMAND_START,
-						lineTrackerFactory.calculateOffset(lineTracker,
-								commandStart));
+						lineTrackerFactory.calculateOffset(lineTracker, commandStart));
 				problem.addAttribute(TclCheckerMarker.COMMAND_END,
-						lineTrackerFactory.calculateOffset(lineTracker,
-								commandEnd));
+						lineTrackerFactory.calculateOffset(lineTracker, commandEnd));
 				problem.addAttribute(TclCheckerMarker.MESSAGE_ID, messageId);
-				problem.addAttribute(TclCheckerMarker.TIMESTAMP, String
-						.valueOf(module.getResource().getModificationStamp()));
+				problem.addAttribute(TclCheckerMarker.TIMESTAMP,
+						String.valueOf(module.getResource().getModificationStamp()));
 				problem.addAttribute(TclCheckerMarker.AUTO_CORRECTABLE,
 						attributes.get(ATTR_AUTO_CORRECTABLE).getText());
 			}
@@ -167,8 +153,7 @@ public class Checker5OutputProcessor extends AbstractOutputProcessor {
 			final int pos = s.indexOf(' ');
 			if (pos > 0) {
 				try {
-					return new Coord(Integer.parseInt(s.substring(0, pos)),
-							Integer.parseInt(s.substring(pos + 1)));
+					return new Coord(Integer.parseInt(s.substring(0, pos)), Integer.parseInt(s.substring(pos + 1)));
 				} catch (NumberFormatException e) {
 					// fall through
 				}
@@ -182,7 +167,7 @@ public class Checker5OutputProcessor extends AbstractOutputProcessor {
 	 * @return
 	 */
 	private Map<String, IToken> parseAttributes(List<IToken> children) {
-		final Map<String, IToken> result = new HashMap<String, IToken>();
+		final Map<String, IToken> result = new HashMap<>();
 		for (int i = 0; i + 1 < children.size(); i += 2) {
 			final IToken key = children.get(i);
 			final IToken value = children.get(i + 1);

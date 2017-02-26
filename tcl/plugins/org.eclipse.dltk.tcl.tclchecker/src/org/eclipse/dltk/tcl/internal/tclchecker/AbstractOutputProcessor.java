@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 xored software, Inc.
+ * Copyright (c) 2008, 2017 xored software, Inc. and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -27,23 +27,24 @@ import org.eclipse.dltk.core.environment.IFileHandle;
 public abstract class AbstractOutputProcessor implements IOutputProcessor {
 
 	private final IProgressMonitor monitor;
-	private final List<ISourceModule> sourceModules = new ArrayList<ISourceModule>();
-	private final Map<String, ISourceModule> pathToSource = new HashMap<String, ISourceModule>();
+	private final List<ISourceModule> sourceModules = new ArrayList<>();
+	private final Map<String, ISourceModule> pathToSource = new HashMap<>();
 
 	public AbstractOutputProcessor(IProgressMonitor monitor) {
 		this.monitor = monitor;
 	}
 
+	@Override
 	public IProgressMonitor getProgressMonitor() {
 		return monitor;
 	}
 
-	public List<String> initialize(IEnvironment environment,
-			List<ISourceModule> modules) {
+	@Override
+	public List<String> initialize(IEnvironment environment, List<ISourceModule> modules) {
 		sourceModules.clear();
 		pathToSource.clear();
 		sourceModules.addAll(modules);
-		final List<String> filenames = new ArrayList<String>();
+		final List<String> filenames = new ArrayList<>();
 		for (final ISourceModule module : modules) {
 			if (monitor.isCanceled()) {
 				throw new OperationCanceledException();
@@ -52,8 +53,7 @@ public abstract class AbstractOutputProcessor implements IOutputProcessor {
 			if (resource == null) {
 				continue;
 			}
-			final IFileHandle file = environment.getFile(resource
-					.getLocationURI());
+			final IFileHandle file = environment.getFile(resource.getLocationURI());
 			if (file != null) {
 				final String loc = file.toString();
 				pathToSource.put(loc, module);
@@ -68,7 +68,7 @@ public abstract class AbstractOutputProcessor implements IOutputProcessor {
 	 * Returns {@link ISourceModule} if single match is found or
 	 * <code>null</code> if there are no matches or if there are multiple
 	 * matches.
-	 * 
+	 *
 	 * @param pathToSource
 	 * @param path
 	 * @return

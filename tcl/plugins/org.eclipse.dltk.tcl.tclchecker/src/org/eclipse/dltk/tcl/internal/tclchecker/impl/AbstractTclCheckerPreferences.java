@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 xored software, Inc.
+ * Copyright (c) 2009, 2017 xored software, Inc.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -28,17 +28,14 @@ import org.eclipse.dltk.tcl.tclchecker.model.configs.ConfigsFactory;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 
-public abstract class AbstractTclCheckerPreferences implements
-		ITclCheckerPreferences {
+public abstract class AbstractTclCheckerPreferences implements ITclCheckerPreferences {
 
 	private Resource resource;
 	private List<Resource> contributedResources;
 
 	protected void initialize() {
-		this.resource = TclCheckerConfigUtils
-				.loadConfiguration(readConfiguration());
-		contributedResources = TclCheckerConfigUtils
-				.loadContributedConfigurations(this.resource.getResourceSet());
+		this.resource = TclCheckerConfigUtils.loadConfiguration(readConfiguration());
+		contributedResources = TclCheckerConfigUtils.loadContributedConfigurations(this.resource.getResourceSet());
 	}
 
 	/**
@@ -48,11 +45,9 @@ public abstract class AbstractTclCheckerPreferences implements
 
 	protected abstract void writeConfiguration(String value);
 
-	/*
-	 * @see ITclCheckerPreferences#getConfigurations()
-	 */
+	@Override
 	public List<CheckerConfig> getCommonConfigurations() {
-		final List<CheckerConfig> instances = new ArrayList<CheckerConfig>();
+		final List<CheckerConfig> instances = new ArrayList<>();
 		TclCheckerConfigUtils.collectConfigurations(instances, resource);
 		for (Resource r : contributedResources) {
 			TclCheckerConfigUtils.collectConfigurations(instances, r);
@@ -60,11 +55,9 @@ public abstract class AbstractTclCheckerPreferences implements
 		return Collections.unmodifiableList(instances);
 	}
 
-	/*
-	 * @see ITclCheckerPreferences#getEnvironment(java.lang.String)
-	 */
+	@Override
 	public List<CheckerInstance> getInstances() {
-		List<CheckerInstance> instances = new ArrayList<CheckerInstance>();
+		List<CheckerInstance> instances = new ArrayList<>();
 		for (EObject object : resource.getContents()) {
 			if (object instanceof CheckerInstance) {
 				final CheckerInstance instance = (CheckerInstance) object;
@@ -74,33 +67,24 @@ public abstract class AbstractTclCheckerPreferences implements
 		return Collections.unmodifiableList(instances);
 	}
 
-	/*
-	 * @see ITclCheckerPreferences#newInstance()
-	 */
+	@Override
 	public CheckerInstance newInstance() {
-		final CheckerInstance instance = ConfigsFactory.eINSTANCE
-				.createCheckerInstance();
+		final CheckerInstance instance = ConfigsFactory.eINSTANCE.createCheckerInstance();
 		resource.getContents().add(instance);
 		return instance;
 	}
 
-	/*
-	 * @see ITclCheckerPreferences#removeInstance(CheckerInstance)
-	 */
+	@Override
 	public boolean removeInstance(CheckerInstance instance) {
 		return resource.getContents().remove(instance);
 	}
 
-	/*
-	 * @see org.eclipse.dltk.tcl.tclchecker.ITclCheckerPreferences#save()
-	 */
+	@Override
 	public void save() throws CoreException {
 		try {
-			writeConfiguration(TclCheckerConfigUtils
-					.saveConfiguration(resource));
+			writeConfiguration(TclCheckerConfigUtils.saveConfiguration(resource));
 		} catch (IOException e) {
-			throw new CoreException(new Status(IStatus.ERROR,
-					TclCheckerPlugin.PLUGIN_ID, e.getMessage(), e));
+			throw new CoreException(new Status(IStatus.ERROR, TclCheckerPlugin.PLUGIN_ID, e.getMessage(), e));
 		}
 	}
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 xored software, Inc.
+ * Copyright (c) 2009, 2017 xored software, Inc. and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -27,8 +27,7 @@ public class TclCheckerInstanceDialog extends StatusDialog {
 	 * @param parent
 	 * @param instance
 	 */
-	public TclCheckerInstanceDialog(Shell parent,
-			IValidatorDialogContext context, CheckerInstance instance) {
+	public TclCheckerInstanceDialog(Shell parent, IValidatorDialogContext context, CheckerInstance instance) {
 		super(parent);
 		setShellStyle(getShellStyle() | SWT.RESIZE);
 		context.setShellProvider(this);
@@ -38,17 +37,13 @@ public class TclCheckerInstanceDialog extends StatusDialog {
 
 	private IValidatorEditBlock block = new TclCheckerInstanceBlock();
 
-	private IValidationHandler validationHandler = new IValidationHandler() {
-
-		public void validate(Object hint) {
-			final IStatus status = block.isValid(hint);
-			if (status != null) {
-				updateStatus(status);
-			} else {
-				updateStatus(StatusInfo.OK_STATUS);
-			}
+	private IValidationHandler validationHandler = hint -> {
+		final IStatus status = block.isValid(hint);
+		if (status != null) {
+			updateStatus(status);
+		} else {
+			updateStatus(StatusInfo.OK_STATUS);
 		}
-
 	};
 
 	@Override

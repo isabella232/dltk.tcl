@@ -1,11 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2007 IBM Corporation and others.
+ * Copyright (c) 2005, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- 
  *******************************************************************************/
 package org.eclipse.dltk.tcl.internal.tclchecker;
 
@@ -24,8 +23,7 @@ public class TclCheckerProblem {
 	private CoordRange errorRange;
 	private Map<String, Object> attributes = null;
 
-	public TclCheckerProblem(String source, int lineNumber, String messageID,
-			String message) {
+	public TclCheckerProblem(String source, int lineNumber, String messageID, String message) {
 		this.file = source;
 		this.lineNumber = lineNumber;
 		this.description = TclCheckerProblemDescription.getProblem(messageID);
@@ -45,6 +43,7 @@ public class TclCheckerProblem {
 		return "(" + messageId + ") " + messageText; //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
+	@Override
 	public String toString() {
 		return file + ":" + lineNumber + " " + description; //$NON-NLS-1$ //$NON-NLS-2$
 	}
@@ -68,7 +67,7 @@ public class TclCheckerProblem {
 	/**
 	 * Returns map of attributes of <code>null</code> if there are no attributes
 	 * yet
-	 * 
+	 *
 	 * @return the attributes
 	 */
 	public Map<String, Object> getAttributes() {
@@ -81,7 +80,7 @@ public class TclCheckerProblem {
 	 */
 	public void addAttribute(String name, String value) {
 		if (attributes == null) {
-			attributes = new HashMap<String, Object>();
+			attributes = new HashMap<>();
 		}
 		if (value != null) {
 			attributes.put(name, value);
@@ -96,7 +95,7 @@ public class TclCheckerProblem {
 	 */
 	public void addAttribute(String name, int value) {
 		if (attributes == null) {
-			attributes = new HashMap<String, Object>();
+			attributes = new HashMap<>();
 		}
 		attributes.put(name, value);
 	}

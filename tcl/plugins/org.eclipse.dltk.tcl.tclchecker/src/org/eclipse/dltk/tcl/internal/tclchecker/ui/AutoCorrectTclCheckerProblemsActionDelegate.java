@@ -26,7 +26,6 @@ import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.internal.core.BuiltinSourceModule;
 import org.eclipse.dltk.internal.core.ExternalSourceModule;
 import org.eclipse.dltk.tcl.internal.tclchecker.TclCheckerMarker;
-import org.eclipse.dltk.tcl.internal.tclchecker.qfix.ITclCheckerQFixReporter;
 import org.eclipse.dltk.tcl.internal.tclchecker.qfix.TclCheckerFixUtils;
 import org.eclipse.dltk.tcl.tclchecker.TclCheckerPlugin;
 import org.eclipse.jface.action.IAction;
@@ -37,27 +36,28 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 
-public class AutoCorrectTclCheckerProblemsActionDelegate implements
-		IWorkbenchWindowActionDelegate {
+public class AutoCorrectTclCheckerProblemsActionDelegate implements IWorkbenchWindowActionDelegate {
 	private ISelection selection;
 
+	@Override
 	public void dispose() {
 	}
 
+	@Override
 	public void init(IWorkbenchWindow window) {
 	}
 
+	@Override
 	public void run(IAction action) {
-		if (this.selection != null
-				&& this.selection instanceof IStructuredSelection
-				&& !this.selection.isEmpty()) {
+		if (this.selection != null && this.selection instanceof IStructuredSelection && !this.selection.isEmpty()) {
 			processSelectionToElements();
 		}
 	}
 
 	private static class SourceModuleVisitor implements IModelElementVisitor {
-		private Set<ISourceModule> elements = new HashSet<ISourceModule>();
+		private Set<ISourceModule> elements = new HashSet<>();
 
+		@Override
 		public boolean visit(IModelElement element) {
 			if (element.getElementType() == IModelElement.PROJECT_FRAGMENT) {
 				return !((IProjectFragment) element).isExternal();
@@ -74,8 +74,9 @@ public class AutoCorrectTclCheckerProblemsActionDelegate implements
 	}
 
 	private static class ResourceVisitor implements IResourceVisitor {
-		private Set<IFile> files = new HashSet<IFile>();
+		private Set<IFile> files = new HashSet<>();
 
+		@Override
 		public boolean visit(IResource resource) {
 			if (resource.getType() == IResource.FILE) {
 				files.add((IFile) resource);
@@ -138,19 +139,18 @@ public class AutoCorrectTclCheckerProblemsActionDelegate implements
 
 	protected void processSelectionToElements() {
 		final Collector collector = new Collector();
-		for (Iterator<?> iterator = ((IStructuredSelection) this.selection)
-				.iterator(); iterator.hasNext();) {
+		for (Iterator<?> iterator = ((IStructuredSelection) this.selection).iterator(); iterator.hasNext();) {
 			collector.processResourcesToElements(iterator.next());
 		}
 		collector.convert();
 		final Set<IFile> files = collector.getFiles();
 		final Job job = new Job("Auto correct...") { //$NON-NLS-1$
+			@Override
 			protected IStatus run(IProgressMonitor monitor) {
 				monitor.beginTask("Processing", files.size()); //$NON-NLS-1$
 				try {
 					for (IFile file : files) {
-						final ISourceModule module = (ISourceModule) DLTKCore
-								.create(file);
+						final ISourceModule module = (ISourceModule) DLTKCore.create(file);
 						if (module == null) {
 							continue;
 						}
@@ -168,42 +168,30 @@ public class AutoCorrectTclCheckerProblemsActionDelegate implements
 				return Status.OK_STATUS;
 			}
 
-			private boolean processFile(IFile file, ISourceModule module)
-					throws CoreException {
-				final IMarker[] markers = file.findMarkers(
-						TclCheckerMarker.TYPE, true, IResource.DEPTH_ZERO);
+			private boolean processFile(IFile file, ISourceModule module) throws CoreException {
+				final IMarker[] markers = file.findMarkers(TclCheckerMarker.TYPE, true, IResource.DEPTH_ZERO);
 				for (int i = 0; i < markers.length; ++i) {
-					if ("1"	.equals(markers[i].getAttribute(TclCheckerMarker.AUTO_CORRECTABLE, Util.EMPTY_STRING))) { //$NON-NLS-1$
-						final IMarker valid = TclCheckerFixUtils.verify(
-								markers[i], module);
+					if ("1".equals(markers[i].getAttribute(TclCheckerMarker.AUTO_CORRECTABLE, Util.EMPTY_STRING))) { //$NON-NLS-1$
+						final IMarker valid = TclCheckerFixUtils.verify(markers[i], module);
 						if (valid != null) {
 							final String[] corrections = CorrectionEngine
-									.decodeArguments(valid
-											.getAttribute(
-													TclCheckerMarker.SUGGESTED_CORRECTIONS,
-													null));
+									.decodeArguments(valid.getAttribute(TclCheckerMarker.SUGGESTED_CORRECTIONS, null));
 							if (corrections.length != 1) {
 								return false;
 							}
 							/*
 							 * FIXME instead of these hacks let's try to create
-							 * Positions in document and replace all in single operation. 
+							 * Positions in document and replace all in single
+							 * operation.
 							 */
-							module.becomeWorkingCopy(null,
-									new NullProgressMonitor());
+							module.becomeWorkingCopy(null, new NullProgressMonitor());
 							try {
-								IDocument document = new Document(module
-										.getSource());
-								TclCheckerFixUtils.updateDocument(valid,
-										document, corrections[0],
-										new ITclCheckerQFixReporter() {
-											public void showError(String message) {
-												// NOP
-											}
-										});
+								IDocument document = new Document(module.getSource());
+								TclCheckerFixUtils.updateDocument(valid, document, corrections[0], message -> {
+									// NOP
+								});
 								module.getBuffer().setContents(document.get());
-								module.commitWorkingCopy(true,
-										new NullProgressMonitor());
+								module.commitWorkingCopy(true, new NullProgressMonitor());
 							} finally {
 								module.discardWorkingCopy();
 							}
@@ -219,6 +207,7 @@ public class AutoCorrectTclCheckerProblemsActionDelegate implements
 		job.schedule();
 	}
 
+	@Override
 	public void selectionChanged(IAction action, ISelection selection) {
 		this.selection = selection;
 	}

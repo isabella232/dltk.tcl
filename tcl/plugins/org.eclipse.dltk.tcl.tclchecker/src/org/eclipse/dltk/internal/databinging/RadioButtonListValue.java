@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 xored software, Inc.
+ * Copyright (c) 2009, 2017 xored software, Inc. and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -15,10 +15,9 @@ import java.util.Map;
 
 import org.eclipse.core.databinding.observable.Diffs;
 import org.eclipse.core.databinding.observable.value.AbstractObservableValue;
-import org.eclipse.jface.databinding.swt.SWTObservables;
+import org.eclipse.jface.databinding.swt.DisplayRealm;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
 public class RadioButtonListValue<V> extends AbstractObservableValue {
@@ -27,19 +26,13 @@ public class RadioButtonListValue<V> extends AbstractObservableValue {
 	private final Map<Button, V> buttons;
 	private V selectionValue;
 
-	private Listener updateListener = new Listener() {
-		public void handleEvent(Event event) {
-			V oldSelectionValue = selectionValue;
-			selectionValue = getSelection();
-			notifyIfChanged(oldSelectionValue, selectionValue);
-		}
+	private Listener updateListener = event -> {
+		V oldSelectionValue = selectionValue;
+		selectionValue = getSelection();
+		notifyIfChanged(oldSelectionValue, selectionValue);
 	};
 
-	private Listener disposeListener = new Listener() {
-		public void handleEvent(Event e) {
-			RadioButtonListValue.this.dispose();
-		}
-	};
+	private Listener disposeListener = e -> RadioButtonListValue.this.dispose();
 
 	private V getSelection() {
 		for (Map.Entry<Button, V> entry : buttons.entrySet()) {
@@ -54,8 +47,7 @@ public class RadioButtonListValue<V> extends AbstractObservableValue {
 	 * @param button
 	 */
 	public RadioButtonListValue(Class<V> valueType, Map<Button, V> buttons) {
-		super(SWTObservables.getRealm(buttons.keySet().iterator().next()
-				.getDisplay()));
+		super(DisplayRealm.getRealm(buttons.keySet().iterator().next().getDisplay()));
 		this.valueType = valueType;
 		this.buttons = buttons;
 		init();
@@ -69,6 +61,7 @@ public class RadioButtonListValue<V> extends AbstractObservableValue {
 		}
 	}
 
+	@Override
 	@SuppressWarnings("unchecked")
 	public void doSetValue(final Object value) {
 		V oldSelectionValue = selectionValue;
@@ -89,17 +82,17 @@ public class RadioButtonListValue<V> extends AbstractObservableValue {
 		notifyIfChanged(oldSelectionValue, selectionValue);
 	}
 
+	@Override
 	public Object doGetValue() {
 		return getSelection();
 	}
 
+	@Override
 	public Object getValueType() {
 		return valueType;
 	}
 
-	/*
-	 * @see AbstractObservableValue #dispose()
-	 */
+	@Override
 	public synchronized void dispose() {
 		super.dispose();
 		for (Button button : buttons.keySet()) {
@@ -112,7 +105,7 @@ public class RadioButtonListValue<V> extends AbstractObservableValue {
 
 	/**
 	 * Notifies consumers with a value change event only if a change occurred.
-	 * 
+	 *
 	 * @param oldValue
 	 * @param newValue
 	 */

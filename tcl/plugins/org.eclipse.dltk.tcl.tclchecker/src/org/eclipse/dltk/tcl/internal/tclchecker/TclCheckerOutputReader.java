@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 xored software, Inc.
+ * Copyright (c) 2008, 2017 xored software, Inc. and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -31,16 +31,15 @@ public class TclCheckerOutputReader extends Thread {
 	 * @param console
 	 * @param processor
 	 */
-	public TclCheckerOutputReader(InputStream inputStream,
-			IOutputProcessor processor) {
+	public TclCheckerOutputReader(InputStream inputStream, IOutputProcessor processor) {
 		super("TclChecker stdout reader"); //$NON-NLS-1$
 		this.inputStream = inputStream;
 		this.processor = processor;
 	}
 
+	@Override
 	public void run() {
-		final BufferedReader input = new BufferedReader(new InputStreamReader(
-				inputStream));
+		final BufferedReader input = new BufferedReader(new InputStreamReader(inputStream));
 		try {
 			String line;
 			while ((line = input.readLine()) != null) {
@@ -49,8 +48,7 @@ public class TclCheckerOutputReader extends Thread {
 		} catch (IOException e) {
 			// ignore
 		} catch (CoreException e) {
-			TclCheckerPlugin.log(IStatus.ERROR,
-					Messages.TclChecker_execution_error, e);
+			TclCheckerPlugin.log(IStatus.ERROR, Messages.TclChecker_execution_error, e);
 		} finally {
 			try {
 				inputStream.close();

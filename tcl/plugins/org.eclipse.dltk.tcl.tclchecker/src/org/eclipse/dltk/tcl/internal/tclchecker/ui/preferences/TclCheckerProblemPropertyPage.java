@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 xored software, Inc.
+ * Copyright (c) 2009, 2017 xored software, Inc. and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -50,29 +50,24 @@ public class TclCheckerProblemPropertyPage extends PropertyPage {
 		final Object value;
 	}
 
-	private static class ProblemContentProvider implements
-			IStructuredContentProvider {
+	private static class ProblemContentProvider implements IStructuredContentProvider {
 
-		private static final String[] ATTRIBUTES = {
-				TclCheckerMarker.MESSAGE_ID, TclCheckerMarker.COMMAND_START,
-				TclCheckerMarker.COMMAND_END,
-				TclCheckerMarker.AUTO_CORRECTABLE,
+		private static final String[] ATTRIBUTES = { TclCheckerMarker.MESSAGE_ID, TclCheckerMarker.COMMAND_START,
+				TclCheckerMarker.COMMAND_END, TclCheckerMarker.AUTO_CORRECTABLE,
 				TclCheckerMarker.SUGGESTED_CORRECTIONS };
 
+		@Override
 		public Object[] getElements(Object inputElement) {
 			if (inputElement instanceof IMarker) {
 				try {
 					final IMarker marker = (IMarker) inputElement;
 					final Map<?, ?> attributes = marker.getAttributes();
-					final List<ProblemRow> result = new ArrayList<ProblemRow>();
+					final List<ProblemRow> result = new ArrayList<>();
 					if (attributes != null) {
 						for (int i = 0; i < ATTRIBUTES.length; ++i) {
-							System.out.println(marker
-									.getAttribute(ATTRIBUTES[i]));
+							System.out.println(marker.getAttribute(ATTRIBUTES[i]));
 							if (attributes.containsKey(ATTRIBUTES[i])) {
-								result.add(new ProblemRow(marker,
-										ATTRIBUTES[i], attributes
-												.get(ATTRIBUTES[i])));
+								result.add(new ProblemRow(marker, ATTRIBUTES[i], attributes.get(ATTRIBUTES[i])));
 							}
 						}
 					}
@@ -87,23 +82,26 @@ public class TclCheckerProblemPropertyPage extends PropertyPage {
 		/*
 		 * @see org.eclipse.jface.viewers.IContentProvider#dispose()
 		 */
+		@Override
 		public void dispose() {
 			// empty
 		}
 
+		@Override
 		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 			// empty
 		}
 
 	}
 
-	private static class ProblemLabelProvider extends LabelProvider implements
-			ITableLabelProvider {
+	private static class ProblemLabelProvider extends LabelProvider implements ITableLabelProvider {
 
+		@Override
 		public Image getColumnImage(Object element, int columnIndex) {
 			return null;
 		}
 
+		@Override
 		public String getColumnText(Object element, int columnIndex) {
 			if (element instanceof ProblemRow) {
 				final ProblemRow problem = (ProblemRow) element;
@@ -121,14 +119,11 @@ public class TclCheckerProblemPropertyPage extends PropertyPage {
 	@Override
 	protected Control createContents(Composite parent) {
 		Composite content = new Composite(parent, SWT.NONE);
-		TableViewer viewer = new TableViewer(content, SWT.BORDER
-				| SWT.FULL_SELECTION);
+		TableViewer viewer = new TableViewer(content, SWT.BORDER | SWT.FULL_SELECTION);
 		viewer.getTable().setLayoutData(new GridData(GridData.FILL_BOTH));
-		final TableColumn nameColumn = new TableColumn(viewer.getTable(),
-				SWT.LEFT);
+		final TableColumn nameColumn = new TableColumn(viewer.getTable(), SWT.LEFT);
 		nameColumn.setText("Name"); //$NON-NLS-1$
-		final TableColumn valueColumn = new TableColumn(viewer.getTable(),
-				SWT.LEFT);
+		final TableColumn valueColumn = new TableColumn(viewer.getTable(), SWT.LEFT);
 		valueColumn.setText("Value"); //$NON-NLS-1$
 		viewer.setContentProvider(new ProblemContentProvider());
 		viewer.setLabelProvider(new ProblemLabelProvider());
@@ -136,7 +131,7 @@ public class TclCheckerProblemPropertyPage extends PropertyPage {
 		tableLayout.setColumnData(nameColumn, new ColumnWeightData(50));
 		tableLayout.setColumnData(valueColumn, new ColumnWeightData(50));
 		content.setLayout(tableLayout);
-		final IMarker marker = (IMarker) getElement().getAdapter(IMarker.class);
+		final IMarker marker = getElement().getAdapter(IMarker.class);
 		if (marker != null) {
 			viewer.setInput(marker);
 		}

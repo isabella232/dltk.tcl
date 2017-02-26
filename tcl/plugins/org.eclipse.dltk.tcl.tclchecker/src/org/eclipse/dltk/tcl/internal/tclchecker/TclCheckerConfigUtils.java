@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 xored software, Inc.
+ * Copyright (c) 2009, 2017 xored software, Inc. and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -54,6 +54,7 @@ public class TclCheckerConfigUtils {
 
 	public static final ICheckerPredicate ALL = new ICheckerPredicate() {
 
+		@Override
 		public boolean evaluate(CheckerInstance instance) {
 			return true;
 		}
@@ -67,6 +68,7 @@ public class TclCheckerConfigUtils {
 
 	public static final ICheckerPredicate AUTO = new ICheckerPredicate() {
 
+		@Override
 		public boolean evaluate(CheckerInstance instance) {
 			return instance.isAutomatic();
 		}
@@ -80,9 +82,7 @@ public class TclCheckerConfigUtils {
 
 	public static class ValidatorInstanceRef {
 
-		public ValidatorInstanceRef(
-				CheckerEnvironmentInstance environmentInstance,
-				CheckerConfig config) {
+		public ValidatorInstanceRef(CheckerEnvironmentInstance environmentInstance, CheckerConfig config) {
 			this.environmentInstance = environmentInstance;
 			this.config = config;
 		}
@@ -93,15 +93,14 @@ public class TclCheckerConfigUtils {
 
 	public static class ValidatorInstanceResponse {
 
-		public ValidatorInstanceResponse(IEnvironment environment,
-				Resource resource) {
+		public ValidatorInstanceResponse(IEnvironment environment, Resource resource) {
 			this.environment = environment;
 			this.resource = resource;
 		}
 
 		public final IEnvironment environment;
 		public final Resource resource;
-		public final List<ValidatorInstanceRef> instances = new ArrayList<ValidatorInstanceRef>();
+		public final List<ValidatorInstanceRef> instances = new ArrayList<>();
 
 		public ResourceSet getResourceSet() {
 			return resource.getResourceSet();
@@ -124,15 +123,12 @@ public class TclCheckerConfigUtils {
 			if (commonConfigurations != null) {
 				return commonConfigurations;
 			}
-			commonConfigurations = new ArrayList<CheckerConfig>();
-			TclCheckerConfigUtils.collectConfigurations(commonConfigurations,
-					resource);
-			final EList<Resource> resources = resource.getResourceSet()
-					.getResources();
+			commonConfigurations = new ArrayList<>();
+			TclCheckerConfigUtils.collectConfigurations(commonConfigurations, resource);
+			final EList<Resource> resources = resource.getResourceSet().getResources();
 			for (Resource r : resources.toArray(new Resource[resources.size()])) {
 				if (r != resource) {
-					TclCheckerConfigUtils.collectConfigurations(
-							commonConfigurations, r);
+					TclCheckerConfigUtils.collectConfigurations(commonConfigurations, r);
 				}
 			}
 			return commonConfigurations;
@@ -144,12 +140,11 @@ public class TclCheckerConfigUtils {
 	 * Retrieves the TclChecker configuration for the specified project or
 	 * <code>null</code> if not found (not configured) for the environment of
 	 * this project.
-	 * 
+	 *
 	 * @param project
 	 * @return
 	 */
-	public static ValidatorInstanceResponse getConfiguration(
-			IScriptProject project, ICheckerPredicate predicate) {
+	public static ValidatorInstanceResponse getConfiguration(IScriptProject project, ICheckerPredicate predicate) {
 		if (project != null && project.getProject() != null) {
 			return getConfiguration(project.getProject(), predicate);
 		} else {
@@ -161,12 +156,11 @@ public class TclCheckerConfigUtils {
 	 * Retrieves the TclChecker configuration for the specified project or
 	 * <code>null</code> if not found (not configured) for the environment of
 	 * this project.
-	 * 
+	 *
 	 * @param project
 	 * @return
 	 */
-	public static ValidatorInstanceResponse getConfiguration(IProject project,
-			ICheckerPredicate predicate) {
+	public static ValidatorInstanceResponse getConfiguration(IProject project, ICheckerPredicate predicate) {
 		final String environmentId;
 		if (project != null) {
 			environmentId = EnvironmentManager.getEnvironmentId(project);
@@ -176,18 +170,16 @@ public class TclCheckerConfigUtils {
 		} else {
 			return null;
 		}
-		final String configurationContent = new PreferencesLookupDelegate(
-				project).getString(ValidatorsCore.PLUGIN_ID,
+		final String configurationContent = new PreferencesLookupDelegate(project).getString(ValidatorsCore.PLUGIN_ID,
 				ValidatorRuntime.PREF_CONFIGURATION);
 		final Resource resource = loadConfiguration(configurationContent);
-		IEnvironment environment = EnvironmentManager
-				.getEnvironmentById(environmentId);
+		IEnvironment environment = EnvironmentManager.getEnvironmentById(environmentId);
 		if (environment == null) {
 			environment = EnvironmentManager.getLocalEnvironment();
 		} else if (!environment.isLocal()) {
 			final ProjectScope context = new ProjectScope(project);
-			if (DLTKCore.ENABLED.equals(context.getNode(TclPlugin.PLUGIN_ID)
-					.get(TclPlugin.PREF_LOCAL_VALIDATOR, DLTKCore.DISABLED))) {
+			if (DLTKCore.ENABLED.equals(
+					context.getNode(TclPlugin.PLUGIN_ID).get(TclPlugin.PREF_LOCAL_VALIDATOR, DLTKCore.DISABLED))) {
 				final ValidatorInstanceResponse response = new ValidatorInstanceResponse(
 						EnvironmentManager.getLocalEnvironment(), resource);
 				findConfiguration(response, predicate);
@@ -196,14 +188,12 @@ public class TclCheckerConfigUtils {
 				}
 			}
 		}
-		final ValidatorInstanceResponse response = new ValidatorInstanceResponse(
-				environment, resource);
+		final ValidatorInstanceResponse response = new ValidatorInstanceResponse(environment, resource);
 		findConfiguration(response, predicate);
 		return response;
 	}
 
-	private static void findConfiguration(ValidatorInstanceResponse response,
-			ICheckerPredicate predicate) {
+	private static void findConfiguration(ValidatorInstanceResponse response, ICheckerPredicate predicate) {
 		loadContributedConfigurations(response.getResourceSet());
 		for (EObject object : response.resource.getContents()) {
 			if (object instanceof CheckerInstance) {
@@ -211,24 +201,17 @@ public class TclCheckerConfigUtils {
 				if (predicate.evaluate(instance)) {
 					final CheckerEnvironmentInstance environmentInstance = instance
 							.findEnvironment(response.getEnvironmentId());
-					if (environmentInstance != null
-							&& environmentInstance.getExecutablePath() != null
-							&& environmentInstance.getExecutablePath().trim()
-									.length() != 0) {
+					if (environmentInstance != null && environmentInstance.getExecutablePath() != null
+							&& environmentInstance.getExecutablePath().trim().length() != 0) {
 						CheckerConfig favorite = instance.getFavorite();
-						if (favorite == null
-								&& !instance.getConfigs().isEmpty()) {
+						if (favorite == null && !instance.getConfigs().isEmpty()) {
 							favorite = instance.getConfigs().get(0);
 						}
-						if (favorite == null
-								&& !response.getCommonConfigurations()
-										.isEmpty()) {
-							favorite = response.getCommonConfigurations()
-									.get(0);
+						if (favorite == null && !response.getCommonConfigurations().isEmpty()) {
+							favorite = response.getCommonConfigurations().get(0);
 						}
 						if (favorite != null) {
-							response.instances.add(new ValidatorInstanceRef(
-									environmentInstance, favorite));
+							response.instances.add(new ValidatorInstanceRef(environmentInstance, favorite));
 						}
 					}
 				}
@@ -236,22 +219,18 @@ public class TclCheckerConfigUtils {
 		}
 	}
 
-	public static ValidatorInstanceResponse getConfiguration(
-			IEnvironment environment, ICheckerPredicate predicate) {
+	public static ValidatorInstanceResponse getConfiguration(IEnvironment environment, ICheckerPredicate predicate) {
 		if (environment == null) {
 			return null;
 		}
-		final Resource resource = loadConfiguration(ValidatorsCore.getDefault()
-				.getPluginPreferences().getString(
-						ValidatorRuntime.PREF_CONFIGURATION));
-		final ValidatorInstanceResponse response = new ValidatorInstanceResponse(
-				environment, resource);
+		final Resource resource = loadConfiguration(
+				ValidatorsCore.getDefault().getPluginPreferences().getString(ValidatorRuntime.PREF_CONFIGURATION));
+		final ValidatorInstanceResponse response = new ValidatorInstanceResponse(environment, resource);
 		findConfiguration(response, predicate);
 		return response;
 	}
 
-	private static class ValidatorConfigResource extends XMIResourceImpl
-			implements IContributedResource {
+	private static class ValidatorConfigResource extends XMIResourceImpl implements IContributedResource {
 
 		public ValidatorConfigResource(URI uri) {
 			super(uri);
@@ -259,18 +238,19 @@ public class TclCheckerConfigUtils {
 
 		private int priority;
 
+		@Override
 		public int getOrder() {
 			return priority;
 		}
 
+		@Override
 		public void setOrder(int value) {
 			this.priority = value;
 		}
 
 	}
 
-	private static class ValidatorConfigResourceFactory extends
-			XMIResourceFactoryImpl {
+	private static class ValidatorConfigResourceFactory extends XMIResourceFactoryImpl {
 
 		@Override
 		public Resource createResource(URI uri) {
@@ -282,19 +262,14 @@ public class TclCheckerConfigUtils {
 	public static Resource loadConfiguration(String content) {
 		final ResourceSet resourceSet = new ResourceSetImpl();
 		resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap()
-				.put(Resource.Factory.Registry.DEFAULT_EXTENSION,
-						new ValidatorConfigResourceFactory());
-		resourceSet.getPackageRegistry().put(ConfigsPackage.eNS_URI,
-				ConfigsPackage.eINSTANCE);
-		Resource resource = resourceSet.createResource(URI
-				.createURI(ConfigsPackage.eNS_URI));
+				.put(Resource.Factory.Registry.DEFAULT_EXTENSION, new ValidatorConfigResourceFactory());
+		resourceSet.getPackageRegistry().put(ConfigsPackage.eNS_URI, ConfigsPackage.eINSTANCE);
+		Resource resource = resourceSet.createResource(URI.createURI(ConfigsPackage.eNS_URI));
 		if (content != null && content.length() != 0) {
 			try {
-				final Map<String, Object> loadOptions = new HashMap<String, Object>();
-				loadOptions.put(XMLResource.OPTION_RECORD_UNKNOWN_FEATURE,
-						Boolean.TRUE);
-				resource.load(new URIConverter.ReadableInputStream(content,
-						ENCODING), loadOptions);
+				final Map<String, Object> loadOptions = new HashMap<>();
+				loadOptions.put(XMLResource.OPTION_RECORD_UNKNOWN_FEATURE, Boolean.TRUE);
+				resource.load(new URIConverter.ReadableInputStream(content, ENCODING), loadOptions);
 			} catch (IOException e) {
 				if (DLTKCore.DEBUG) {
 					e.printStackTrace();
@@ -309,23 +284,19 @@ public class TclCheckerConfigUtils {
 
 	public static final String ENCODING = "UTF-8"; //$NON-NLS-1$
 
-	public static String saveConfiguration(Resource resource)
-			throws IOException {
+	public static String saveConfiguration(Resource resource) throws IOException {
 		final StringWriter writer = new StringWriter();
-		final Map<String, Object> saveOptions = new HashMap<String, Object>();
+		final Map<String, Object> saveOptions = new HashMap<>();
 		saveOptions.put(XMLResource.OPTION_FORMATTED, Boolean.FALSE);
-		resource.save(new URIConverter.WriteableOutputStream(writer, ENCODING),
-				saveOptions);
+		resource.save(new URIConverter.WriteableOutputStream(writer, ENCODING), saveOptions);
 		return writer.toString();
 	}
 
-	public static List<Resource> loadContributedConfigurations(
-			ResourceSet resourceSet) {
-		final IConfigurationElement[] elements = Platform
-				.getExtensionRegistry().getConfigurationElementsFor(
-						TclCheckerConstants.CONFIGURATION_EXTENSION_POINT_NAME);
+	public static List<Resource> loadContributedConfigurations(ResourceSet resourceSet) {
+		final IConfigurationElement[] elements = Platform.getExtensionRegistry()
+				.getConfigurationElementsFor(TclCheckerConstants.CONFIGURATION_EXTENSION_POINT_NAME);
 		if (elements.length != 0) {
-			final List<Resource> result = new ArrayList<Resource>();
+			final List<Resource> result = new ArrayList<>();
 			for (IConfigurationElement element : elements) {
 				final String pathName = "/" + element.getContributor().getName() //$NON-NLS-1$
 						+ "/" + element.getAttribute("resource"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -340,8 +311,7 @@ public class TclCheckerConfigUtils {
 					result.add(r);
 					if (r instanceof IContributedResource) {
 						try {
-							((IContributedResource) r).setOrder(Integer
-									.parseInt(element.getAttribute("order")));
+							((IContributedResource) r).setOrder(Integer.parseInt(element.getAttribute("order")));
 						} catch (NumberFormatException e) {
 							// ignore
 						}
@@ -357,8 +327,7 @@ public class TclCheckerConfigUtils {
 		}
 	}
 
-	public static void collectConfigurations(List<CheckerConfig> instances,
-			Resource r) {
+	public static void collectConfigurations(List<CheckerConfig> instances, Resource r) {
 		for (EObject object : r.getContents()) {
 			if (object instanceof CheckerConfig) {
 				instances.add((CheckerConfig) object);

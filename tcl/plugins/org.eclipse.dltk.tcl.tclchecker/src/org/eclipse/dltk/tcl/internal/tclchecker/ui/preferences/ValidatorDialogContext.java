@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 xored software, Inc.
+ * Copyright (c) 2009, 2017 xored software, Inc. and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -23,25 +23,29 @@ public class ValidatorDialogContext implements IValidatorDialogContext {
 	private final EnvironmentContainer environments;
 	private final boolean isNew;
 
-	public ValidatorDialogContext(IEnvironmentPredicate environmentPredicate,
-			EnvironmentContainer environments, boolean isNew) {
+	public ValidatorDialogContext(IEnvironmentPredicate environmentPredicate, EnvironmentContainer environments,
+			boolean isNew) {
 		this.environmentPredicate = environmentPredicate;
 		this.environments = environments;
 		this.isNew = isNew;
 	}
 
+	@Override
 	public IEnvironmentPredicate getEnvironmentPredicate() {
 		return environmentPredicate;
 	}
 
+	@Override
 	public EnvironmentContainer getEnvironments() {
 		return environments;
 	}
 
+	@Override
 	public boolean isNew() {
 		return isNew;
 	}
 
+	@Override
 	public Shell getShell() {
 		if (shellProvider == null) {
 			SWT.error(SWT.ERROR_UNSPECIFIED);
@@ -51,20 +55,24 @@ public class ValidatorDialogContext implements IValidatorDialogContext {
 
 	private IShellProvider shellProvider = null;
 
+	@Override
 	public IShellProvider getShellProvider() {
 		return shellProvider;
 	}
 
+	@Override
 	public void setShellProvider(IShellProvider shellProvider) {
 		this.shellProvider = shellProvider;
 	}
 
 	private IValidationHandler validationHandler;
 
+	@Override
 	public IValidationHandler getValidationHandler() {
 		return validationHandler;
 	}
 
+	@Override
 	public void setValidationHandler(IValidationHandler validationHandler) {
 		this.validationHandler = validationHandler;
 	}

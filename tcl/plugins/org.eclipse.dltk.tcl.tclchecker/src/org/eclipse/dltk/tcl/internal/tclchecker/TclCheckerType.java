@@ -1,11 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2007 IBM Corporation and others.
+ * Copyright (c) 2005, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- 
  *******************************************************************************/
 package org.eclipse.dltk.tcl.internal.tclchecker;
 
@@ -38,22 +37,27 @@ public class TclCheckerType extends AbstractValidatorType {
 		this.validators.put(CHECKER_ID, checker);
 	}
 
+	@Override
 	public IValidator createValidator(String id) {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public String getID() {
 		return TYPE_ID;
 	}
 
+	@Override
 	public String getName() {
 		return CHECKER_ID;
 	}
 
+	@Override
 	public String getNature() {
 		return TclNature.NATURE_ID;
 	}
 
+	@Override
 	public boolean isBuiltin() {
 		return true;
 	}
@@ -63,27 +67,26 @@ public class TclCheckerType extends AbstractValidatorType {
 		return false;
 	}
 
-	@SuppressWarnings("unchecked")
+	@Override
 	public boolean supports(Class validatorType) {
 		return ISourceModuleValidator.class.equals(validatorType);
 	}
 
 	@Override
 	public IValidator[] getAllValidators(IProject project) {
-		final ValidatorInstanceResponse response = TclCheckerConfigUtils
-				.getConfiguration(project, TclCheckerConfigUtils.ALL);
+		final ValidatorInstanceResponse response = TclCheckerConfigUtils.getConfiguration(project,
+				TclCheckerConfigUtils.ALL);
 		if (response == null) {
 			return new IValidator[0];
 		}
-		final List<IValidator> result = new ArrayList<IValidator>();
+		final List<IValidator> result = new ArrayList<>();
 		for (ValidatorInstanceRef pair : response.instances) {
-			final List<CheckerConfig> configs = new ArrayList<CheckerConfig>();
+			final List<CheckerConfig> configs = new ArrayList<>();
 			configs.addAll(response.getCommonConfigurations());
 			configs.addAll(pair.environmentInstance.getInstance().getConfigs());
 			Collections.sort(configs, new ValidatorConfigComparator());
 			for (CheckerConfig config : configs) {
-				result.add(new TclCheckerOptional(response.environment,
-						pair.environmentInstance, config, this));
+				result.add(new TclCheckerOptional(response.environment, pair.environmentInstance, config, this));
 			}
 		}
 		return result.toArray(new IValidator[result.size()]);

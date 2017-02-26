@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 xored software, Inc.
+ * Copyright (c) 2009, 2017 xored software, Inc. and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -18,8 +18,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 
-public class ValidatorWizardPage extends WizardPage implements IShellProvider,
-		IValidationHandler {
+public class ValidatorWizardPage extends WizardPage implements IShellProvider, IValidationHandler {
 
 	private final IValidatorDialogContext context;
 	private final IValidatorEditBlock block;
@@ -27,8 +26,7 @@ public class ValidatorWizardPage extends WizardPage implements IShellProvider,
 	/**
 	 * @param pageName
 	 */
-	public ValidatorWizardPage(IValidatorDialogContext context,
-			IValidatorEditBlock block, Object instance) {
+	public ValidatorWizardPage(IValidatorDialogContext context, IValidatorEditBlock block, Object instance) {
 		super(ValidatorWizardPage.class.getName());
 		this.context = context;
 		this.block = block;
@@ -40,6 +38,7 @@ public class ValidatorWizardPage extends WizardPage implements IShellProvider,
 		// TODO Auto-generated constructor stub
 	}
 
+	@Override
 	public void createControl(Composite parent) {
 		final Composite content = new Composite(parent, SWT.NONE);
 		content.setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -47,6 +46,7 @@ public class ValidatorWizardPage extends WizardPage implements IShellProvider,
 		setControl(content);
 	}
 
+	@Override
 	public void validate(Object hint) {
 		final IStatus status = this.block.isValid(hint);
 		showStatus(status);

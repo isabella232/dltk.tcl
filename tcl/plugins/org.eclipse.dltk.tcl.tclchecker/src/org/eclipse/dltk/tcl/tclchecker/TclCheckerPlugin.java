@@ -1,11 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2007 IBM Corporation and others.
+ * Copyright (c) 2005, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- 
  *******************************************************************************/
 package org.eclipse.dltk.tcl.tclchecker;
 
@@ -39,6 +38,7 @@ public class TclCheckerPlugin extends AbstractUIPlugin {
 	/**
 	 * This method is called upon plug-in activation
 	 */
+	@Override
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		TclCheckerMigration.migratePreferences();
@@ -47,6 +47,7 @@ public class TclCheckerPlugin extends AbstractUIPlugin {
 	/**
 	 * This method is called when the plug-in is stopped
 	 */
+	@Override
 	public void stop(BundleContext context) throws Exception {
 		super.stop(context);
 		plugin = null;
@@ -76,8 +77,7 @@ public class TclCheckerPlugin extends AbstractUIPlugin {
 	}
 
 	public static void log(int severity, String message, Throwable throwable) {
-		getDefault().getLog().log(
-				new Status(severity, PLUGIN_ID, message, throwable));
+		getDefault().getLog().log(new Status(severity, PLUGIN_ID, message, throwable));
 	}
 
 	public static ITclCheckerPreferences getProjectPreferences(IProject project) {

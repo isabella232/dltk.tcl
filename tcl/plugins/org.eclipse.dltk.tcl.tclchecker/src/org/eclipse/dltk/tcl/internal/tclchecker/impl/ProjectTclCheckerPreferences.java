@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 xored software, Inc.
+ * Copyright (c) 2009, 2017 xored software, Inc. and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -28,30 +28,19 @@ public class ProjectTclCheckerPreferences extends AbstractTclCheckerPreferences 
 		initialize();
 	}
 
-	/*
-	 * @see AbstractTclCheckerPreferences#readConfiguration()
-	 */
 	@Override
 	protected String readConfiguration() {
-		return delegate.getString(ValidatorsCore.PLUGIN_ID,
-				ValidatorRuntime.PREF_CONFIGURATION);
+		return delegate.getString(ValidatorsCore.PLUGIN_ID, ValidatorRuntime.PREF_CONFIGURATION);
 	}
 
-	/*
-	 * @see AbstractTclCheckerPreferences#writeConfiguration(java.lang.String)
-	 */
 	@Override
 	protected void writeConfiguration(String value) {
-		delegate.setString(ValidatorsCore.PLUGIN_ID,
-				ValidatorRuntime.PREF_CONFIGURATION, value);
+		delegate.setString(ValidatorsCore.PLUGIN_ID, ValidatorRuntime.PREF_CONFIGURATION, value);
 	}
 
-	/*
-	 * @see org.eclipse.dltk.tcl.tclchecker.ITclCheckerPreferences#delete()
-	 */
+	@Override
 	public void delete() {
-		delegate.setString(ValidatorsCore.PLUGIN_ID,
-				ValidatorRuntime.PREF_CONFIGURATION, null);
+		delegate.setString(ValidatorsCore.PLUGIN_ID, ValidatorRuntime.PREF_CONFIGURATION, null);
 	}
 
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 xored software, Inc.
+ * Copyright (c) 2009, 2017 xored software, Inc. and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -36,20 +36,16 @@ import org.eclipse.dltk.validators.configs.ValidatorEnvironmentInstance;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.ListViewer;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
@@ -70,6 +66,7 @@ public class TclCheckerInstanceBlock extends AbstractValidatorEditBlock {
 	private CheckerInstance instance;
 	private CheckerEnvironmentInstance environmentInstance;
 
+	@Override
 	protected void doInit(IValidatorDialogContext context, Object object) {
 		this.environments = context.getEnvironments();
 		this.environmentPredicate = context.getEnvironmentPredicate();
@@ -87,6 +84,7 @@ public class TclCheckerInstanceBlock extends AbstractValidatorEditBlock {
 	private Button pcxBrowse;
 	private Button pcxRemove;
 
+	@Override
 	public void createControl(Composite parent) {
 		final GridLayout contentLayout = new GridLayout(2, false);
 		contentLayout.marginWidth = 0;
@@ -106,13 +104,11 @@ public class TclCheckerInstanceBlock extends AbstractValidatorEditBlock {
 		createCommandLineOptions(nameComposite);
 		SWTFactory.createHorizontalSpacer(nameComposite, 2);
 
-		SWTFactory.createLabel(parent,
-				Messages.TclCheckerInstanceDialog_Environment, 2);
+		SWTFactory.createLabel(parent, Messages.TclCheckerInstanceDialog_Environment, 2);
 
 		final Composite hostList = new Composite(parent, SWT.NONE);
 		final GridData hostListLayoutData = new GridData(GridData.FILL_VERTICAL);
-		hostListLayoutData.widthHint = new PixelConverter(parent)
-				.convertWidthInCharsToPixels(25);
+		hostListLayoutData.widthHint = new PixelConverter(parent).convertWidthInCharsToPixels(25);
 		hostList.setLayoutData(hostListLayoutData);
 		final GridLayout hostListLayout = new GridLayout(1, false);
 		hostListLayout.marginWidth = 0;
@@ -133,15 +129,9 @@ public class TclCheckerInstanceBlock extends AbstractValidatorEditBlock {
 	}
 
 	private void createName(Composite parent) {
-		SWTFactory.createLabel(parent, Messages.TclCheckerInstanceDialog_Name,
-				1);
-		nameField = SWTFactory.createText(parent, SWT.BORDER, 1,
-				Util.EMPTY_STRING);
-		nameField.addModifyListener(new ModifyListener() {
-			public void modifyText(ModifyEvent e) {
-				validate();
-			}
-		});
+		SWTFactory.createLabel(parent, Messages.TclCheckerInstanceDialog_Name, 1);
+		nameField = SWTFactory.createText(parent, SWT.BORDER, 1, Util.EMPTY_STRING);
+		nameField.addModifyListener(e -> validate());
 	}
 
 	private void createEnvironment(Composite parent) {
@@ -150,8 +140,8 @@ public class TclCheckerInstanceBlock extends AbstractValidatorEditBlock {
 		final TableColumnLayout environmentTableLayout = new TableColumnLayout();
 		environmentFieldParent.setLayout(environmentTableLayout);
 		environmentField = new TableViewer(environmentFieldParent, SWT.BORDER);
-		environmentTableLayout.setColumnData(new TableColumn(environmentField
-				.getTable(), SWT.LEFT), new ColumnWeightData(100));
+		environmentTableLayout.setColumnData(new TableColumn(environmentField.getTable(), SWT.LEFT),
+				new ColumnWeightData(100));
 		environmentField.setLabelProvider(new LabelProvider() {
 			@Override
 			public String getText(Object element) {
@@ -163,15 +153,17 @@ public class TclCheckerInstanceBlock extends AbstractValidatorEditBlock {
 		});
 		environmentField.setContentProvider(new IStructuredContentProvider() {
 
+			@Override
 			public void dispose() {
 				// NOP
 			}
 
-			public void inputChanged(Viewer viewer, Object oldInput,
-					Object newInput) {
+			@Override
+			public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 				// NOP
 			}
 
+			@Override
 			public Object[] getElements(Object inputElement) {
 				if (inputElement instanceof String[]) {
 					return (String[]) inputElement;
@@ -179,41 +171,32 @@ public class TclCheckerInstanceBlock extends AbstractValidatorEditBlock {
 				return new Object[0];
 			}
 		});
-		environmentField
-				.addSelectionChangedListener(new ISelectionChangedListener() {
-					public void selectionChanged(SelectionChangedEvent event) {
-						if (isBusy())
-							return;
-						final ISelection selection = event.getSelection();
-						if (selection != null && !selection.isEmpty()
-								&& selection instanceof IStructuredSelection) {
-							final IStructuredSelection ss = (IStructuredSelection) selection;
-							if (ss.size() == 1) {
-								environmentInstance = instance
-										.getEnvironment((String) ss
-												.getFirstElement());
-								refreshEnvironmentFields();
-								return;
-							}
-						}
-						environmentInstance = null;
-						refreshEnvironmentFields();
-					}
-				});
-		environments.addChangeListener(new Runnable() {
-			public void run() {
-				++busy;
-				try {
-					final ISelection selection = environmentField
-							.getSelection();
-					final String[] ids = collectEnvironments();
-					environmentField.setInput(ids);
-					environmentField.setSelection(selection);
-				} finally {
-					--busy;
+		environmentField.addSelectionChangedListener(event -> {
+			if (isBusy())
+				return;
+			final ISelection selection = event.getSelection();
+			if (selection != null && !selection.isEmpty() && selection instanceof IStructuredSelection) {
+				final IStructuredSelection ss = (IStructuredSelection) selection;
+				if (ss.size() == 1) {
+					environmentInstance = instance.getEnvironment((String) ss.getFirstElement());
+					refreshEnvironmentFields();
+					return;
 				}
-
 			}
+			environmentInstance = null;
+			refreshEnvironmentFields();
+		});
+		environments.addChangeListener(() -> {
+			++busy;
+			try {
+				final ISelection selection = environmentField.getSelection();
+				final String[] ids = collectEnvironments();
+				environmentField.setInput(ids);
+				environmentField.setSelection(selection);
+			} finally {
+				--busy;
+			}
+
 		});
 	}
 
@@ -224,14 +207,13 @@ public class TclCheckerInstanceBlock extends AbstractValidatorEditBlock {
 	}
 
 	private String[] collectEnvironments() {
-		final List<String> ids = new ArrayList<String>();
+		final List<String> ids = new ArrayList<>();
 		for (String envId : environments.getEnvironmentIds()) {
 			if (environmentPredicate.evaluate(envId)) {
 				ids.add(envId);
 			}
 		}
-		for (CheckerEnvironmentInstance environmentInstance : instance
-				.getEnvironments()) {
+		for (CheckerEnvironmentInstance environmentInstance : instance.getEnvironments()) {
 			final String envId = environmentInstance.getEnvironmentId();
 			if (environmentPredicate.evaluate(envId) && !ids.contains(envId)) {
 				ids.add(envId);
@@ -244,40 +226,29 @@ public class TclCheckerInstanceBlock extends AbstractValidatorEditBlock {
 	 * @param content
 	 */
 	private void createVersion(Composite parent) {
-		SWTFactory.createLabel(parent,
-				Messages.TclCheckerInstanceDialog_Version, 1);
-		versionField = SWTFactory.createCombo(parent, SWT.BORDER
-				| SWT.READ_ONLY, 1, new String[] {
-				CheckerVersion.VERSION4.getDescription(),
-				CheckerVersion.VERSION5.getDescription() });
+		SWTFactory.createLabel(parent, Messages.TclCheckerInstanceDialog_Version, 1);
+		versionField = SWTFactory.createCombo(parent, SWT.BORDER | SWT.READ_ONLY, 1,
+				new String[] { CheckerVersion.VERSION4.getDescription(), CheckerVersion.VERSION5.getDescription() });
 	}
 
 	private void createPath(Composite parent) {
-		SWTFactory.createLabel(parent,
-				Messages.TclCheckerInstanceDialog_ExecutablePath, 1);
-		pathField = SWTFactory.createText(parent, SWT.BORDER, 1,
-				Util.EMPTY_STRING, GridData.FILL_HORIZONTAL);
-		((GridData) pathField.getLayoutData()).widthHint = new PixelConverter(
-				parent).convertWidthInCharsToPixels(64);
-		pathField.addModifyListener(new ModifyListener() {
-			public void modifyText(ModifyEvent e) {
-				if (environmentInstance != null) {
-					environmentInstance.setExecutablePath(pathField.getText());
-				}
-				validate();
+		SWTFactory.createLabel(parent, Messages.TclCheckerInstanceDialog_ExecutablePath, 1);
+		pathField = SWTFactory.createText(parent, SWT.BORDER, 1, Util.EMPTY_STRING, GridData.FILL_HORIZONTAL);
+		((GridData) pathField.getLayoutData()).widthHint = new PixelConverter(parent).convertWidthInCharsToPixels(64);
+		pathField.addModifyListener(e -> {
+			if (environmentInstance != null) {
+				environmentInstance.setExecutablePath(pathField.getText());
 			}
+			validate();
 		});
-		Button browse = SWTFactory.createPushButton(parent,
-				Messages.TclCheckerInstanceDialog_Browse);
+		Button browse = SWTFactory.createPushButton(parent, Messages.TclCheckerInstanceDialog_Browse);
 		browse.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				final IEnvironment environment = getEnvironment();
 				if (environment != null) {
-					final IEnvironmentUI ui = (IEnvironmentUI) environment
-							.getAdapter(IEnvironmentUI.class);
-					final String path = ui.selectFile(getContext().getShell(),
-							IEnvironmentUI.EXECUTABLE);
+					final IEnvironmentUI ui = environment.getAdapter(IEnvironmentUI.class);
+					final String path = ui.selectFile(getContext().getShell(), IEnvironmentUI.EXECUTABLE);
 					if (path != null) {
 						pathField.setText(path);
 						if (environmentInstance != null) {
@@ -291,10 +262,8 @@ public class TclCheckerInstanceBlock extends AbstractValidatorEditBlock {
 	}
 
 	private void createCommandLineOptions(Composite parent) {
-		SWTFactory.createLabel(parent,
-				Messages.TclCheckerInstanceDialog_CommandLineOptions, 1);
-		cliField = SWTFactory.createText(parent, SWT.BORDER, 1,
-				Util.EMPTY_STRING);
+		SWTFactory.createLabel(parent, Messages.TclCheckerInstanceDialog_CommandLineOptions, 1);
+		cliField = SWTFactory.createText(parent, SWT.BORDER, 1, Util.EMPTY_STRING);
 	}
 
 	private void createPCXGroup(Composite parent) {
@@ -305,15 +274,14 @@ public class TclCheckerInstanceBlock extends AbstractValidatorEditBlock {
 		pcxGroup.setLayoutData(groupLayoutData);
 		pcxGroup.setLayout(new GridLayout(2, false));
 
-		noPCX = SWTFactory.createCheckButton(pcxGroup,
-				Messages.TclCheckerInstanceDialog_DisablePCX, 2);
+		noPCX = SWTFactory.createCheckButton(pcxGroup, Messages.TclCheckerInstanceDialog_DisablePCX, 2);
 		noPCX.addSelectionListener(new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				if (environmentInstance != null) {
 					environmentInstance.setUsePcxFiles(noPCX.getSelection());
 				}
-				updatePcxGroupEnablement(noPCX.getSelection(), pcxList
-						.getSelection());
+				updatePcxGroupEnablement(noPCX.getSelection(), pcxList.getSelection());
 				validate();
 			}
 		});
@@ -321,6 +289,7 @@ public class TclCheckerInstanceBlock extends AbstractValidatorEditBlock {
 		pcxList = new ListViewer(pcxGroup, SWT.BORDER);
 		pcxList.getList().setLayoutData(new GridData(GridData.FILL_BOTH));
 		pcxList.setContentProvider(new IStructuredContentProvider() {
+			@Override
 			public Object[] getElements(Object inputElement) {
 				if (inputElement instanceof List) {
 					return ((List<?>) inputElement).toArray();
@@ -328,36 +297,31 @@ public class TclCheckerInstanceBlock extends AbstractValidatorEditBlock {
 				return new Object[0];
 			}
 
+			@Override
 			public void dispose() {
 			}
 
-			public void inputChanged(Viewer viewer, Object oldInput,
-					Object newInput) {
+			@Override
+			public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 			}
 		});
 		pcxList.setLabelProvider(new LabelProvider());
-		pcxList.addSelectionChangedListener(new ISelectionChangedListener() {
-			public void selectionChanged(SelectionChangedEvent event) {
-				updatePcxGroupEnablement(noPCX.getSelection(), event
-						.getSelection());
-			}
-		});
+		pcxList.addSelectionChangedListener(
+				event -> updatePcxGroupEnablement(noPCX.getSelection(), event.getSelection()));
 
 		Composite buttons = new Composite(pcxGroup, SWT.NONE);
 		RowLayout row = new RowLayout(SWT.VERTICAL);
 		row.fill = true;
 		buttons.setLayout(row);
-		pcxAdd = SWTFactory.createPushButtonNoLayoutData(buttons,
-				Messages.TclCheckerInstanceDialog_pcxAdd);
+		pcxAdd = SWTFactory.createPushButtonNoLayoutData(buttons, Messages.TclCheckerInstanceDialog_pcxAdd);
 		pcxAdd.addSelectionListener(new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				if (environmentInstance == null) {
 					return;
 				}
-				final PathDialog pathDialog = new PathDialog(pcxAdd.getShell(),
-						getEnvironment());
-				pathDialog
-						.setTitle(Messages.TclCheckerInstanceDialog_pcxAddTitle);
+				final PathDialog pathDialog = new PathDialog(pcxAdd.getShell(), getEnvironment());
+				pathDialog.setTitle(Messages.TclCheckerInstanceDialog_pcxAddTitle);
 				if (pathDialog.open() == Window.OK) {
 					final String path = pathDialog.getPath();
 					if (path != null) {
@@ -368,17 +332,16 @@ public class TclCheckerInstanceBlock extends AbstractValidatorEditBlock {
 				}
 			}
 		});
-		pcxBrowse = SWTFactory.createPushButtonNoLayoutData(buttons,
-				Messages.TclCheckerInstanceDialog_pcxBrowse);
+		pcxBrowse = SWTFactory.createPushButtonNoLayoutData(buttons, Messages.TclCheckerInstanceDialog_pcxBrowse);
 		pcxBrowse.addSelectionListener(new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				if (environmentInstance == null) {
 					return;
 				}
 				final IEnvironment environment = getEnvironment();
 				if (environment != null) {
-					final IEnvironmentUI ui = (IEnvironmentUI) environment
-							.getAdapter(IEnvironmentUI.class);
+					final IEnvironmentUI ui = environment.getAdapter(IEnvironmentUI.class);
 					final String path = ui.selectFolder(pcxBrowse.getShell());
 					if (path != null) {
 						environmentInstance.getPcxFileFolders().add(path);
@@ -388,17 +351,16 @@ public class TclCheckerInstanceBlock extends AbstractValidatorEditBlock {
 				}
 			}
 		});
-		pcxRemove = SWTFactory.createPushButtonNoLayoutData(buttons,
-				Messages.TclCheckerInstanceDialog_pcxRemove);
+		pcxRemove = SWTFactory.createPushButtonNoLayoutData(buttons, Messages.TclCheckerInstanceDialog_pcxRemove);
 		pcxRemove.addSelectionListener(new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				if (environmentInstance == null) {
 					return;
 				}
 				final ISelection selection = pcxList.getSelection();
 				if (selection instanceof IStructuredSelection) {
-					for (Iterator<?> i = ((IStructuredSelection) selection)
-							.iterator(); i.hasNext();) {
+					for (Iterator<?> i = ((IStructuredSelection) selection).iterator(); i.hasNext();) {
 						final String path = (String) i.next();
 						environmentInstance.getPcxFileFolders().remove(path);
 						pcxList.remove(path);
@@ -421,12 +383,10 @@ public class TclCheckerInstanceBlock extends AbstractValidatorEditBlock {
 		pcxList.getList().setEnabled(environmentInstance != null);
 		noPCX.setEnabled(environmentInstance != null);
 		if (environmentInstance != null) {
-			pathField.setText(StrUtils.toString(environmentInstance
-					.getExecutablePath()));
+			pathField.setText(StrUtils.toString(environmentInstance.getExecutablePath()));
 			pcxList.setInput(environmentInstance.getPcxFileFolders());
 			noPCX.setSelection(!environmentInstance.isUsePcxFiles());
-			updatePcxGroupEnablement(!environmentInstance.isUsePcxFiles(),
-					pcxList.getSelection());
+			updatePcxGroupEnablement(!environmentInstance.isUsePcxFiles(), pcxList.getSelection());
 		} else {
 			updatePcxGroupEnablement(true, StructuredSelection.EMPTY);
 		}
@@ -434,8 +394,7 @@ public class TclCheckerInstanceBlock extends AbstractValidatorEditBlock {
 
 	protected IEnvironment getEnvironment() {
 		final ISelection selection = environmentField.getSelection();
-		if (selection != null && !selection.isEmpty()
-				&& selection instanceof IStructuredSelection) {
+		if (selection != null && !selection.isEmpty() && selection instanceof IStructuredSelection) {
 			final IStructuredSelection ss = (IStructuredSelection) selection;
 			if (ss.size() == 1) {
 				return environments.get((String) ss.getFirstElement());
@@ -444,10 +403,10 @@ public class TclCheckerInstanceBlock extends AbstractValidatorEditBlock {
 		return null;
 	}
 
+	@Override
 	public void initControls() {
 		nameField.setText(StrUtils.toString(instance.getName()));
-		versionField.select(CheckerVersion.VALUES
-				.indexOf(instance.getVersion()));
+		versionField.select(CheckerVersion.VALUES.indexOf(instance.getVersion()));
 		cliField.setText(StrUtils.toString(instance.getCommandLineOptions()));
 		++busy;
 		try {
@@ -466,20 +425,18 @@ public class TclCheckerInstanceBlock extends AbstractValidatorEditBlock {
 		refreshEnvironmentFields();
 	}
 
+	@Override
 	public IStatus isValid(Object hint) {
 		final String name = nameField.getText();
 		if (name == null || name.trim().length() == 0) {
-			return new StatusInfo(IStatus.ERROR,
-					Messages.TclCheckerInstanceBlock_errorEmptyValidatorName);
+			return new StatusInfo(IStatus.ERROR, Messages.TclCheckerInstanceBlock_errorEmptyValidatorName);
 		}
 		if (instance.getValidatorEnvironments().isEmpty()) {
-			return new StatusInfo(IStatus.ERROR,
-					Messages.TclCheckerInstanceBlock_ErrorNoEnvironments);
+			return new StatusInfo(IStatus.ERROR, Messages.TclCheckerInstanceBlock_ErrorNoEnvironments);
 		}
-		final Map<ValidatorEnvironmentInstance, IStatus> environmentStatus = new HashMap<ValidatorEnvironmentInstance, IStatus>();
+		final Map<ValidatorEnvironmentInstance, IStatus> environmentStatus = new HashMap<>();
 		int correctEnvironments = 0;
-		for (ValidatorEnvironmentInstance eInstance : instance
-				.getValidatorEnvironments()) {
+		for (ValidatorEnvironmentInstance eInstance : instance.getValidatorEnvironments()) {
 			final IStatus status = validateEnvironment(eInstance);
 			if (status != null) {
 				environmentStatus.put(eInstance, status);
@@ -496,28 +453,24 @@ public class TclCheckerInstanceBlock extends AbstractValidatorEditBlock {
 	private IStatus validateEnvironment(ValidatorEnvironmentInstance eInstance) {
 		final String path = eInstance.getExecutablePath();
 		if (path == null || path.trim().length() == 0) {
-			return new StatusInfo(IStatus.ERROR,
-					Messages.TclCheckerInstanceBlock_ErrorPathNotSpecified);
+			return new StatusInfo(IStatus.ERROR, Messages.TclCheckerInstanceBlock_ErrorPathNotSpecified);
 		}
-		final IEnvironment environment = environments.get(eInstance
-				.getEnvironmentId());
+		final IEnvironment environment = environments.get(eInstance.getEnvironmentId());
 		if (environment != null && environment.isLocal()) {
 			final Path pathObj = new Path(path);
 			if (pathObj.isEmpty()) {
-				return new StatusInfo(IStatus.ERROR,
-						Messages.TclCheckerInstanceBlock_ErrorPathIsEmpty);
+				return new StatusInfo(IStatus.ERROR, Messages.TclCheckerInstanceBlock_ErrorPathIsEmpty);
 			}
-			final IFileHandle file = PlatformFileUtils
-					.findAbsoluteOrEclipseRelativeFile(environment, pathObj);
+			final IFileHandle file = PlatformFileUtils.findAbsoluteOrEclipseRelativeFile(environment, pathObj);
 			if (file == null || !file.isFile()) {
-				return new StatusInfo(IStatus.ERROR, NLS.bind(
-						Messages.TclCheckerInstanceBlock_ErrorFileNotFound,
-						path));
+				return new StatusInfo(IStatus.ERROR,
+						NLS.bind(Messages.TclCheckerInstanceBlock_ErrorFileNotFound, path));
 			}
 		}
 		return null;
 	}
 
+	@Override
 	public void saveValues() {
 		instance.setName(nameField.getText());
 		int versionIndex = versionField.getSelectionIndex();

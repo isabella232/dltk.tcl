@@ -45,17 +45,11 @@ import org.eclipse.emf.ecore.resource.URIConverter;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceImpl;
 import org.eclipse.jface.dialogs.ErrorDialog;
-import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
-import org.eclipse.jface.viewers.DoubleClickEvent;
-import org.eclipse.jface.viewers.ICheckStateListener;
-import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.jface.window.Window;
@@ -74,13 +68,13 @@ import org.eclipse.ui.preferences.IWorkbenchPreferenceContainer;
 
 public class TclCheckerPreferenceBlock extends AbstractOptionsBlock {
 
-	private static final PreferenceKey KEY_CONFIGURATION = new PreferenceKey(
-			ValidatorsCore.PLUGIN_ID, ValidatorRuntime.PREF_CONFIGURATION);
+	private static final PreferenceKey KEY_CONFIGURATION = new PreferenceKey(ValidatorsCore.PLUGIN_ID,
+			ValidatorRuntime.PREF_CONFIGURATION);
 
 	private static final PreferenceKey[] KEYS = new PreferenceKey[] { KEY_CONFIGURATION };
 
-	public TclCheckerPreferenceBlock(IStatusChangeListener context,
-			IProject project, IWorkbenchPreferenceContainer container) {
+	public TclCheckerPreferenceBlock(IStatusChangeListener context, IProject project,
+			IWorkbenchPreferenceContainer container) {
 		super(context, project, KEYS, container);
 	}
 
@@ -104,8 +98,7 @@ public class TclCheckerPreferenceBlock extends AbstractOptionsBlock {
 		@Override
 		public int compare(Viewer viewer, Object e1, Object e2) {
 			if (isConfig(e1) && isConfig(e2)) {
-				return configComparator.compare(convertToValidatorConfig(e1),
-						convertToValidatorConfig(e2));
+				return configComparator.compare(convertToValidatorConfig(e1), convertToValidatorConfig(e2));
 			}
 			return super.compare(viewer, e1, e2);
 		}
@@ -138,8 +131,7 @@ public class TclCheckerPreferenceBlock extends AbstractOptionsBlock {
 
 		private String getConfigName(ValidatorConfig config) {
 			if (config.isReadOnly()) {
-				return config.getName()
-						+ Messages.TclCheckerPreferenceBlock_BuiltIn;
+				return config.getName() + Messages.TclCheckerPreferenceBlock_BuiltIn;
 			} else {
 				return config.getName();
 			}
@@ -149,7 +141,7 @@ public class TclCheckerPreferenceBlock extends AbstractOptionsBlock {
 	private class ValidatorInput {
 
 		public ValidatorInstance[] getInstances() {
-			final List<ValidatorInstance> instances = new ArrayList<ValidatorInstance>();
+			final List<ValidatorInstance> instances = new ArrayList<>();
 			for (EObject object : resource.getContents()) {
 				if (object instanceof ValidatorInstance) {
 					// TODO check nature or validatorType
@@ -163,6 +155,7 @@ public class TclCheckerPreferenceBlock extends AbstractOptionsBlock {
 
 	private class ValidatorContentProvider implements ITreeContentProvider {
 
+		@Override
 		public Object[] getChildren(Object parentElement) {
 			if (parentElement instanceof ValidatorInstance) {
 				return getConfigsOf((ValidatorInstance) parentElement);
@@ -170,6 +163,7 @@ public class TclCheckerPreferenceBlock extends AbstractOptionsBlock {
 			return new Object[0];
 		}
 
+		@Override
 		public Object getParent(Object element) {
 			if (element instanceof ValidatorConfig) {
 				return ((ValidatorConfig) element).eContainer();
@@ -179,11 +173,13 @@ public class TclCheckerPreferenceBlock extends AbstractOptionsBlock {
 			return null;
 		}
 
+		@Override
 		public boolean hasChildren(Object element) {
 			// TODO improve
 			return element instanceof ValidatorInstance;
 		}
 
+		@Override
 		public Object[] getElements(Object inputElement) {
 			if (inputElement instanceof ValidatorInput) {
 				return ((ValidatorInput) inputElement).getInstances();
@@ -191,10 +187,12 @@ public class TclCheckerPreferenceBlock extends AbstractOptionsBlock {
 			return new Object[0];
 		}
 
+		@Override
 		public void dispose() {
 			// NOP
 		}
 
+		@Override
 		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 			// NOP
 		}
@@ -203,8 +201,7 @@ public class TclCheckerPreferenceBlock extends AbstractOptionsBlock {
 
 	private static class ValidatorConfigRef {
 
-		public ValidatorConfigRef(ValidatorInstance instance,
-				ValidatorConfig config) {
+		public ValidatorConfigRef(ValidatorInstance instance, ValidatorConfig config) {
 			this.instance = instance;
 			this.config = config;
 		}
@@ -242,40 +239,23 @@ public class TclCheckerPreferenceBlock extends AbstractOptionsBlock {
 
 	@Override
 	protected Control createOptionsBlock(Composite parent) {
-		Composite folder = SWTFactory.createComposite(parent, parent.getFont(),
-				2, 1, GridData.FILL_BOTH);
+		Composite folder = SWTFactory.createComposite(parent, parent.getFont(), 2, 1, GridData.FILL_BOTH);
 		viewer = new CheckboxTreeViewer(folder, SWT.BORDER | SWT.MULTI);
 		viewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
 		viewer.setLabelProvider(new TclCheckerInstanceLabelProvider());
 		viewer.setComparator(new ValidatorViewerComparator());
 		viewer.setContentProvider(new ValidatorContentProvider());
-		viewer.addSelectionChangedListener(new ISelectionChangedListener() {
-			public void selectionChanged(SelectionChangedEvent event) {
-				TclCheckerPreferenceBlock.this
-						.selectionChanged(convertSelection(event.getSelection()));
-			}
-		});
-		viewer.addDoubleClickListener(new IDoubleClickListener() {
-			public void doubleClick(DoubleClickEvent event) {
-				customButtonPressed(IDX_EDIT);
-			}
-		});
-		viewer.addCheckStateListener(new ICheckStateListener() {
-			public void checkStateChanged(CheckStateChangedEvent event) {
-				TclCheckerPreferenceBlock.this.checkStateChanged(event
-						.getElement(), event.getChecked());
-			}
-		});
+		viewer.addSelectionChangedListener(
+				event -> TclCheckerPreferenceBlock.this.selectionChanged(convertSelection(event.getSelection())));
+		viewer.addDoubleClickListener(event -> customButtonPressed(IDX_EDIT));
+		viewer.addCheckStateListener(
+				event -> TclCheckerPreferenceBlock.this.checkStateChanged(event.getElement(), event.getChecked()));
 
-		Composite buttonBox = SWTFactory.createComposite(folder, folder
-				.getFont(), 1, 1, GridData.FILL_VERTICAL);
+		Composite buttonBox = SWTFactory.createComposite(folder, folder.getFont(), 1, 1, GridData.FILL_VERTICAL);
 		String[] buttonLabels = { Messages.TclChecker_button_Add_Validator,
-				Messages.TclChecker_button_Add_Configuration,
-				Messages.TclChecker_button_Edit,
-				Messages.TclChecker_button_Copy,
-				Messages.TclChecker_button_Remove, null,
-				Messages.TclChecker_button_Import,
-				Messages.TclChecker_button_Export };
+				Messages.TclChecker_button_Add_Configuration, Messages.TclChecker_button_Edit,
+				Messages.TclChecker_button_Copy, Messages.TclChecker_button_Remove, null,
+				Messages.TclChecker_button_Import, Messages.TclChecker_button_Export };
 		fButtonControls = new Button[buttonLabels.length];
 		for (int i = 0; i < buttonLabels.length; i++) {
 			String label = buttonLabels[i];
@@ -295,11 +275,7 @@ public class TclCheckerPreferenceBlock extends AbstractOptionsBlock {
 			}
 		}
 
-		environments.addChangeListener(new Runnable() {
-			public void run() {
-				viewer.refresh();
-			}
-		});
+		environments.addChangeListener(() -> viewer.refresh());
 		return folder;
 	}
 
@@ -311,16 +287,14 @@ public class TclCheckerPreferenceBlock extends AbstractOptionsBlock {
 		if (element instanceof ValidatorInstance) {
 			final ValidatorInstance instance = (ValidatorInstance) element;
 			instance.setAutomatic(checked);
-			for (ValidatorEnvironmentInstance environmentInstance : instance
-					.getValidatorEnvironments()) {
+			for (ValidatorEnvironmentInstance environmentInstance : instance.getValidatorEnvironments()) {
 				environmentInstance.setAutomatic(checked);
 			}
 			// TODO disable other tclcheckers if any
 		} else if (element instanceof ValidatorConfig) {
 			ValidatorConfig config = (ValidatorConfig) element;
 			if (config.eContainer() != null) {
-				selectFavoriteConfig((ValidatorInstance) config.eContainer(),
-						config, element);
+				selectFavoriteConfig((ValidatorInstance) config.eContainer(), config, element);
 			}
 		} else if (element instanceof ValidatorConfigRef) {
 			ValidatorConfigRef item = (ValidatorConfigRef) element;
@@ -333,8 +307,7 @@ public class TclCheckerPreferenceBlock extends AbstractOptionsBlock {
 	 * @param config
 	 * @param element
 	 */
-	private void selectFavoriteConfig(ValidatorInstance instance,
-			ValidatorConfig config, Object element) {
+	private void selectFavoriteConfig(ValidatorInstance instance, ValidatorConfig config, Object element) {
 		instance.setValidatorFavoriteConfig(config);
 		viewer.setChecked(element, true);
 		for (Object checked : viewer.getCheckedElements()) {
@@ -354,8 +327,7 @@ public class TclCheckerPreferenceBlock extends AbstractOptionsBlock {
 		}
 	}
 
-	protected Button createButton(Composite parent, String label,
-			SelectionListener listener) {
+	protected Button createButton(Composite parent, String label, SelectionListener listener) {
 		Button button = new Button(parent, SWT.PUSH);
 		button.setFont(parent.getFont());
 		button.setText(label);
@@ -405,8 +377,7 @@ public class TclCheckerPreferenceBlock extends AbstractOptionsBlock {
 
 	private ValidatorConfig[] convertToValidatorConfigs(List<?> selection) {
 		if (!selection.isEmpty()) {
-			final ValidatorConfig[] configs = new ValidatorConfig[selection
-					.size()];
+			final ValidatorConfig[] configs = new ValidatorConfig[selection.size()];
 			for (int i = 0; i < selection.size(); ++i) {
 				configs[i] = convertToValidatorConfig(selection.get(i));
 				if (configs[i] == null) {
@@ -510,7 +481,7 @@ public class TclCheckerPreferenceBlock extends AbstractOptionsBlock {
 		case IDX_REMOVE: {
 			final List<?> selection = getSelection();
 			if (canRemove(selection)) {
-				final List<EObject> removed = new ArrayList<EObject>();
+				final List<EObject> removed = new ArrayList<>();
 				for (Object obj : selection) {
 					if (obj instanceof EObject) {
 						EcoreUtil.remove((EObject) obj);
@@ -518,11 +489,9 @@ public class TclCheckerPreferenceBlock extends AbstractOptionsBlock {
 						viewer.remove(obj);
 					}
 				}
-				for (ValidatorInstance instance : new ValidatorInput()
-						.getInstances()) {
+				for (ValidatorInstance instance : new ValidatorInput().getInstances()) {
 					if (instance.getValidatorFavoriteConfig() != null
-							&& removed.contains(instance
-									.getValidatorFavoriteConfig())) {
+							&& removed.contains(instance.getValidatorFavoriteConfig())) {
 						final Object determined = determineFavoriteConfig(instance);
 						final ValidatorConfig config = convertToValidatorConfig(determined);
 						if (config != null) {
@@ -560,27 +529,25 @@ public class TclCheckerPreferenceBlock extends AbstractOptionsBlock {
 	/**
 	 * Returns {@link ValidatorConfig} or {@link ValidatorConfigRef} or
 	 * <code>null</code>.
-	 * 
+	 *
 	 * @param instance
 	 * @return
 	 */
 	private Object determineFavoriteConfig(ValidatorInstance instance) {
 		final Object[] configs = getConfigsOf(instance);
 		if (configs.length != 0) {
-			Arrays.sort(configs, new Comparator<Object>() {
-				public int compare(Object a, Object b) {
-					final ValidatorConfig aa = convertToValidatorConfig(a);
-					final ValidatorConfig bb = convertToValidatorConfig(b);
-					if (aa == null) {
-						return bb == null ? 0 : -1;
-					} else if (bb == null) {
-						return +1;
-					}
-					if (aa.isReadOnly() != bb.isReadOnly()) {
-						return aa.isReadOnly() ? -1 : +1;
-					}
-					return bb.getPriority() - aa.getPriority();
+			Arrays.sort(configs, (a, b) -> {
+				final ValidatorConfig aa = convertToValidatorConfig(a);
+				final ValidatorConfig bb = convertToValidatorConfig(b);
+				if (aa == null) {
+					return bb == null ? 0 : -1;
+				} else if (bb == null) {
+					return +1;
 				}
+				if (aa.isReadOnly() != bb.isReadOnly()) {
+					return aa.isReadOnly() ? -1 : +1;
+				}
+				return bb.getPriority() - aa.getPriority();
 			});
 			return configs[0];
 		} else {
@@ -609,26 +576,20 @@ public class TclCheckerPreferenceBlock extends AbstractOptionsBlock {
 	protected CheckerConfig editConfiguration(final CheckerConfig input) {
 		final CheckerConfig workingCopy;
 		if (input != null) {
-			workingCopy = (CheckerConfig) EcoreUtil.copy(input);
+			workingCopy = EcoreUtil.copy(input);
 		} else {
 			workingCopy = ConfigsFactory.eINSTANCE.createCheckerConfig();
 		}
-		final ChangeRecorder changeRecorder = input != null ? new ChangeRecorder(
-				workingCopy)
-				: null;
-		final TclCheckerConfigurationDialog dialog = new TclCheckerConfigurationDialog(
-				getShell(), workingCopy);
-		dialog
-				.setTitle(input == null ? Messages.TclChecker_add_Configuration_Title
-						: Messages.TclChecker_edit_Configuration_Title);
+		final ChangeRecorder changeRecorder = input != null ? new ChangeRecorder(workingCopy) : null;
+		final TclCheckerConfigurationDialog dialog = new TclCheckerConfigurationDialog(getShell(), workingCopy);
+		dialog.setTitle(input == null ? Messages.TclChecker_add_Configuration_Title
+				: Messages.TclChecker_edit_Configuration_Title);
 		if (dialog.open() == Window.OK) {
 			if (input != null) {
-				final ChangeDescription changeDescription = changeRecorder
-						.endRecording();
+				final ChangeDescription changeDescription = changeRecorder.endRecording();
 				if (changeDescription != null) {
 					changeDescription.applyAndReverse();
-					final List<FeatureChange> featureChanges = changeDescription
-							.getObjectChanges().get(workingCopy);
+					final List<FeatureChange> featureChanges = changeDescription.getObjectChanges().get(workingCopy);
 					if (featureChanges != null) {
 						for (FeatureChange featureChange : featureChanges) {
 							featureChange.apply(input);
@@ -652,25 +613,20 @@ public class TclCheckerPreferenceBlock extends AbstractOptionsBlock {
 			workingCopy.setId(UUID.randomUUID().toString());
 		}
 		boolean result = false;
-		final ChangeRecorder changeRecorder = input != null ? new ChangeRecorder(
-				workingCopy)
-				: null;
+		final ChangeRecorder changeRecorder = input != null ? new ChangeRecorder(workingCopy) : null;
 		try {
-			final IValidatorDialogContext context = new ValidatorDialogContext(
-					buildEnvironmentPredicate(), environments, input == null);
+			final IValidatorDialogContext context = new ValidatorDialogContext(buildEnvironmentPredicate(),
+					environments, input == null);
 			if (input != null) {
-				final TclCheckerInstanceDialog dialog = new TclCheckerInstanceDialog(
-						getShell(), context, workingCopy);
+				final TclCheckerInstanceDialog dialog = new TclCheckerInstanceDialog(getShell(), context, workingCopy);
 				dialog.setTitle(Messages.TclChecker_edit_Instance_Title);
 				result = dialog.open() == Window.OK;
 			} else {
-				TclCheckerInstanceWizard wizard = new TclCheckerInstanceWizard(
-						context, workingCopy);
+				TclCheckerInstanceWizard wizard = new TclCheckerInstanceWizard(context, workingCopy);
 				WizardDialog wd = new WizardDialog(getShell(), wizard);
 				PixelConverter converter = new PixelConverter(getShell());
-				wd.setMinimumPageSize(
-						converter.convertWidthInCharsToPixels(70), converter
-								.convertHeightInCharsToPixels(20));
+				wd.setMinimumPageSize(converter.convertWidthInCharsToPixels(70),
+						converter.convertHeightInCharsToPixels(20));
 				result = wd.open() == Window.OK;
 			}
 			if (result) {
@@ -724,13 +680,12 @@ public class TclCheckerPreferenceBlock extends AbstractOptionsBlock {
 		environments.initialize();
 		loadResource();
 		final ValidatorInput input = new ValidatorInput();
-		final List<Object> checked = new ArrayList<Object>();
+		final List<Object> checked = new ArrayList<>();
 		for (ValidatorInstance instance : input.getInstances()) {
 			if (instance.isAutomatic()) {
 				checked.add(instance);
 			}
-			final ValidatorConfig favorite = instance
-					.getValidatorFavoriteConfig();
+			final ValidatorConfig favorite = instance.getValidatorFavoriteConfig();
 			if (favorite != null) {
 				if (instance.getValidatorConfigs().contains(favorite)) {
 					checked.add(favorite);
@@ -751,31 +706,26 @@ public class TclCheckerPreferenceBlock extends AbstractOptionsBlock {
 	}
 
 	private void loadResource() {
-		this.resource = TclCheckerConfigUtils
-				.loadConfiguration(getString(KEY_CONFIGURATION));
+		this.resource = TclCheckerConfigUtils.loadConfiguration(getString(KEY_CONFIGURATION));
 		if (contributedResources == null) {
-			contributedResources = TclCheckerConfigUtils
-					.loadContributedConfigurations(this.resource
-							.getResourceSet());
+			contributedResources = TclCheckerConfigUtils.loadContributedConfigurations(this.resource.getResourceSet());
 		}
 	}
 
 	protected void saveResource() {
 		statusChanged(StatusInfo.OK_STATUS);
 		try {
-			setString(KEY_CONFIGURATION, TclCheckerConfigUtils
-					.saveConfiguration(resource));
+			setString(KEY_CONFIGURATION, TclCheckerConfigUtils.saveConfiguration(resource));
 		} catch (IOException e) {
 			if (DLTKCore.DEBUG) {
 				e.printStackTrace();
 			}
-			statusChanged(new Status(IStatus.ERROR, TclCheckerPlugin.PLUGIN_ID,
-					e.getMessage()));
+			statusChanged(new Status(IStatus.ERROR, TclCheckerPlugin.PLUGIN_ID, e.getMessage()));
 		}
 	}
 
 	private List<CheckerConfig> collectConfigurations() {
-		final List<CheckerConfig> instances = new ArrayList<CheckerConfig>();
+		final List<CheckerConfig> instances = new ArrayList<>();
 		TclCheckerConfigUtils.collectConfigurations(instances, resource);
 		for (Resource r : contributedResources) {
 			TclCheckerConfigUtils.collectConfigurations(instances, r);
@@ -784,6 +734,7 @@ public class TclCheckerPreferenceBlock extends AbstractOptionsBlock {
 	}
 
 	private static class AllEnvironments implements IEnvironmentPredicate {
+		@Override
 		public boolean evaluate(String environmentId) {
 			return true;
 		}
@@ -793,8 +744,7 @@ public class TclCheckerPreferenceBlock extends AbstractOptionsBlock {
 		if (isProjectPreferencePage()) {
 			final IProject project = getProject();
 			if (project != null) {
-				final String environmentId = EnvironmentManager
-						.getEnvironmentId(project);
+				final String environmentId = EnvironmentManager.getEnvironmentId(project);
 				if (environmentId != null) {
 					return new SingleEnvironmentPredicate(environmentId);
 				}
@@ -808,8 +758,7 @@ public class TclCheckerPreferenceBlock extends AbstractOptionsBlock {
 	}
 
 	private List<?> convertSelection(ISelection selection) {
-		if (selection != null && !selection.isEmpty()
-				&& selection instanceof IStructuredSelection) {
+		if (selection != null && !selection.isEmpty() && selection instanceof IStructuredSelection) {
 			return ((IStructuredSelection) selection).toList();
 		} else {
 			return Collections.emptyList();
@@ -825,14 +774,12 @@ public class TclCheckerPreferenceBlock extends AbstractOptionsBlock {
 		final String importPath = dialog.open();
 		if (importPath != null) {
 			try {
-				final Resource importResource = new XMIResourceImpl(URI
-						.createFileURI(importPath));
+				final Resource importResource = new XMIResourceImpl(URI.createFileURI(importPath));
 				importResource.load(null);
 				int importedCount = 0;
 				for (EObject object : importResource.getContents()) {
 					if (object instanceof ValidatorConfig) {
-						instance.getValidatorConfigs().add(
-								(ValidatorConfig) EcoreUtil.copy(object));
+						instance.getValidatorConfigs().add((ValidatorConfig) EcoreUtil.copy(object));
 						++importedCount;
 					}
 				}
@@ -840,10 +787,8 @@ public class TclCheckerPreferenceBlock extends AbstractOptionsBlock {
 					viewer.refresh();
 				}
 			} catch (Exception e) {
-				ErrorDialog.openError(getShell(),
-						Messages.TclChecker_import_ErrorTitle, e.getMessage(),
-						new Status(IStatus.ERROR, TclCheckerPlugin.PLUGIN_ID, e
-								.getMessage(), e));
+				ErrorDialog.openError(getShell(), Messages.TclChecker_import_ErrorTitle, e.getMessage(),
+						new Status(IStatus.ERROR, TclCheckerPlugin.PLUGIN_ID, e.getMessage(), e));
 			}
 		}
 	}
@@ -862,8 +807,7 @@ public class TclCheckerPreferenceBlock extends AbstractOptionsBlock {
 			try {
 				final FileWriter writer = new FileWriter(exportPath);
 				try {
-					resource.save(new URIConverter.WriteableOutputStream(
-							writer, TclCheckerConfigUtils.ENCODING), null);
+					resource.save(new URIConverter.WriteableOutputStream(writer, TclCheckerConfigUtils.ENCODING), null);
 				} finally {
 					try {
 						writer.close();
@@ -872,16 +816,14 @@ public class TclCheckerPreferenceBlock extends AbstractOptionsBlock {
 					}
 				}
 			} catch (IOException e) {
-				ErrorDialog.openError(getShell(),
-						Messages.TclChecker_export_ErrorTitle, e.getMessage(),
-						new Status(IStatus.ERROR, TclCheckerPlugin.PLUGIN_ID, e
-								.getMessage(), e));
+				ErrorDialog.openError(getShell(), Messages.TclChecker_export_ErrorTitle, e.getMessage(),
+						new Status(IStatus.ERROR, TclCheckerPlugin.PLUGIN_ID, e.getMessage(), e));
 			}
 		}
 	}
 
 	protected Object[] getConfigsOf(final ValidatorInstance instance) {
-		final List<Object> children = new ArrayList<Object>();
+		final List<Object> children = new ArrayList<>();
 		children.addAll(instance.getValidatorConfigs());
 		final List<CheckerConfig> configs = collectConfigurations();
 		for (CheckerConfig config : configs) {

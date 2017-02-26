@@ -1,11 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2007 IBM Corporation and others.
+ * Copyright (c) 2005, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- 
  *******************************************************************************/
 package org.eclipse.dltk.tcl.internal.tclchecker.ui.preferences;
 
@@ -15,8 +14,6 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.dltk.compiler.util.Util;
 import org.eclipse.dltk.core.environment.IEnvironment;
 import org.eclipse.dltk.core.environment.IFileHandle;
-import org.eclipse.dltk.internal.ui.wizards.dialogfields.DialogField;
-import org.eclipse.dltk.internal.ui.wizards.dialogfields.IDialogFieldListener;
 import org.eclipse.dltk.internal.ui.wizards.dialogfields.StringDialogField;
 import org.eclipse.dltk.ui.dialogs.StatusInfo;
 import org.eclipse.dltk.ui.util.PixelConverter;
@@ -42,9 +39,7 @@ public class PathDialog extends StatusDialog {
 		setShellStyle(getShellStyle() | SWT.RESIZE);
 	}
 
-	/**
-	 * @see Windows#configureShell
-	 */
+	@Override
 	protected void configureShell(Shell newShell) {
 		super.configureShell(newShell);
 		// PlatformUI.getWorkbench().getHelpSystem().setHelp(newShell,
@@ -57,24 +52,19 @@ public class PathDialog extends StatusDialog {
 	}
 
 	protected void createFieldListeners() {
-		fPath.setDialogFieldListener(new IDialogFieldListener() {
-			public void dialogFieldChanged(DialogField field) {
-				updateStatus(validate());
-			}
-		});
+		fPath.setDialogFieldListener(field -> updateStatus(validate()));
 	}
 
+	@Override
 	protected Control createDialogArea(Composite ancestor) {
 		createDialogFields();
 		Composite parent = (Composite) super.createDialogArea(ancestor);
 		((GridLayout) parent.getLayout()).numColumns = 3;
 
 		fPath.doFillIntoGrid(parent, 3);
-		final GridData pathGridData = (GridData) fPath.getTextControl(null)
-				.getLayoutData();
+		final GridData pathGridData = (GridData) fPath.getTextControl(null).getLayoutData();
 		pathGridData.grabExcessHorizontalSpace = true;
-		pathGridData.widthHint = new PixelConverter(ancestor)
-				.convertWidthInCharsToPixels(64);
+		pathGridData.widthHint = new PixelConverter(ancestor).convertWidthInCharsToPixels(64);
 
 		initializeFields();
 		createFieldListeners();
@@ -82,6 +72,7 @@ public class PathDialog extends StatusDialog {
 		return parent;
 	}
 
+	@Override
 	public void create() {
 		super.create();
 		fPath.setFocus();
@@ -98,14 +89,11 @@ public class PathDialog extends StatusDialog {
 		if (path.isEmpty()) {
 			info.setError(Messages.PathDialog_error_EmptyPath);
 		} else if (this.environment != null) {
-			IFileHandle file = PlatformFileUtils
-					.findAbsoluteOrEclipseRelativeFile(this.environment, path);
+			IFileHandle file = PlatformFileUtils.findAbsoluteOrEclipseRelativeFile(this.environment, path);
 			if (!file.exists()) {
-				info
-						.setError(Messages.PathDialog_error_FileNotExists);
+				info.setError(Messages.PathDialog_error_FileNotExists);
 			} else if (!file.isDirectory()) {
-				info
-						.setError(Messages.PathDialog_error_NotDirectory);
+				info.setError(Messages.PathDialog_error_NotDirectory);
 			}
 		}
 		return info;
@@ -114,10 +102,11 @@ public class PathDialog extends StatusDialog {
 	/**
 	 * Updates the status of the ok button to reflect the given status.
 	 * Subclasses may override this method to update additional buttons.
-	 * 
+	 *
 	 * @param status
 	 *            the status.
 	 */
+	@Override
 	protected void updateButtonsEnableState(IStatus status) {
 		Button ok = getButton(IDialogConstants.OK_ID);
 		if (ok != null && !ok.isDisposed())
@@ -126,7 +115,7 @@ public class PathDialog extends StatusDialog {
 
 	/**
 	 * Returns the name of the section that this dialog stores its settings in
-	 * 
+	 *
 	 * @return String
 	 */
 	protected String getDialogSettingsSectionName() {

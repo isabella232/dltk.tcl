@@ -1,13 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2007 IBM Corporation and others.
+ * Copyright (c) 2005, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- 
  *******************************************************************************/
-
 package org.eclipse.dltk.tcl.parser.perfomance.tests;
 
 import java.io.BufferedReader;
@@ -20,10 +18,7 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import junit.framework.TestCase;
-
 import org.eclipse.dltk.ast.declarations.ModuleDeclaration;
-import org.eclipse.dltk.ast.parser.ISourceParserConstants;
 import org.eclipse.dltk.compiler.env.ModuleSource;
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.SourceParserUtil;
@@ -33,8 +28,11 @@ import org.eclipse.dltk.tcl.core.TclNature;
 import org.eclipse.dltk.tcl.core.tests.model.Activator;
 import org.eclipse.dltk.tcl.internal.core.search.mixin.TclMixinBuildVisitor;
 import org.eclipse.dltk.tcl.internal.core.search.mixin.TclMixinParser;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
-public class PeromanceTest0 extends TestCase {
+public class PeromanceTest0 {
 	ZipFile scriptsZip = null;
 	private final static String[] scripts = new String[] { "append.tcl",
 			"appendComp.tcl", "assocd.tcl", "async.tcl", "autoMkindex.tcl",
@@ -95,15 +93,15 @@ public class PeromanceTest0 extends TestCase {
 		return result.toString();
 	}
 
-	protected void setUp() throws Exception {
-		super.setUp();
+	@Before
+	public void setUp() throws Exception {
 		this.scriptsZip = new ZipFile(AbstractModelTests.storeToMetadata(
 				Activator.getDefault().getBundle(), "tcl_scripts.zip",
 				"/scripts/scripts.zip"));
 	}
 
-	protected void tearDown() throws Exception {
-		super.tearDown();
+	@After
+	public void tearDown() throws Exception {
 		if (this.scriptsZip != null) {
 			removeIfExist(this.scriptsZip.getName());
 		}
@@ -116,19 +114,16 @@ public class PeromanceTest0 extends TestCase {
 		}
 	}
 
+	@Test
 	public void testPerfomance001() throws Exception {
 		if (this.scriptsZip == null) {
 			throw new IOException("Scripts not pressent...");
 		}
 		long start = System.currentTimeMillis();
-		final List elements = new ArrayList();
+		final List<IMixinRequestor.ElementInfo> elements = new ArrayList<>();
 
 		TclMixinParser parser = new TclMixinParser();
-		IMixinRequestor requestor = new IMixinRequestor() {
-			public void reportElement(ElementInfo info) {
-				elements.add(info);
-			}
-		};
+		IMixinRequestor requestor = info -> elements.add(info);
 		for (int number = 0; number < scripts.length; number++) {
 			String script = scripts[number];
 			InputStream input = null;

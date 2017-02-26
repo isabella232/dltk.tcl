@@ -1,25 +1,24 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2007 IBM Corporation and others.
+ * Copyright (c) 2005, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
-
  *******************************************************************************/
 package org.eclipse.dltk.tcl.core.tests.model;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-
 import org.eclipse.dltk.core.CompletionProposal;
 import org.eclipse.dltk.core.CompletionRequestor;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.core.tests.model.AbstractModelCompletionTests;
+
+import junit.framework.Test;
+import junit.framework.TestCase;
 
 public class PACompletionTests extends AbstractModelCompletionTests {
 
@@ -29,12 +28,14 @@ public class PACompletionTests extends AbstractModelCompletionTests {
 		super(Activator.PLUGIN_ID, name);
 	}
 
+	@Override
 	public void setUpSuite() throws Exception {
 		this.PROJECT = this.setUpScriptProject(PROJECT_NAME);
 		super.setUpSuite();
 		waitUntilIndexesReady();
 	}
 
+	@Override
 	public void tearDownSuite() throws Exception {
 		super.tearDownSuite();
 		deleteProject(PROJECT_NAME);
@@ -46,8 +47,9 @@ public class PACompletionTests extends AbstractModelCompletionTests {
 
 	private void testDo(String expected, String module, String pattern,
 			String project) throws ModelException {
-		final List proposals = new ArrayList();
+		final List<CompletionProposal> proposals = new ArrayList<>();
 		CompletionRequestor requestor = new CompletionRequestor() {
+			@Override
 			public void accept(CompletionProposal proposal) {
 				proposals.add(proposal);
 			}
@@ -60,9 +62,9 @@ public class PACompletionTests extends AbstractModelCompletionTests {
 				+ completeBehind.length();
 		cu.codeComplete(cursorLocation, requestor);
 		TestCase.assertEquals(1, proposals.size());
-		CompletionProposal proposal = (CompletionProposal) proposals.get(0);
-		TestCase.assertEquals(expected, proposal.getModelElement()
-				.getHandleIdentifier());
+		CompletionProposal proposal = proposals.get(0);
+		TestCase.assertEquals(expected,
+				proposal.getModelElement().getHandleIdentifier());
 	}
 
 	public void testCompletion001() throws ModelException {

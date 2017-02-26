@@ -1,11 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2007 IBM Corporation and others.
+ * Copyright (c) 2005, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- 
  *******************************************************************************/
 package org.eclipse.dltk.tcl.core.tests.model;
 
@@ -24,8 +23,8 @@ import org.eclipse.dltk.core.search.SearchEngine;
 import org.eclipse.dltk.core.tests.model.AbstractDLTKSearchTests;
 import org.eclipse.dltk.core.tests.util.StringList;
 
-public class SearchTests extends AbstractDLTKSearchTests implements
-		IDLTKSearchConstants {
+public class SearchTests extends AbstractDLTKSearchTests
+		implements IDLTKSearchConstants {
 	private static final String TCLSEARCH = "PROJ_TCLSearch";
 	private static final String TCLSEARCH2 = "PROJ_TCLSearch2";
 
@@ -37,11 +36,13 @@ public class SearchTests extends AbstractDLTKSearchTests implements
 		return new Suite(SearchTests.class);
 	}
 
+	@Override
 	public void setUpSuite() throws Exception {
 		super.setUpSuite();
 		up();
 	}
 
+	@Override
 	public void tearDownSuite() throws Exception {
 		deleteProject(TCLSEARCH);
 		deleteProject(TCLSEARCH2);
@@ -73,8 +74,8 @@ public class SearchTests extends AbstractDLTKSearchTests implements
 
 	public void testNamespaceDeclaration02() throws Exception {
 		up();
-		IScriptFolder pkg = this.getScriptFolder(TCLSEARCH, "src", new Path(
-				"p1"));
+		IScriptFolder pkg = this.getScriptFolder(TCLSEARCH, "src",
+				new Path("p1"));
 		IDLTKSearchScope scope = SearchEngine.createSearchScope(pkg);
 		search("Y", TYPE, DECLARATIONS, scope);
 		assertSearchResults("src/p1/test.tcl p1/Y", this.resultCollector);
@@ -130,8 +131,8 @@ public class SearchTests extends AbstractDLTKSearchTests implements
 
 	public void testNamespaceDeclaration09() throws Exception {
 		up();
-		IType type = getSourceModule(TCLSEARCH, "src", "p4/t.tcl").getType(
-				"alfa");
+		IType type = getSourceModule(TCLSEARCH, "src", "p4/t.tcl")
+				.getType("alfa");
 		search(type, DECLARATIONS, getSearchScope(TCLSEARCH));
 		assertSearchResults("src/p4/t.tcl p4/alfa", resultCollector);
 	}
@@ -141,25 +142,22 @@ public class SearchTests extends AbstractDLTKSearchTests implements
 		IDLTKSearchScope scope = SearchEngine
 				.createSearchScope(getScriptProject(TCLSEARCH));
 		search("*", METHOD, DECLARATIONS, scope);
-		assertSearchResults(
-				"src/X.tcl  X$a()\n"
-						+ "src/p/X.tcl  p/X$foo()\n"
-						+ "src/p1/test.tcl  p1/Y$foo()\n"
-						+ "src/p2/X.tcl  p2/X$foo()\n"
-						+ "src/p2/X.tcl  p2/Y$foo()\n"
-						+ "src/p3/X.tcl  p3/X$src_p3_X_X_function(arg1, arg2, arg3)\n"
-						+ "src/p3/X.tcl  p3/X$foo()\n"
-						+ "src/p3/X.tcl  p3/X$T1$src_p3_X_X_T1_function(arg1, arg2, arg3)\n"
-						+ "src/p3/X.tcl  p3/X$T1$T1$src_p3_X_X_T1_T1_function(arg1, arg2, arg3)\n"
-						+ "src/p3/X.tcl  p3/Y$src_p3_X_Y_function(arg1, arg2, arg3)\n"
-						+ "src/p3/X.tcl  p3/Y$foo()\n"
-						+ "src/p3/X.tcl  p3/Y$T2$T3$T4$src_p3_X_Y_T2_T3_T4_function(arg1, arg2, arg3)\n"
-						+ "src/p3/X.tcl  p3/Z$foo()\n"
-						+ "src/p3/X.tcl  $src_p3_X_function(arg1, arg2, arg3)\n"
-						+ "src/p3/X.tcl  p3/global2$namespace2$function(arg1, arg2, arg3)\n"
-						+ "src/q5/AQ.tcl  q5/I$k(arg)\n"
-						+ "src/q5/AQ.tcl  q5/I2$k(arg)\n"
-						+ "src/q5/AQ.tcl  $m()", this.resultCollector);
+		assertSearchResults("src/X.tcl  X$a()\n" + "src/p/X.tcl  p/X$foo()\n"
+				+ "src/p1/test.tcl  p1/Y$foo()\n" + "src/p2/X.tcl  p2/X$foo()\n"
+				+ "src/p2/X.tcl  p2/Y$foo()\n"
+				+ "src/p3/X.tcl  p3/X$src_p3_X_X_function(arg1, arg2, arg3)\n"
+				+ "src/p3/X.tcl  p3/X$foo()\n"
+				+ "src/p3/X.tcl  p3/X$T1$src_p3_X_X_T1_function(arg1, arg2, arg3)\n"
+				+ "src/p3/X.tcl  p3/X$T1$T1$src_p3_X_X_T1_T1_function(arg1, arg2, arg3)\n"
+				+ "src/p3/X.tcl  p3/Y$src_p3_X_Y_function(arg1, arg2, arg3)\n"
+				+ "src/p3/X.tcl  p3/Y$foo()\n"
+				+ "src/p3/X.tcl  p3/Y$T2$T3$T4$src_p3_X_Y_T2_T3_T4_function(arg1, arg2, arg3)\n"
+				+ "src/p3/X.tcl  p3/Z$foo()\n"
+				+ "src/p3/X.tcl  $src_p3_X_function(arg1, arg2, arg3)\n"
+				+ "src/p3/X.tcl  p3/global2$namespace2$function(arg1, arg2, arg3)\n"
+				+ "src/q5/AQ.tcl  q5/I$k(arg)\n"
+				+ "src/q5/AQ.tcl  q5/I2$k(arg)\n" + "src/q5/AQ.tcl  $m()",
+				this.resultCollector);
 	}
 
 	/**
@@ -201,8 +199,10 @@ public class SearchTests extends AbstractDLTKSearchTests implements
 		IMethod method = type.getMethod("k");
 
 		search(method, REFERENCES, getSearchScope(TCLSEARCH));
-		assertSearchResults("src/q5/AQ.tcl q5/I\n" + "src/q5/AQ.tcl  $m()\n"
-				+ "src/q5/AQ.tcl\n" + "src/q5/AQ.tcl", this.resultCollector);
+		assertSearchResults(
+				"src/q5/AQ.tcl q5/I\n" + "src/q5/AQ.tcl  $m()\n"
+						+ "src/q5/AQ.tcl\n" + "src/q5/AQ.tcl",
+				this.resultCollector);
 	}
 
 	public void testMethodReference02() throws Exception {
@@ -212,8 +212,10 @@ public class SearchTests extends AbstractDLTKSearchTests implements
 				new Path("q5/AQ.tcl")).getMethod("m");
 
 		search(method, REFERENCES, getSearchScope(TCLSEARCH));
-		assertSearchResults("src/q5/AQ.tcl q5/I\n" + "src/q5/AQ.tcl q5/I2\n"
-				+ "src/q5/AQ.tcl\n" + "src/q5/AQ.tcl", this.resultCollector);
+		assertSearchResults(
+				"src/q5/AQ.tcl q5/I\n" + "src/q5/AQ.tcl q5/I2\n"
+						+ "src/q5/AQ.tcl\n" + "src/q5/AQ.tcl",
+				this.resultCollector);
 	}
 
 	public void testTypeReference01() throws Exception {
@@ -231,10 +233,9 @@ public class SearchTests extends AbstractDLTKSearchTests implements
 				.getType("I");
 
 		search(type, REFERENCES, getSearchScope(TCLSEARCH));
-		assertSearchResults(
-				"src/q5/AQ.tcl q5/I\n" + "src/q5/AQ.tcl q5/I2\n"
-						+ "src/q5/AQ.tcl  $m()\n" + "src/q5/AQ.tcl\n"
-						+ "src/q5/AQ.tcl", this.resultCollector);
+		assertSearchResults("src/q5/AQ.tcl q5/I\n" + "src/q5/AQ.tcl q5/I2\n"
+				+ "src/q5/AQ.tcl  $m()\n" + "src/q5/AQ.tcl\n" + "src/q5/AQ.tcl",
+				this.resultCollector);
 	}
 
 	public void testVariableDeclaration01() throws Exception {
@@ -248,8 +249,8 @@ public class SearchTests extends AbstractDLTKSearchTests implements
 
 	public void testVariableDeclaration02() throws Exception {
 		up();
-		ISourceModule module = getSourceModule(TCLSEARCH, "src", new Path(
-				"p3/X.tcl"));
+		ISourceModule module = getSourceModule(TCLSEARCH, "src",
+				new Path("p3/X.tcl"));
 
 		search("*", FIELD, DECLARATIONS, getSearchScope(TCLSEARCH));
 		assertSearchResults("src/p/X.tcl globalX\n"

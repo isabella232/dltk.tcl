@@ -1,21 +1,20 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2007 IBM Corporation and others.
+ * Copyright (c) 2005, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
-
  *******************************************************************************/
 package org.eclipse.dltk.tcl.core.tests.model;
-
-import junit.framework.Test;
-import junit.framework.TestCase;
 
 import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.core.tests.model.AbstractModelCompletionTests;
+
+import junit.framework.Test;
+import junit.framework.TestCase;
 
 public class PASelectionTests extends AbstractModelCompletionTests {
 
@@ -25,12 +24,14 @@ public class PASelectionTests extends AbstractModelCompletionTests {
 		super(Activator.PLUGIN_ID, name);
 	}
 
+	@Override
 	public void setUpSuite() throws Exception {
 		this.PROJECT = this.setUpScriptProject(PROJECT_NAME);
 		super.setUpSuite();
 		waitUntilIndexesReady();
 	}
 
+	@Override
 	public void tearDownSuite() throws Exception {
 		super.tearDownSuite();
 		deleteProject(PROJECT_NAME);
@@ -59,8 +60,8 @@ public class PASelectionTests extends AbstractModelCompletionTests {
 	}
 
 	public void testSelection001b() throws ModelException {
-		testDo("=PASelection/pkg1<{module0.tcl[pkgnamespace~myproc",
-				"test.tcl", "pkgnamespace::my", PROJECT_NAME);
+		testDo("=PASelection/pkg1<{module0.tcl[pkgnamespace~myproc", "test.tcl",
+				"pkgnamespace::my", PROJECT_NAME);
 	}
 
 	public void testSelection002() throws ModelException {

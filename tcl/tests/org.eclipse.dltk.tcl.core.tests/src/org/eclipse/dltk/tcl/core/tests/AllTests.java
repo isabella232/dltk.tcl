@@ -5,33 +5,22 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- 
+
  *******************************************************************************/
 package org.eclipse.dltk.tcl.core.tests;
-
-import junit.framework.Test;
-import junit.framework.TestSuite;
 
 import org.eclipse.dltk.tcl.core.tests.model.PACompletionTests;
 import org.eclipse.dltk.tcl.core.tests.model.PASelectionTests;
 import org.eclipse.dltk.tcl.parser.structure.SimpleStructureParserTests;
 import org.eclipse.dltk.tcl.parser.structure.StructureParserTests;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
+@RunWith(Suite.class)
+@Suite.SuiteClasses({ org.eclipse.dltk.tcl.core.tests.model.AllTests.class,
+		org.eclipse.dltk.tcl.parser.tests.AllTests.class,
+		PACompletionTests.class, PASelectionTests.class,
+		VariableResolverTests.class, TclContentDescriberTests.class,
+		SimpleStructureParserTests.class, StructureParserTests.class })
 public class AllTests {
-
-	public static Test suite() {
-		TestSuite suite = new TestSuite("org.eclipse.dltk.tcl.core.tests"); //$NON-NLS-1$
-		// $JUnit-BEGIN$
-		suite.addTest(org.eclipse.dltk.tcl.core.tests.model.AllTests.suite());
-		suite.addTest(org.eclipse.dltk.tcl.parser.tests.AllTests.suite());
-		suite.addTest(PACompletionTests.suite());
-		suite.addTest(PASelectionTests.suite());
-		suite.addTestSuite(VariableResolverTests.class);
-		suite.addTestSuite(TclContentDescriberTests.class);
-		suite.addTest(SimpleStructureParserTests.suite());
-		suite.addTest(StructureParserTests.suite());
-		// $JUnit-END$
-		return suite;
-	}
-
 }

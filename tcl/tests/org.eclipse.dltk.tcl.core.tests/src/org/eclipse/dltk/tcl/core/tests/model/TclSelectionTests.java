@@ -1,15 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2007 IBM Corporation and others.
+ * Copyright (c) 2005, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- 
  *******************************************************************************/
 package org.eclipse.dltk.tcl.core.tests.model;
-
-import junit.framework.Test;
 
 import org.eclipse.dltk.core.IField;
 import org.eclipse.dltk.core.IMethod;
@@ -17,6 +14,8 @@ import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.core.tests.model.AbstractModelCompletionTests;
+
+import junit.framework.Test;
 
 public class TclSelectionTests extends AbstractModelCompletionTests {
 
@@ -26,6 +25,7 @@ public class TclSelectionTests extends AbstractModelCompletionTests {
 		super(Activator.PLUGIN_ID, name);
 	}
 
+	@Override
 	public void setUpSuite() throws Exception {
 		PROJECT = setUpScriptProjectTo(SELECTION_PROJECT, "Selection");
 
@@ -33,6 +33,7 @@ public class TclSelectionTests extends AbstractModelCompletionTests {
 		waitUntilIndexesReady();
 	}
 
+	@Override
 	public void tearDownSuite() throws Exception {
 		deleteProject(SELECTION_PROJECT);
 		super.tearDownSuite();
@@ -206,8 +207,8 @@ public class TclSelectionTests extends AbstractModelCompletionTests {
 		IModelElement[] elements = cu.codeSelect(start, s.length());
 		assertNotNull(elements);
 		assertEquals(1, elements.length);
-		IMethod method = cu.getType("a").getType("f").getType("q").getMethod(
-				"faf_q");
+		IMethod method = cu.getType("a").getType("f").getType("q")
+				.getMethod("faf_q");
 		assertNotNull(method);
 		assertEquals(method, elements[0]);
 	}
@@ -226,8 +227,8 @@ public class TclSelectionTests extends AbstractModelCompletionTests {
 		IModelElement[] elements = cu.codeSelect(start, s.length());
 		assertNotNull(elements);
 		assertEquals(1, elements.length);
-		IMethod method = cu.getType("a").getType("f").getType("q").getMethod(
-				"fafq");
+		IMethod method = cu.getType("a").getType("f").getType("q")
+				.getMethod("fafq");
 		assertNotNull(method);
 		assertEquals(method, elements[0]);
 	}
@@ -687,8 +688,8 @@ public class TclSelectionTests extends AbstractModelCompletionTests {
 		String s = "puts $::a::f::q::vafq";
 		int i = 5;
 		IModelElement element = process028(cu, s, i, 0, s.length() - i);
-		IField field = cu.getType("a").getType("f").getType("q").getField(
-				"vafq");
+		IField field = cu.getType("a").getType("f").getType("q")
+				.getField("vafq");
 		assertEquals(field, element);
 	}
 
@@ -698,8 +699,8 @@ public class TclSelectionTests extends AbstractModelCompletionTests {
 		String s = "puts $::a::f::q::vafq2";
 		int i = 5;
 		IModelElement element = process028(cu, s, i, 0, s.length() - i);
-		IField field = cu.getType("a").getType("f").getType("q").getField(
-				"vafq2");
+		IField field = cu.getType("a").getType("f").getType("q")
+				.getField("vafq2");
 		assertEquals(field, element);
 	}
 
@@ -729,8 +730,8 @@ public class TclSelectionTests extends AbstractModelCompletionTests {
 		String s = "puts $::b::a::c::vca3";
 		int i = 5;
 		IModelElement element = process028(cu, s, i, 0, s.length() - i);
-		IField field = cu.getType("b").getType("a").getType("c").getField(
-				"vca3");
+		IField field = cu.getType("b").getType("a").getType("c")
+				.getField("vca3");
 		assertEquals(field, element);
 	}
 

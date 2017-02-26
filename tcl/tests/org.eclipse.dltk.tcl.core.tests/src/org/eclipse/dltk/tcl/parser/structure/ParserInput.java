@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2009 xored software, Inc.  
+ * Copyright (c) 2009, 2017 xored software, Inc. and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html  
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
  *     xored software, Inc. - initial API and Implementation (Alex Panchenko)
@@ -27,6 +27,7 @@ class ParserInput implements IModuleSource {
 		this.resource = resource;
 	}
 
+	@Override
 	public char[] getContentsAsCharArray() {
 		try {
 			final InputStream stream = resource.openConnection()
@@ -46,14 +47,17 @@ class ParserInput implements IModuleSource {
 		}
 	}
 
+	@Override
 	public IModelElement getModelElement() {
 		return null;
 	}
 
+	@Override
 	public String getSourceContents() {
 		return new String(getContentsAsCharArray());
 	}
 
+	@Override
 	public String getFileName() {
 		return resource.getPath();
 	}

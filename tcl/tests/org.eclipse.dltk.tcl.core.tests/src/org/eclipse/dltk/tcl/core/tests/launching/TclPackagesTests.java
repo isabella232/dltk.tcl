@@ -1,7 +1,5 @@
 package org.eclipse.dltk.tcl.core.tests.launching;
 
-import junit.framework.Test;
-
 import org.eclipse.core.runtime.Path;
 import org.eclipse.dltk.core.environment.EnvironmentManager;
 import org.eclipse.dltk.core.environment.IFileHandle;
@@ -11,6 +9,8 @@ import org.eclipse.dltk.launching.IInterpreterInstall;
 import org.eclipse.dltk.launching.IInterpreterInstallType;
 import org.eclipse.dltk.launching.ScriptRuntime;
 import org.eclipse.dltk.tcl.core.TclNature;
+
+import junit.framework.Test;
 
 public class TclPackagesTests extends AbstractModelTests {
 

@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2016 xored software, Inc and others.
+ * Copyright (c) 2009, 2017 xored software, Inc and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html  
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
  *     xored software, Inc. - initial API and Implementation (Alex Panchenko)
@@ -20,10 +20,6 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
 import org.eclipse.dltk.compiler.env.IModuleSource;
 import org.eclipse.dltk.compiler.util.Util;
 import org.eclipse.dltk.core.ISourceElementParser;
@@ -36,6 +32,10 @@ import org.eclipse.dltk.tcl.parser.structure.Collector.Tag;
 import org.eclipse.dltk.tcl.parser.tests.TestUtils;
 import org.eclipse.dltk.utils.TextUtils;
 import org.osgi.framework.Bundle;
+
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 public class StructureParserTests extends TestCase {
 
@@ -50,7 +50,7 @@ public class StructureParserTests extends TestCase {
 	 * @param collector
 	 */
 	private String dump(Collector collector) {
-		List<String> lines = new ArrayList<String>();
+		List<String> lines = new ArrayList<>();
 		final byte[] bytes = collector.getBytes();
 		final List<Tag> tags = collector.tags;
 		// lines.add(tags.toString());
@@ -130,13 +130,12 @@ public class StructureParserTests extends TestCase {
 	}
 
 	public static Test suite() {
-		return new StructureParserTests(null).createSuite(Activator
-				.getDefault().getBundle(), "/", "*.tcl");
+		return new StructureParserTests(null)
+				.createSuite(Activator.getDefault().getBundle(), "/", "*.tcl");
 	}
 
 	public Test createSuite(Bundle bundle, String path, String pattern) {
 		TestSuite suite = new TestSuite(getClass().getName());
-		@SuppressWarnings("unchecked")
 		Enumeration<URL> e = bundle.findEntries(path, pattern, true);
 		while (e.hasMoreElements()) {
 			URL url = e.nextElement();

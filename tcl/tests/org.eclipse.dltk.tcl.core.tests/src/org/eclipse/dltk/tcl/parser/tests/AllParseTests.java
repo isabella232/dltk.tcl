@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2007 IBM Corporation and others.
+ * Copyright (c) 2005, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,9 +15,6 @@ import java.net.URL;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
 import org.eclipse.dltk.ast.declarations.ModuleDeclaration;
 import org.eclipse.dltk.ast.parser.ISourceParser;
 import org.eclipse.dltk.compiler.env.ModuleSource;
@@ -32,6 +29,9 @@ import org.eclipse.dltk.tcl.parser.TclParser;
 import org.eclipse.dltk.tcl.parser.definitions.DefinitionManager;
 import org.eclipse.dltk.tcl.parser.definitions.NamespaceScopeProcessor;
 
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
+
 public class AllParseTests extends TestCase {
 
 	static final String CHARSET = "ISO-8859-1"; //$NON-NLS-1$
@@ -40,15 +40,15 @@ public class AllParseTests extends TestCase {
 
 	public static TestSuite suite() {
 		final TestSuite suite = new TestSuite(AllParseTests.class.getName());
-		final URL scripts = Activator.getDefault().getBundle().getEntry(
-				SCRIPTS_ZIP);
+		final URL scripts = Activator.getDefault().getBundle()
+				.getEntry(SCRIPTS_ZIP);
 		if (scripts == null) {
 			suite.addTest(new TestCase("error") { //$NON-NLS-1$
-						@Override
-						protected void runTest() throws Throwable {
-							fail(SCRIPTS_ZIP + " is not found"); //$NON-NLS-1$
-						}
-					});
+				@Override
+				protected void runTest() throws Throwable {
+					fail(SCRIPTS_ZIP + " is not found"); //$NON-NLS-1$
+				}
+			});
 		} else {
 			try {
 				final ZipInputStream zipInputStream = new ZipInputStream(
@@ -74,16 +74,16 @@ public class AllParseTests extends TestCase {
 					try {
 						zipInputStream.close();
 					} catch (IOException e) {
-						// 
+						//
 					}
 				}
 			} catch (final IOException e) {
 				suite.addTest(new TestCase("IOException") { //$NON-NLS-1$
-							@Override
-							protected void runTest() throws Throwable {
-								throw e;
-							}
-						});
+					@Override
+					protected void runTest() throws Throwable {
+						throw e;
+					}
+				});
 			}
 		}
 		return suite;
@@ -103,8 +103,8 @@ public class AllParseTests extends TestCase {
 		final ISourceParser parser = DLTKLanguageManager
 				.getSourceParser(TclNature.NATURE_ID);
 		long s1 = System.currentTimeMillis();
-		ModuleDeclaration module1 = (ModuleDeclaration) parser.parse(
-				new ModuleSource(content), collector);
+		ModuleDeclaration module1 = (ModuleDeclaration) parser
+				.parse(new ModuleSource(content), collector);
 		long e1 = System.currentTimeMillis();
 		// if (collector.hasErrors()) {
 		// fail(collector.getErrors().toString());

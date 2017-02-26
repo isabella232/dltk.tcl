@@ -2,16 +2,18 @@ package org.eclipse.dltk.tcl.parser.tests;
 
 import java.util.List;
 
-import junit.framework.TestCase;
-
 import org.eclipse.dltk.ast.ASTNode;
 import org.eclipse.dltk.ast.declarations.MethodDeclaration;
 import org.eclipse.dltk.ast.declarations.ModuleDeclaration;
 import org.eclipse.dltk.compiler.env.ModuleSource;
 import org.eclipse.dltk.tcl.internal.parser.NewTclSourceParser;
 import org.eclipse.dltk.tcl.internal.parser.TclSourceParser;
+import org.junit.Test;
 
-public class NewTclParserTests extends TestCase {
+import junit.framework.TestCase;
+
+public class NewTclParserTests {
+	@Test
 	public void test001() throws Exception {
 		String content = "proc alfa {     alfa {    beta } } {}";
 		TclSourceParser oldParser = new TclSourceParser();

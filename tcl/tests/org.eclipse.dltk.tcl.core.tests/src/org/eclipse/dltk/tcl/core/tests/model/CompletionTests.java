@@ -1,17 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2007 IBM Corporation and others.
+ * Copyright (c) 2005, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
-
  *******************************************************************************/
 package org.eclipse.dltk.tcl.core.tests.model;
 
 import java.util.Arrays;
-
-import junit.framework.Test;
 
 import org.eclipse.dltk.codeassist.RelevanceConstants;
 import org.eclipse.dltk.core.ISourceModule;
@@ -19,15 +16,19 @@ import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.core.tests.model.AbstractModelCompletionTests;
 import org.eclipse.dltk.core.tests.model.CompletionTestsRequestor;
 
+import junit.framework.Test;
+
 public class CompletionTests extends AbstractModelCompletionTests {
 
 	private static final int RELEVANCE = (RelevanceConstants.R_DEFAULT
-			+ RelevanceConstants.R_INTERESTING + RelevanceConstants.R_CASE + RelevanceConstants.R_NON_RESTRICTED);
+			+ RelevanceConstants.R_INTERESTING + RelevanceConstants.R_CASE
+			+ RelevanceConstants.R_NON_RESTRICTED);
 
 	public CompletionTests(String name) {
 		super(Activator.PLUGIN_ID, name);
 	}
 
+	@Override
 	public void setUpSuite() throws Exception {
 		this.PROJECT = this.setUpScriptProject("Completion");
 
@@ -36,6 +37,7 @@ public class CompletionTests extends AbstractModelCompletionTests {
 		// 0);
 	}
 
+	@Override
 	public void tearDownSuite() throws Exception {
 		super.tearDownSuite();
 		// InternalDLTKLanguageManager.setPrefferedPriority(TclNature.NATURE_ID,
@@ -82,7 +84,7 @@ public class CompletionTests extends AbstractModelCompletionTests {
 	 * Returns the location after the end of the line with the specified marker.
 	 * This function is needed to compensate platform difference in line
 	 * separators.
-	 * 
+	 *
 	 * @param str
 	 * @param marker
 	 * @return
@@ -135,8 +137,8 @@ public class CompletionTests extends AbstractModelCompletionTests {
 		cu.codeComplete(cursorLocation, requestor);
 
 		assertEquals(this.makeResult(new String[] { "package",
-				"package provide", "package require", "part" }), requestor
-				.getResults());
+				"package provide", "package require", "part" }),
+				requestor.getResults());
 
 	}
 
@@ -149,9 +151,10 @@ public class CompletionTests extends AbstractModelCompletionTests {
 		int cursorLocation = newLineAfter(str, "#2") + 10;
 		cu.codeComplete(cursorLocation, requestor);
 
-		assertEquals(this.makeResult(new String[] { "::a::c::fac()" },
-				new String[] { "::a::c::fac" }, new int[] { 18 }), requestor
-				.getResults());
+		assertEquals(
+				this.makeResult(new String[] { "::a::c::fac()" },
+						new String[] { "::a::c::fac" }, new int[] { 18 }),
+				requestor.getResults());
 	}
 
 	public void testCompletion004() throws ModelException {
@@ -163,10 +166,11 @@ public class CompletionTests extends AbstractModelCompletionTests {
 		int cursorLocation = newLineAfter(str, "#1") + 9;
 		cu.codeComplete(cursorLocation, requestor);
 
-		assertEquals(this.makeResult(new String[] { "::a::c::fac()",
-				"::a::c::fbac()", "::a::c::feac()" }, new String[] {
-				"::a::c::fac", "::a::c::fbac", "::a::c::feac" }, new int[] {
-				18, 18, 18 }), requestor.getResults());
+		assertEquals(this.makeResult(
+				new String[] { "::a::c::fac()", "::a::c::fbac()",
+						"::a::c::feac()" },
+				new String[] { "::a::c::fac", "::a::c::fbac", "::a::c::feac" },
+				new int[] { 18, 18, 18 }), requestor.getResults());
 
 	}
 
@@ -188,8 +192,8 @@ public class CompletionTests extends AbstractModelCompletionTests {
 		}
 		int[] relevance = new int[result1.length];
 		Arrays.fill(relevance, RELEVANCE);
-		assertEquals(this.makeResult(result1, result2, relevance), requestor
-				.getResults());
+		assertEquals(this.makeResult(result1, result2, relevance),
+				requestor.getResults());
 	}
 
 	public void testCompletion006() throws ModelException {
@@ -201,9 +205,10 @@ public class CompletionTests extends AbstractModelCompletionTests {
 		int cursorLocation = newLineAfter(str, "#4") + 7;
 		cu.codeComplete(cursorLocation, requestor);
 
-		assertEquals(this.makeResult(new String[] { "::b::fb()" },
-				new String[] { "::b::fb" }, new int[] { 22 }), requestor
-				.getResults());
+		assertEquals(
+				this.makeResult(new String[] { "::b::fb()" },
+						new String[] { "::b::fb" }, new int[] { 22 }),
+				requestor.getResults());
 
 	}
 
@@ -217,8 +222,8 @@ public class CompletionTests extends AbstractModelCompletionTests {
 		int cursorLocation = str.indexOf(s) + s.length();
 		cu.codeComplete(cursorLocation, requestor);
 
-		assertEquals(this.makeResult(new String[] { "$::x", "$x" }, new int[] {
-				18, 18 }), requestor.getResults());
+		assertEquals(this.makeResult(new String[] { "$::x", "$x" },
+				new int[] { 18, 18 }), requestor.getResults());
 
 	}
 
@@ -231,8 +236,8 @@ public class CompletionTests extends AbstractModelCompletionTests {
 		int cursorLocation = newLineAfter(str, "puts \"");
 		cu.codeComplete(cursorLocation, requestor);
 
-		assertEquals(this.makeResult(new String[] { "$::x", "$x" }, new int[] {
-				18, 18 }), requestor.getResults());
+		assertEquals(this.makeResult(new String[] { "$::x", "$x" },
+				new int[] { 18, 18 }), requestor.getResults());
 
 	}
 
@@ -245,8 +250,9 @@ public class CompletionTests extends AbstractModelCompletionTests {
 		int cursorLocation = newLineAfter(str, "#5") + 16;
 		cu.codeComplete(cursorLocation, requestor);
 
-		assertEquals(this.makeResult(new String[] { "::a::c::fac()" },
-				new String[] { "::a::c::fac" }, new int[] { 18 }), requestor
-				.getResults());
+		assertEquals(
+				this.makeResult(new String[] { "::a::c::fac()" },
+						new String[] { "::a::c::fac" }, new int[] { 18 }),
+				requestor.getResults());
 	}
 }

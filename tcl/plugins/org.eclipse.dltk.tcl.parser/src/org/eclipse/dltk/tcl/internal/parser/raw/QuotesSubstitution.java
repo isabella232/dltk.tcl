@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2008 xored software, Inc.  
+ * Copyright (c) 2008, 2017 xored software, Inc. and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html  
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
  *     xored software, Inc. - initial API and Implementation (Andrei Sobolev)
@@ -14,10 +14,10 @@ package org.eclipse.dltk.tcl.internal.parser.raw;
 import java.util.ArrayList;
 import java.util.List;
 
-public class QuotesSubstitution extends TclElement implements ISubstitution,
-		IWordSubstitution {
+public class QuotesSubstitution extends TclElement
+		implements ISubstitution, IWordSubstitution {
 
-	private final List<Object> contents = new ArrayList<Object>();
+	private final List<Object> contents = new ArrayList<>();
 
 	public List<Object> getContents() {
 		return contents;
@@ -32,6 +32,7 @@ public class QuotesSubstitution extends TclElement implements ISubstitution,
 		return (c == '"');
 	}
 
+	@Override
 	public boolean readMe(ICodeScanner input, SimpleTclParser parser)
 			throws TclParseException {
 		if (!iAm(input))
@@ -49,8 +50,8 @@ public class QuotesSubstitution extends TclElement implements ISubstitution,
 				int c = input.read();
 				if (c == ICodeScanner.EOF) {
 					parser.handleError(new ErrorDescription(
-							Messages.QuotesSubstitution_1, getStart(), input
-									.getPosition(), ErrorDescription.ERROR));
+							Messages.QuotesSubstitution_1, getStart(),
+							input.getPosition(), ErrorDescription.ERROR));
 					break;
 				}
 				if (c == '"') {

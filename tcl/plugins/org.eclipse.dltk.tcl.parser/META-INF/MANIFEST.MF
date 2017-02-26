@@ -6,7 +6,7 @@ Bundle-Version: 5.7.1.qualifier
 Bundle-ClassPath: .
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.eclipse.dltk.tcl.ast,
  org.eclipse.dltk.tcl.ast.impl,
  org.eclipse.dltk.tcl.ast.util,

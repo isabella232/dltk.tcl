@@ -1,18 +1,18 @@
 /*******************************************************************************
- * Copyright (c) 2008 xored software, Inc.  
+ * Copyright (c) 2008, 2017 xored software, Inc. and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html  
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
  *     xored software, Inc. - initial API and Implementation (Andrei Sobolev)
  *******************************************************************************/
 package org.eclipse.dltk.tcl.internal.parser.raw;
 
-public class BracesSubstitution extends TclElement implements ISubstitution,
-		IWordSubstitution {
+public class BracesSubstitution extends TclElement
+		implements ISubstitution, IWordSubstitution {
 
 	public static boolean iAm(ICodeScanner scanner) {
 		int c = scanner.read();
@@ -22,6 +22,7 @@ public class BracesSubstitution extends TclElement implements ISubstitution,
 		return (c == '{');
 	}
 
+	@Override
 	public boolean readMe(ICodeScanner input, SimpleTclParser parser)
 			throws TclParseException {
 		if (!iAm(input))
@@ -34,8 +35,8 @@ public class BracesSubstitution extends TclElement implements ISubstitution,
 			c = input.read();
 			if (c == ICodeScanner.EOF) {
 				parser.handleError(new ErrorDescription(
-						Messages.BracesSubstitution_Error, getStart(), input
-								.getPosition(), ErrorDescription.ERROR));
+						Messages.BracesSubstitution_Error, getStart(),
+						input.getPosition(), ErrorDescription.ERROR));
 				break;
 			}
 			if (c == '\\') {

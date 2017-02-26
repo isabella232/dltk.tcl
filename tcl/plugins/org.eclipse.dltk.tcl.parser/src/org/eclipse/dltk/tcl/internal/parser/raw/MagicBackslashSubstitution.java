@@ -1,18 +1,18 @@
 /*******************************************************************************
- * Copyright (c) 2008 xored software, Inc.  
+ * Copyright (c) 2008, 2017 xored software, Inc. and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html  
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
  *     xored software, Inc. - initial API and Implementation (Andrei Sobolev)
  *******************************************************************************/
 package org.eclipse.dltk.tcl.internal.parser.raw;
 
-public class MagicBackslashSubstitution extends TclElement implements
-		ISubstitution {
+public class MagicBackslashSubstitution extends TclElement
+		implements ISubstitution {
 
 	public static boolean iAm(ICodeScanner input) {
 		int c = input.read();
@@ -27,6 +27,7 @@ public class MagicBackslashSubstitution extends TclElement implements
 		return nl;
 	}
 
+	@Override
 	public boolean readMe(ICodeScanner input, SimpleTclParser parser)
 			throws TclParseException {
 		if (!iAm(input))

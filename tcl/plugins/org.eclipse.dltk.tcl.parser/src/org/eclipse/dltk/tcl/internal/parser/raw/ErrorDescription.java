@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2008 xored software, Inc.  
+ * Copyright (c) 2008, 2017 xored software, Inc. and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html  
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
  *     xored software, Inc. - initial API and Implementation (Andrei Sobolev)
@@ -26,6 +26,7 @@ public class ErrorDescription {
 		this.position = pos;
 		this.kind = knd;
 	}
+
 	public ErrorDescription(String msg, int pos, int end, int knd) {
 		this.message = msg;
 		this.position = pos;
@@ -44,13 +45,15 @@ public class ErrorDescription {
 	protected int getPosition() {
 		return position;
 	}
+
 	protected int getEnd() {
-		if(end == -1) {
+		if (end == -1) {
 			return position;
 		}
 		return end;
 	}
 
+	@Override
 	public String toString() {
 		return getMessage() + " at " + getPosition(); //$NON-NLS-1$
 	}

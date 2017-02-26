@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2008 xored software, Inc.  
+ * Copyright (c) 2008, 2017 xored software, Inc. and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html  
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
  *     xored software, Inc. - initial API and Implementation (Andrei Sobolev)
@@ -17,9 +17,9 @@ import java.util.List;
 
 /**
  * Tcl word is a list of text pieces and substitutions.
- * 
+ *
  * @author fourdman
- * 
+ *
  */
 public class TclWord extends TclElement {
 
@@ -27,11 +27,11 @@ public class TclWord extends TclElement {
 	private int len = -1;
 
 	TclWord() {
-		this.contents = new ArrayList<Object>();
+		this.contents = new ArrayList<>();
 	}
 
 	TclWord(List<Object> contents) {
-		this.contents = new ArrayList<Object>(contents);
+		this.contents = new ArrayList<>(contents);
 	}
 
 	public void add(String text) {
@@ -81,6 +81,7 @@ public class TclWord extends TclElement {
 		return len;
 	}
 
+	@Override
 	public String toString() {
 		return "TclWord" + contents; //$NON-NLS-1$
 	}

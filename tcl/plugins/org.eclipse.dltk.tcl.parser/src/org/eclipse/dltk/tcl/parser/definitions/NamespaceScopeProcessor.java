@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2008 xored software, Inc.  
+ * Copyright (c) 2008, 2017 xored software, Inc. and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html  
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
  *     xored software, Inc. - initial API and Implementation (Andrei Sobolev)
@@ -31,15 +31,15 @@ public class NamespaceScopeProcessor implements IScopeProcessor {
 	/**
 	 * Set of all available scopes
 	 */
-	private Set<Scope> scopes = new HashSet<Scope>();
+	private Set<Scope> scopes = new HashSet<>();
 	/**
 	 * Namespac'ed "command" to command map.
 	 */
-	private Map<String, Set<Command>> commands = new HashMap<String, Set<Command>>();
+	private Map<String, Set<Command>> commands = new HashMap<>();
 	/**
 	 * Parsing command stack.
 	 */
-	private Stack<TclCommand> commandStack = new Stack<TclCommand>();
+	private Stack<TclCommand> commandStack = new Stack<>();
 
 	public NamespaceScopeProcessor() {
 	}
@@ -79,13 +79,14 @@ public class NamespaceScopeProcessor implements IScopeProcessor {
 			}
 			Set<Command> commands = this.commands.get(key);
 			if (commands == null) {
-				commands = new HashSet<Command>();
+				commands = new HashSet<>();
 			}
 			commands.add(command);
 			this.commands.put(key, commands);
 		}
 	}
 
+	@Override
 	public Command[] getCommandDefinition(String command) {
 		if (command.startsWith("::")) {
 			// This is top level command
@@ -95,8 +96,8 @@ public class NamespaceScopeProcessor implements IScopeProcessor {
 		// Else try to look for namespace command.
 		String[] namespacePrefix = calculatePrefixes(this.commandStack);
 		for (int i = namespacePrefix.length; i >= 1; i--) {
-			Command[] cmnd = this.getCommandsByName(namespacePrefix[i - 1]
-					+ command);
+			Command[] cmnd = this
+					.getCommandsByName(namespacePrefix[i - 1] + command);
 			if (cmnd != null && cmnd.length > 0) {
 				return cmnd;
 			}
@@ -117,12 +118,13 @@ public class NamespaceScopeProcessor implements IScopeProcessor {
 
 	private String[] calculatePrefixes(Stack<TclCommand> commands) {
 		StringBuffer buffer = new StringBuffer();
-		List<String> results = new ArrayList<String>();
+		List<String> results = new ArrayList<>();
 		results.add("");// Module root
 		for (int i = 0; i < commands.size(); i++) {
 			TclCommand command = commands.get(i);
 			Command definition = command.getDefinition();
-			if (definition != null && definition.getName().equals("namespace")) {
+			if (definition != null
+					&& definition.getName().equals("namespace")) {
 				String name = BuiltinCommandUtils.getNamespaceEvalName(command,
 						definition);
 				if (name != null) {
@@ -140,21 +142,24 @@ public class NamespaceScopeProcessor implements IScopeProcessor {
 		return results.toArray(new String[results.size()]);
 	}
 
+	@Override
 	public void processCommand(TclCommand command) {
 		commandStack.push(command);
 	}
 
+	@Override
 	public void endProcessCommand() {
 		commandStack.pop();
 	}
 
 	public NamespaceScopeProcessor copy() {
 		NamespaceScopeProcessor processor = new NamespaceScopeProcessor();
-		processor.commands = new HashMap<String, Set<Command>>(this.commands);
-		processor.scopes = new HashSet<Scope>(this.scopes);
+		processor.commands = new HashMap<>(this.commands);
+		processor.scopes = new HashSet<>(this.scopes);
 		return processor;
 	}
 
+	@Override
 	public String getQualifiedName(String command) {
 		if (command.startsWith("::")) {
 			// This is top level command
@@ -177,12 +182,13 @@ public class NamespaceScopeProcessor implements IScopeProcessor {
 		return result;
 	}
 
+	@Override
 	public ISubstitutionManager getSubstitutionManager() {
 		return null;
 	}
 
 	public Command[] getCommands() {
-		List<Command> commands = new ArrayList<Command>();
+		List<Command> commands = new ArrayList<>();
 		Collection<Set<Command>> values = this.commands.values();
 		for (Set<Command> set : values) {
 			commands.addAll(set);
@@ -190,6 +196,7 @@ public class NamespaceScopeProcessor implements IScopeProcessor {
 		return commands.toArray(new Command[commands.size()]);
 	}
 
+	@Override
 	public boolean checkCommandScope(Command command) {
 		List<Command> scopes = command.getScope();
 		if (scopes == null || scopes.size() == 0)

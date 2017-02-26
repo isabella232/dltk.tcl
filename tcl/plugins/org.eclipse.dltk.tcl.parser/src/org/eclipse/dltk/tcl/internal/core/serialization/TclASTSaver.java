@@ -5,7 +5,6 @@ import java.io.OutputStream;
 
 import org.eclipse.dltk.compiler.problem.DefaultProblemIdentifier;
 import org.eclipse.dltk.compiler.problem.IProblem;
-import org.eclipse.dltk.compiler.problem.IProblemReporter;
 import org.eclipse.dltk.compiler.problem.ProblemCollector;
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.caching.AbstractDataSaver;
@@ -80,22 +79,14 @@ public class TclASTSaver extends AbstractDataSaver implements ITclASTConstants {
 		if (collector != null) {
 			int size = collector.getErrors().size();
 			out.writeInt(size);
-			collector.copyTo(new IProblemReporter() {
-
-				public Object getAdapter(Class adapter) {
-					return null;
-				}
-
-				public void reportProblem(IProblem problem) {
-					try {
-						saveProblem(problem);
-					} catch (IOException e) {
-						if (DLTKCore.DEBUG) {
-							e.printStackTrace();
-						}
+			collector.copyTo(problem -> {
+				try {
+					saveProblem(problem);
+				} catch (IOException e) {
+					if (DLTKCore.DEBUG) {
+						e.printStackTrace();
 					}
 				}
-
 			});
 		} else {
 			out.writeInt(0);

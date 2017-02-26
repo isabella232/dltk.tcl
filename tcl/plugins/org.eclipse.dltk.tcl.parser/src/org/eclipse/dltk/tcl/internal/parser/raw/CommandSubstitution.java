@@ -1,17 +1,15 @@
 /*******************************************************************************
- * Copyright (c) 2008 xored software, Inc.  
+ * Copyright (c) 2008, 2017 xored software, Inc. and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html  
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
  *     xored software, Inc. - initial API and Implementation (Andrei Sobolev)
  *******************************************************************************/
 package org.eclipse.dltk.tcl.internal.parser.raw;
-
-import org.eclipse.dltk.tcl.internal.parser.raw.SimpleTclParser.IEOFHandler;
 
 public class CommandSubstitution extends TclElement implements ISubstitution {
 
@@ -29,19 +27,17 @@ public class CommandSubstitution extends TclElement implements ISubstitution {
 		return (c == '[');
 	}
 
-	public boolean readMe(final ICodeScanner input, final SimpleTclParser parser)
-			throws TclParseException {
+	@Override
+	public boolean readMe(final ICodeScanner input,
+			final SimpleTclParser parser) throws TclParseException {
 		if (!iAm(input))
 			return false;
 		setStart(input.getPosition());
 		input.read();
-		this.script = parser.parse(input, true, new IEOFHandler() {
-			public void handle() {
-				parser.handleError(new ErrorDescription(
-						Messages.CommandSubstitution_0, getStart(), input
-								.getPosition(), ErrorDescription.ERROR));
-			}
-		});
+		this.script = parser.parse(input, true,
+				() -> parser.handleError(new ErrorDescription(
+						Messages.CommandSubstitution_0, getStart(),
+						input.getPosition(), ErrorDescription.ERROR)));
 		setEnd(input.getPosition() - (input.isEOF() ? 0 : 1));
 		return true;
 	}

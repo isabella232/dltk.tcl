@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2008 xored software, Inc.  
+ * Copyright (c) 2008, 2017 xored software, Inc. and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html  
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
  *     xored software, Inc. - initial API and Implementation (Andrei Sobolev)
@@ -20,8 +20,9 @@ import org.eclipse.dltk.compiler.problem.ProblemSeverity;
 import org.eclipse.dltk.core.builder.ISourceLineTracker;
 
 public class TclErrorCollector implements ITclErrorReporter {
-	private Set<TclError> errors = new HashSet<TclError>();
+	private Set<TclError> errors = new HashSet<>();
 
+	@Override
 	public void report(int code, String message, String[] extraMessage,
 			int start, int end, ProblemSeverity kind) {
 		boolean insertNewError = true;
@@ -76,27 +77,19 @@ public class TclErrorCollector implements ITclErrorReporter {
 	public void reportAll(ITclErrorReporter reporter) {
 		if (reporter != null) {
 			for (TclError error : this.errors) {
-				reporter.report(error.getCode(), error.getMessage(), error
-						.getExtraArguments(), error.getStart(), error.getEnd(),
-						error.getErrorKind());
+				reporter.report(error.getCode(), error.getMessage(),
+						error.getExtraArguments(), error.getStart(),
+						error.getEnd(), error.getErrorKind());
 			}
 		}
 	}
 
 	public void reportAll(final IProblemReporter reporter,
 			final ISourceLineTracker tracker) {
-		reportAll(new ITclErrorReporter() {
-			public void report(int code, String message, String[] extraMessage,
-					int start, int end, ProblemSeverity kind) {
-				reporter
-						.reportProblem(new DefaultProblem(
-								message,
-								code,
-								extraMessage,
-								kind, start,
-								end, tracker.getLineNumberOfOffset(start)));
-			}
-		});
+		reportAll((code, message, extraMessage, start, end,
+				kind) -> reporter.reportProblem(new DefaultProblem(message,
+						code, extraMessage, kind, start, end,
+						tracker.getLineNumberOfOffset(start))));
 	}
 
 	public int getCount() {

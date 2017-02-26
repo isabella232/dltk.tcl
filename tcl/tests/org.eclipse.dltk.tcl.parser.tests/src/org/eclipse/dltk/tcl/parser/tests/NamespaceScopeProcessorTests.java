@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2008 xored software, Inc.  
+ * Copyright (c) 2008, 2017 xored software, Inc. and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html  
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
  *     xored software, Inc. - initial API and Implementation (Andrei Sobolev)
@@ -12,11 +12,12 @@
 
 package org.eclipse.dltk.tcl.parser.tests;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-
-import junit.framework.TestCase;
 
 import org.eclipse.dltk.tcl.ast.StringArgument;
 import org.eclipse.dltk.tcl.ast.TclArgument;
@@ -35,8 +36,9 @@ import org.eclipse.dltk.tcl.parser.TclVisitor;
 import org.eclipse.dltk.tcl.parser.definitions.DefinitionLoader;
 import org.eclipse.dltk.tcl.parser.definitions.NamespaceScopeProcessor;
 import org.eclipse.dltk.tcl.parser.internal.tests.Activator;
+import org.junit.Test;
 
-public class NamespaceScopeProcessorTests extends TestCase {
+public class NamespaceScopeProcessorTests {
 
 	private Namespace createNamespace(DefinitionsFactory factory, Scope scope,
 			String name) {
@@ -81,7 +83,7 @@ public class NamespaceScopeProcessorTests extends TestCase {
 		return command;
 	}
 
-	
+	@Test
 	public void test001() throws Exception {
 		DefinitionsFactory factory = DefinitionsFactory.eINSTANCE;
 
@@ -107,7 +109,7 @@ public class NamespaceScopeProcessorTests extends TestCase {
 		TclParser parser = TestUtils.createParser();
 		TestTclParserErrorReporter reporter = new TestTclParserErrorReporter();
 		List<TclCommand> module = parser.parse(content, reporter, processor);
-		final List<Command> alfaDefinitions = new ArrayList<Command>();
+		final List<Command> alfaDefinitions = new ArrayList<>();
 		TclParserUtils.traverse(module, new TclVisitor() {
 			@Override
 			public boolean visit(TclCommand cmnd) {
@@ -124,37 +126,36 @@ public class NamespaceScopeProcessorTests extends TestCase {
 				return true;
 			}
 		});
-		TestCase.assertEquals(7, alfaDefinitions.size());
+		assertEquals(7, alfaDefinitions.size());
 		for (int i = 0; i < alfaDefinitions.size(); i++) {
-			TestCase.assertNotNull(alfaDefinitions.get(i));
+			assertNotNull(alfaDefinitions.get(i));
 		}
-		TestCase.assertEquals(c, alfaDefinitions.get(0));
-		TestCase.assertEquals(aC, alfaDefinitions.get(1));
-		TestCase.assertEquals(bC, alfaDefinitions.get(2));
-		TestCase.assertEquals(cC, alfaDefinitions.get(3));
-		TestCase.assertEquals(dC, alfaDefinitions.get(4));
-		TestCase.assertEquals(c, alfaDefinitions.get(5));
-		TestCase.assertEquals(c, alfaDefinitions.get(6));
+		assertEquals(c, alfaDefinitions.get(0));
+		assertEquals(aC, alfaDefinitions.get(1));
+		assertEquals(bC, alfaDefinitions.get(2));
+		assertEquals(cC, alfaDefinitions.get(3));
+		assertEquals(dC, alfaDefinitions.get(4));
+		assertEquals(c, alfaDefinitions.get(5));
+		assertEquals(c, alfaDefinitions.get(6));
 	}
 
-	
+	@Test
 	public void test002() throws Exception {
 		String content = TestUtils.getContents(Activator.getDefault()
 				.getBundle().getEntry("/scripts/namespace002.tcl"));
 		NamespaceScopeProcessor processor = new NamespaceScopeProcessor();
-		Scope scope = DefinitionLoader
-				.loadDefinitions(new URL(
-						"platform:///plugin/org.eclipse.dltk.tcl.tcllib/definitions/builtin.xml"));
-		TestCase.assertNotNull(scope);
+		Scope scope = DefinitionLoader.loadDefinitions(new URL(
+				"platform:///plugin/org.eclipse.dltk.tcl.tcllib/definitions/builtin.xml"));
+		assertNotNull(scope);
 		processor.addScope(scope);
 		Command[] patternsDefs = processor
 				.getCommandDefinition("platform::patterns");
-		TestCase.assertEquals(1, patternsDefs.length);
+		assertEquals(1, patternsDefs.length);
 		Command pattern = patternsDefs[0];
 		TclParser parser = TestUtils.createParser();
 		TestTclParserErrorReporter reporter = new TestTclParserErrorReporter();
 		List<TclCommand> module = parser.parse(content, reporter, processor);
-		final List<Command> definitions = new ArrayList<Command>();
+		final List<Command> definitions = new ArrayList<>();
 		TclParserUtils.traverse(module, new TclVisitor() {
 			@Override
 			public boolean visit(TclCommand cmnd) {
@@ -172,10 +173,10 @@ public class NamespaceScopeProcessorTests extends TestCase {
 				return true;
 			}
 		});
-		TestCase.assertEquals(22, definitions.size());
+		assertEquals(22, definitions.size());
 		for (int i = 0; i < definitions.size(); i++) {
-			TestCase.assertNotNull(definitions.get(i));
-			TestCase.assertEquals(pattern, definitions.get(i));
+			assertNotNull(definitions.get(i));
+			assertEquals(pattern, definitions.get(i));
 		}
 	}
 }

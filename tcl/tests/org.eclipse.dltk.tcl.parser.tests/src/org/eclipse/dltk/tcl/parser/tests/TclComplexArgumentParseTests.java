@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2008 xored software, Inc.  
+ * Copyright (c) 2008, 2017 xored software, Inc. and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html  
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
  *     xored software, Inc. - initial API and Implementation (Andrei Sobolev)
@@ -12,9 +12,9 @@
 
 package org.eclipse.dltk.tcl.parser.tests;
 
-import java.util.List;
+import static org.junit.Assert.assertEquals;
 
-import junit.framework.TestCase;
+import java.util.List;
 
 import org.eclipse.dltk.tcl.ast.Script;
 import org.eclipse.dltk.tcl.ast.TclCommand;
@@ -28,8 +28,9 @@ import org.eclipse.dltk.tcl.parser.TclErrorCollector;
 import org.eclipse.dltk.tcl.parser.TclParser;
 import org.eclipse.dltk.tcl.parser.TclParserUtils;
 import org.eclipse.dltk.tcl.parser.TclVisitor;
+import org.junit.Test;
 
-public class TclComplexArgumentParseTests extends TestCase {
+public class TclComplexArgumentParseTests {
 	public Command createConstantsCommand() throws Exception {
 		DefinitionsFactory factory = DefinitionsFactory.eINSTANCE;
 
@@ -66,37 +67,37 @@ public class TclComplexArgumentParseTests extends TestCase {
 		return command;
 	}
 
-	
+	@Test
 	public void test001() throws Exception {
 		String source = "constants";
 		constantsCheck(source, 1, 0);
 	}
 
-	
+	@Test
 	public void test002() throws Exception {
 		String source = "constants {a {set a 20}} ";
 		constantsCheck(source, 0, 1);
 	}
 
-	
+	@Test
 	public void test003() throws Exception {
 		String source = "constants {a {set a 20}} {a {set a 20}}";
 		constantsCheck(source, 0, 2);
 	}
 
-	
+	@Test
 	public void test004() throws Exception {
 		String source = "constants {} {a {set a 20}}";
 		constantsCheck(source, 0, 1);
 	}
 
-	
+	@Test
 	public void test005() throws Exception {
 		String source = "constants {a {set a 20} b {set a 20} c {set a 20}} {a {set a 20}}";
 		constantsCheck(source, 0, 4);
 	}
 
-	
+	@Test
 	public void test006() throws Exception {
 		String source = "constants {\n" + "a {\n" + "	set a 20\n" + "}\n"
 				+ "b {\n" + "	set a 20\n" + "}\n" + "c {\n" + "	set a 20\n"
@@ -111,7 +112,7 @@ public class TclComplexArgumentParseTests extends TestCase {
 		TclErrorCollector errors = new TclErrorCollector();
 		manager.add(createConstantsCommand());
 		List<TclCommand> module = parser.parse(source, errors, manager);
-		TestCase.assertEquals(1, module.size());
+		assertEquals(1, module.size());
 		if (errors.getCount() > 0) {
 			TestUtils.outErrors(source, errors);
 		}
@@ -123,7 +124,7 @@ public class TclComplexArgumentParseTests extends TestCase {
 				return true;
 			}
 		});
-		TestCase.assertEquals(errs, errors.getCount());
-		TestCase.assertEquals(codeBlocks, scripts[0]);
+		assertEquals(errs, errors.getCount());
+		assertEquals(codeBlocks, scripts[0]);
 	}
 }

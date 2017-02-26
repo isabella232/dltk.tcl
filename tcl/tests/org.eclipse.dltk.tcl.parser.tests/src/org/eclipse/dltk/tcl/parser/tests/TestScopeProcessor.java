@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2008 xored software, Inc.  
+ * Copyright (c) 2008, 2017 xored software, Inc. and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html  
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
  *     xored software, Inc. - initial API and Implementation (Andrei Sobolev)
@@ -25,8 +25,9 @@ import org.eclipse.dltk.tcl.parser.definitions.IScopeProcessor;
 import org.eclipse.emf.common.util.EList;
 
 public class TestScopeProcessor implements IScopeProcessor {
-	private Map<String, Object> commands = new HashMap<String, Object>();
+	private Map<String, Object> commands = new HashMap<>();
 
+	@Override
 	public Command[] getCommandDefinition(String command) {
 		Object cmd = commands.get(command);
 		if (cmd != null && cmd instanceof Command) {
@@ -51,7 +52,7 @@ public class TestScopeProcessor implements IScopeProcessor {
 			Command command = (Command) scope;
 			String key = command.getName();
 			if (this.commands.containsKey(key)) {
-				List<Command> commands = new ArrayList<Command>();
+				List<Command> commands = new ArrayList<>();
 				commands.add(command);
 				Object o = this.commands.get(key);
 				if (o instanceof Command) {
@@ -66,20 +67,25 @@ public class TestScopeProcessor implements IScopeProcessor {
 		}
 	}
 
+	@Override
 	public void endProcessCommand() {
 	}
 
+	@Override
 	public void processCommand(TclCommand command) {
 	}
 
+	@Override
 	public String getQualifiedName(String commandValue) {
 		return commandValue;
 	}
 
+	@Override
 	public ISubstitutionManager getSubstitutionManager() {
 		return null;
 	}
 
+	@Override
 	public boolean checkCommandScope(Command command) {
 		return true;
 	}

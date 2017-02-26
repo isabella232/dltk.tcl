@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2008 xored software, Inc.  
+ * Copyright (c) 2008, 2017 xored software, Inc. and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html  
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
  *     xored software, Inc. - initial API and Implementation (Andrei Sobolev)
@@ -12,45 +12,45 @@
 
 package org.eclipse.dltk.tcl.parser.tests;
 
-import java.net.URL;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
-import junit.framework.TestCase;
+import java.net.URL;
 
 import org.eclipse.dltk.tcl.definitions.Command;
 import org.eclipse.dltk.tcl.definitions.Scope;
 import org.eclipse.dltk.tcl.parser.definitions.DefinitionLoader;
 import org.eclipse.dltk.tcl.parser.internal.tests.Activator;
+import org.junit.Test;
 
-public class LoadDefinitionTests extends TestCase {
-
-	
+public class LoadDefinitionTests {
+	@Test
 	public void testLoad001() throws Exception {
 		TestScopeProcessor processor = new TestScopeProcessor();
-		Scope scope = DefinitionLoader
-				.loadDefinitions(new URL(
-						"platform:///plugin/org.eclipse.dltk.tcl.parser.tests/definitions/test0.xml"));
-		TestCase.assertNotNull(scope);
+		Scope scope = DefinitionLoader.loadDefinitions(new URL(
+				"platform:///plugin/org.eclipse.dltk.tcl.parser.tests/definitions/test0.xml"));
+		assertNotNull(scope);
 		processor.add(scope);
 		Command[] setCommand = processor.getCommandDefinition("set");
-		TestCase.assertNotNull(setCommand[0]);
-		TestCase.assertEquals("set", setCommand[0].getName());
+		assertNotNull(setCommand[0]);
+		assertEquals("set", setCommand[0].getName());
 		Command[] unsetCommand = processor.getCommandDefinition("unset");
-		TestCase.assertNotNull(unsetCommand[0]);
-		TestCase.assertEquals("unset", unsetCommand[0].getName());
+		assertNotNull(unsetCommand[0]);
+		assertEquals("unset", unsetCommand[0].getName());
 	}
 
-	
+	@Test
 	public void testLoad002() throws Exception {
 		TestScopeProcessor processor = new TestScopeProcessor();
 		Scope scope = DefinitionLoader.loadDefinitions(Activator.getDefault()
 				.getBundle().getEntry("/definitions/test0.xml"));
-		TestCase.assertNotNull(scope);
+		assertNotNull(scope);
 		processor.add(scope);
 		Command[] setCommand = processor.getCommandDefinition("set");
-		TestCase.assertNotNull(setCommand);
-		TestCase.assertEquals("set", setCommand[0].getName());
+		assertNotNull(setCommand);
+		assertEquals("set", setCommand[0].getName());
 		Command[] unsetCommand = processor.getCommandDefinition("unset");
-		TestCase.assertNotNull(unsetCommand);
-		TestCase.assertEquals("unset", unsetCommand[0].getName());
+		assertNotNull(unsetCommand);
+		assertEquals("unset", unsetCommand[0].getName());
 	}
 }

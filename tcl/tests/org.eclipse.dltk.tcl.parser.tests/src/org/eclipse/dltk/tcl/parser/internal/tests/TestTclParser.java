@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2010 xored software, Inc.  
+ * Copyright (c) 2010, 2017 xored software, Inc. and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html  
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
  *     xored software, Inc. - initial API and Implementation (Alex Panchenko)
@@ -12,8 +12,6 @@
 package org.eclipse.dltk.tcl.parser.internal.tests;
 
 import java.util.List;
-
-import junit.framework.Assert;
 
 import org.eclipse.dltk.tcl.ast.Script;
 import org.eclipse.dltk.tcl.ast.StringArgument;
@@ -25,6 +23,7 @@ import org.eclipse.dltk.tcl.parser.TclParser;
 import org.eclipse.dltk.tcl.parser.TclParserUtils;
 import org.eclipse.dltk.tcl.parser.TclVisitor;
 import org.eclipse.dltk.tcl.parser.definitions.IScopeProcessor;
+import org.junit.Assert;
 
 public class TestTclParser extends TclParser {
 
@@ -90,8 +89,8 @@ public class TestTclParser extends TclParser {
 
 			@Override
 			public boolean visit(StringArgument arg) {
-				final String expected = content.substring(arg.getStart()
-						- offset, arg.getEnd() - offset);
+				final String expected = content.substring(
+						arg.getStart() - offset, arg.getEnd() - offset);
 				if (!expected.equals(arg.getRawValue()))
 					Assert.assertEquals(expected, arg.getRawValue());
 				return super.visit(arg);

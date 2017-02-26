@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2008 xored software, Inc.  
+ * Copyright (c) 2008, 2017 xored software, Inc. and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html  
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
  *     xored software, Inc. - initial API and Implementation (Andrei Sobolev)
@@ -12,9 +12,9 @@
 
 package org.eclipse.dltk.tcl.parser.tests;
 
-import java.util.List;
+import static org.junit.Assert.assertEquals;
 
-import junit.framework.TestCase;
+import java.util.List;
 
 import org.eclipse.dltk.tcl.ast.Script;
 import org.eclipse.dltk.tcl.ast.TclArgument;
@@ -26,8 +26,9 @@ import org.eclipse.dltk.tcl.definitions.TypedArgument;
 import org.eclipse.dltk.tcl.parser.TclErrorCollector;
 import org.eclipse.dltk.tcl.parser.TclParser;
 import org.eclipse.emf.common.util.EList;
+import org.junit.Test;
 
-public class SetCommandParseTests extends TestCase {
+public class SetCommandParseTests {
 	public Command createConstantsCommand() throws Exception {
 		DefinitionsFactory factory = DefinitionsFactory.eINSTANCE;
 
@@ -53,36 +54,37 @@ public class SetCommandParseTests extends TestCase {
 		return command;
 	}
 
-	
+	@Test
 	public void test001() throws Exception {
 		String source = "set var value";
 		typedCheck(source, 0, 0);
 	}
 
-	
+	@Test
 	public void test002() throws Exception {
 		String source = "set var";
 		typedCheck(source, 0, 0);
 	}
 
-	
+	@Test
 	public void test003() throws Exception {
 		String source = "set var value value";
 		typedCheck(source, 1, 0);
 	}
 
 	/*
-	 *  public void test004() throws Exception { String source =
+	 * public void test004() throws Exception { String source =
 	 * "set {var} value"; typedCheck(source, 1, 1); }
 	 */
 
-	private void typedCheck(String source, int errs, int code) throws Exception {
+	private void typedCheck(String source, int errs, int code)
+			throws Exception {
 		TclParser parser = TestUtils.createParser();
 		TestScopeProcessor manager = new TestScopeProcessor();
 		TclErrorCollector errors = new TclErrorCollector();
 		manager.add(createConstantsCommand());
 		List<TclCommand> module = parser.parse(source, errors, manager);
-		TestCase.assertEquals(1, module.size());
+		assertEquals(1, module.size());
 		TclCommand tclCommand = module.get(0);
 		EList<TclArgument> arguments = tclCommand.getArguments();
 		int scripts = 0;
@@ -94,7 +96,7 @@ public class SetCommandParseTests extends TestCase {
 		if (errors.getCount() > 0) {
 			TestUtils.outErrors(source, errors);
 		}
-		TestCase.assertEquals(code, scripts);
-		TestCase.assertEquals(errs, errors.getCount());
+		assertEquals(code, scripts);
+		assertEquals(errs, errors.getCount());
 	}
 }

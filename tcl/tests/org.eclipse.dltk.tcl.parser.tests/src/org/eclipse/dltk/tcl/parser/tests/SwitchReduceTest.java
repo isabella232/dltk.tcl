@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2008 xored software, Inc.  
+ * Copyright (c) 2008, 2017 xored software, Inc. and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html  
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
  *     xored software, Inc. - initial API and Implementation (Andrei Sobolev)
@@ -12,10 +12,10 @@
 
 package org.eclipse.dltk.tcl.parser.tests;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import junit.framework.TestCase;
 
 import org.eclipse.dltk.tcl.definitions.ArgumentType;
 import org.eclipse.dltk.tcl.definitions.Command;
@@ -27,8 +27,10 @@ import org.eclipse.dltk.tcl.parser.PerformanceMonitor;
 import org.eclipse.dltk.tcl.parser.definitions.DefinitionManager;
 import org.eclipse.dltk.tcl.parser.definitions.DefinitionUtils;
 import org.eclipse.dltk.tcl.parser.definitions.NamespaceScopeProcessor;
+import org.junit.Before;
+import org.junit.Test;
 
-public class SwitchReduceTest extends TestCase {
+public class SwitchReduceTest {
 	public Command createCommand001() throws Exception {
 		DefinitionsFactory factory = DefinitionsFactory.eINSTANCE;
 
@@ -121,22 +123,24 @@ public class SwitchReduceTest extends TestCase {
 		return command;
 	}
 
+	@Test
 	public void testReplaceSwitch001() throws Exception {
 		System.out.println("TEST:"
 				+ Thread.currentThread().getStackTrace()[1].getMethodName());
 		Command[] commands = DefinitionUtils.reduceSwitches(createCommand001());
-		TestCase.assertEquals(4, commands.length);
+		assertEquals(4, commands.length);
 		for (int i = 0; i < commands.length; i++) {
 			System.out.println("#" + i + ":"
 					+ DefinitionUtils.convertToString(commands[i]));
 		}
 	}
 
+	@Test
 	public void testReplaceSwitch002() throws Exception {
 		System.out.println("TEST:"
 				+ Thread.currentThread().getStackTrace()[1].getMethodName());
 		Command[] commands = DefinitionUtils.reduceSwitches(createCommand002());
-		TestCase.assertEquals(2, commands.length);
+		assertEquals(2, commands.length);
 		for (int i = 0; i < commands.length; i++) {
 			System.out.println("#" + i + ":"
 					+ DefinitionUtils.convertToString(commands[i]));
@@ -145,10 +149,12 @@ public class SwitchReduceTest extends TestCase {
 
 	NamespaceScopeProcessor processor;
 
+	@Before
 	public void setUp() throws Exception {
 		processor = DefinitionManager.getInstance().createProcessor();
 	}
 
+	@Test
 	public void testReplaceSwitch004() throws Exception {
 		System.out.println("TEST:"
 				+ Thread.currentThread().getStackTrace()[1].getMethodName());
@@ -157,13 +163,13 @@ public class SwitchReduceTest extends TestCase {
 		for (int i = 0; i < commands.length; i++) {
 			System.out.println("#ORIGINAL:" + i + ":"
 					+ DefinitionUtils.convertToString(commands[i]));
-			Map<String, Object> options = new HashMap<String, Object>();
+			Map<String, Object> options = new HashMap<>();
 			options.put(DefinitionUtils.GENERATE_VARIANTS, true);
 			Command[] rc = DefinitionUtils.reduceSwitches(commands[i], options);
 			if (rc.length > 1) {
 				for (int j = 0; j < rc.length; j++) {
-					System.out.println(DefinitionUtils.convertToString(rc[j],
-							true));
+					System.out.println(
+							DefinitionUtils.convertToString(rc[j], true));
 				}
 			}
 		}

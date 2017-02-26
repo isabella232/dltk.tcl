@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2008 xored software, Inc.  
+ * Copyright (c) 2008 xored software, Inc.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html  
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
  *     xored software, Inc. - initial API and Implementation (Andrei Sobolev)
@@ -25,7 +25,6 @@ import java.util.zip.ZipInputStream;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.dltk.compiler.problem.ProblemSeverity;
 import org.eclipse.dltk.tcl.parser.ITclErrorReporter;
 import org.eclipse.dltk.tcl.parser.TclErrorCollector;
 import org.eclipse.dltk.tcl.parser.TclParser;
@@ -80,27 +79,19 @@ public class TestUtils {
 		}
 	}
 
-	public static void outErrors(final String source, TclErrorCollector errors) {
+	public static void outErrors(final String source,
+			TclErrorCollector errors) {
 		System.out.println("-----------------ERRORS----------------------\n");
 		final CodeModel model = new CodeModel(source);
-		errors.reportAll(new ITclErrorReporter() {
-			public void report(int code, String message, String[] extraMessage,
-					int start, int end, ProblemSeverity kind) {
-				System.out.println((kind == ITclErrorReporter.ERROR ? "Error:"
-						: "Warning/Info:")
-						+ code
-						+ " ("
-						+ start
-						+ ","
-						+ end
-						+ ") message:"
-						+ message);
-				int line = model.getLineNumber(start, end);
-				int[] bounds = model.getBounds(line - 1);
-				String prefix = source.substring(bounds[0], bounds[1]);
-				System.out.println(prefix);
-				outBlock(start - bounds[0], end - bounds[0]);
-			}
+		errors.reportAll((code, message, extraMessage, start, end, kind) -> {
+			System.out.println((kind == ITclErrorReporter.ERROR ? "Error:"
+					: "Warning/Info:") + code + " (" + start + "," + end
+					+ ") message:" + message);
+			int line = model.getLineNumber(start, end);
+			int[] bounds = model.getBounds(line - 1);
+			String prefix = source.substring(bounds[0], bounds[1]);
+			System.out.println(prefix);
+			outBlock(start - bounds[0], end - bounds[0]);
 		});
 		System.out.println("=============================================");
 	}
@@ -146,8 +137,8 @@ public class TestUtils {
 	public static void exractZipInto(String location, URL entry,
 			String[] skipFiles) throws IOException, CoreException {
 		InputStream openStream = entry.openStream();
-		ZipInputStream zis = new ZipInputStream(new BufferedInputStream(
-				openStream, 4096));
+		ZipInputStream zis = new ZipInputStream(
+				new BufferedInputStream(openStream, 4096));
 		File root = new File(location);
 		root.mkdirs();
 		while (true) {
@@ -166,14 +157,13 @@ public class TestUtils {
 						zis.closeEntry();
 						continue;
 					}
-					FileOutputStream fileOutput = new FileOutputStream(
-							new File(new Path(location).append(name)
-									.toOSString()));
+					FileOutputStream fileOutput = new FileOutputStream(new File(
+							new Path(location).append(name).toOSString()));
 
 					byte[] buf = new byte[1024];
 					int len;
-					OutputStream arrayOut = new BufferedOutputStream(
-							fileOutput, 4096);
+					OutputStream arrayOut = new BufferedOutputStream(fileOutput,
+							4096);
 					while ((len = zis.read(buf)) > 0) {
 						arrayOut.write(buf, 0, len);
 					}
@@ -190,8 +180,8 @@ public class TestUtils {
 	public static void exractFilesInto(String location, URL entry,
 			String[] skipFiles) throws IOException, CoreException {
 		InputStream openStream = entry.openStream();
-		ZipInputStream zis = new ZipInputStream(new BufferedInputStream(
-				openStream, 4096));
+		ZipInputStream zis = new ZipInputStream(
+				new BufferedInputStream(openStream, 4096));
 		File root = new File(location);
 		root.mkdirs();
 		while (true) {
@@ -209,13 +199,12 @@ public class TestUtils {
 						zis.closeEntry();
 						continue;
 					}
-					FileOutputStream fileOutput = new FileOutputStream(
-							new File(new Path(location).append(name)
-									.toOSString()));
+					FileOutputStream fileOutput = new FileOutputStream(new File(
+							new Path(location).append(name).toOSString()));
 					byte[] buf = new byte[1024];
 					int len;
-					OutputStream arrayOut = new BufferedOutputStream(
-							fileOutput, 4096);
+					OutputStream arrayOut = new BufferedOutputStream(fileOutput,
+							4096);
 					while ((len = zis.read(buf)) > 0) {
 						arrayOut.write(buf, 0, len);
 					}

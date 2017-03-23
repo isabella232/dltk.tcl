@@ -24,11 +24,12 @@ import org.eclipse.emf.common.util.EList;
 
 public class TclSwitchCommandProcessor extends AbstractTclCommandProcessor {
 
+	@Override
 	public ASTNode process(TclStatement statement, ITclParser parser,
 			ASTNode parent) {
 
-		TclSwitchStatement switchStatement = new TclSwitchStatement(statement
-				.sourceStart(), statement.sourceEnd());
+		TclSwitchStatement switchStatement = new TclSwitchStatement(
+				statement.sourceStart(), statement.sourceEnd());
 		this.addToParent(parent, switchStatement);
 		int patternsStart = -1;
 		for (int i = 1; i < statement.getCount(); i++) {
@@ -77,7 +78,7 @@ public class TclSwitchCommandProcessor extends AbstractTclCommandProcessor {
 							} else if (st instanceof TclStatement) {
 								TclStatement stt = (TclStatement) st;
 								for (int i = 0; i < stt.getCount(); i++) {
-									ASTNode sttt = (ASTNode) stt.getAt(i);
+									ASTNode sttt = stt.getAt(i);
 									if (sttt instanceof TclBlockExpression) {
 										parserBlockAddTo(parser,
 												switchStatement,
@@ -88,8 +89,8 @@ public class TclSwitchCommandProcessor extends AbstractTclCommandProcessor {
 						}
 					}
 				} else {
-					final Block bll = new Block(at.sourceStart(), at
-							.sourceEnd());
+					final Block bll = new Block(at.sourceStart(),
+							at.sourceEnd());
 					switchStatement.acceptBlock(bll);
 					final NewTclSourceParser newParser = (NewTclSourceParser) parser;
 					if (processedArgument instanceof TclArgumentList) {

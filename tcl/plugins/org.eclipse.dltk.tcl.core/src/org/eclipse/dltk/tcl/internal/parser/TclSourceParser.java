@@ -17,13 +17,13 @@ import org.eclipse.dltk.core.builder.ISourceLineTracker;
 import org.eclipse.dltk.tcl.ast.TclStatement;
 import org.eclipse.dltk.tcl.ast.expressions.TclExecuteExpression;
 import org.eclipse.dltk.tcl.core.ITclCommandDetector;
+import org.eclipse.dltk.tcl.core.ITclCommandDetector.CommandInfo;
 import org.eclipse.dltk.tcl.core.ITclCommandDetectorExtension;
 import org.eclipse.dltk.tcl.core.ITclCommandProcessor;
 import org.eclipse.dltk.tcl.core.ITclParser;
 import org.eclipse.dltk.tcl.core.ITclSourceParser;
 import org.eclipse.dltk.tcl.core.TclParseUtil;
 import org.eclipse.dltk.tcl.core.TclPlugin;
-import org.eclipse.dltk.tcl.core.ITclCommandDetector.CommandInfo;
 import org.eclipse.dltk.tcl.core.ast.TclAdvancedExecuteExpression;
 import org.eclipse.dltk.tcl.internal.parser.ext.CommandManager;
 import org.eclipse.dltk.tcl.internal.parser.raw.SimpleTclParser;
@@ -35,8 +35,9 @@ import org.eclipse.dltk.utils.TextUtils;
 /**
  * @deprecated
  */
-public class TclSourceParser extends AbstractSourceParser implements
-		ITclSourceParser, ITclParser, ISourceParserExtension {
+@Deprecated
+public class TclSourceParser extends AbstractSourceParser
+		implements ITclSourceParser, ITclParser, ISourceParserExtension {
 	private IProblemReporter problemReporter;
 	protected ISourceLineTracker codeModel;
 	protected String content;
@@ -48,6 +49,7 @@ public class TclSourceParser extends AbstractSourceParser implements
 
 	private ModuleDeclaration moduleDeclaration;
 
+	@Override
 	public ModuleDeclaration parse(IModuleSource input,
 			IProblemReporter reporter) {
 		initDetectors();
@@ -69,6 +71,7 @@ public class TclSourceParser extends AbstractSourceParser implements
 	}
 
 	private ITclCommandProcessor localProcessor = new ITclCommandProcessor() {
+		@Override
 		public ASTNode process(TclStatement st, ITclParser parser,
 				ASTNode parent) {
 			if (parent != null) {
@@ -79,17 +82,19 @@ public class TclSourceParser extends AbstractSourceParser implements
 			return st;
 		}
 
+		@Override
 		public void setCurrentASTTree(ModuleDeclaration module) {
 		}
 
+		@Override
 		public void setDetectedParameter(Object parameter) {
 		}
 	};
 	private ITclCommandDetector[] detectors;
 
 	private void convertExecuteToBlocks(TclStatement st) {
-		ASTNode[] nodes = (ASTNode[]) st.getExpressions().toArray(
-				new ASTNode[st.getCount()]);
+		ASTNode[] nodes = st.getExpressions()
+				.toArray(new ASTNode[st.getCount()]);
 		for (int i = 0; i < nodes.length; i++) {
 			if (nodes[i] instanceof TclExecuteExpression) {
 
@@ -102,14 +107,16 @@ public class TclSourceParser extends AbstractSourceParser implements
 							nodes[i].sourceStart(), nodes[i].sourceEnd());
 					nodes[i] = newExpr;
 					st.setExpressions(Arrays.asList(nodes));
-					parse(expression, nodes[i].sourceStart() + 1
-							- getStartPos(), newExpr);
+					parse(expression,
+							nodes[i].sourceStart() + 1 - getStartPos(),
+							newExpr);
 				}
 			}
 		}
 		st.setExpressions(Arrays.asList(nodes));
 	}
 
+	@Override
 	public void parse(String content, int offset, ASTNode decl) {
 		initDetectors();
 		TclScript script = null;
@@ -128,8 +135,8 @@ public class TclSourceParser extends AbstractSourceParser implements
 		for (Iterator iter = commands.iterator(); iter.hasNext();) {
 			TclCommand command = (TclCommand) iter.next();
 			// Command handling
-			TclStatement st = TclParseUtil.convertToAST(command, this
-					.getFileName(), offset, this.content, this.startPos);
+			TclStatement st = TclParseUtil.convertToAST(command,
+					this.getFileName(), offset, this.content, this.startPos);
 			if (st == null) {
 				continue; // could be null on errors in source code
 			}
@@ -182,7 +189,8 @@ public class TclSourceParser extends AbstractSourceParser implements
 						}
 						if (detectors[i] instanceof ITclCommandDetectorExtension) {
 							((ITclCommandDetectorExtension) detectors[i])
-									.setBuildRuntimeModelFlag(isBuildingRuntimeModel());
+									.setBuildRuntimeModelFlag(
+											isBuildingRuntimeModel());
 						}
 						CommandInfo commandName = detectors[i].detectCommand(
 								command, this.moduleDeclaration, decl);
@@ -190,8 +198,8 @@ public class TclSourceParser extends AbstractSourceParser implements
 							processor = CommandManager.getInstance()
 									.getProcessor(commandName.commandName);
 							if (processor != null) {
-								processor
-										.setDetectedParameter(commandName.parameter);
+								processor.setDetectedParameter(
+										commandName.parameter);
 							}
 							break;
 						}
@@ -206,6 +214,7 @@ public class TclSourceParser extends AbstractSourceParser implements
 		return this.localProcessor;
 	}
 
+	@Override
 	public ISourceLineTracker getCodeModel() {
 		return this.codeModel;
 	}
@@ -219,8 +228,8 @@ public class TclSourceParser extends AbstractSourceParser implements
 			return "";
 		}
 		try {
-			return this.content.substring(start - this.startPos, end
-					- this.startPos);
+			return this.content.substring(start - this.startPos,
+					end - this.startPos);
 		} catch (IndexOutOfBoundsException e) {
 			if (DLTKCore.DEBUG) {
 				e.printStackTrace();
@@ -229,26 +238,32 @@ public class TclSourceParser extends AbstractSourceParser implements
 		return "####error####";
 	}
 
+	@Override
 	public IProblemReporter getProblemReporter() {
 		return this.problemReporter;
 	}
 
+	@Override
 	public String getFileName() {
 		return this.fileName;
 	}
 
+	@Override
 	public void setOffset(int offset) {
 		this.startPos = offset;
 	}
 
+	@Override
 	public int getStartPos() {
 		return this.startPos;
 	}
 
+	@Override
 	public void setProcessorsState(boolean state) {
 		this.useProcessors = state;
 	}
 
+	@Override
 	public void setFlags(int flags) {
 		this.flags = flags;
 	}

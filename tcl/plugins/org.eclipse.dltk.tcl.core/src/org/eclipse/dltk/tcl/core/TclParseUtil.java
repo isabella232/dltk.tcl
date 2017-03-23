@@ -143,10 +143,10 @@ public class TclParseUtil {
 		return null;
 	}
 
-	public static TclStatement convertToAST(TclCommand command,
-			String filename, int offset, String content, int startPos) {
+	public static TclStatement convertToAST(TclCommand command, String filename,
+			int offset, String content, int startPos) {
 		try {
-			List<ASTNode> exprs = new ArrayList<ASTNode>();
+			List<ASTNode> exprs = new ArrayList<>();
 			for (TclWord word : command.getWords()) {
 				// wordText = SimpleTclParser.magicSubstitute(wordText);
 				Object o = word.getContents().get(0);
@@ -155,17 +155,16 @@ public class TclParseUtil {
 				if (o instanceof QuotesSubstitution) {
 					QuotesSubstitution qs = (QuotesSubstitution) o;
 
-					exprs.add(new StringLiteral(startPos + offset
-							+ qs.getStart(), startPos + offset + qs.getEnd()
-							+ 1, wordText));
+					exprs.add(new StringLiteral(
+							startPos + offset + qs.getStart(),
+							startPos + offset + qs.getEnd() + 1, wordText));
 				} else if (o instanceof BracesSubstitution) {
 					BracesSubstitution bs = (BracesSubstitution) o;
-					wordText = content.substring(offset + word.getStart(), word
-							.getEnd()
-							+ 1 + offset);
+					wordText = content.substring(offset + word.getStart(),
+							word.getEnd() + 1 + offset);
 					TclBlockExpression tclBlockExpression = new TclBlockExpression(
-							startPos + offset + bs.getStart(), startPos
-									+ offset + bs.getEnd() + 1, wordText);
+							startPos + offset + bs.getStart(),
+							startPos + offset + bs.getEnd() + 1, wordText);
 					// Advanced content for tcl blocks.
 					tclBlockExpression.setFilename(filename);
 					exprs.add(tclBlockExpression);
@@ -173,13 +172,13 @@ public class TclParseUtil {
 						&& (word.getContents().size() == 1)) {
 					CommandSubstitution bs = (CommandSubstitution) o;
 
-					exprs.add(new TclExecuteExpression(startPos + offset
-							+ bs.getStart(), startPos + offset + bs.getEnd()
-							+ 1, wordText));
+					exprs.add(new TclExecuteExpression(
+							startPos + offset + bs.getStart(),
+							startPos + offset + bs.getEnd() + 1, wordText));
 				} else {
-					exprs.add(new SimpleReference(startPos + offset
-							+ word.getStart(), startPos + offset
-							+ word.getEnd() + 1, wordText));
+					exprs.add(new SimpleReference(
+							startPos + offset + word.getStart(),
+							startPos + offset + word.getEnd() + 1, wordText));
 				}
 			}
 			TclStatement st = new TclStatement(exprs);
@@ -202,7 +201,7 @@ public class TclParseUtil {
 
 	public static void addToDeclaration(ASTNode decl, ASTNode node) {
 		if (decl instanceof ModuleDeclaration && node instanceof Statement) {
-			((ModuleDeclaration) decl).addStatement((Statement) node);
+			((ModuleDeclaration) decl).addStatement(node);
 		} else if (decl instanceof TypeDeclaration) {
 			((TypeDeclaration) decl).getStatements().add(node);
 		} else if (decl instanceof MethodDeclaration) {
@@ -226,7 +225,7 @@ public class TclParseUtil {
 
 	public static List<ASTNode> findLevelsTo(ModuleDeclaration module,
 			ASTNode astNodeParent) {
-		List<ASTNode> elements = new ArrayList<ASTNode>();
+		List<ASTNode> elements = new ArrayList<>();
 		if (module != null || astNodeParent instanceof ModuleDeclaration) {
 			if (module == null) {
 				module = (ModuleDeclaration) astNodeParent;
@@ -277,8 +276,8 @@ public class TclParseUtil {
 		if (levels.size() == 2) {
 			return findTclTypeDeclarationFrom(module, module, name, false);
 		} else if (levels.size() - 2 > 0) {
-			return findTclTypeDeclarationFrom(module, (ASTNode) levels
-					.get(levels.size() - 2), name, false);
+			return findTclTypeDeclarationFrom(module,
+					(ASTNode) levels.get(levels.size() - 2), name, false);
 		}
 		return null;
 	}
@@ -334,8 +333,8 @@ public class TclParseUtil {
 		return null;
 	}
 
-	private static TypeDeclaration findTclTypeCheckASTLevel(
-			String originalName, String[] split, List childs) {
+	private static TypeDeclaration findTclTypeCheckASTLevel(String originalName,
+			String[] split, List childs) {
 		for (int i = 0; i < childs.size(); i++) {
 			if (!(childs.get(i) instanceof TypeDeclaration)) {
 				continue;
@@ -397,8 +396,8 @@ public class TclParseUtil {
 		return null;
 	}
 
-	public static TypeDeclaration findTypesFromASTNode(
-			ModuleDeclaration module, ASTNode node, String name) {
+	public static TypeDeclaration findTypesFromASTNode(ModuleDeclaration module,
+			ASTNode node, String name) {
 		List levels = findLevelsTo(module, node);
 		String[] split = TclParseUtil.tclSplit(name);
 		for (int i = 0; i < levels.size() - 1; i++) {
@@ -499,13 +498,15 @@ public class TclParseUtil {
 		return arrayIndex;
 	}
 
-	public static ASTNode getScopeParent(ModuleDeclaration module, ASTNode node) {
+	public static ASTNode getScopeParent(ModuleDeclaration module,
+			ASTNode node) {
 		List levels = TclParseUtil.findLevelsTo(module, node);
 		for (int i = 0; i < levels.size(); i++) {
 			ASTNode nde = (ASTNode) levels.get(levels.size() - i - 1);
 			if (nde instanceof TypeDeclaration
 					|| nde instanceof MethodDeclaration
-					|| nde instanceof ModuleDeclaration && nde instanceof Block) {
+					|| nde instanceof ModuleDeclaration
+							&& nde instanceof Block) {
 				return nde;
 			}
 		}
@@ -525,10 +526,11 @@ public class TclParseUtil {
 	public static List<ASTNode> findLevelFromModule(
 			final ModuleDeclaration module, final IMember member,
 			final String memberFQN) {
-		final List<ASTNode> levels = new ArrayList<ASTNode>();
-		final Set<String> processed = new HashSet<String>();
+		final List<ASTNode> levels = new ArrayList<>();
+		final Set<String> processed = new HashSet<>();
 
 		ASTVisitor visitor = new ASTVisitor() {
+			@Override
 			public boolean visitGeneral(ASTNode s) throws Exception {
 				if (s instanceof Declaration) {
 					Declaration d = (Declaration) s;
@@ -572,7 +574,7 @@ public class TclParseUtil {
 		if (len < 2) {
 			return new String[] { text };
 		}
-		List<String> results = new ArrayList<String>();
+		List<String> results = new ArrayList<>();
 		int pos = 0;
 		for (int i = 0; i < len; ++i) {
 			int c = 0;

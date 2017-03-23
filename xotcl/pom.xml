@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.eclipse.dltk.tcl</groupId>
 		<artifactId>tcl-all</artifactId>
-		<version>5.7.1-SNAPSHOT</version>
+		<version>5.7.2-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 	<groupId>org.eclipse.dltk.xotcl</groupId>

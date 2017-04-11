@@ -36,7 +36,7 @@ public class RemoveSourceAssociation implements IWorkbenchWindowActionDelegate {
 		if (selection == null) {
 			return;
 		}
-		Iterator iterator = selection.iterator();
+		Iterator<?> iterator = selection.iterator();
 		for (; iterator.hasNext();) {
 			ISourceModule element = (ISourceModule) iterator.next();
 			try {

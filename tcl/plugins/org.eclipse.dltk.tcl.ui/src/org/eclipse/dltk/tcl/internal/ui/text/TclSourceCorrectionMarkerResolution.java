@@ -22,6 +22,7 @@ import org.eclipse.dltk.tcl.internal.ui.TclUI;
 import org.eclipse.dltk.ui.editor.IScriptAnnotation;
 import org.eclipse.dltk.ui.text.IAnnotationResolution;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.window.Window;
 import org.eclipse.ui.IMarkerResolution;
 import org.eclipse.ui.PlatformUI;
 
@@ -68,7 +69,7 @@ final class TclSourceCorrectionMarkerResolution
 				if (correction != null) {
 					dialog.setSources(correction.getUserValue());
 				}
-				if (dialog.open() == SourcesSelectionDialog.OK) {
+				if (dialog.open() == Window.OK) {
 					correction = findUserCorrection(tclProject, true);
 					correction.getUserValue().clear();
 					correction.getUserValue().addAll(dialog.getSources());

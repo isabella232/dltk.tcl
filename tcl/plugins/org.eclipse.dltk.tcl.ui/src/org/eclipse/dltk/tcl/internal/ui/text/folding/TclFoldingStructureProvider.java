@@ -73,7 +73,7 @@ public class TclFoldingStructureProvider
 		 * getFoldingVisitor() and remove this method
 		 */
 		ModuleDeclaration md = parse(code, offset);
-		List statements = md.getStatements();
+		List<ASTNode> statements = md.getStatements();
 		if (statements == null) {
 			return new CodeBlock[0];
 		}

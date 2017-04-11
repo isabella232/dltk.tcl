@@ -20,35 +20,36 @@ import org.eclipse.emf.ecore.impl.EFactoryImpl;
 import org.eclipse.emf.ecore.plugin.EcorePlugin;
 
 /**
- * <!-- begin-user-doc -->
- * An implementation of the model <b>Factory</b>.
- * <!-- end-user-doc -->
+ * <!-- begin-user-doc --> An implementation of the model <b>Factory</b>. <!--
+ * end-user-doc -->
+ * 
  * @generated
  */
-public class ManpagesFactoryImpl extends EFactoryImpl implements ManpagesFactory {
+public class ManpagesFactoryImpl extends EFactoryImpl
+		implements ManpagesFactory {
 	/**
-	 * Creates the default factory implementation.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * Creates the default factory implementation. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public static ManpagesFactory init() {
 		try {
-			ManpagesFactory theManpagesFactory = (ManpagesFactory)EPackage.Registry.INSTANCE.getEFactory("http://www.eclipse.org/dltk/tcl/manpages"); //$NON-NLS-1$ 
+			ManpagesFactory theManpagesFactory = (ManpagesFactory) EPackage.Registry.INSTANCE
+					.getEFactory("http://www.eclipse.org/dltk/tcl/manpages"); //$NON-NLS-1$
 			if (theManpagesFactory != null) {
 				return theManpagesFactory;
 			}
-		}
-		catch (Exception exception) {
+		} catch (Exception exception) {
 			EcorePlugin.INSTANCE.log(exception);
 		}
 		return new ManpagesFactoryImpl();
 	}
 
 	/**
-	 * Creates an instance of the factory.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * Creates an instance of the factory. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public ManpagesFactoryImpl() {
@@ -56,45 +57,52 @@ public class ManpagesFactoryImpl extends EFactoryImpl implements ManpagesFactory
 	}
 
 	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public EObject create(EClass eClass) {
 		switch (eClass.getClassifierID()) {
-			case ManpagesPackage.DOCUMENTATION: return createDocumentation();
-			case ManpagesPackage.MAN_PAGE_FOLDER: return createManPageFolder();
-			case ManpagesPackage.STRING_TO_STRING_ENTRY: return (EObject)createStringToStringEntry();
-			case ManpagesPackage.INTERPRETER_DOCUMENTATION: return createInterpreterDocumentation();
-			default:
-				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier"); //$NON-NLS-1$ //$NON-NLS-2$
+		case ManpagesPackage.DOCUMENTATION:
+			return createDocumentation();
+		case ManpagesPackage.MAN_PAGE_FOLDER:
+			return createManPageFolder();
+		case ManpagesPackage.STRING_TO_STRING_ENTRY:
+			return (EObject) createStringToStringEntry();
+		case ManpagesPackage.INTERPRETER_DOCUMENTATION:
+			return createInterpreterDocumentation();
+		default:
+			throw new IllegalArgumentException("The class '" + eClass.getName() //$NON-NLS-1$
+					+ "' is not a valid classifier"); //$NON-NLS-1$
 		}
 	}
 
 	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
+	@Override
 	public Documentation createDocumentation() {
 		DocumentationImpl documentation = new DocumentationImpl();
 		return documentation;
 	}
 
 	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
+	@Override
 	public ManPageFolder createManPageFolder() {
 		ManPageFolderImpl manPageFolder = new ManPageFolderImpl();
 		return manPageFolder;
 	}
 
 	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public Map.Entry<String, String> createStringToStringEntry() {
@@ -103,27 +111,29 @@ public class ManpagesFactoryImpl extends EFactoryImpl implements ManpagesFactory
 	}
 
 	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
+	@Override
 	public InterpreterDocumentation createInterpreterDocumentation() {
 		InterpreterDocumentationImpl interpreterDocumentation = new InterpreterDocumentationImpl();
 		return interpreterDocumentation;
 	}
 
 	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
+	@Override
 	public ManpagesPackage getManpagesPackage() {
-		return (ManpagesPackage)getEPackage();
+		return (ManpagesPackage) getEPackage();
 	}
 
 	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @deprecated
 	 * @generated
 	 */
@@ -132,4 +142,4 @@ public class ManpagesFactoryImpl extends EFactoryImpl implements ManpagesFactory
 		return ManpagesPackage.eINSTANCE;
 	}
 
-} //ManpagesFactoryImpl
+} // ManpagesFactoryImpl

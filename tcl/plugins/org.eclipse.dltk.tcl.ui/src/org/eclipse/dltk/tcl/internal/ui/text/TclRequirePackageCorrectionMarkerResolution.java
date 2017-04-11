@@ -34,6 +34,7 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IMarkerResolution;
@@ -142,7 +143,7 @@ final class TclRequirePackageCorrectionMarkerResolution
 				dialog.setLabelProvider(new PackagesLabelProvider(install));
 				dialog.setInput(names);
 				Set<String> pkgs = new HashSet<>();
-				if (dialog.open() == ListDialog.OK) {
+				if (dialog.open() == Window.OK) {
 					TclProjectInfo info = TclPackagesManager
 							.getTclProject(this.project.getElementName());
 					TclModuleInfo moduleInfo = info

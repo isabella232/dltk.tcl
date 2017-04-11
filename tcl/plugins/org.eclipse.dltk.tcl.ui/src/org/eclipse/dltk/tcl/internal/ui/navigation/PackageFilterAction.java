@@ -56,7 +56,7 @@ class PackageFilterAction extends Action {
 	private class SimplePackagesContentProvider
 			implements ITreeContentProvider {
 		private Object[] NO_ELEMENT = new Object[0];
-		protected Map elements = new HashMap();
+		protected Map<String, IModelElement> elements = new HashMap<>();
 
 		public SimplePackagesContentProvider() {
 		}

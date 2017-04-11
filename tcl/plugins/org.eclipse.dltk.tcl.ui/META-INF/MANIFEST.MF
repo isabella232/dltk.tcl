@@ -24,7 +24,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.dltk.tcl.parser;bundle-version="0.0.0",
  org.eclipse.emf.ecore,
  org.eclipse.emf.ecore.xmi
-Eclipse-AutoStart: true
+Bundle-ActivationPolicy: lazy
 Export-Package: org.eclipse.dltk.tcl.internal.ui,
  org.eclipse.dltk.tcl.internal.ui.documentation;x-internal:=true,
  org.eclipse.dltk.tcl.internal.ui.editor,

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 xored software, Inc.
+ * Copyright (c) 2008, 2017 xored software, Inc. and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -48,6 +48,7 @@ import org.eclipse.jface.viewers.IFontProvider;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.graphics.Font;
@@ -353,7 +354,7 @@ public class TclCorePreferencePage extends
 				includeDialog.setDialogFieldListener(includeAdapter);
 				includeDialog.setRemoveButtonIndex(IDX_REMOVE);
 
-				includeDialog.setViewerSorter(new AssociationViwerSorter(
+				includeDialog.setViewerComparator(new AssociationViwerSorter(
 						associations));
 				final Control listControl = includeDialog
 						.getListControl(patternComposite);
@@ -377,7 +378,7 @@ public class TclCorePreferencePage extends
 				excludeDialog.setDialogFieldListener(excludeAdapter);
 				excludeDialog.setRemoveButtonIndex(IDX_REMOVE);
 
-				excludeDialog.setViewerSorter(new ViewerSorter());
+				excludeDialog.setViewerComparator(new ViewerComparator());
 				final Control listControl = excludeDialog
 						.getListControl(patternComposite);
 				final GridData listControlLayoutData = new GridData(

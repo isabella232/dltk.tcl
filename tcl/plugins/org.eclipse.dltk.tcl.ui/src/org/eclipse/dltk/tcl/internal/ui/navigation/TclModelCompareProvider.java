@@ -5,6 +5,7 @@ import org.eclipse.dltk.ui.IModelCompareCategories;
 import org.eclipse.dltk.ui.IModelCompareProvider;
 
 public class TclModelCompareProvider implements IModelCompareProvider {
+	@Override
 	public Integer category(Object parentElement) {
 		if (parentElement instanceof TclSourcesFragment) {
 			return IModelCompareCategories.CONTAINER;
@@ -12,6 +13,7 @@ public class TclModelCompareProvider implements IModelCompareProvider {
 		return null;
 	}
 
+	@Override
 	public CompareResult compare(Object element1, Object element2, int cat1,
 			int cat2) {
 		if (cat1 == cat2 && cat1 == IModelCompareCategories.CONTAINER) {

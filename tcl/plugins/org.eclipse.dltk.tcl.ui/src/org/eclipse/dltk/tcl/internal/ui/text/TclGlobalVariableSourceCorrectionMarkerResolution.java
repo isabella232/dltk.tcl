@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.eclipse.dltk.tcl.internal.ui.text;
 
 import java.util.Map;
@@ -18,8 +15,8 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.ui.IMarkerResolution;
 import org.eclipse.ui.PlatformUI;
 
-final class TclGlobalVariableSourceCorrectionMarkerResolution implements
-		IMarkerResolution, IAnnotationResolution {
+final class TclGlobalVariableSourceCorrectionMarkerResolution
+		implements IMarkerResolution, IAnnotationResolution {
 	private String sourceName;
 	private IScriptProject project;
 
@@ -29,14 +26,15 @@ final class TclGlobalVariableSourceCorrectionMarkerResolution implements
 		this.project = scriptProject;
 	}
 
+	@Override
 	public String getLabel() {
 		return "Add variable '" + this.sourceName
 				+ "' to list of project global variables";
 	}
 
 	private boolean resolve() {
-		MultipleInputDialog dialog = new MultipleInputDialog(PlatformUI
-				.getWorkbench().getActiveWorkbenchWindow().getShell(),
+		MultipleInputDialog dialog = new MultipleInputDialog(
+				PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
 				TclInterpreterMessages.GlobalVariableBlock_AddTitle);
 		dialog.addLabelField("Name: " + sourceName);
 		dialog.addVariablesField("Value", null, true);
@@ -48,8 +46,8 @@ final class TclGlobalVariableSourceCorrectionMarkerResolution implements
 		String value = dialog.getStringValue("Value");
 
 		if (value != null && value.length() > 0) {
-			Map<String, String> emap = TclPackagesManager.getVariables(project
-					.getElementName());
+			Map<String, String> emap = TclPackagesManager
+					.getVariables(project.getElementName());
 			if (!emap.containsKey(sourceName)) {
 				emap.put(sourceName, value);
 				TclPackagesManager.setVariables(project.getElementName(), emap);
@@ -60,10 +58,12 @@ final class TclGlobalVariableSourceCorrectionMarkerResolution implements
 		return true;
 	}
 
+	@Override
 	public void run(final IMarker marker) {
 		resolve();
 	}
 
+	@Override
 	public void run(IScriptAnnotation annotation, IDocument document) {
 		resolve();
 	}

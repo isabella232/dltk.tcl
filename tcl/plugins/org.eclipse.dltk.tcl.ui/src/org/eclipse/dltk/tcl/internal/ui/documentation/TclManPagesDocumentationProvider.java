@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2007 IBM Corporation and others.
+ * Copyright (c) 2005, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,32 +28,33 @@ import org.eclipse.dltk.tcl.ui.manpages.ManPageFolder;
 import org.eclipse.dltk.tcl.ui.manpages.ManPageLoader;
 import org.eclipse.dltk.tcl.ui.manpages.ManPageResource;
 import org.eclipse.dltk.tcl.ui.manpages.ManpagesPackage;
-import org.eclipse.dltk.ui.documentation.DocumentationUtils;
 import org.eclipse.dltk.ui.documentation.DocumentationFileResponse;
+import org.eclipse.dltk.ui.documentation.DocumentationUtils;
 import org.eclipse.dltk.ui.documentation.IDocumentationResponse;
 import org.eclipse.dltk.ui.documentation.IScriptDocumentationProvider;
 import org.eclipse.dltk.ui.documentation.IScriptDocumentationProviderExtension;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.IPropertyChangeListener;
-import org.eclipse.jface.util.PropertyChangeEvent;
 
 public class TclManPagesDocumentationProvider implements
 		IScriptDocumentationProvider, IScriptDocumentationProviderExtension {
 
 	private ManPageResource manPages = null;
 
+	@Override
 	public Reader getInfo(IMember element, boolean lookIntoParents,
 			boolean lookIntoExternal) {
 		final IProjectFragment fragment = (IProjectFragment) element
 				.getAncestor(IModelElement.PROJECT_FRAGMENT);
 		if (fragment != null && fragment.isBuiltin()) {
-			return DocumentationUtils.getReader(describeKeyword(element
-					.getElementName(), element));
+			return DocumentationUtils.getReader(
+					describeKeyword(element.getElementName(), element));
 		}
 
 		return null;
 	}
 
+	@Override
 	public Reader getInfo(String content) {
 		return DocumentationUtils.getReader(describeKeyword(content, null));
 	}
@@ -69,11 +70,7 @@ public class TclManPagesDocumentationProvider implements
 
 		this.manPages = ManPageLoader.load();
 		if (this.manPages != null && changeListener == null) {
-			changeListener = new IPropertyChangeListener() {
-				public void propertyChange(PropertyChangeEvent event) {
-					initalizeLocations(true);
-				}
-			};
+			changeListener = event -> initalizeLocations(true);
 			prefStore.addPropertyChangeListener(changeListener);
 		}
 	}
@@ -95,10 +92,11 @@ public class TclManPagesDocumentationProvider implements
 				}
 				if (install != null) {
 					final InterpreterDocumentation iDoc = (InterpreterDocumentation) install
-							.findExtension(ManpagesPackage.Literals.INTERPRETER_DOCUMENTATION);
+							.findExtension(
+									ManpagesPackage.Literals.INTERPRETER_DOCUMENTATION);
 					if (iDoc != null) {
-						final Documentation doc = manPages.findById(iDoc
-								.getDocumentationId());
+						final Documentation doc = manPages
+								.findById(iDoc.getDocumentationId());
 						if (doc != null) {
 							return doc;
 						}
@@ -109,6 +107,7 @@ public class TclManPagesDocumentationProvider implements
 		return manPages.findDefault();
 	}
 
+	@Override
 	public IDocumentationResponse describeKeyword(String keyword,
 			IModelElement context) {
 		final Documentation documentation = selectSource(context);
@@ -119,8 +118,8 @@ public class TclManPagesDocumentationProvider implements
 					// Try to use first word only
 					final int spacePos = keyword.indexOf(' ');
 					if (spacePos != -1) {
-						filename = f.getKeywords().get(
-								keyword.substring(0, spacePos));
+						filename = f.getKeywords()
+								.get(keyword.substring(0, spacePos));
 					}
 				}
 				if (filename != null) {

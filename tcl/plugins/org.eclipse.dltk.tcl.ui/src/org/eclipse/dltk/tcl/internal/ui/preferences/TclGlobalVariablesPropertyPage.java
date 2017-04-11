@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2009 xored software, Inc.  
+ * Copyright (c) 2009, 2017 xored software, Inc. and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html  
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
  *     xored software, Inc. - initial API and Implementation (Alex Panchenko)
@@ -33,14 +33,17 @@ public class TclGlobalVariablesPropertyPage extends PropertyPage {
 
 	private class StatusDialogAdapter implements IStatusDialog {
 
+		@Override
 		public Shell getShell() {
 			return TclGlobalVariablesPropertyPage.this.getShell();
 		}
 
+		@Override
 		public void setButtonLayoutData(Button button) {
 			TclGlobalVariablesPropertyPage.this.setButtonLayoutData(button);
 		}
 
+		@Override
 		public void updateStatusLine() {
 			// TODO Auto-generated method stub
 		}
@@ -59,17 +62,15 @@ public class TclGlobalVariablesPropertyPage extends PropertyPage {
 		composite.setLayout(new GridLayout(2, false));
 		composite.setLayoutData(new GridData(GridData.FILL_BOTH));
 		variableBlock.createControlsIn(composite);
-		final IProject project = (IProject) getElement().getAdapter(
-				IProject.class);
-		variableBlock.setValues(TclPackagesManager.getVariablesEMap(project
-				.getName()));
+		final IProject project = getElement().getAdapter(IProject.class);
+		variableBlock.setValues(
+				TclPackagesManager.getVariablesEMap(project.getName()));
 		return composite;
 	}
 
 	@Override
 	public boolean performOk() {
-		final IProject project = (IProject) getElement().getAdapter(
-				IProject.class);
+		final IProject project = getElement().getAdapter(IProject.class);
 		final EMap<String, VariableValue> oldVars = TclPackagesManager
 				.getVariablesEMap(project.getName());
 		final EMap<String, VariableValue> newVars = variableBlock.getValues();

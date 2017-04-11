@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2009 xored software, Inc.  
+ * Copyright (c) 2009 xored software, Inc.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html  
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
  *     xored software, Inc. - initial API and Implementation (Alex Panchenko)
@@ -44,10 +44,11 @@ import org.eclipse.swt.widgets.Composite;
 /**
  * Control used to edit the environment variables associated with a Interpreter
  * install
+ * 
  * @since 2.0
  */
-public class GlobalVariableBlock implements SelectionListener,
-		ISelectionChangedListener {
+public class GlobalVariableBlock
+		implements SelectionListener, ISelectionChangedListener {
 
 	private static final String NAME_LABEL = TclInterpreterMessages.GlobalVariableBlock_Name;
 	private static final String VALUE_LABEL = TclInterpreterMessages.GlobalVariableBlock_Value;
@@ -67,7 +68,7 @@ public class GlobalVariableBlock implements SelectionListener,
 
 	/**
 	 * Creates and returns the source lookup control.
-	 * 
+	 *
 	 * @param parent
 	 *            the parent widget of this control
 	 */
@@ -109,7 +110,7 @@ public class GlobalVariableBlock implements SelectionListener,
 
 	/**
 	 * Creates and returns a button
-	 * 
+	 *
 	 * @param parent
 	 *            parent widget
 	 * @param label
@@ -141,11 +142,13 @@ public class GlobalVariableBlock implements SelectionListener,
 		updateDialogStatus(status);
 	}
 
+	@Override
 	public void widgetSelected(SelectionEvent e) {
 		Object source = e.getSource();
 		if (source == fRemoveButton) {
-			fContentProvider.remove(((IStructuredSelection) fVariablesViewer
-					.getSelection()).toList());
+			fContentProvider.remove(
+					((IStructuredSelection) fVariablesViewer.getSelection())
+							.toList());
 		} else if (source == fAddButton) {
 			handleAdd();
 		} else if (source == fEditButton) {
@@ -160,8 +163,7 @@ public class GlobalVariableBlock implements SelectionListener,
 		if (var == null) {
 			return;
 		}
-		MultipleInputDialog dialog = new MultipleInputDialog(
-				fDialog.getShell(),
+		MultipleInputDialog dialog = new MultipleInputDialog(fDialog.getShell(),
 				TclInterpreterMessages.GlobalVariableBlock_EditTitle);
 		dialog.addTextField(NAME_LABEL, var.getName(), false);
 		dialog.addVariablesField(VALUE_LABEL, var.getValue(), true);
@@ -185,6 +187,7 @@ public class GlobalVariableBlock implements SelectionListener,
 		}
 	}
 
+	@Override
 	public void widgetDefaultSelected(SelectionEvent e) {
 	}
 
@@ -192,16 +195,15 @@ public class GlobalVariableBlock implements SelectionListener,
 		GlobalVariableEntry newVar = add();
 		if (newVar != null) {
 			fContentProvider.replaceVariable(newVar, null);
-			fVariablesViewer
-					.setSelection(new StructuredSelection(newVar), true);
+			fVariablesViewer.setSelection(new StructuredSelection(newVar),
+					true);
 			fVariablesViewer.refresh();
 			update();
 		}
 	}
 
 	private GlobalVariableEntry add() {
-		MultipleInputDialog dialog = new MultipleInputDialog(
-				fDialog.getShell(),
+		MultipleInputDialog dialog = new MultipleInputDialog(fDialog.getShell(),
 				TclInterpreterMessages.GlobalVariableBlock_AddTitle);
 		dialog.addTextField(NAME_LABEL, null, false);
 		dialog.addVariablesField(VALUE_LABEL, null, true);
@@ -220,6 +222,7 @@ public class GlobalVariableBlock implements SelectionListener,
 		return null;
 	}
 
+	@Override
 	public void selectionChanged(SelectionChangedEvent event) {
 		updateButtons();
 	}
@@ -235,20 +238,20 @@ public class GlobalVariableBlock implements SelectionListener,
 	}
 
 	public void setValues(final EMap<String, VariableValue> vars) {
-		List<GlobalVariableEntry> list = new ArrayList<GlobalVariableEntry>();
+		List<GlobalVariableEntry> list = new ArrayList<>();
 		for (Map.Entry<String, VariableValue> entry : vars.entrySet()) {
 			if (entry.getValue() != null) {
-				list.add(new GlobalVariableEntry(entry.getKey(), entry
-						.getValue().getValue()));
+				list.add(new GlobalVariableEntry(entry.getKey(),
+						entry.getValue().getValue()));
 			}
 		}
-		fContentProvider.setVariables(list.toArray(new GlobalVariableEntry[list
-				.size()]));
+		fContentProvider.setVariables(
+				list.toArray(new GlobalVariableEntry[list.size()]));
 		update();
 	}
 
 	public EMap<String, VariableValue> getValues() {
-		EMap<String, VariableValue> map = new BasicEMap<String, VariableValue>();
+		EMap<String, VariableValue> map = new BasicEMap<>();
 		for (GlobalVariableEntry var : fContentProvider.getVariables()) {
 			VariableValue value = TclPackagesFactory.eINSTANCE
 					.createVariableValue();

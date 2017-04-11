@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2009 xored software, Inc.  
+ * Copyright (c) 2009, 2017 xored software, Inc. and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html  
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
  *     xored software, Inc. - initial API and Implementation (Alex Panchenko)
@@ -31,13 +31,16 @@ public class GlobalVariableContentProvider implements ITreeContentProvider {
 
 	private GlobalVariableEntry[] fVariables = new GlobalVariableEntry[0];
 
+	@Override
 	public void dispose() {
 	}
 
+	@Override
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 		fViewer = viewer;
 	}
 
+	@Override
 	public Object[] getElements(Object inputElement) {
 		return fVariables;
 	}
@@ -59,7 +62,7 @@ public class GlobalVariableContentProvider implements ITreeContentProvider {
 	 * Remove the libraries contained in the given selection.
 	 */
 	public void remove(Collection<?> selection) {
-		List<GlobalVariableEntry> newVars = new ArrayList<GlobalVariableEntry>();
+		List<GlobalVariableEntry> newVars = new ArrayList<>();
 		for (int i = 0; i < fVariables.length; i++) {
 			newVars.add(fVariables[i]);
 		}
@@ -76,7 +79,7 @@ public class GlobalVariableContentProvider implements ITreeContentProvider {
 	 * Attempts to add the given variable. Returns whether the variable was
 	 * added or not (as when the user answers not to overwrite an existing
 	 * variable).
-	 * 
+	 *
 	 * @param variable
 	 *            the variable to add
 	 * @param oldVariable
@@ -86,19 +89,18 @@ public class GlobalVariableContentProvider implements ITreeContentProvider {
 	public boolean replaceVariable(GlobalVariableEntry variable,
 			GlobalVariableEntry oldVariable) {
 		String name = variable.getName();
-		List<GlobalVariableEntry> newVars = new ArrayList<GlobalVariableEntry>();
+		List<GlobalVariableEntry> newVars = new ArrayList<>();
 		newVars.addAll(Arrays.asList(fVariables));
-		for (Iterator<GlobalVariableEntry> i = newVars.iterator(); i.hasNext();) {
+		for (Iterator<GlobalVariableEntry> i = newVars.iterator(); i
+				.hasNext();) {
 			GlobalVariableEntry existingVariable = i.next();
 			if (existingVariable.getName().equals(name)) {
-				boolean overWrite = MessageDialog
-						.openQuestion(
-								fViewer.getControl().getShell(),
-								TclInterpreterMessages.GlobalVariableContentProvider_overwriteTitle,
-								NLS
-										.bind(
-												TclInterpreterMessages.GlobalVariableContentProvider_overwriteMessage,
-												name));
+				boolean overWrite = MessageDialog.openQuestion(
+						fViewer.getControl().getShell(),
+						TclInterpreterMessages.GlobalVariableContentProvider_overwriteTitle,
+						NLS.bind(
+								TclInterpreterMessages.GlobalVariableContentProvider_overwriteMessage,
+								name));
 				if (!overWrite) {
 					return false;
 				}
@@ -114,14 +116,17 @@ public class GlobalVariableContentProvider implements ITreeContentProvider {
 		return true;
 	}
 
+	@Override
 	public Object[] getChildren(Object parentElement) {
 		return null;
 	}
 
+	@Override
 	public Object getParent(Object element) {
 		return null;
 	}
 
+	@Override
 	public boolean hasChildren(Object element) {
 		return false;
 	}

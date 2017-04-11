@@ -122,6 +122,7 @@ public class ManPagesLocationsBlock implements ISelectionChangedListener {
 			}
 		}
 
+		@Override
 		public Font getFont(Object element) {
 			if (element instanceof Documentation) {
 				final Documentation doc = (Documentation) element;
@@ -142,6 +143,7 @@ public class ManPagesLocationsBlock implements ISelectionChangedListener {
 		public ManLocationsContentProvider() {
 		}
 
+		@Override
 		public Object[] getChildren(Object parentElement) {
 			if (parentElement instanceof Documentation) {
 				final EList<ManPageFolder> folders = ((Documentation) parentElement)
@@ -151,16 +153,19 @@ public class ManPagesLocationsBlock implements ISelectionChangedListener {
 			return new Object[0];
 		}
 
+		@Override
 		public Object getParent(Object element) {
 			return null;
 		}
 
+		@Override
 		public boolean hasChildren(Object element) {
 			if (element instanceof Documentation)
 				return true;
 			return false;
 		}
 
+		@Override
 		public Object[] getElements(Object inputElement) {
 			if (inputElement instanceof ManPageResource) {
 				final List<Documentation> docs = ((ManPageResource) inputElement)
@@ -171,9 +176,11 @@ public class ManPagesLocationsBlock implements ISelectionChangedListener {
 			}
 		}
 
+		@Override
 		public void dispose() {
 		}
 
+		@Override
 		public void inputChanged(Viewer viewer, Object oldInput,
 				Object newInput) {
 		}
@@ -400,6 +407,7 @@ public class ManPagesLocationsBlock implements ISelectionChangedListener {
 	/*
 	 * @see ISelectionChangedListener#selectionChanged(SelectionChangedEvent)
 	 */
+	@Override
 	public void selectionChanged(SelectionChangedEvent event) {
 		updateButtons();
 	}

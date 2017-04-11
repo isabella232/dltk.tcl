@@ -10,14 +10,16 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
-public class TclContentAssistConfigurationBlock extends
-		CodeAssistConfigurationBlock {
-	public TclContentAssistConfigurationBlock(
-			PreferencePage mainPreferencePage, OverlayPreferenceStore store) {
+public class TclContentAssistConfigurationBlock
+		extends CodeAssistConfigurationBlock {
+	public TclContentAssistConfigurationBlock(PreferencePage mainPreferencePage,
+			OverlayPreferenceStore store) {
 		super(mainPreferencePage, store);
 	}
 
-	protected void getOverlayKeys(ArrayList<OverlayPreferenceStore.OverlayKey> overlayKeys) {
+	@Override
+	protected void getOverlayKeys(
+			ArrayList<OverlayPreferenceStore.OverlayKey> overlayKeys) {
 		super.getOverlayKeys(overlayKeys);
 
 		overlayKeys.add(new OverlayPreferenceStore.OverlayKey(
@@ -37,15 +39,14 @@ public class TclContentAssistConfigurationBlock extends
 	// false);
 	// }
 
+	@Override
 	public Control createControl(Composite parent) {
 		Composite control = (Composite) super.createControl(parent);
 
 		GridLayout layout = new GridLayout();
 		layout.numColumns = 2;
 
-		Composite composite = createSubsection(
-				control,
-				null,
+		Composite composite = createSubsection(control, null,
 				TclPreferencesMessages.TclContentAssistConfigurationBlock_filteringSection_title);
 		composite.setLayout(layout);
 		addSortingSection(composite);
@@ -53,8 +54,7 @@ public class TclContentAssistConfigurationBlock extends
 	}
 
 	protected void addSortingSection(Composite composite) {
-		addCheckBox(
-				composite,
+		addCheckBox(composite,
 				TclPreferencesMessages.TclContentAssistConfigurationBlock_filteringSection_filterInternalTclApi,
 				TclPreferenceConstants.CODEASSIST_FILTER_INTERNAL_API, 2);
 	}

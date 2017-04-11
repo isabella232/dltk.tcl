@@ -65,8 +65,9 @@ public class PackagesSourcesHover extends AbstractScriptEditorTextHover {
 		for (TclSourceEntry entry : info.getSourced()) {
 			if (entry.getStart() <= hoverRegion.getOffset()
 					&& hoverRegion.getOffset() <= entry.getEnd()) {
-				final String hover = describe(entry, moduleInfo
-						.getSourceCorrections(), "Source information:");
+				final String hover = describe(entry,
+						moduleInfo.getSourceCorrections(),
+						"Source information:");
 				if (hover != null) {
 					return hover;
 				}
@@ -75,8 +76,9 @@ public class PackagesSourcesHover extends AbstractScriptEditorTextHover {
 		for (TclSourceEntry entry : info.getRequired()) {
 			if (entry.getStart() <= hoverRegion.getOffset()
 					&& hoverRegion.getOffset() <= entry.getEnd()) {
-				final String hover = describe(entry, moduleInfo
-						.getPackageCorrections(), "Require information:");
+				final String hover = describe(entry,
+						moduleInfo.getPackageCorrections(),
+						"Require information:");
 				if (hover != null) {
 					return null;
 				}
@@ -92,8 +94,8 @@ public class PackagesSourcesHover extends AbstractScriptEditorTextHover {
 		boolean added = false;
 		for (UserCorrection userCorrection : corrections) {
 			if (userCorrection.getOriginalValue().equals(entry.getValue())) {
-				List<String> userValue = new ArrayList<String>(userCorrection
-						.getUserValue());
+				List<String> userValue = new ArrayList<>(
+						userCorrection.getUserValue());
 				Collections.sort(userValue);
 				buffer.append("<ul>"); //$NON-NLS-1$
 				for (String value : userValue) {
@@ -140,8 +142,8 @@ public class PackagesSourcesHover extends AbstractScriptEditorTextHover {
 
 	private TclModuleInfo loadModuleInfo(ISourceModule sourceModule) {
 		final List<TclModuleInfo> projectModules = TclPackagesManager
-				.getProjectModules(sourceModule.getScriptProject()
-						.getElementName());
+				.getProjectModules(
+						sourceModule.getScriptProject().getElementName());
 		final String handle = sourceModule.getHandleIdentifier();
 		for (TclModuleInfo tclModuleInfo : projectModules) {
 			if (tclModuleInfo.getHandle().equals(handle)) {

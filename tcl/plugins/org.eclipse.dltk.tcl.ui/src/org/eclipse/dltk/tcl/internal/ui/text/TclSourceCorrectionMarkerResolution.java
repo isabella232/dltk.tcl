@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.eclipse.dltk.tcl.internal.ui.text;
 
 import org.eclipse.core.resources.IMarker;
@@ -28,8 +25,8 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.ui.IMarkerResolution;
 import org.eclipse.ui.PlatformUI;
 
-final class TclSourceCorrectionMarkerResolution implements IMarkerResolution,
-		IAnnotationResolution {
+final class TclSourceCorrectionMarkerResolution
+		implements IMarkerResolution, IAnnotationResolution {
 	private String sourceName;
 	private IScriptProject project;
 	private ISourceModule module;
@@ -41,6 +38,7 @@ final class TclSourceCorrectionMarkerResolution implements IMarkerResolution,
 		this.module = module;
 	}
 
+	@Override
 	public String getLabel() {
 		return Messages.TclSourceCorrectionMarkerResolution_specifyFiles;
 	}
@@ -61,7 +59,8 @@ final class TclSourceCorrectionMarkerResolution implements IMarkerResolution,
 
 				SourcesSelectionDialog dialog = new SourcesSelectionDialog(
 						PlatformUI.getWorkbench().getActiveWorkbenchWindow()
-								.getActivePage().getWorkbenchWindow(), env);
+								.getActivePage().getWorkbenchWindow(),
+						env);
 				final TclProjectInfo tclProject = TclPackagesManager
 						.getTclProject(project.getElementName());
 				UserCorrection correction = findUserCorrection(tclProject,
@@ -123,10 +122,12 @@ final class TclSourceCorrectionMarkerResolution implements IMarkerResolution,
 		}
 	}
 
+	@Override
 	public void run(final IMarker marker) {
 		resolve();
 	}
 
+	@Override
 	public void run(IScriptAnnotation annotation, IDocument document) {
 		resolve();
 	}

@@ -21,15 +21,12 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.jface.text.DefaultInformationControl;
 import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.IInformationControl;
-import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.ITextHover;
 import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.contentassist.IContentAssistant;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.texteditor.ITextEditor;
 
@@ -73,14 +70,9 @@ public class CodeTemplateTclSourceViewerConfiguration
 				IContentAssistant.PROPOSAL_OVERLAY);
 		assistant.setContextInformationPopupOrientation(
 				IContentAssistant.CONTEXT_INFO_ABOVE);
-		assistant
-				.setInformationControlCreator(new IInformationControlCreator() {
-					public IInformationControl createInformationControl(
-							Shell parent) {
-						return new DefaultInformationControl(parent,
-								EditorsUI.getTooltipAffordanceString());
-					}
-				});
+		assistant.setInformationControlCreator(
+				parent -> new DefaultInformationControl(parent,
+						EditorsUI.getTooltipAffordanceString()));
 
 		Color background = getColor(store,
 				PreferenceConstants.CODEASSIST_PARAMETERS_BACKGROUND, manager);

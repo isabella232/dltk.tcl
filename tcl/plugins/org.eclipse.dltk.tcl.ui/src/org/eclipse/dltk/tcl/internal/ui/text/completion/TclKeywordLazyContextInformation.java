@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 xored software, Inc.
+ * Copyright (c) 2008, 2017 xored software, Inc. and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -27,8 +27,8 @@ import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.jface.text.contentassist.IContextInformationExtension;
 import org.eclipse.swt.graphics.Image;
 
-public class TclKeywordLazyContextInformation implements IContextInformation,
-		IContextInformationExtension {
+public class TclKeywordLazyContextInformation
+		implements IContextInformation, IContextInformationExtension {
 
 	private final ICompletionProposal proposal;
 	private final String target;
@@ -62,29 +62,32 @@ public class TclKeywordLazyContextInformation implements IContextInformation,
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @seeorg.eclipse.jface.text.contentassist.IContextInformation#
 	 * getContextDisplayString()
 	 */
+	@Override
 	public String getContextDisplayString() {
 		return proposal.getDisplayString();
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.jface.text.contentassist.IContextInformation#getImage()
 	 */
+	@Override
 	public Image getImage() {
 		return null;
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @seeorg.eclipse.jface.text.contentassist.IContextInformation#
 	 * getInformationDisplayString()
 	 */
+	@Override
 	public String getInformationDisplayString() {
 		if (!informationComputed) {
 			informationComputed = true;
@@ -95,7 +98,7 @@ public class TclKeywordLazyContextInformation implements IContextInformation,
 
 	/**
 	 * Returns all the documentation for this keyword
-	 * 
+	 *
 	 * @return
 	 */
 	private String getInfo() {
@@ -128,7 +131,8 @@ public class TclKeywordLazyContextInformation implements IContextInformation,
 					start = matcher.end();
 				}
 			} else {
-				return formatSynopsis(content.substring(start, matcher.start()));
+				return formatSynopsis(
+						content.substring(start, matcher.start()));
 			}
 		}
 		return proposal.getDisplayString();
@@ -166,6 +170,7 @@ public class TclKeywordLazyContextInformation implements IContextInformation,
 		return sb.toString();
 	}
 
+	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof TclKeywordLazyContextInformation) {
 			final TclKeywordLazyContextInformation other = (TclKeywordLazyContextInformation) obj;
@@ -188,6 +193,7 @@ public class TclKeywordLazyContextInformation implements IContextInformation,
 	/*
 	 * @see IContextInformationExtension#getContextInformationPosition()
 	 */
+	@Override
 	public int getContextInformationPosition() {
 		if (proposal instanceof ICompletionProposalExtension) {
 			return ((ICompletionProposalExtension) proposal)
@@ -200,8 +206,8 @@ public class TclKeywordLazyContextInformation implements IContextInformation,
 
 	private static final Pattern EOL = Pattern.compile("[\r\n]+"); //$NON-NLS-1$
 
-	private static final Pattern HEADER = Pattern.compile(
-			"<h\\d>(.*?)</h\\d>", Pattern.CASE_INSENSITIVE); //$NON-NLS-1$
+	private static final Pattern HEADER = Pattern.compile("<h\\d>(.*?)</h\\d>", //$NON-NLS-1$
+			Pattern.CASE_INSENSITIVE);
 
 	private static final String SYNOPSIS = "SYNOPSIS"; //$NON-NLS-1$
 

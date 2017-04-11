@@ -1,11 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2007 IBM Corporation and others.
+ * Copyright (c) 2005, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- 
  *******************************************************************************/
 package org.eclipse.dltk.tcl.internal.ui.text.folding;
 
@@ -50,8 +49,8 @@ import org.eclipse.jface.text.rules.IPartitionTokenScanner;
 
 /**
  */
-public class TclFoldingStructureProvider extends
-		AbstractASTFoldingStructureProvider {
+public class TclFoldingStructureProvider
+		extends AbstractASTFoldingStructureProvider {
 
 	/* preferences */
 	private int fBlockFolding = 0;
@@ -79,21 +78,21 @@ public class TclFoldingStructureProvider extends
 			return new CodeBlock[0];
 		}
 
-		List result = new ArrayList();
+		List<CodeBlock> result = new ArrayList<>();
 		traverse(result, statements, offset, code);
 
-		return (CodeBlock[]) result.toArray(new CodeBlock[result.size()]);
+		return result.toArray(new CodeBlock[result.size()]);
 	}
 
-	private void checkStatement(String code, int offset, List result,
+	private void checkStatement(String code, int offset, List<CodeBlock> result,
 			Statement sst) {
 		if (sst instanceof TclStatement) {
 			TclStatement statement = (TclStatement) sst;
-			result.add(new CodeBlock(statement, new Region(offset
-					+ statement.sourceStart(), statement.sourceEnd()
-					- statement.sourceStart())));
+			result.add(new CodeBlock(statement,
+					new Region(offset + statement.sourceStart(),
+							statement.sourceEnd() - statement.sourceStart())));
 
-			Iterator si = statement.getExpressions().iterator();
+			Iterator<ASTNode> si = statement.getExpressions().iterator();
 			while (si.hasNext()) {
 				Expression ex = (Expression) si.next();
 				if (ex instanceof TclBlockExpression) {
@@ -101,8 +100,8 @@ public class TclFoldingStructureProvider extends
 					try {
 						String newContents = code.substring(
 								be.sourceStart() + 1, be.sourceEnd() - 1);
-						CodeBlock[] cb = getCodeBlocks(newContents, offset
-								+ be.sourceStart() + 1);
+						CodeBlock[] cb = getCodeBlocks(newContents,
+								offset + be.sourceStart() + 1);
 						for (int j = 0; j < cb.length; j++) {
 							result.add(cb[j]);
 						}
@@ -120,16 +119,18 @@ public class TclFoldingStructureProvider extends
 		}
 	}
 
-	private void traverse(List result, List statements, int offset, String code) {
+	private void traverse(List<CodeBlock> result, List<ASTNode> statements,
+			int offset, String code) {
 
-		for (Iterator iterator = statements.iterator(); iterator.hasNext();) {
-			ASTNode node = (ASTNode) iterator.next();
+		for (Iterator<ASTNode> iterator = statements.iterator(); iterator
+				.hasNext();) {
+			ASTNode node = iterator.next();
 			if (node instanceof TclStatement) {
 				checkStatement(code, offset, result, (Statement) node);
 				continue;
 			}
 			boolean fold = false;
-			List children = null;
+			List<ASTNode> children = null;
 			if (node instanceof TypeDeclaration) {
 				TypeDeclaration statement = (TypeDeclaration) node;
 				children = statement.getStatements();
@@ -140,7 +141,7 @@ public class TclFoldingStructureProvider extends
 				fold = true;
 			} else if (node instanceof IfStatement) {
 				fold = true;
-				children = new ArrayList();
+				children = new ArrayList<>();
 				IfStatement statement = (IfStatement) node;
 				Statement thenNode = statement.getThen();
 				if (thenNode instanceof Block) {
@@ -159,15 +160,16 @@ public class TclFoldingStructureProvider extends
 				TclSwitchStatement statement = (TclSwitchStatement) node;
 				Block alts = statement.getAlternatives();
 				if (alts != null) {
-					List childs = alts.getStatements();
-					children = new ArrayList();
+					List<ASTNode> childs = alts.getStatements();
+					children = new ArrayList<>();
 					for (int i = 0; i < childs.size(); i++) {
-						ASTNode child = (ASTNode) childs.get(i);
+						ASTNode child = childs.get(i);
 						if (child instanceof Block) {
-							result.add(new CodeBlock(new TclFoldBlock(
-									(Block) child), new Region(offset
-									+ child.sourceStart(), child.sourceEnd()
-									- child.sourceStart())));
+							result.add(new CodeBlock(
+									new TclFoldBlock((Block) child),
+									new Region(offset + child.sourceStart(),
+											child.sourceEnd()
+													- child.sourceStart())));
 							children.addAll(((Block) child).getStatements());
 						}
 					}
@@ -195,9 +197,9 @@ public class TclFoldingStructureProvider extends
 				}
 			}
 			if (fold) {
-				result.add(new CodeBlock(node, new Region(offset
-						+ node.sourceStart(), node.sourceEnd()
-						- node.sourceStart())));
+				result.add(new CodeBlock(node,
+						new Region(offset + node.sourceStart(),
+								node.sourceEnd() - node.sourceStart())));
 			}
 			if (children != null && children.size() > 0) {
 				traverse(result, children, offset, code);
@@ -353,8 +355,8 @@ public class TclFoldingStructureProvider extends
 						line.getOffset() + line.getLength());
 				int headerOffset = line.getOffset() + d.getLineLength(i);
 				final CommentRegion header = new CommentRegion(
-						CommentType.HEADER, headerOffset, region.getLength()
-								- headerOffset);
+						CommentType.HEADER, headerOffset,
+						region.getLength() - headerOffset);
 				regions.set(0, shebang);
 				if (isMultilineRegion(d, header)) {
 					regions.add(1, header);
@@ -470,7 +472,7 @@ public class TclFoldingStructureProvider extends
 		String t = store.getString(key);
 		String[] items = t.split(","); //$NON-NLS-1$
 
-		List<String> list = new ArrayList<String>(items.length);
+		List<String> list = new ArrayList<>(items.length);
 		for (int i = 0; i < items.length; i++) {
 			if (items[i].trim().length() > 0) {
 				list.add(items[i]);

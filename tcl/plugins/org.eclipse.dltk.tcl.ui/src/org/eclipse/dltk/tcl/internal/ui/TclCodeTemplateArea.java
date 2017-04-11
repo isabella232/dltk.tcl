@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 xored software, Inc.
+ * Copyright (c) 2009, 2017 xored software, Inc. and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -19,23 +19,17 @@ public class TclCodeTemplateArea implements ICodeTemplateArea {
 	private static final String PREF_ID = "org.eclipse.dltk.tcl.preferences.code.templates"; //$NON-NLS-1$
 	private static final String PROP_ID = "org.eclipse.dltk.tcl.propertyPage.CodeTemplatePage"; //$NON-NLS-1$
 
-	/*
-	 * @see ICodeTemplateArea#getCodeTemplateAccess()
-	 */
+	@Override
 	public ICodeTemplateAccess getTemplateAccess() {
 		return TclUI.getDefault().getCodeTemplateAccess();
 	}
 
-	/*
-	 * @see ICodeTemplateArea#getCodeTemplatePreferencePageId()
-	 */
+	@Override
 	public String getTemplatePreferencePageId() {
 		return PREF_ID;
 	}
 
-	/*
-	 * @see ICodeTemplateArea#getCodeTemplatePropertyPageId()
-	 */
+	@Override
 	public String getTemplatePropertyPageId() {
 		return PROP_ID;
 	}

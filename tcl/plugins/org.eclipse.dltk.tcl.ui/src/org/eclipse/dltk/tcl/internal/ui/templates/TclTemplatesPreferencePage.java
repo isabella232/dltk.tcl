@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2007 IBM Corporation and others.
+ * Copyright (c) 2005, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,36 +19,27 @@ import org.eclipse.jface.text.IDocument;
 /**
  * Tcl code templates preference page
  */
-public class TclTemplatesPreferencePage extends
-		ScriptTemplatePreferencePage {
+public class TclTemplatesPreferencePage extends ScriptTemplatePreferencePage {
 
-	/*
-	 * @see org.eclipse.dltk.ui.templates.ScriptTemplatePreferencePage#createSourceViewerConfiguration()
-	 */
+	@Override
 	protected ScriptSourceViewerConfiguration createSourceViewerConfiguration() {
-		return new SimpleTclSourceViewerConfiguration(getTextTools()
-				.getColorManager(), getPreferenceStore(), null,
+		return new SimpleTclSourceViewerConfiguration(
+				getTextTools().getColorManager(), getPreferenceStore(), null,
 				TclPartitions.TCL_PARTITIONING, false);
 	}
 
-	/*
-	 * @see org.eclipse.dltk.ui.templates.ScriptTemplatePreferencePage#setDocumentParticioner(org.eclipse.jface.text.IDocument)
-	 */
+	@Override
 	protected void setDocumentPartitioner(IDocument document) {
 		getTextTools().setupDocumentPartitioner(document,
 				TclPartitions.TCL_PARTITIONING);
 	}
 
-	/*
-	 * @see org.eclipse.dltk.ui.templates.ScriptTemplatePreferencePage#setPreferenceStore()
-	 */
+	@Override
 	protected void setPreferenceStore() {
 		setPreferenceStore(TclUI.getDefault().getPreferenceStore());
 	}
 
-	/*
-	 * @see org.eclipse.dltk.ui.templates.ScriptTemplatePreferencePage#getTemplateAccess()
-	 */
+	@Override
 	protected ScriptTemplateAccess getTemplateAccess() {
 		return TclTemplateAccess.getInstance();
 	}

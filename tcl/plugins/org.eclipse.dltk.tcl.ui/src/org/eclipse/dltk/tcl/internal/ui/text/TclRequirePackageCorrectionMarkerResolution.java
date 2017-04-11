@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.eclipse.dltk.tcl.internal.ui.text;
 
 import java.util.ArrayList;
@@ -43,8 +40,8 @@ import org.eclipse.ui.IMarkerResolution;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.ListDialog;
 
-final class TclRequirePackageCorrectionMarkerResolution implements
-		IMarkerResolution, IAnnotationResolution {
+final class TclRequirePackageCorrectionMarkerResolution
+		implements IMarkerResolution, IAnnotationResolution {
 	private String pkgName;
 	private IScriptProject project;
 	private ISourceModule module;
@@ -56,6 +53,7 @@ final class TclRequirePackageCorrectionMarkerResolution implements
 		this.module = module;
 	}
 
+	@Override
 	public String getLabel() {
 		return Messages.TclRequirePackageCorrectionMarkerResolution_SpecifyPackagesResolutionLabel;
 	}
@@ -105,14 +103,14 @@ final class TclRequirePackageCorrectionMarkerResolution implements
 		try {
 			install = ScriptRuntime.getInterpreterInstall(project);
 			if (install != null) {
-				final Set<String> pnames = new HashSet<String>();
-				final Set<String> pAutoNames = new HashSet<String>();
+				final Set<String> pnames = new HashSet<>();
+				final Set<String> pAutoNames = new HashSet<>();
 				InterpreterContainerHelper.getInterpreterContainerDependencies(
 						project, pnames, pAutoNames);
 
 				Set<String> packages = TclPackagesManager
 						.getPackageInfosAsString(install);
-				final List<String> names = new ArrayList<String>();
+				final List<String> names = new ArrayList<>();
 				names.addAll(packages);
 				Collections.sort(names, String.CASE_INSENSITIVE_ORDER);
 
@@ -124,34 +122,37 @@ final class TclRequirePackageCorrectionMarkerResolution implements
 								| SWT.BORDER;
 					}
 				};
-				dialog
-						.setTitle(Messages.TclRequirePackageCorrectionMarkerResolution_SpecifyPackagesTitle);
+				dialog.setTitle(
+						Messages.TclRequirePackageCorrectionMarkerResolution_SpecifyPackagesTitle);
 				dialog.setContentProvider(new IStructuredContentProvider() {
+					@Override
 					public Object[] getElements(Object inputElement) {
 						return names.toArray();
 					}
 
+					@Override
 					public void dispose() {
 					}
 
+					@Override
 					public void inputChanged(Viewer viewer, Object oldInput,
 							Object newInput) {
 					}
 				});
 				dialog.setLabelProvider(new PackagesLabelProvider(install));
 				dialog.setInput(names);
-				Set<String> pkgs = new HashSet<String>();
+				Set<String> pkgs = new HashSet<>();
 				if (dialog.open() == ListDialog.OK) {
 					TclProjectInfo info = TclPackagesManager
 							.getTclProject(this.project.getElementName());
-					TclModuleInfo moduleInfo = info.findModule(module
-							.getHandleIdentifier());
+					TclModuleInfo moduleInfo = info
+							.findModule(module.getHandleIdentifier());
 					if (moduleInfo == null) {
 						moduleInfo = TclPackagesFactory.eINSTANCE
 								.createTclModuleInfo();
 						moduleInfo.setHandle(module.getHandleIdentifier());
-						moduleInfo
-								.setExternal(module instanceof IExternalSourceModule);
+						moduleInfo.setExternal(
+								module instanceof IExternalSourceModule);
 						info.getModules().add(moduleInfo);
 					}
 					Object[] result = dialog.getResult();
@@ -186,10 +187,12 @@ final class TclRequirePackageCorrectionMarkerResolution implements
 		return false;
 	}
 
+	@Override
 	public void run(final IMarker marker) {
 		resolve();
 	}
 
+	@Override
 	public void run(IScriptAnnotation annotation, IDocument document) {
 		if (resolve()) {
 			ISourceModule module = annotation.getSourceModule();

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 xored software, Inc.
+ * Copyright (c) 2008, 2017 xored software, Inc. and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -15,11 +15,11 @@ import java.util.List;
 
 import org.eclipse.dltk.compiler.task.TaskTagUtils;
 import org.eclipse.dltk.compiler.util.Util;
-import org.eclipse.dltk.ui.dialogs.StatusInfo;
 import org.eclipse.dltk.internal.ui.wizards.dialogfields.DialogField;
 import org.eclipse.dltk.internal.ui.wizards.dialogfields.IDialogFieldListener;
 import org.eclipse.dltk.internal.ui.wizards.dialogfields.LayoutUtil;
 import org.eclipse.dltk.internal.ui.wizards.dialogfields.StringDialogField;
+import org.eclipse.dltk.ui.dialogs.StatusInfo;
 import org.eclipse.jface.dialogs.StatusDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
@@ -27,8 +27,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 
-public class TclCheckContentExcludeInputDialog extends StatusDialog implements
-		IDialogFieldListener {
+public class TclCheckContentExcludeInputDialog extends StatusDialog
+		implements IDialogFieldListener {
 
 	private StringDialogField fPatternDialogField;
 
@@ -39,13 +39,15 @@ public class TclCheckContentExcludeInputDialog extends StatusDialog implements
 		super(parent);
 		fExistingNames = existingEntries;
 		if (input == null) {
-			setTitle(TclPreferencesMessages.TclCheckContentExcludeDialog_newTitle);
+			setTitle(
+					TclPreferencesMessages.TclCheckContentExcludeDialog_newTitle);
 		} else {
-			setTitle(TclPreferencesMessages.TclCheckContentExcludeDialog_editTitle);
+			setTitle(
+					TclPreferencesMessages.TclCheckContentExcludeDialog_editTitle);
 		}
 		fPatternDialogField = new StringDialogField();
-		fPatternDialogField
-				.setLabelText(TclPreferencesMessages.TclCheckContentExcludeDialog_pattern);
+		fPatternDialogField.setLabelText(
+				TclPreferencesMessages.TclCheckContentExcludeDialog_pattern);
 		fPatternDialogField.setDialogFieldListener(this);
 		fPatternDialogField.setText(input != null ? input : Util.EMPTY_STRING);
 	}
@@ -54,6 +56,7 @@ public class TclCheckContentExcludeInputDialog extends StatusDialog implements
 		return fPatternDialogField.getText().trim();
 	}
 
+	@Override
 	protected Control createDialogArea(Composite parent) {
 		Composite composite = (Composite) super.createDialogArea(parent);
 		Composite inner = new Composite(composite, SWT.NONE);
@@ -63,8 +66,8 @@ public class TclCheckContentExcludeInputDialog extends StatusDialog implements
 		layout.numColumns = 2;
 		inner.setLayout(layout);
 		fPatternDialogField.doFillIntoGrid(inner, 2);
-		LayoutUtil.setHorizontalGrabbing(fPatternDialogField
-				.getTextControl(null));
+		LayoutUtil.setHorizontalGrabbing(
+				fPatternDialogField.getTextControl(null));
 		LayoutUtil.setWidthHint(fPatternDialogField.getTextControl(null),
 				convertWidthInCharsToPixels(45));
 		fPatternDialogField.postSetFocusOnDialogField(parent.getDisplay());
@@ -76,27 +79,26 @@ public class TclCheckContentExcludeInputDialog extends StatusDialog implements
 		StatusInfo status = new StatusInfo();
 		String newText = fPatternDialogField.getText();
 		if (newText.length() == 0) {
-			status
-					.setError(TclPreferencesMessages.TclCheckContentExcludeDialog_enterPatternError);
+			status.setError(
+					TclPreferencesMessages.TclCheckContentExcludeDialog_enterPatternError);
 		} else {
 			if (!TaskTagUtils.isValidName(newText)) {
-				status
-						.setError(TclPreferencesMessages.TclCheckContentExcludeDialog_invalidPatternError);
+				status.setError(
+						TclPreferencesMessages.TclCheckContentExcludeDialog_invalidPatternError);
 			} else if (fExistingNames.contains(newText)) {
-				status
-						.setError(TclPreferencesMessages.TclCheckContentExcludeDialog_duplicatePatternError);
+				status.setError(
+						TclPreferencesMessages.TclCheckContentExcludeDialog_duplicatePatternError);
 			}
 		}
 		updateStatus(status);
 	}
 
-	/*
-	 * @see org.eclipse.jface.window.Window#configureShell(Shell)
-	 */
+	@Override
 	protected void configureShell(Shell newShell) {
 		super.configureShell(newShell);
 	}
 
+	@Override
 	public void dialogFieldChanged(DialogField field) {
 		doValidation();
 	}

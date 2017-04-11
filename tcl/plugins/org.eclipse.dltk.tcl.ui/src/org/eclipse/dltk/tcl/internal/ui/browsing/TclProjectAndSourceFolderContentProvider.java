@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2009 xored software, Inc.  
+ * Copyright (c) 2009, 2017 xored software, Inc. and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html  
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
  *     xored software, Inc. - initial API and Implementation (Alex Panchenko)
@@ -22,8 +22,8 @@ import org.eclipse.dltk.tcl.internal.core.sources.TclSourcesFragment;
 import org.eclipse.dltk.ui.browsing.ProjectAndSourceFolderContentProvider;
 import org.eclipse.dltk.ui.browsing.ScriptBrowsingPart;
 
-public class TclProjectAndSourceFolderContentProvider extends
-		ProjectAndSourceFolderContentProvider {
+public class TclProjectAndSourceFolderContentProvider
+		extends ProjectAndSourceFolderContentProvider {
 
 	public TclProjectAndSourceFolderContentProvider(
 			ScriptBrowsingPart browsingPart,
@@ -37,7 +37,7 @@ public class TclProjectAndSourceFolderContentProvider extends
 		if (!project.getProject().isOpen())
 			return NO_CHILDREN;
 		IProjectFragment[] roots = project.getProjectFragments();
-		final List list = new ArrayList(roots.length);
+		final List<IProjectFragment> list = new ArrayList<>(roots.length);
 		// filter out package fragments that correspond to projects and
 		// replace them with the package fragments directly
 		for (int i = 0; i < roots.length; i++) {

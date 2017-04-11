@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 xored software, Inc.
+ * Copyright (c) 2008, 2017 xored software, Inc. and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -19,6 +19,7 @@ import org.eclipse.ui.ide.IDE;
 
 public class TclScriptFileConfigurator implements IScriptFileConfigurator {
 
+	@Override
 	public void configure(IFile file) throws CoreException {
 		final String value = file.getPersistentProperty(IDE.EDITOR_KEY);
 		if (value == null) {

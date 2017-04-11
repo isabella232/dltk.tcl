@@ -15,10 +15,12 @@ import org.eclipse.dltk.tcl.internal.ui.navigation.ElementsView.ElementList;
 public class ElementListAdapterFactory implements IAdapterFactory {
 	private static Class<?>[] PROPERTIES = new Class[] { IModelElement.class };
 
+	@Override
 	public Class<?>[] getAdapterList() {
 		return PROPERTIES;
 	}
 
+	@Override
 	@SuppressWarnings("unchecked")
 	public <T> T getAdapter(Object element, Class<T> key) {
 		if (IModelElement.class.equals(key)) {

@@ -34,12 +34,12 @@ import org.eclipse.dltk.ui.DLTKPluginImages;
 import org.eclipse.dltk.ui.viewsupport.ScriptUILabelProvider;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.viewers.IBaseLabelProvider;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
@@ -61,6 +61,7 @@ class PackageFilterAction extends Action {
 		public SimplePackagesContentProvider() {
 		}
 
+		@Override
 		public synchronized Object[] getChildren(Object parentElement) {
 			if (parentElement instanceof IWorkspaceRoot) {
 				return elements.keySet().toArray();
@@ -68,6 +69,7 @@ class PackageFilterAction extends Action {
 			return NO_ELEMENT;
 		}
 
+		@Override
 		public Object getParent(Object element) {
 			if (element instanceof String) {
 				return ResourcesPlugin.getWorkspace().getRoot();
@@ -75,6 +77,7 @@ class PackageFilterAction extends Action {
 			return NO_ELEMENT;
 		}
 
+		@Override
 		public boolean hasChildren(Object element) {
 			if (element instanceof IWorkspaceRoot) {
 				return true;
@@ -82,20 +85,22 @@ class PackageFilterAction extends Action {
 			return false;
 		}
 
+		@Override
 		public Object[] getElements(Object inputElement) {
 			return getChildren(inputElement);
 		}
 
+		@Override
 		public void dispose() {
 		}
 
+		@Override
 		public void inputChanged(Viewer viewer, Object oldInput,
 				Object newInput) {
 		}
 	}
 
-	private class SimplePackageLabelProvider extends ScriptUILabelProvider
-			implements IBaseLabelProvider {
+	private class SimplePackageLabelProvider extends ScriptUILabelProvider {
 		@Override
 		public Image getImage(Object element) {
 			return DLTKPluginImages.get(DLTKPluginImages.IMG_OBJS_PACKAGE);
@@ -165,30 +170,30 @@ class PackageFilterAction extends Action {
 	}
 
 	private IPackageDeclaration[] getPackageDeclaration(Object element) {
-		List modelElements = null;
+		List<IModelElement> modelElements = null;
 		if (element instanceof IModelElement) {
-			modelElements = new ArrayList();
-			modelElements.add(element);
+			modelElements = new ArrayList<>();
+			modelElements.add((IModelElement) element);
 		} else if (element instanceof IAdaptable) {
 			IAdaptable adaptable = (IAdaptable) element;
 			modelElements = adaptable.getAdapter(List.class);
 		}
-		List result = new ArrayList();
+		List<IPackageDeclaration> result = new ArrayList<>();
 		synchronized (modelElements) {
-			for (Iterator iter = modelElements.iterator(); iter.hasNext();) {
-				IModelElement e = (IModelElement) iter.next();
+			for (Iterator<IModelElement> iter = modelElements.iterator(); iter
+					.hasNext();) {
+				IModelElement e = iter.next();
 				IPackageDeclaration p = getPackageDeclaration(e);
 				if (p != null)
 					result.add(p);
 			}
 		}
 
-		return (IPackageDeclaration[]) result
-				.toArray(new IPackageDeclaration[result.size()]);
+		return result.toArray(new IPackageDeclaration[result.size()]);
 	}
 
 	private class PackageFilter extends ViewerFilter {
-		List elements = new ArrayList();
+		List<String> elements = new ArrayList<>();
 
 		@Override
 		public boolean select(Viewer viewer, Object parentElement,
@@ -200,8 +205,9 @@ class PackageFilterAction extends Action {
 			for (int i = 0; i < decl.length; i++) {
 				String matchName = getElementName(viewer, decl[i]);
 				if (matchName != null) {
-					for (Iterator iter = elements.iterator(); iter.hasNext();) {
-						String str = (String) iter.next();
+					for (Iterator<String> iter = elements.iterator(); iter
+							.hasNext();) {
+						String str = iter.next();
 						if (str.equals(matchName)) {
 							good = true;
 							break;
@@ -272,23 +278,20 @@ class PackageFilterAction extends Action {
 
 	@Override
 	public void run() {
-		BusyIndicator.showWhile(Display.getCurrent(), new Runnable() {
-			public void run() {
-				provider.elements.clear();
-				IProject[] projects = ResourcesPlugin.getWorkspace().getRoot()
-						.getProjects();
-				for (int i = 0; i < projects.length; ++i) {
-					try {
-						if (projects[i].hasNature(TclNature.NATURE_ID)) {
-							IScriptProject project = DLTKCore
-									.create(projects[i]);
-							if (project != null) {
-								addElements(project);
-							}
+		BusyIndicator.showWhile(Display.getCurrent(), () -> {
+			provider.elements.clear();
+			IProject[] projects = ResourcesPlugin.getWorkspace().getRoot()
+					.getProjects();
+			for (int i = 0; i < projects.length; ++i) {
+				try {
+					if (projects[i].hasNature(TclNature.NATURE_ID)) {
+						IScriptProject project = DLTKCore.create(projects[i]);
+						if (project != null) {
+							addElements(project);
 						}
-					} catch (CoreException e) {
-						e.printStackTrace();
 					}
+				} catch (CoreException e) {
+					e.printStackTrace();
 				}
 			}
 		});
@@ -297,7 +300,7 @@ class PackageFilterAction extends Action {
 		dlg.setInput(ResourcesPlugin.getWorkspace().getRoot());
 		dlg.setTitle("Select packages");
 		dlg.setMessage("Select packages to be shown in view");
-		if (dlg.open() == CheckedTreeSelectionDialog.OK) {
+		if (dlg.open() == Window.OK) {
 			// save preference
 			Object res[] = dlg.getResult();
 			StringBuffer buf = new StringBuffer();

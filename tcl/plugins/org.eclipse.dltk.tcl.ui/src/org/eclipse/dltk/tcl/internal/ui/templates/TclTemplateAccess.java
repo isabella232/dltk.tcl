@@ -1,11 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2007 IBM Corporation and others.
+ * Copyright (c) 2005, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
-
  *******************************************************************************/
 package org.eclipse.dltk.tcl.internal.ui.templates;
 
@@ -30,23 +29,17 @@ public class TclTemplateAccess extends ScriptTemplateAccess {
 		return instance;
 	}
 
-	/*
-	 * @see org.eclipse.dltk.ui.templates.ScriptTemplateAccess#getContextTypeId()
-	 */
+	@Override
 	protected String getContextTypeId() {
 		return TclUniversalTemplateContextType.CONTEXT_TYPE_ID;
 	}
 
-	/*
-	 * @see org.eclipse.dltk.ui.templates.ScriptTemplateAccess#getCustomTemplatesKey()
-	 */
+	@Override
 	protected String getCustomTemplatesKey() {
 		return CUSTOM_TEMPLATES_KEY;
 	}
 
-	/*
-	 * @see org.eclipse.dltk.ui.templates.ScriptTemplateAccess#getPreferenceStore()
-	 */
+	@Override
 	protected IPreferenceStore getPreferenceStore() {
 		return TclUI.getDefault().getPreferenceStore();
 	}

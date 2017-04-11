@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2009 xored software, Inc.  
+ * Copyright (c) 2009, 2017 xored software, Inc. and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html  
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
  *     xored software, Inc. - initial API and Implementation (Alex Panchenko)
@@ -21,7 +21,6 @@ import org.eclipse.dltk.tcl.internal.ui.documentation.ManPagesMessages;
 import org.eclipse.dltk.ui.util.IStatusChangeListener;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.StatusDialog;
-import org.eclipse.jface.window.IShellProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -32,8 +31,8 @@ import org.eclipse.swt.widgets.Shell;
 /**
  * @since 2.0
  */
-public class ManPagesConfigurationDialog extends StatusDialog implements
-		IStatusChangeListener, IShellProvider {
+public class ManPagesConfigurationDialog extends StatusDialog
+		implements IStatusChangeListener {
 
 	private ManPagesLocationsBlock fBlock;
 
@@ -62,9 +61,10 @@ public class ManPagesConfigurationDialog extends StatusDialog implements
 		try {
 			fBlock.save();
 		} catch (IOException e) {
-			ErrorDialog.openError(getShell(), ManPagesMessages.ManPagesConfigurationDialog_TitleSaveError, e
-					.getMessage(), new Status(IStatus.ERROR, TclUI.PLUGIN_ID, e
-					.getMessage(), e));
+			ErrorDialog.openError(getShell(),
+					ManPagesMessages.ManPagesConfigurationDialog_TitleSaveError,
+					e.getMessage(), new Status(IStatus.ERROR, TclUI.PLUGIN_ID,
+							e.getMessage(), e));
 			return;
 		}
 		super.okPressed();
@@ -75,6 +75,7 @@ public class ManPagesConfigurationDialog extends StatusDialog implements
 		return super.getShell();
 	}
 
+	@Override
 	public void statusChanged(IStatus status) {
 		updateStatus(status);
 	}

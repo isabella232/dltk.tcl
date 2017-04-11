@@ -51,9 +51,6 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.viewers.DoubleClickEvent;
-import org.eclipse.jface.viewers.IBaseLabelProvider;
-import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.ITreeSelection;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -83,12 +80,13 @@ public abstract class ElementsView extends ViewPart {
 		return TclUI.getDefault().getPreferenceStore();
 	}
 
-	private class ElementsTreeViewer extends TreeViewer implements
-			IFilterElementNameProvider {
+	private class ElementsTreeViewer extends TreeViewer
+			implements IFilterElementNameProvider {
 		public ElementsTreeViewer(Composite container, int border) {
 			super(container, border);
 		}
 
+		@Override
 		public String getElementName(Object element) {
 			return labelProvider.getText(element);
 		}
@@ -103,10 +101,11 @@ public abstract class ElementsView extends ViewPart {
 			setImageDescriptor(DLTKPluginImages
 					.getDescriptor(DLTKPluginImages.IMG_OBJS_PACKAGE));
 			boolean checked = getStore().getBoolean(
-					getPreferencesId() + "ToggleExternalAction.isChecked"); //$NON-NLS-1$		
+					getPreferencesId() + "ToggleExternalAction.isChecked"); //$NON-NLS-1$
 			valueChanged(checked, false);
 		}
 
+		@Override
 		public void run() {
 			valueChanged(isChecked(), true);
 		}
@@ -114,27 +113,26 @@ public abstract class ElementsView extends ViewPart {
 		private void valueChanged(final boolean on, boolean store) {
 			setChecked(on);
 			if (store)
-				getStore()
-						.setValue(
-								getPreferencesId()
-										+ "ToggleExternalAction.isChecked", on); //$NON-NLS-1$
+				getStore().setValue(
+						getPreferencesId() + "ToggleExternalAction.isChecked", //$NON-NLS-1$
+						on);
 			BusyIndicator.showWhile(treeViewer.getControl().getDisplay(),
-					new Runnable() {
-						public void run() {
-							lookIntoExternal = on;
-							provider.clear();
-							runAsync();
-						}
+					() -> {
+						lookIntoExternal = on;
+						provider.clear();
+						runAsync();
 					});
 		}
 	}
 
 	class LexicalSortingAction extends Action {
 		private ModelElementSorter fSorter = new ModelElementSorter() {
+			@Override
 			protected String getElementName(Object element) {
 				return labelProvider.getText(element);
 			}
 
+			@Override
 			public int compare(Viewer viewer, Object e1, Object e2) {
 				Object o1 = e1;
 				Object o2 = e2;
@@ -151,8 +149,8 @@ public abstract class ElementsView extends ViewPart {
 		public LexicalSortingAction() {
 			super();
 			if (DLTKCore.DEBUG) {
-				System.err
-						.println("LexicalSortingAction: Need to set correct info here.");
+				System.err.println(
+						"LexicalSortingAction: Need to set correct info here.");
 			}
 			// PlatformUI.getWorkbench().getHelpSystem().setHelp(this,
 			// IDLTKHelpContextIds.LEXICAL_SORTING_OUTLINE_ACTION);
@@ -160,10 +158,11 @@ public abstract class ElementsView extends ViewPart {
 			DLTKPluginImages.setLocalImageDescriptors(this,
 					"alphab_sort_co.gif"); //$NON-NLS-1$
 			boolean checked = getStore().getBoolean(
-					getPreferencesId() + "LexicalSortingAction.isChecked"); //$NON-NLS-1$		
+					getPreferencesId() + "LexicalSortingAction.isChecked"); //$NON-NLS-1$
 			valueChanged(checked, false);
 		}
 
+		@Override
 		public void run() {
 			valueChanged(isChecked(), true);
 		}
@@ -171,16 +170,11 @@ public abstract class ElementsView extends ViewPart {
 		private void valueChanged(final boolean on, boolean store) {
 			setChecked(on);
 			BusyIndicator.showWhile(treeViewer.getControl().getDisplay(),
-					new Runnable() {
-						public void run() {
-							treeViewer.setComparator(on ? fSorter : null);
-						}
-					});
+					() -> treeViewer.setComparator(on ? fSorter : null));
 			if (store)
-				getStore()
-						.setValue(
-								getPreferencesId()
-										+ "LexicalSortingAction.isChecked", on); //$NON-NLS-1$			
+				getStore().setValue(
+						getPreferencesId() + "LexicalSortingAction.isChecked", //$NON-NLS-1$
+						on);
 		}
 	}
 
@@ -202,10 +196,12 @@ public abstract class ElementsView extends ViewPart {
 			return null;
 		}
 
+		@Override
 		public String toString() {
 			return this.name;
 		}
 
+		@Override
 		public int hashCode() {
 			final int PRIME = 31;
 			int result = 1;
@@ -213,6 +209,7 @@ public abstract class ElementsView extends ViewPart {
 			return result;
 		}
 
+		@Override
 		public boolean equals(Object obj) {
 			if (this == obj)
 				return true;
@@ -233,12 +230,14 @@ public abstract class ElementsView extends ViewPart {
 			return this.childs;
 		}
 
-		public Object getAdapter(Class adapter) {
+		@SuppressWarnings("unchecked")
+		@Override
+		public <T> T getAdapter(Class<T> adapter) {
 			if (adapter == IModelElement.class) {
-				return getFirstElement();
+				return (T) getFirstElement();
 			}
 			if (adapter == List.class) {
-				return childs;
+				return (T) childs;
 			}
 			return null;
 		}
@@ -250,6 +249,7 @@ public abstract class ElementsView extends ViewPart {
 
 		public ElementsContentProvider() {
 			DLTKCore.addElementChangedListener(new IElementChangedListener() {
+				@Override
 				public void elementChanged(ElementChangedEvent event) {
 					IModelElementDelta delta = event.getDelta();
 					processChildren(delta);
@@ -265,16 +265,19 @@ public abstract class ElementsView extends ViewPart {
 					if (delta.getKind() == IModelElementDelta.REMOVED) {
 						removeTypesJob(element);
 					}
-					if ((delta.getFlags() & IModelElementDelta.F_ADDED_TO_BUILDPATH) != 0) {
+					if ((delta.getFlags()
+							& IModelElementDelta.F_ADDED_TO_BUILDPATH) != 0) {
 						addElementsJob(element);
 					}
-					if ((delta.getFlags() & IModelElementDelta.F_REMOVED_FROM_BUILDPATH) != 0) {
+					if ((delta.getFlags()
+							& IModelElementDelta.F_REMOVED_FROM_BUILDPATH) != 0) {
 						synchronized (elements) {
 							elements.clear();
 						}
 						runAsync();
 					}
-					if ((delta.getFlags() & IModelElementDelta.F_CHILDREN) != 0) {
+					if ((delta.getFlags()
+							& IModelElementDelta.F_CHILDREN) != 0) {
 						IModelElementDelta[] affectedChildren = delta
 								.getAffectedChildren();
 						for (int i = 0; i < affectedChildren.length; i++) {
@@ -286,6 +289,7 @@ public abstract class ElementsView extends ViewPart {
 			});
 		}
 
+		@Override
 		public synchronized Object[] getChildren(Object parentElement) {
 			if (parentElement instanceof IWorkspaceRoot) {
 				List result = new ArrayList();
@@ -310,6 +314,7 @@ public abstract class ElementsView extends ViewPart {
 			return NO_ELEMENT;
 		}
 
+		@Override
 		public Object getParent(Object element) {
 			if (element instanceof IModelElement) {
 				return ResourcesPlugin.getWorkspace().getRoot();
@@ -317,6 +322,7 @@ public abstract class ElementsView extends ViewPart {
 			return NO_ELEMENT;
 		}
 
+		@Override
 		public boolean hasChildren(Object element) {
 			if (element instanceof IWorkspaceRoot) {
 				return true;
@@ -324,21 +330,25 @@ public abstract class ElementsView extends ViewPart {
 			return false;
 		}
 
+		@Override
 		public Object[] getElements(Object inputElement) {
 			return getChildren(inputElement);
 		}
 
+		@Override
 		public void dispose() {
 		}
 
-		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+		@Override
+		public void inputChanged(Viewer viewer, Object oldInput,
+				Object newInput) {
 		}
 
 		synchronized public void addElement(IModelElement element) {
 			IDLTKLanguageToolkit languageToolkit = DLTKLanguageManager
 					.getLanguageToolkit(element);
-			if (!languageToolkit.getNatureId().equals(
-					TclLanguageToolkit.getDefault().getNatureId())) {
+			if (!languageToolkit.getNatureId()
+					.equals(TclLanguageToolkit.getDefault().getNatureId())) {
 				return;
 			}
 
@@ -386,8 +396,8 @@ public abstract class ElementsView extends ViewPart {
 
 	public abstract String getElementName(Object o);
 
-	public class ElementsViewLabelProvider extends ScriptUILabelProvider
-			implements IBaseLabelProvider {
+	public class ElementsViewLabelProvider extends ScriptUILabelProvider {
+		@Override
 		public Image getImage(Object element) {
 			if (element instanceof ElementList) {
 				return getImage(((ElementList) element).getFirstElement());
@@ -407,6 +417,7 @@ public abstract class ElementsView extends ViewPart {
 			return super.getText(element);
 		}
 
+		@Override
 		public String getText(Object element) {
 			String text = getElementName(element);
 			if (text != null) {
@@ -435,7 +446,8 @@ public abstract class ElementsView extends ViewPart {
 		if (element instanceof ISourceModule)
 			asyncRefresh();
 		boolean bad = !lookIntoExternal
-				&& (element instanceof ExternalScriptFolder || element instanceof IExternalSourceModule);
+				&& (element instanceof ExternalScriptFolder
+						|| element instanceof IExternalSourceModule);
 		if (element instanceof IParent && !bad) {
 			IModelElement[] children = null;
 			try {
@@ -460,6 +472,7 @@ public abstract class ElementsView extends ViewPart {
 
 	private void addElementsJob(final IModelElement element) {
 		Job job = new Job(getTitle()) {
+			@Override
 			protected IStatus run(IProgressMonitor monitor) {
 				addElements(element, monitor);
 				monitor.done();
@@ -472,9 +485,8 @@ public abstract class ElementsView extends ViewPart {
 	private void removeElements(IModelElement element) {
 		IDLTKLanguageToolkit languageToolkit = DLTKLanguageManager
 				.getLanguageToolkit(element);
-		if (languageToolkit != null
-				&& !languageToolkit.getNatureId().equals(
-						TclLanguageToolkit.getDefault().getNatureId())) {
+		if (languageToolkit != null && !languageToolkit.getNatureId()
+				.equals(TclLanguageToolkit.getDefault().getNatureId())) {
 			return;
 		}
 		if (isElement(element)) {
@@ -501,6 +513,7 @@ public abstract class ElementsView extends ViewPart {
 
 	private void removeTypesJob(final IModelElement element) {
 		Job job = new Job(getTitle()) {
+			@Override
 			protected IStatus run(IProgressMonitor monitor) {
 				removeElements(element);
 				monitor.done();
@@ -511,11 +524,9 @@ public abstract class ElementsView extends ViewPart {
 	}
 
 	private void asyncRefresh() {
-		Display.getDefault().asyncExec(new Runnable() {
-			public void run() {
-				if (treeViewer != null && !treeViewer.getTree().isDisposed()) {
-					treeViewer.refresh(true);
-				}
+		Display.getDefault().asyncExec(() -> {
+			if (treeViewer != null && !treeViewer.getTree().isDisposed()) {
+				treeViewer.refresh(true);
 			}
 		});
 	}
@@ -529,6 +540,7 @@ public abstract class ElementsView extends ViewPart {
 			currentJob = null;
 		}
 		Job job = new Job(getJobTitle()) {
+			@Override
 			protected IStatus run(IProgressMonitor monitor) {
 				IProject[] projects = ResourcesPlugin.getWorkspace().getRoot()
 						.getProjects();
@@ -559,6 +571,7 @@ public abstract class ElementsView extends ViewPart {
 		currentJob = job;
 	}
 
+	@Override
 	public void createPartControl(Composite parent) {
 		Composite container = new Composite(parent, SWT.NONE);
 		container.setLayout(new FillLayout());
@@ -568,39 +581,36 @@ public abstract class ElementsView extends ViewPart {
 		treeViewer.setLabelProvider(labelProvider);
 		treeViewer.setContentProvider(provider);
 		treeViewer.setInput(ResourcesPlugin.getWorkspace().getRoot());
-		treeViewer.addDoubleClickListener(new IDoubleClickListener() {
-			public void doubleClick(DoubleClickEvent event) {
-				ITreeSelection selection = (ITreeSelection) (event
-						.getSelection());
-				Object source = selection.getFirstElement();
-				if (source == null)
-					return;
-				try {
-					if (source instanceof IModelElement) {
-						IEditorPart editor = EditorUtility.openInEditor(source);
-						EditorUtility.revealInEditor(editor,
-								(IModelElement) source);
-					} else if (source instanceof ElementList) {
-						ElementList el = (ElementList) source;
-						List elements = el.getElements();
-						if (elements != null) {
-							for (int i = 0; i < elements.size(); ++i) {
-								Object element = elements.get(i);
-								if (element instanceof IModelElement) {
-									IEditorPart editor = EditorUtility
-											.openInEditor(element);
-									EditorUtility.revealInEditor(editor,
-											(IModelElement) element);
-								} else
-									EditorUtility.openInEditor(element);
-							}
+		treeViewer.addDoubleClickListener(event -> {
+			ITreeSelection selection = (ITreeSelection) (event.getSelection());
+			Object source = selection.getFirstElement();
+			if (source == null)
+				return;
+			try {
+				if (source instanceof IModelElement) {
+					IEditorPart editor1 = EditorUtility.openInEditor(source);
+					EditorUtility.revealInEditor(editor1,
+							(IModelElement) source);
+				} else if (source instanceof ElementList) {
+					ElementList el = (ElementList) source;
+					List elements = el.getElements();
+					if (elements != null) {
+						for (int i = 0; i < elements.size(); ++i) {
+							Object element = elements.get(i);
+							if (element instanceof IModelElement) {
+								IEditorPart editor2 = EditorUtility
+										.openInEditor(element);
+								EditorUtility.revealInEditor(editor2,
+										(IModelElement) element);
+							} else
+								EditorUtility.openInEditor(element);
 						}
 					}
-				} catch (PartInitException e) {
-					e.printStackTrace();
-				} catch (ModelException e) {
-					e.printStackTrace();
 				}
+			} catch (PartInitException e1) {
+				e1.printStackTrace();
+			} catch (ModelException e2) {
+				e2.printStackTrace();
 			}
 		});
 		IViewSite site = (IViewSite) this.getSite();
@@ -631,6 +641,7 @@ public abstract class ElementsView extends ViewPart {
 		// viewMenuManager.add(fToggleLinkingAction);
 	}
 
+	@Override
 	public void dispose() {
 		if (fCustomFiltersActionGroup != null) {
 			fCustomFiltersActionGroup.dispose();
@@ -639,6 +650,7 @@ public abstract class ElementsView extends ViewPart {
 		super.dispose();
 	}
 
+	@Override
 	public void setFocus() {
 	}
 

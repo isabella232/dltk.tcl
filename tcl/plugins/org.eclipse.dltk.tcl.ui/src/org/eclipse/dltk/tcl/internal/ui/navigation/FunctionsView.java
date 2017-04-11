@@ -1,11 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2007 IBM Corporation and others.
+ * Copyright (c) 2005, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- 
  *******************************************************************************/
 package org.eclipse.dltk.tcl.internal.ui.navigation;
 
@@ -16,35 +15,35 @@ import org.eclipse.dltk.core.IParent;
 import org.eclipse.dltk.core.IType;
 
 public class FunctionsView extends ElementsView {
-	//TODO: Remove into preferences
+	// TODO: Remove into preferences
 	private boolean processNamespaceMethods = false;
-	public String getElementName(Object element) {		
-		if( element instanceof IMethod ) {
-			String buffer = "";			
-			IModelElement el  = (IModelElement)element;
-			while( el != null ) {
+
+	@Override
+	public String getElementName(Object element) {
+		if (element instanceof IMethod) {
+			String buffer = "";
+			IModelElement el = (IModelElement) element;
+			while (el != null) {
 				String str = getOriginalElementText(el);
-				if( str.startsWith("::")) {
+				if (str.startsWith("::")) {
 					buffer = str + buffer;
-				}
-				else {
+				} else {
 					buffer = "::" + str + buffer;
 				}
-				if( el instanceof IParent ) {
+				if (el instanceof IParent) {
 					IModelElement parent = el.getParent();
-					if( parent instanceof IType ) {
+					if (parent instanceof IType) {
 						el = parent;
-					}
-					else {
+					} else {
 						el = null;
 					}
-				}
-				else {
+				} else {
 					el = null;
 				}
 			}
-			String from = ((IMethod)element).getAncestor(IModelElement.SCRIPT_FOLDER).getElementName();
-			if( from.length() > 0 ) {				
+			String from = ((IMethod) element)
+					.getAncestor(IModelElement.SCRIPT_FOLDER).getElementName();
+			if (from.length() > 0) {
 				return buffer + " (" + from + ")";
 			}
 			return buffer;
@@ -52,25 +51,28 @@ public class FunctionsView extends ElementsView {
 		return null;
 	}
 
+	@Override
 	public String getJobTitle() {
 		return "Functions view search...";
 	}
 
+	@Override
 	public boolean isElement(IModelElement e) {
 		return e instanceof IMethod;
-	}	
-	
+	}
+
+	@Override
 	public boolean needProcessChildren(IModelElement e) {
-		if( e instanceof IType ) {
+		if (e instanceof IType) {
 			return processNamespaceMethods;
-		}		
-		else if( e instanceof IMethod || e instanceof IField  ) {
+		} else if (e instanceof IMethod || e instanceof IField) {
 			return false;
-		}			
+		}
 		return true;
 	}
 
-	protected String getPreferencesId() {		
+	@Override
+	protected String getPreferencesId() {
 		return "FunctionsView_";
-	}	
+	}
 }

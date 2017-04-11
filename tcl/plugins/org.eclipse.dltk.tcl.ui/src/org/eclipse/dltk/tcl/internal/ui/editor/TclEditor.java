@@ -1,11 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2007 IBM Corporation and others.
+ * Copyright (c) 2005, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- 
  *******************************************************************************/
 package org.eclipse.dltk.tcl.internal.ui.editor;
 
@@ -42,6 +41,7 @@ public class TclEditor extends ScriptEditor {
 
 	private IFoldingStructureProvider foldingProvider;
 
+	@Override
 	protected void initializeEditor() {
 		super.initializeEditor();
 
@@ -49,9 +49,7 @@ public class TclEditor extends ScriptEditor {
 		setRulerContextMenuId(RULER_CONTEXT);
 	}
 
-	/*
-	 * @see ScriptEditor#createPartControl(Composite)
-	 */
+	@Override
 	public void createPartControl(Composite parent) {
 		super.createPartControl(parent);
 		ISourceViewer sourceViewer = getSourceViewer();
@@ -65,33 +63,41 @@ public class TclEditor extends ScriptEditor {
 			TclPreferenceConstants.EDITOR_FOLDING_EXCLUDE_LIST,
 			TclPreferenceConstants.EDITOR_FOLDING_INCLUDE_LIST, };
 
+	@Override
 	protected String[] getFoldingEventPreferenceKeys() {
 		return properties;
 	}
 
+	@Override
 	public IPreferenceStore getScriptPreferenceStore() {
 		return TclUI.getDefault().getPreferenceStore();
 	}
 
+	@Override
 	public ScriptTextTools getTextTools() {
 		return TclUI.getDefault().getTextTools();
 	}
 
+	@Override
 	protected ScriptOutlinePage doCreateOutlinePage() {
-		return new TclOutlinePage(this, TclUI.getDefault().getPreferenceStore());
+		return new TclOutlinePage(this,
+				TclUI.getDefault().getPreferenceStore());
 	}
 
+	@Override
 	protected void connectPartitioningToElement(IEditorInput input,
 			IDocument document) {
 		if (document instanceof IDocumentExtension3) {
 			IDocumentExtension3 doc = (IDocumentExtension3) document;
-			if (doc.getDocumentPartitioner(TclPartitions.TCL_PARTITIONING) == null) {
+			if (doc.getDocumentPartitioner(
+					TclPartitions.TCL_PARTITIONING) == null) {
 				IDocumentSetupParticipant participant = new TclDocumentSetupParticipant();
 				participant.setup(document);
 			}
 		}
 	}
 
+	@Override
 	protected IFoldingStructureProvider getFoldingStructureProvider() {
 		if (foldingProvider == null) {
 			foldingProvider = new TclFoldingStructureProvider();
@@ -100,18 +106,23 @@ public class TclEditor extends ScriptEditor {
 		return foldingProvider;
 	}
 
+	@Override
 	public String getEditorId() {
 		return EDITOR_ID;
 	}
 
+	@Override
 	protected void initializeKeyBindingScopes() {
-		setKeyBindingScopes(new String[] { "org.eclipse.dltk.ui.tclEditorScope" }); //$NON-NLS-1$
+		setKeyBindingScopes(
+				new String[] { "org.eclipse.dltk.ui.tclEditorScope" }); //$NON-NLS-1$
 	}
 
+	@Override
 	public IDLTKLanguageToolkit getLanguageToolkit() {
 		return TclLanguageToolkit.getDefault();
 	}
 
+	@Override
 	public String getCallHierarchyID() {
 		return "org.eclipse.dltk.callhierarchy.view"; //$NON-NLS-1$
 	}
@@ -121,9 +132,7 @@ public class TclEditor extends ScriptEditor {
 		return new TclPairMatcher();
 	}
 
-	/*
-	 * @see ScriptEditor#dispose()
-	 */
+	@Override
 	public void dispose() {
 		ISourceViewer sourceViewer = getSourceViewer();
 		if (sourceViewer instanceof ITextViewerExtension)

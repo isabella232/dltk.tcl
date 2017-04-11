@@ -11,30 +11,30 @@ import java.util.Collection;
 import org.eclipse.dltk.tcl.ui.manpages.Documentation;
 import org.eclipse.dltk.tcl.ui.manpages.ManPageFolder;
 import org.eclipse.dltk.tcl.ui.manpages.ManpagesPackage;
-
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
-
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
 /**
- * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>Documentation</b></em>'.
- * <!-- end-user-doc -->
+ * <!-- begin-user-doc --> An implementation of the model object
+ * '<em><b>Documentation</b></em>'. <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.dltk.tcl.ui.manpages.impl.DocumentationImpl#getName <em>Name</em>}</li>
- *   <li>{@link org.eclipse.dltk.tcl.ui.manpages.impl.DocumentationImpl#getFolders <em>Folders</em>}</li>
- *   <li>{@link org.eclipse.dltk.tcl.ui.manpages.impl.DocumentationImpl#isDefault <em>Default</em>}</li>
- *   <li>{@link org.eclipse.dltk.tcl.ui.manpages.impl.DocumentationImpl#getId <em>Id</em>}</li>
+ * <li>{@link org.eclipse.dltk.tcl.ui.manpages.impl.DocumentationImpl#getName
+ * <em>Name</em>}</li>
+ * <li>{@link org.eclipse.dltk.tcl.ui.manpages.impl.DocumentationImpl#getFolders
+ * <em>Folders</em>}</li>
+ * <li>{@link org.eclipse.dltk.tcl.ui.manpages.impl.DocumentationImpl#isDefault
+ * <em>Default</em>}</li>
+ * <li>{@link org.eclipse.dltk.tcl.ui.manpages.impl.DocumentationImpl#getId
+ * <em>Id</em>}</li>
  * </ul>
  * </p>
  *
@@ -43,8 +43,8 @@ import org.eclipse.emf.ecore.util.InternalEList;
 public class DocumentationImpl extends EObjectImpl implements Documentation {
 	/**
 	 * The default value of the '{@link #getName() <em>Name</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see #getName()
 	 * @generated
 	 * @ordered
@@ -53,8 +53,8 @@ public class DocumentationImpl extends EObjectImpl implements Documentation {
 
 	/**
 	 * The cached value of the '{@link #getName() <em>Name</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see #getName()
 	 * @generated
 	 * @ordered
@@ -62,9 +62,9 @@ public class DocumentationImpl extends EObjectImpl implements Documentation {
 	protected String name = NAME_EDEFAULT;
 
 	/**
-	 * The cached value of the '{@link #getFolders() <em>Folders</em>}' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * The cached value of the '{@link #getFolders() <em>Folders</em>}'
+	 * containment reference list. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see #getFolders()
 	 * @generated
 	 * @ordered
@@ -72,9 +72,9 @@ public class DocumentationImpl extends EObjectImpl implements Documentation {
 	protected EList<ManPageFolder> folders;
 
 	/**
-	 * The default value of the '{@link #isDefault() <em>Default</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * The default value of the '{@link #isDefault() <em>Default</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see #isDefault()
 	 * @generated
 	 * @ordered
@@ -82,9 +82,9 @@ public class DocumentationImpl extends EObjectImpl implements Documentation {
 	protected static final boolean DEFAULT_EDEFAULT = false;
 
 	/**
-	 * The cached value of the '{@link #isDefault() <em>Default</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * The cached value of the '{@link #isDefault() <em>Default</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see #isDefault()
 	 * @generated
 	 * @ordered
@@ -92,9 +92,9 @@ public class DocumentationImpl extends EObjectImpl implements Documentation {
 	protected boolean default_ = DEFAULT_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getId() <em>Id</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * The default value of the '{@link #getId() <em>Id</em>}' attribute. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see #getId()
 	 * @generated
 	 * @ordered
@@ -102,9 +102,9 @@ public class DocumentationImpl extends EObjectImpl implements Documentation {
 	protected static final String ID_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getId() <em>Id</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * The cached value of the '{@link #getId() <em>Id</em>}' attribute. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see #getId()
 	 * @generated
 	 * @ordered
@@ -112,8 +112,8 @@ public class DocumentationImpl extends EObjectImpl implements Documentation {
 	protected String id = ID_EDEFAULT;
 
 	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected DocumentationImpl() {
@@ -121,8 +121,8 @@ public class DocumentationImpl extends EObjectImpl implements Documentation {
 	}
 
 	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
@@ -131,85 +131,99 @@ public class DocumentationImpl extends EObjectImpl implements Documentation {
 	}
 
 	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
+	@Override
 	public String getName() {
 		return name;
 	}
 
 	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
+	@Override
 	public void setName(String newName) {
 		String oldName = name;
 		name = newName;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, ManpagesPackage.DOCUMENTATION__NAME, oldName, name));
+			eNotify(new ENotificationImpl(this, Notification.SET,
+					ManpagesPackage.DOCUMENTATION__NAME, oldName, name));
 	}
 
 	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<ManPageFolder> getFolders() {
 		if (folders == null) {
-			folders = new EObjectContainmentEList<ManPageFolder>(ManPageFolder.class, this, ManpagesPackage.DOCUMENTATION__FOLDERS);
+			folders = new EObjectContainmentEList<>(
+					ManPageFolder.class, this,
+					ManpagesPackage.DOCUMENTATION__FOLDERS);
 		}
 		return folders;
 	}
 
 	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
+	@Override
 	public boolean isDefault() {
 		return default_;
 	}
 
 	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
+	@Override
 	public void setDefault(boolean newDefault) {
 		boolean oldDefault = default_;
 		default_ = newDefault;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, ManpagesPackage.DOCUMENTATION__DEFAULT, oldDefault, default_));
+			eNotify(new ENotificationImpl(this, Notification.SET,
+					ManpagesPackage.DOCUMENTATION__DEFAULT, oldDefault,
+					default_));
 	}
 
 	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
+	@Override
 	public String getId() {
 		return id;
 	}
 
 	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
+	@Override
 	public void setId(String newId) {
 		String oldId = id;
 		id = newId;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, ManpagesPackage.DOCUMENTATION__ID, oldId, id));
+			eNotify(new ENotificationImpl(this, Notification.SET,
+					ManpagesPackage.DOCUMENTATION__ID, oldId, id));
 	}
 
 	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated NOT
 	 */
+	@Override
 	public ManPageFolder findFolder(String path) {
 		if (path != null) {
 			for (ManPageFolder folder : getFolders()) {
@@ -222,117 +236,121 @@ public class DocumentationImpl extends EObjectImpl implements Documentation {
 	}
 
 	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
-	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+	public NotificationChain eInverseRemove(InternalEObject otherEnd,
+			int featureID, NotificationChain msgs) {
 		switch (featureID) {
-			case ManpagesPackage.DOCUMENTATION__FOLDERS:
-				return ((InternalEList<?>)getFolders()).basicRemove(otherEnd, msgs);
+		case ManpagesPackage.DOCUMENTATION__FOLDERS:
+			return ((InternalEList<?>) getFolders()).basicRemove(otherEnd,
+					msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
 
 	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
-			case ManpagesPackage.DOCUMENTATION__NAME:
-				return getName();
-			case ManpagesPackage.DOCUMENTATION__FOLDERS:
-				return getFolders();
-			case ManpagesPackage.DOCUMENTATION__DEFAULT:
-				return isDefault();
-			case ManpagesPackage.DOCUMENTATION__ID:
-				return getId();
+		case ManpagesPackage.DOCUMENTATION__NAME:
+			return getName();
+		case ManpagesPackage.DOCUMENTATION__FOLDERS:
+			return getFolders();
+		case ManpagesPackage.DOCUMENTATION__DEFAULT:
+			return isDefault();
+		case ManpagesPackage.DOCUMENTATION__ID:
+			return getId();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
 
 	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
-			case ManpagesPackage.DOCUMENTATION__NAME:
-				setName((String)newValue);
-				return;
-			case ManpagesPackage.DOCUMENTATION__FOLDERS:
-				getFolders().clear();
-				getFolders().addAll((Collection<? extends ManPageFolder>)newValue);
-				return;
-			case ManpagesPackage.DOCUMENTATION__DEFAULT:
-				setDefault((Boolean)newValue);
-				return;
-			case ManpagesPackage.DOCUMENTATION__ID:
-				setId((String)newValue);
-				return;
+		case ManpagesPackage.DOCUMENTATION__NAME:
+			setName((String) newValue);
+			return;
+		case ManpagesPackage.DOCUMENTATION__FOLDERS:
+			getFolders().clear();
+			getFolders().addAll((Collection<? extends ManPageFolder>) newValue);
+			return;
+		case ManpagesPackage.DOCUMENTATION__DEFAULT:
+			setDefault((Boolean) newValue);
+			return;
+		case ManpagesPackage.DOCUMENTATION__ID:
+			setId((String) newValue);
+			return;
 		}
 		super.eSet(featureID, newValue);
 	}
 
 	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
-			case ManpagesPackage.DOCUMENTATION__NAME:
-				setName(NAME_EDEFAULT);
-				return;
-			case ManpagesPackage.DOCUMENTATION__FOLDERS:
-				getFolders().clear();
-				return;
-			case ManpagesPackage.DOCUMENTATION__DEFAULT:
-				setDefault(DEFAULT_EDEFAULT);
-				return;
-			case ManpagesPackage.DOCUMENTATION__ID:
-				setId(ID_EDEFAULT);
-				return;
+		case ManpagesPackage.DOCUMENTATION__NAME:
+			setName(NAME_EDEFAULT);
+			return;
+		case ManpagesPackage.DOCUMENTATION__FOLDERS:
+			getFolders().clear();
+			return;
+		case ManpagesPackage.DOCUMENTATION__DEFAULT:
+			setDefault(DEFAULT_EDEFAULT);
+			return;
+		case ManpagesPackage.DOCUMENTATION__ID:
+			setId(ID_EDEFAULT);
+			return;
 		}
 		super.eUnset(featureID);
 	}
 
 	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
-			case ManpagesPackage.DOCUMENTATION__NAME:
-				return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
-			case ManpagesPackage.DOCUMENTATION__FOLDERS:
-				return folders != null && !folders.isEmpty();
-			case ManpagesPackage.DOCUMENTATION__DEFAULT:
-				return default_ != DEFAULT_EDEFAULT;
-			case ManpagesPackage.DOCUMENTATION__ID:
-				return ID_EDEFAULT == null ? id != null : !ID_EDEFAULT.equals(id);
+		case ManpagesPackage.DOCUMENTATION__NAME:
+			return NAME_EDEFAULT == null ? name != null
+					: !NAME_EDEFAULT.equals(name);
+		case ManpagesPackage.DOCUMENTATION__FOLDERS:
+			return folders != null && !folders.isEmpty();
+		case ManpagesPackage.DOCUMENTATION__DEFAULT:
+			return default_ != DEFAULT_EDEFAULT;
+		case ManpagesPackage.DOCUMENTATION__ID:
+			return ID_EDEFAULT == null ? id != null : !ID_EDEFAULT.equals(id);
 		}
 		return super.eIsSet(featureID);
 	}
 
 	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public String toString() {
-		if (eIsProxy()) return super.toString();
+		if (eIsProxy())
+			return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
 		result.append(" (name: "); //$NON-NLS-1$
@@ -345,4 +363,4 @@ public class DocumentationImpl extends EObjectImpl implements Documentation {
 		return result.toString();
 	}
 
-} //DocumentationImpl
+} // DocumentationImpl

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2007 IBM Corporation and others.
+ * Copyright (c) 2005, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,9 +14,9 @@ import org.eclipse.dltk.ui.text.completion.ScriptContentAssistInvocationContext;
 /**
  * Tcl template completion processor
  */
-public class TclTemplateCompletionProcessor extends
-		ScriptTemplateCompletionProcessor {
-	
+public class TclTemplateCompletionProcessor
+		extends ScriptTemplateCompletionProcessor {
+
 	private static char[] IGNORE = new char[] { '.' };
 
 	public TclTemplateCompletionProcessor(
@@ -24,23 +24,17 @@ public class TclTemplateCompletionProcessor extends
 		super(context);
 	}
 
-	/*
-	 * @see org.eclipse.dltk.ui.templates.ScriptTemplateCompletionProcessor#getContextTypeId()
-	 */
+	@Override
 	protected String getContextTypeId() {
 		return TclUniversalTemplateContextType.CONTEXT_TYPE_ID;
 	}
 
-	/*
-	 * @see org.eclipse.dltk.ui.templates.ScriptTemplateCompletionProcessor#getIgnore()
-	 */
+	@Override
 	protected char[] getIgnore() {
 		return IGNORE;
 	}
 
-	/*
-	 * @see org.eclipse.dltk.ui.templates.ScriptTemplateCompletionProcessor#getTemplateAccess()
-	 */
+	@Override
 	protected ScriptTemplateAccess getTemplateAccess() {
 		return TclTemplateAccess.getInstance();
 	}

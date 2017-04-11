@@ -1,11 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2007 IBM Corporation and others.
+ * Copyright (c) 2005, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- 
  *******************************************************************************/
 package org.eclipse.dltk.tcl.internal.ui.rules;
 
@@ -34,6 +33,7 @@ public class TclFloatNumberRule implements IRule {
 		fColumn = column;
 	}
 
+	@Override
 	public IToken evaluate(ICharacterScanner scanner) {
 		int c = scanner.read();
 		int p = c;
@@ -45,7 +45,7 @@ public class TclFloatNumberRule implements IRule {
 				} while (Character.isDigit((char) c));
 				if ((c != 'e' && c != 'E')) {
 					scanner.unread();
-				}				
+				}
 				if (p == '.') {
 					scanner.unread();
 					return Token.UNDEFINED;

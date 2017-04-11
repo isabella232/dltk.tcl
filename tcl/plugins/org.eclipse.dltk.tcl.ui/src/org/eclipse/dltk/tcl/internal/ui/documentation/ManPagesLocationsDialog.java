@@ -17,7 +17,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.dltk.tcl.internal.ui.TclUI;
 import org.eclipse.dltk.tcl.ui.manpages.Documentation;
@@ -35,12 +34,9 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.dialogs.StatusDialog;
-import org.eclipse.jface.operation.IRunnableWithProgress;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
@@ -136,11 +132,7 @@ public class ManPagesLocationsDialog extends StatusDialog
 		pathGD.heightHint = convertHeightInCharsToPixels(16);
 		pathGD.widthHint = convertWidthInCharsToPixels(64);
 		pathViewer.getControl().setLayoutData(pathGD);
-		pathViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-			public void selectionChanged(SelectionChangedEvent event) {
-				pathSelectionChanged();
-			}
-		});
+		pathViewer.addSelectionChangedListener(event -> pathSelectionChanged());
 		final Composite buttonComp = new Composite(pathComp, SWT.NONE);
 		final GridLayout buttonLayout = new GridLayout();
 		buttonLayout.marginHeight = buttonLayout.marginWidth = 0;
@@ -178,6 +170,7 @@ public class ManPagesLocationsDialog extends StatusDialog
 
 	static class FolderContentProvider implements ITreeContentProvider {
 
+		@Override
 		public Object[] getChildren(Object parentElement) {
 			if (parentElement instanceof ManPageFolder) {
 				final ManPageFolder folder = (ManPageFolder) parentElement;
@@ -187,6 +180,7 @@ public class ManPagesLocationsDialog extends StatusDialog
 			return new Object[0];
 		}
 
+		@Override
 		public Object getParent(Object element) {
 			if (element instanceof EObject) {
 				return ((EObject) element).eContainer();
@@ -195,6 +189,7 @@ public class ManPagesLocationsDialog extends StatusDialog
 			}
 		}
 
+		@Override
 		public boolean hasChildren(Object element) {
 			if (element instanceof ManPageFolder) {
 				final ManPageFolder folder = (ManPageFolder) element;
@@ -203,6 +198,7 @@ public class ManPagesLocationsDialog extends StatusDialog
 			return false;
 		}
 
+		@Override
 		public Object[] getElements(Object inputElement) {
 			if (inputElement instanceof Documentation) {
 				final Documentation doc = (Documentation) inputElement;
@@ -212,9 +208,11 @@ public class ManPagesLocationsDialog extends StatusDialog
 			return new Object[0];
 		}
 
+		@Override
 		public void dispose() {
 		}
 
+		@Override
 		public void inputChanged(Viewer viewer, Object oldInput,
 				Object newInput) {
 		}
@@ -258,15 +256,12 @@ public class ManPagesLocationsDialog extends StatusDialog
 				ProgressMonitorDialog dialog2 = new TimeTriggeredProgressMonitorDialog(
 						null, 500);
 				try {
-					dialog2.run(true, true, new IRunnableWithProgress() {
-						public void run(IProgressMonitor monitor) {
-							monitor.beginTask(
-									ManPagesMessages.ManPagesLocationsDialog_7,
-									1);
-							final ManPageFinder finder = new ManPageFinder();
-							finder.find(documentation, file);
-							monitor.done();
-						}
+					dialog2.run(true, true, monitor -> {
+						monitor.beginTask(
+								ManPagesMessages.ManPagesLocationsDialog_7, 1);
+						final ManPageFinder finder = new ManPageFinder();
+						finder.find(documentation, file);
+						monitor.done();
 					});
 				} catch (InvocationTargetException e) {
 					TclUI.error(e);
@@ -328,6 +323,7 @@ public class ManPagesLocationsDialog extends StatusDialog
 
 	private int busyCounter = 0;
 
+	@Override
 	public void modifyText(ModifyEvent e) {
 		if (busyCounter > 0) {
 			return;

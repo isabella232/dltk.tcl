@@ -8,12 +8,10 @@ import java.util.Set;
 import org.eclipse.dltk.core.environment.IEnvironment;
 import org.eclipse.dltk.ui.environment.IEnvironmentUI;
 import org.eclipse.jface.dialogs.Dialog;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.ListViewer;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.window.IShellProvider;
 import org.eclipse.swt.SWT;
@@ -40,20 +38,23 @@ public class SourcesSelectionDialog extends Dialog {
 
 	private final class SourcesContentProvider
 			implements IStructuredContentProvider {
+		@Override
 		public void inputChanged(Viewer viewer, Object oldInput,
 				Object newInput) {
 		}
 
+		@Override
 		public void dispose() {
 		}
 
+		@Override
 		public Object[] getElements(Object inputElement) {
 			return sources.toArray();
 		}
 	}
 
 	private ListViewer sourcesViewer;
-	private Set<String> sources = new HashSet<String>();
+	private Set<String> sources = new HashSet<>();
 	private IEnvironmentUI environmentUI;
 	private Button remove;
 	private Button add;
@@ -114,12 +115,7 @@ public class SourcesSelectionDialog extends Dialog {
 			}
 		});
 		updateEnablement();
-		sourcesViewer
-				.addSelectionChangedListener(new ISelectionChangedListener() {
-					public void selectionChanged(SelectionChangedEvent event) {
-						updateEnablement();
-					}
-				});
+		sourcesViewer.addSelectionChangedListener(event -> updateEnablement());
 		getShell().layout();
 		return contents;
 	}

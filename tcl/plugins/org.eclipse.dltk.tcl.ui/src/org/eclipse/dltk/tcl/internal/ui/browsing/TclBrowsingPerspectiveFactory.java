@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -41,6 +41,7 @@ public class TclBrowsingPerspectiveFactory implements IPerspectiveFactory {
 		super();
 	}
 
+	@Override
 	public void createInitialLayout(IPageLayout layout) {
 		createHorizontalLayout(layout);
 
@@ -75,15 +76,15 @@ public class TclBrowsingPerspectiveFactory implements IPerspectiveFactory {
 				ID_PACKAGES_VIEW);
 
 		IPlaceholderFolderLayout placeHolderLeft = layout
-				.createPlaceholderFolder(
-						"left", IPageLayout.LEFT, (float) 0.25, IPageLayout.ID_EDITOR_AREA); //$NON-NLS-1$
+				.createPlaceholderFolder("left", IPageLayout.LEFT, (float) 0.25, //$NON-NLS-1$
+						IPageLayout.ID_EDITOR_AREA);
 		placeHolderLeft.addPlaceholder(IPageLayout.ID_OUTLINE);
 		placeHolderLeft.addPlaceholder(DLTKUIPlugin.ID_SCRIPTEXPLORER);
 		placeHolderLeft.addPlaceholder(IPageLayout.ID_RES_NAV);
 
 		IPlaceholderFolderLayout placeHolderBottom = layout
-				.createPlaceholderFolder(
-						"bottom", IPageLayout.BOTTOM, (float) 0.75, IPageLayout.ID_EDITOR_AREA); //$NON-NLS-1$
+				.createPlaceholderFolder("bottom", IPageLayout.BOTTOM, //$NON-NLS-1$
+						(float) 0.75, IPageLayout.ID_EDITOR_AREA);
 		placeHolderBottom.addPlaceholder(IPageLayout.ID_PROBLEM_VIEW);
 		placeHolderBottom.addPlaceholder(IPageLayout.ID_BOOKMARKS);
 
@@ -99,8 +100,8 @@ public class TclBrowsingPerspectiveFactory implements IPerspectiveFactory {
 
 		layout.addNewWizardShortcut(TclPerspective.NEW_FOLDER_WIZARD);
 		layout.addNewWizardShortcut(TclPerspective.NEW_FILE_WIZARD);
-		layout
-				.addNewWizardShortcut(TclPerspective.NEW_UNTITLED_TEXT_FILE_WIZARD);
+		layout.addNewWizardShortcut(
+				TclPerspective.NEW_UNTITLED_TEXT_FILE_WIZARD);
 	}
 
 	protected void addShowViewShortcuts(IPageLayout layout) {
@@ -117,8 +118,8 @@ public class TclBrowsingPerspectiveFactory implements IPerspectiveFactory {
 	}
 
 	private boolean shouldShowProjectsView() {
-		return fgModelElementFromAction == null
-				|| fgModelElementFromAction.getElementType() == IModelElement.SCRIPT_MODEL;
+		return fgModelElementFromAction == null || fgModelElementFromAction
+				.getElementType() == IModelElement.SCRIPT_MODEL;
 	}
 
 	private boolean shouldShowPackagesView() {

@@ -1,11 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- 
  *******************************************************************************/
 package org.eclipse.dltk.tcl.internal.ui.text.completion;
 
@@ -30,8 +29,8 @@ public class TclOverrideCompletionProposal extends ScriptTypeCompletionProposal
 	private String methodName;
 
 	public TclOverrideCompletionProposal(IScriptProject project,
-			ISourceModule cu, String methodName, String[] paramTypes,
-			int start, int length, String displayName, String completionProposal) {
+			ISourceModule cu, String methodName, String[] paramTypes, int start,
+			int length, String displayName, String completionProposal) {
 		super(completionProposal, cu, start, length, null, displayName, 0);
 		Assert.isNotNull(project);
 		Assert.isNotNull(methodName);
@@ -43,11 +42,13 @@ public class TclOverrideCompletionProposal extends ScriptTypeCompletionProposal
 		setReplacementString(completionProposal);
 	}
 
+	@Override
 	public CharSequence getPrefixCompletionText(IDocument document,
 			int completionOffset) {
 		return methodName;
 	}
 
+	@Override
 	protected boolean updateReplacementString(IDocument document, char trigger,
 			int offset) throws CoreException, BadLocationException {
 		final IDocument buffer = new Document(document.get());
@@ -60,14 +61,17 @@ public class TclOverrideCompletionProposal extends ScriptTypeCompletionProposal
 		return true;
 	}
 
+	@Override
 	public boolean isAutoInsertable() {
 		return false;
 	}
 
+	@Override
 	public IContextInformation getContextInformation() {
 		return new ContextInformation(getDisplayString(), getDisplayString());
 	}
 
+	@Override
 	protected boolean insertCompletion() {
 		IPreferenceStore preference = TclUI.getDefault().getPreferenceStore();
 		return preference

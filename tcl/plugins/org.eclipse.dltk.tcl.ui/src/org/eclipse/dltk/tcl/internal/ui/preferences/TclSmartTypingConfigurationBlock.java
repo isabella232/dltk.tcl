@@ -1,13 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- 
  *******************************************************************************/
-
 package org.eclipse.dltk.tcl.internal.ui.preferences;
 
 import java.util.ArrayList;
@@ -17,6 +15,7 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.dltk.tcl.internal.ui.TclUI;
 import org.eclipse.dltk.tcl.ui.TclPreferenceConstants;
 import org.eclipse.dltk.ui.CodeFormatterConstants;
+import org.eclipse.dltk.ui.PreferenceConstants;
 import org.eclipse.dltk.ui.preferences.AbstractConfigurationBlock;
 import org.eclipse.dltk.ui.preferences.OverlayPreferenceStore;
 import org.eclipse.dltk.ui.preferences.PreferencesMessages;
@@ -26,7 +25,6 @@ import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
@@ -49,20 +47,20 @@ class TclSmartTypingConfigurationBlock extends AbstractConfigurationBlock {
 
 	private OverlayPreferenceStore.OverlayKey[] createOverlayStoreKeys() {
 
-		List<OverlayPreferenceStore.OverlayKey> keys = new ArrayList<OverlayPreferenceStore.OverlayKey>();
+		List<OverlayPreferenceStore.OverlayKey> keys = new ArrayList<>();
 
 		keys.add(new OverlayPreferenceStore.OverlayKey(
 				OverlayPreferenceStore.BOOLEAN,
-				TclPreferenceConstants.EDITOR_CLOSE_STRINGS));
+				PreferenceConstants.EDITOR_CLOSE_STRINGS));
 		keys.add(new OverlayPreferenceStore.OverlayKey(
 				OverlayPreferenceStore.BOOLEAN,
-				TclPreferenceConstants.EDITOR_CLOSE_BRACKETS));
+				PreferenceConstants.EDITOR_CLOSE_BRACKETS));
 		keys.add(new OverlayPreferenceStore.OverlayKey(
 				OverlayPreferenceStore.BOOLEAN,
-				TclPreferenceConstants.EDITOR_CLOSE_BRACES));
+				PreferenceConstants.EDITOR_CLOSE_BRACES));
 		keys.add(new OverlayPreferenceStore.OverlayKey(
 				OverlayPreferenceStore.BOOLEAN,
-				TclPreferenceConstants.EDITOR_SMART_TAB));
+				PreferenceConstants.EDITOR_SMART_TAB));
 		keys.add(new OverlayPreferenceStore.OverlayKey(
 				OverlayPreferenceStore.INT,
 				TclPreferenceConstants.EDITOR_SMART_PASTE_MODE));
@@ -70,20 +68,17 @@ class TclSmartTypingConfigurationBlock extends AbstractConfigurationBlock {
 		return keys.toArray(new OverlayPreferenceStore.OverlayKey[keys.size()]);
 	}
 
+	@Override
 	public Control createControl(Composite parent) {
 		Composite control = new Composite(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		control.setLayout(layout);
 
-		Composite composite = createSubsection(
-				control,
-				null,
+		Composite composite = createSubsection(control, null,
 				TclPreferencesMessages.TCLSmartTypingConfigurationBlock_autoclose_title);
 		addAutoclosingSection(composite);
 
-		composite = createSubsection(
-				control,
-				null,
+		composite = createSubsection(control, null,
 				TclPreferencesMessages.TCLSmartTypingConfigurationBlock_tabs_title);
 		addTabSection(composite);
 
@@ -98,14 +93,12 @@ class TclSmartTypingConfigurationBlock extends AbstractConfigurationBlock {
 		GridLayout layout = new GridLayout();
 		composite.setLayout(layout);
 
-		addRadioButton(
-				composite,
+		addRadioButton(composite,
 				TclPreferencesMessages.TCLSmartTypingConfigurationBlock_smartPaste_simple,
 				TclPreferenceConstants.EDITOR_SMART_PASTE_MODE,
 				TclPreferenceConstants.EDITOR_SMART_PASTE_MODE_SIMPLE);
 
-		addRadioButton(
-				composite,
+		addRadioButton(composite,
 				TclPreferencesMessages.TCLSmartTypingConfigurationBlock_smartPaste_full,
 				TclPreferenceConstants.EDITOR_SMART_PASTE_MODE,
 				TclPreferenceConstants.EDITOR_SMART_PASTE_MODE_FULL);
@@ -116,10 +109,9 @@ class TclSmartTypingConfigurationBlock extends AbstractConfigurationBlock {
 		GridLayout layout = new GridLayout();
 		composite.setLayout(layout);
 
-		addCheckBox(
-				composite,
+		addCheckBox(composite,
 				TclPreferencesMessages.TCLSmartTypingConfigurationBlock_typing_smartTab,
-				TclPreferenceConstants.EDITOR_SMART_TAB, 0);
+				PreferenceConstants.EDITOR_SMART_TAB, 0);
 
 		createMessage(composite);
 	}
@@ -129,20 +121,17 @@ class TclSmartTypingConfigurationBlock extends AbstractConfigurationBlock {
 		layout.numColumns = 1;
 		composite.setLayout(layout);
 
-		addCheckBox(
-				composite,
+		addCheckBox(composite,
 				TclPreferencesMessages.TCLSmartTypingConfigurationBlock_closeStrings,
-				TclPreferenceConstants.EDITOR_CLOSE_STRINGS, 0);
+				PreferenceConstants.EDITOR_CLOSE_STRINGS, 0);
 
-		addCheckBox(
-				composite,
+		addCheckBox(composite,
 				TclPreferencesMessages.TCLSmartTypingConfigurationBlock_closeBrackets,
-				TclPreferenceConstants.EDITOR_CLOSE_BRACKETS, 0);
+				PreferenceConstants.EDITOR_CLOSE_BRACKETS, 0);
 
-		addCheckBox(
-				composite,
+		addCheckBox(composite,
 				TclPreferencesMessages.TCLSmartTypingConfigurationBlock_closeBraces,
-				TclPreferenceConstants.EDITOR_CLOSE_BRACES, 0);
+				PreferenceConstants.EDITOR_CLOSE_BRACES, 0);
 	}
 
 	private void createMessage(final Composite composite) {
@@ -151,18 +140,16 @@ class TclSmartTypingConfigurationBlock extends AbstractConfigurationBlock {
 		// current profile automatically.
 		String linkTooltip = PreferencesMessages.SmartTypingConfigurationBlock_tabs_message_tooltip;
 		final String text;
-		String indentMode = TclUI.getDefault().getPreferenceStore().getString(
-				CodeFormatterConstants.FORMATTER_TAB_CHAR);
+		String indentMode = TclUI.getDefault().getPreferenceStore()
+				.getString(CodeFormatterConstants.FORMATTER_TAB_CHAR);
 		if (CodeFormatterConstants.TAB.equals(indentMode))
-			text = NLS
-					.bind(
-							PreferencesMessages.SmartTypingConfigurationBlock_tabs_message_tab_text,
-							getTabDisplaySize());
+			text = NLS.bind(
+					PreferencesMessages.SmartTypingConfigurationBlock_tabs_message_tab_text,
+					getTabDisplaySize());
 		else
-			text = NLS
-					.bind(
-							PreferencesMessages.SmartTypingConfigurationBlock_tabs_message_others_text,
-							getTabDisplaySize(), getIndentMode());
+			text = NLS.bind(
+					PreferencesMessages.SmartTypingConfigurationBlock_tabs_message_others_text,
+					getTabDisplaySize(), getIndentMode());
 
 		final Link link = new Link(composite, SWT.NONE);
 		link.setText(text);
@@ -183,6 +170,7 @@ class TclSmartTypingConfigurationBlock extends AbstractConfigurationBlock {
 		final IPropertyChangeListener propertyChangeListener = new IPropertyChangeListener() {
 			private boolean fHasRun = false;
 
+			@Override
 			public void propertyChange(PropertyChangeEvent event) {
 				if (fHasRun)
 					return;
@@ -202,17 +190,13 @@ class TclSmartTypingConfigurationBlock extends AbstractConfigurationBlock {
 			}
 		};
 		combinedStore.addPropertyChangeListener(propertyChangeListener);
-		link.addDisposeListener(new DisposeListener() {
-			public void widgetDisposed(org.eclipse.swt.events.DisposeEvent e) {
-				combinedStore
-						.removePropertyChangeListener(propertyChangeListener);
-			}
-		});
+		link.addDisposeListener(e -> combinedStore
+				.removePropertyChangeListener(propertyChangeListener));
 	}
 
 	private String getIndentMode() {
-		String indentMode = TclUI.getDefault().getPreferenceStore().getString(
-				CodeFormatterConstants.FORMATTER_TAB_CHAR);
+		String indentMode = TclUI.getDefault().getPreferenceStore()
+				.getString(CodeFormatterConstants.FORMATTER_TAB_CHAR);
 
 		if (CodeFormatterConstants.SPACE.equals(indentMode))
 			return PreferencesMessages.SmartTypingConfigurationBlock_tabs_message_spaces;
@@ -228,8 +212,8 @@ class TclSmartTypingConfigurationBlock extends AbstractConfigurationBlock {
 	}
 
 	private int getTabDisplaySize() {
-		return TclUI.getDefault().getPreferenceStore().getInt(
-				CodeFormatterConstants.FORMATTER_TAB_SIZE);
+		return TclUI.getDefault().getPreferenceStore()
+				.getInt(CodeFormatterConstants.FORMATTER_TAB_SIZE);
 	}
 
 }

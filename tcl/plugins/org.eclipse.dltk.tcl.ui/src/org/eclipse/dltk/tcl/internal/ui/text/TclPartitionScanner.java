@@ -1,11 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2007 IBM Corporation and others.
+ * Copyright (c) 2005, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- 
  *******************************************************************************/
 package org.eclipse.dltk.tcl.internal.ui.text;
 
@@ -33,7 +32,7 @@ public class TclPartitionScanner extends RuleBasedPartitionScanner {
 		IToken comment = new Token(TclPartitions.TCL_COMMENT);
 		IToken stuff = new Token("dummy"); //$NON-NLS-1$
 
-		List<IPredicateRule> rules = new ArrayList<IPredicateRule>();
+		List<IPredicateRule> rules = new ArrayList<>();
 
 		// rules.add(new EndOfLineRule("#", comment ));
 		rules.add(new TclCommentRule(comment));

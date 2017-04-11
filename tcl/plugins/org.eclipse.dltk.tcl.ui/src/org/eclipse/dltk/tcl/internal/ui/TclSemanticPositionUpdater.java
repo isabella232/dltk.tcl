@@ -22,8 +22,9 @@ public class TclSemanticPositionUpdater extends ASTSemanticHighlighter {
 		this.extensions = extensions;
 	}
 
+	@Override
 	public SemanticHighlighting[] getSemanticHighlightings() {
-		List<SemanticHighlighting> highlightings = new ArrayList<SemanticHighlighting>();
+		List<SemanticHighlighting> highlightings = new ArrayList<>();
 		for (int i = 0; i < extensions.length; i++) {
 			SemanticHighlighting[] hl = extensions[i].getHighlightings();
 			if (hl != null) {
@@ -38,6 +39,7 @@ public class TclSemanticPositionUpdater extends ASTSemanticHighlighter {
 		return ret;
 	}
 
+	@Override
 	protected String getNature() {
 		return TclNature.NATURE_ID;
 	}
@@ -48,6 +50,7 @@ public class TclSemanticPositionUpdater extends ASTSemanticHighlighter {
 		if (declaration != null) {
 			declaration.traverse(new ASTVisitor() {
 
+				@Override
 				public boolean visitGeneral(ASTNode node) throws Exception {
 					for (int i = 0; i < extensions.length; i++) {
 						extensions[i].processNode(node,

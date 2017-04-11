@@ -1,11 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2007 IBM Corporation and others.
+ * Copyright (c) 2005, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- 
  *******************************************************************************/
 package org.eclipse.dltk.tcl.internal.ui.text;
 
@@ -66,7 +65,7 @@ public class TclAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 	/**
 	 * Calculates real length of string. So any char except \t has length 1, \t
 	 * has length getTabWidth.
-	 * 
+	 *
 	 * @param str
 	 *            string to process
 	 * @return length
@@ -98,13 +97,13 @@ public class TclAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 	}
 
 	private boolean isSmartPasteMode1() {
-		return preferenceStore
-				.getInt(TclPreferenceConstants.EDITOR_SMART_PASTE_MODE) == TclPreferenceConstants.EDITOR_SMART_PASTE_MODE_SIMPLE;
+		return preferenceStore.getInt(
+				TclPreferenceConstants.EDITOR_SMART_PASTE_MODE) == TclPreferenceConstants.EDITOR_SMART_PASTE_MODE_SIMPLE;
 	}
 
 	private boolean isSmartPasteMode2() {
-		return preferenceStore
-				.getInt(TclPreferenceConstants.EDITOR_SMART_PASTE_MODE) == TclPreferenceConstants.EDITOR_SMART_PASTE_MODE_FULL;
+		return preferenceStore.getInt(
+				TclPreferenceConstants.EDITOR_SMART_PASTE_MODE) == TclPreferenceConstants.EDITOR_SMART_PASTE_MODE_FULL;
 	}
 
 	public TclAutoEditStrategy(IPreferenceStore store, String part) {
@@ -121,7 +120,7 @@ public class TclAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 
 	/**
 	 * Returns the leading whitespaces.
-	 * 
+	 *
 	 * @param document
 	 *            - the document being parsed
 	 * @param line
@@ -143,7 +142,7 @@ public class TclAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 
 	/**
 	 * Returns the leading whitespaces and tabs.
-	 * 
+	 *
 	 * @param line
 	 *            - the line being searched
 	 * @return the leading whitespace
@@ -221,7 +220,7 @@ public class TclAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 
 	/**
 	 * Return pair to brace. Ex. '(' for ')', e.t.c.
-	 * 
+	 *
 	 * @param b
 	 *            input brace
 	 * @return peer brace
@@ -255,7 +254,7 @@ public class TclAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 	 * proc () {
 	 * </code> function will return new BraceBlockType. And for
 	 * <code>proc(){}</code> function will return null
-	 * 
+	 *
 	 * @param d
 	 *            document containing the line
 	 * @param line
@@ -348,7 +347,7 @@ public class TclAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 
 	/**
 	 * Find line with number <=line, that is Tcl code line (not comment)
-	 * 
+	 *
 	 * @param d
 	 *            the document to search in
 	 * @param line
@@ -439,8 +438,8 @@ public class TclAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 					dummyPeer = true;
 				}
 				// find closing peer, if exists
-				int peerOffset = scanner.findClosingPeer(pos,
-						block.openingPeer, block.closingPeer);
+				int peerOffset = scanner.findClosingPeer(pos, block.openingPeer,
+						block.closingPeer);
 				// if not fount peer, we need it
 				if (peerOffset == TclDocumentScanner.NOT_FOUND)
 					needPeer = true;
@@ -456,14 +455,14 @@ public class TclAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 			int contentStart = findEndOfWhiteSpace(d, c.offset, lineEnd);
 			c.length = Math.max(contentStart - c.offset, 0);
 
-			if (block instanceof BraceBlock
-					&& !preferenceStore
-							.getBoolean(TclPreferenceConstants.EDITOR_CLOSE_BRACES))
+			if (block instanceof BraceBlock && !preferenceStore
+					.getBoolean(PreferenceConstants.EDITOR_CLOSE_BRACES))
 				needPeer = false;
 
-			if ((block instanceof BracketBlock || block instanceof RoundBracketBlock)
-					&& !preferenceStore
-							.getBoolean(TclPreferenceConstants.EDITOR_CLOSE_BRACKETS))
+			if ((block instanceof BracketBlock
+					|| block instanceof RoundBracketBlock)
+					&& !preferenceStore.getBoolean(
+							PreferenceConstants.EDITOR_CLOSE_BRACKETS))
 				needPeer = false;
 
 			if (needPeer || dummyPeer) {
@@ -494,7 +493,8 @@ public class TclAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 
 	}
 
-	private void smartIndentAfterOpeningBracket(IDocument d, DocumentCommand c) {
+	private void smartIndentAfterOpeningBracket(IDocument d,
+			DocumentCommand c) {
 		if (c.offset == -1)
 			return;
 
@@ -556,7 +556,8 @@ public class TclAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 				if (peerOffset == TclDocumentScanner.NOT_FOUND)
 					needPeer = true;
 				// check partition
-				if (getRegionType(d, c.offset) != IDocument.DEFAULT_CONTENT_TYPE)
+				if (getRegionType(d,
+						c.offset) != IDocument.DEFAULT_CONTENT_TYPE)
 					return;
 
 				if (!needPeer)
@@ -580,7 +581,8 @@ public class TclAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 
 	}
 
-	private void smartIndentAfterClosingBracket(IDocument d, DocumentCommand c) {
+	private void smartIndentAfterClosingBracket(IDocument d,
+			DocumentCommand c) {
 		if (c.offset == -1 || d.getLength() == 0)
 			return;
 		try {
@@ -588,9 +590,11 @@ public class TclAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 			// if we already have bracket we should jump over it
 			if (c.offset != d.getLength()
 					&& bracket == d.get(c.offset, 1).charAt(0)
-					&& (getRegionType(d, c.offset) == IDocument.DEFAULT_CONTENT_TYPE)) {
+					&& (getRegionType(d,
+							c.offset) == IDocument.DEFAULT_CONTENT_TYPE)) {
 				if ((bracket == '}' && closeBraces())
-						|| ((bracket == ')' || bracket == ']') && closeBrackets())) {
+						|| ((bracket == ')' || bracket == ']')
+								&& closeBrackets())) {
 					c.text = "";
 					c.shiftsCaret = false;
 					c.caretOffset = c.offset + 1;
@@ -675,9 +679,8 @@ public class TclAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 				// if our line is inside brackets, get line with opening bracket
 				block = getLastOpenBlockType(d, d.getLineOffset(curLine));
 				if (block != null) {
-					int peer = scanner.findOpeningPeer(
-							d.getLineOffset(curLine), block.openingPeer,
-							block.closingPeer);
+					int peer = scanner.findOpeningPeer(d.getLineOffset(curLine),
+							block.openingPeer, block.closingPeer);
 					if (peer != TclDocumentScanner.NOT_FOUND) {
 						lastCodeLine = d.getLineOfOffset(peer);
 					}
@@ -715,7 +718,7 @@ public class TclAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 
 	/**
 	 * Installs a partitioner with <code>document</code>.
-	 * 
+	 *
 	 * @param document
 	 *            the document
 	 */
@@ -731,7 +734,7 @@ public class TclAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 
 	/**
 	 * Removes a partitioner with <code>document</code>.
-	 * 
+	 *
 	 * @param document
 	 *            the document
 	 */
@@ -741,7 +744,7 @@ public class TclAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 
 	/**
 	 * Reindents c.text when pasting(simply indents all to common level).
-	 * 
+	 *
 	 * @param d
 	 * @param c
 	 */
@@ -779,9 +782,8 @@ public class TclAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 						break myloop;
 					}
 				}
-				if (depth == 0
-						&& i != c.text.length()
-						&& getRegionType(temp, c.offset + i) != TclPartitions.TCL_STRING) {
+				if (depth == 0 && i != c.text.length() && getRegionType(temp,
+						c.offset + i) != TclPartitions.TCL_STRING) {
 					String first = getLineIndent(c.text.substring(0, i));
 					String second = getLineIndent(temp, line + 1);
 					temp.replace(start, c.offset - start + first.length(),
@@ -848,13 +850,14 @@ public class TclAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 			String content = d.get(0, cmd.offset) + cmd.text;
 			Document temp = new Document(content);
 			installStuff(temp);
-			List<TclBlock> blocks = new ArrayList<TclBlock>();
+			List<TclBlock> blocks = new ArrayList<>();
 			int figs = 0; // count of braces
 			int newOffset = cmd.offset;
 			int cmdLine = d.getLineOfOffset(cmd.offset);
 			int cmdLineStart = d.getLineOffset(cmdLine);
 			int startLine = d.getLineOfOffset(cmd.offset) + 1;
-			if (d.get(cmdLineStart, cmd.offset - cmdLineStart).trim().length() == 0) {
+			if (d.get(cmdLineStart, cmd.offset - cmdLineStart).trim()
+					.length() == 0) {
 				// we are inserting lines block
 				startLine--;
 				newOffset = cmdLineStart;
@@ -888,9 +891,8 @@ public class TclAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 				int line = temp.getLineOfOffset(offset);
 				String currentIndent = getLineIndent(temp, line);
 				// if may start reindenting
-				if (line >= startLine
-						&& offset == temp.getLineOffset(line)
-								+ currentIndent.length()) {
+				if (line >= startLine && offset == temp.getLineOffset(line)
+						+ currentIndent.length()) {
 					StringBuffer newIndentBuf = new StringBuffer();
 					for (TclBlock b : blocks) {
 						newIndentBuf.append(b.indent);
@@ -926,7 +928,7 @@ public class TclAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 
 	/**
 	 * get partition covering offset
-	 * 
+	 *
 	 * @param d
 	 * @param offset
 	 * @return
@@ -944,6 +946,7 @@ public class TclAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 	 * org.eclipse.jface.text.IAutoIndentStrategy#customizeDocumentCommand(org
 	 * .eclipse.jface.text.IDocument, org.eclipse.jface.text.DocumentCommand)
 	 */
+	@Override
 	public void customizeDocumentCommand(IDocument d, DocumentCommand c) {
 		if (c.doit == false)
 			return;
@@ -971,7 +974,7 @@ public class TclAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 			case '\t':
 				boolean jumped = false;
 				if (preferenceStore
-						.getBoolean(TclPreferenceConstants.EDITOR_SMART_TAB)) {
+						.getBoolean(PreferenceConstants.EDITOR_SMART_TAB)) {
 					jumped = smartIndentJump(d, c);
 				}
 				if (!jumped) { // process tab key using format options

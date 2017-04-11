@@ -1,11 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2007 IBM Corporation and others.
+ * Copyright (c) 2005, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- 
  *******************************************************************************/
 package org.eclipse.dltk.tcl.internal.ui.text.completion;
 
@@ -18,8 +17,8 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 
-public class LazyTclTypeCompletionProposal extends
-		LazyScriptTypeCompletionProposal {
+public class LazyTclTypeCompletionProposal
+		extends LazyScriptTypeCompletionProposal {
 	protected static final char[] TYPE_TRIGGERS = new char[] { '.', '\t', '[',
 			'(', ' ' };
 	protected static final char[] DOC_TYPE_TRIGGERS = new char[] { '#', '}',
@@ -30,19 +29,23 @@ public class LazyTclTypeCompletionProposal extends
 		super(proposal, context);
 	}
 
+	@Override
 	protected char[] getDocTriggers() {
 		return DOC_TYPE_TRIGGERS;
 	}
 
+	@Override
 	protected char[] getTypeTriggers() {
 		return TYPE_TRIGGERS;
 	}
 
+	@Override
 	protected void handleSmartTrigger(IDocument document, char trigger,
 			int referenceOffset) throws BadLocationException {
 		// TODO Auto-generated method stub
 	}
 
+	@Override
 	protected boolean isSmartTrigger(char trigger) {
 		if (trigger == '$') {
 			return true;
@@ -50,6 +53,8 @@ public class LazyTclTypeCompletionProposal extends
 
 		return false;
 	}
+
+	@Override
 	protected boolean insertCompletion() {
 		IPreferenceStore preference = TclUI.getDefault().getPreferenceStore();
 		return preference

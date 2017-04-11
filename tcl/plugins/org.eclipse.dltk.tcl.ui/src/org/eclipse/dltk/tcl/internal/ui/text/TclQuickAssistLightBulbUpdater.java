@@ -32,10 +32,8 @@ import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.jface.text.source.IAnnotationPresentation;
 import org.eclipse.jface.text.source.ImageUtilities;
 import org.eclipse.jface.util.IPropertyChangeListener;
-import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
@@ -72,6 +70,7 @@ public class TclQuickAssistLightBulbUpdater {
 		public AssistAnnotation() {
 		}
 
+		@Override
 		public int getLayer() {
 			return LAYER;
 		}
@@ -84,6 +83,7 @@ public class TclQuickAssistLightBulbUpdater {
 			return fImage;
 		}
 
+		@Override
 		public void paint(GC gc, Canvas canvas, Rectangle r) {
 			ImageUtilities.drawImage(getImage(), gc, canvas, r, SWT.CENTER,
 					SWT.TOP);
@@ -111,15 +111,12 @@ public class TclQuickAssistLightBulbUpdater {
 	}
 
 	private void installSelectionListener() {
-		fListener = new ISelectionChangedListener() {
-
-			public void selectionChanged(SelectionChangedEvent event) {
-				ISelection selection = event.getSelection();
-				if (selection instanceof ITextSelection) {
-					ITextSelection textSelection = (ITextSelection) selection;
-					doSelectionChanged(textSelection.getOffset(),
-							textSelection.getLength());
-				}
+		fListener = event -> {
+			ISelection selection = event.getSelection();
+			if (selection instanceof ITextSelection) {
+				ITextSelection textSelection = (ITextSelection) selection;
+				doSelectionChanged(textSelection.getOffset(),
+						textSelection.getLength());
 			}
 		};
 		fEditor.getSelectionProvider().addSelectionChangedListener(fListener);
@@ -142,11 +139,8 @@ public class TclQuickAssistLightBulbUpdater {
 			installSelectionListener();
 		}
 		if (fPropertyChangeListener == null) {
-			fPropertyChangeListener = new IPropertyChangeListener() {
-				public void propertyChange(PropertyChangeEvent event) {
-					doPropertyChanged(event.getProperty());
-				}
-			};
+			fPropertyChangeListener = event -> doPropertyChanged(
+					event.getProperty());
 			TclUI.getDefault().getPreferenceStore()
 					.addPropertyChangeListener(fPropertyChangeListener);
 		}

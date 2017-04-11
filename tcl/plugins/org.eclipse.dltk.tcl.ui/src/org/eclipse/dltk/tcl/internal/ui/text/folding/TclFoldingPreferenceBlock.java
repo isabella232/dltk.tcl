@@ -1,11 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- 
  *******************************************************************************/
 package org.eclipse.dltk.tcl.internal.ui.text.folding;
 
@@ -27,6 +26,7 @@ import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ListViewer;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -41,7 +41,8 @@ import org.eclipse.swt.widgets.Group;
 /**
  * Tcl source code folding preferences.
  */
-public class TclFoldingPreferenceBlock extends SourceCodeFoldingPreferenceBlock {
+public class TclFoldingPreferenceBlock
+		extends SourceCodeFoldingPreferenceBlock {
 
 	private Button fFoldOtherEnabled;
 	private Button fInitFoldOtherBlocks;
@@ -54,6 +55,7 @@ public class TclFoldingPreferenceBlock extends SourceCodeFoldingPreferenceBlock 
 		super(store, page);
 	}
 
+	@Override
 	public Control createControl(Composite parent) {
 		Control control = super.createControl(parent);
 
@@ -64,6 +66,7 @@ public class TclFoldingPreferenceBlock extends SourceCodeFoldingPreferenceBlock 
 		return control;
 	}
 
+	@Override
 	protected void addInitiallyFoldOptions(Group group) {
 		super.addInitiallyFoldOptions(group);
 
@@ -93,6 +96,7 @@ public class TclFoldingPreferenceBlock extends SourceCodeFoldingPreferenceBlock 
 				TclPreferenceConstants.EDITOR_FOLDING_INIT_OTHER));
 	}
 
+	@Override
 	protected void createOptionsControl(Composite composite) {
 		Group group = SWTFactory.createGroup(composite,
 				TclFoldingMessages.TclFoldingPreferenceBlock_10, 1, 1,
@@ -100,8 +104,8 @@ public class TclFoldingPreferenceBlock extends SourceCodeFoldingPreferenceBlock 
 
 		fFoldOtherEnabled = createRadioButton(group,
 				TclFoldingMessages.TclFoldingPreferenceBlock_11,
-				TclPreferenceConstants.EDITOR_FOLDING_BLOCKS, new Integer(
-						TclPreferenceConstants.EDITOR_FOLDING_BLOCKS_OFF));
+				TclPreferenceConstants.EDITOR_FOLDING_BLOCKS,
+				new Integer(TclPreferenceConstants.EDITOR_FOLDING_BLOCKS_OFF));
 
 		createRadioButton(group,
 				TclFoldingMessages.TclFoldingPreferenceBlock_12,
@@ -120,18 +124,22 @@ public class TclFoldingPreferenceBlock extends SourceCodeFoldingPreferenceBlock 
 				TclPreferenceConstants.EDITOR_FOLDING_INCLUDE_LIST);
 	}
 
+	@Override
 	protected String getInitiallyFoldClassesKey() {
 		return TclPreferenceConstants.EDITOR_FOLDING_INIT_NAMESPACES;
 	}
 
+	@Override
 	protected String getInitiallyFoldMethodsKey() {
 		return TclPreferenceConstants.EDITOR_FOLDING_INIT_BLOCKS;
 	}
 
+	@Override
 	protected String getInitiallyFoldClassesText() {
 		return TclFoldingMessages.DefaultFoldingPreferenceBlock_innerTypes;
 	}
 
+	@Override
 	protected String getInitiallyFoldMethodsText() {
 		return TclFoldingMessages.DefaultFoldingPreferenceBlock_methods;
 	}
@@ -173,23 +181,23 @@ public class TclFoldingPreferenceBlock extends SourceCodeFoldingPreferenceBlock 
 			fAddButton = createPushButton(pathButtonComp,
 					TclFoldingMessages.TclFoldingPreferenceBlock_0);
 			fAddButton.addSelectionListener(new SelectionListener() {
+				@Override
 				public void widgetDefaultSelected(SelectionEvent e) {
 				}
 
+				@Override
 				public void widgetSelected(SelectionEvent e) {
-					IInputValidator validator = new IInputValidator() {
-						public String isValid(String newText) {
-							if (newText.trim().length() > 0
-									&& newText.matches("[_a-zA-Z]*")) //$NON-NLS-1$
-								return null;
-							return TclFoldingMessages.TclFoldingPreferenceBlock_2;
-						}
+					IInputValidator validator = newText -> {
+						if (newText.trim().length() > 0
+								&& newText.matches("[_a-zA-Z]*")) //$NON-NLS-1$
+							return null;
+						return TclFoldingMessages.TclFoldingPreferenceBlock_2;
 					};
 					InputDialog dlg = new InputDialog(null,
 							TclFoldingMessages.TclFoldingPreferenceBlock_3,
 							TclFoldingMessages.TclFoldingPreferenceBlock_4,
 							Util.EMPTY_STRING, validator);
-					if (dlg.open() == InputDialog.OK) {
+					if (dlg.open() == Window.OK) {
 						fList.add(dlg.getValue());
 						save();
 					}
@@ -198,9 +206,11 @@ public class TclFoldingPreferenceBlock extends SourceCodeFoldingPreferenceBlock 
 			fRemoveButton = createPushButton(pathButtonComp,
 					TclFoldingMessages.TclFoldingPreferenceBlock_6);
 			fRemoveButton.addSelectionListener(new SelectionListener() {
+				@Override
 				public void widgetDefaultSelected(SelectionEvent e) {
 				}
 
+				@Override
 				public void widgetSelected(SelectionEvent e) {
 					ISelection s = fList.getSelection();
 					if (s instanceof IStructuredSelection) {
@@ -232,10 +242,10 @@ public class TclFoldingPreferenceBlock extends SourceCodeFoldingPreferenceBlock 
 		public int getButtonWidthHint(Button button) {
 			button.setFont(JFaceResources.getDialogFont());
 			PixelConverter converter = new PixelConverter(button);
-			int widthHint = converter
-					.convertHorizontalDLUsToPixels(IDialogConstants.BUTTON_WIDTH);
-			return Math.max(widthHint, button.computeSize(SWT.DEFAULT,
-					SWT.DEFAULT, true).x);
+			int widthHint = converter.convertHorizontalDLUsToPixels(
+					IDialogConstants.BUTTON_WIDTH);
+			return Math.max(widthHint,
+					button.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).x);
 		}
 
 		private String[] getEntries() {
@@ -279,12 +289,14 @@ public class TclFoldingPreferenceBlock extends SourceCodeFoldingPreferenceBlock 
 		}
 	}
 
+	@Override
 	public void initialize() {
 		super.initialize();
 		fExcludePatterns.initialize();
 		fIncludePatterns.initialize();
 	}
 
+	@Override
 	public void performDefaults() {
 		super.performDefaults();
 		fExcludePatterns.performDefault();

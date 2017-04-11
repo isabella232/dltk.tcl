@@ -1,11 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2007 IBM Corporation and others.
+ * Copyright (c) 2005, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- 
  *******************************************************************************/
 package org.eclipse.dltk.tcl.internal.ui.text;
 
@@ -20,6 +19,7 @@ import org.eclipse.dltk.tcl.ui.TclPreferenceConstants;
 import org.eclipse.dltk.ui.text.AbstractScriptScanner;
 import org.eclipse.dltk.ui.text.IColorManager;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.text.rules.IRule;
 import org.eclipse.jface.text.rules.IToken;
 import org.eclipse.jface.text.rules.WhitespaceRule;
 import org.eclipse.jface.text.rules.WordRule;
@@ -28,10 +28,9 @@ public class TclCodeScanner extends AbstractScriptScanner {
 
 	private static final String fgTokenProperties[] = new String[] {
 			TclColorConstants.TCL_SINGLE_LINE_COMMENT,
-			TclColorConstants.TCL_DEFAULT, // 
-			TclColorConstants.TCL_KEYWORD,
-			TclColorConstants.TCL_KEYWORD_RETURN, // 
-			TclColorConstants.TCL_NUMBER, // 
+			TclColorConstants.TCL_DEFAULT, //
+			TclColorConstants.TCL_KEYWORD, TclColorConstants.TCL_KEYWORD_RETURN, //
+			TclColorConstants.TCL_NUMBER, //
 			TclColorConstants.TCL_VARIABLE, };
 
 	private static final String RETURN_KEYWORD = "return"; //$NON-NLS-1$
@@ -41,12 +40,14 @@ public class TclCodeScanner extends AbstractScriptScanner {
 		initialize();
 	}
 
+	@Override
 	protected String[] getTokenProperties() {
 		return fgTokenProperties;
 	}
 
-	protected List createRules() {
-		List/* <IRule> */rules = new ArrayList/* <IRule> */();
+	@Override
+	protected List<IRule> createRules() {
+		List<IRule> rules = new ArrayList<>();
 
 		IToken keyword = getToken(TclColorConstants.TCL_KEYWORD);
 		IToken comment = getToken(TclColorConstants.TCL_SINGLE_LINE_COMMENT);
@@ -69,7 +70,8 @@ public class TclCodeScanner extends AbstractScriptScanner {
 			wordRule.addWord(keywords[i], keyword);
 		}
 
-		IToken returnToken = getToken(TclPreferenceConstants.EDITOR_KEYWORD_RETURN_COLOR);
+		IToken returnToken = getToken(
+				TclPreferenceConstants.EDITOR_KEYWORD_RETURN_COLOR);
 		wordRule.addWord(RETURN_KEYWORD, returnToken);
 
 		rules.add(wordRule);

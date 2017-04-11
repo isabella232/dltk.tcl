@@ -21,22 +21,27 @@ import org.eclipse.dltk.ui.text.ScriptMarkerResoltionUtils;
 import org.eclipse.ui.IMarkerResolution;
 import org.eclipse.ui.IMarkerResolutionGenerator;
 
-public class TclRequireMarkerResolutionGenerator implements
-		IMarkerResolutionGenerator {
+public class TclRequireMarkerResolutionGenerator
+		implements IMarkerResolutionGenerator {
 
+	@Override
 	public IMarkerResolution[] getResolutions(IMarker marker) {
 		if (TclSourcePackageCorrectionProcessor.isFixable(marker)) {
-			IProblemIdentifier idValue = DefaultProblemIdentifier.getProblemId(marker);
+			IProblemIdentifier idValue = DefaultProblemIdentifier
+					.getProblemId(marker);
 			if (idValue == TclProblems.UNKNOWN_REQUIRED_PACKAGE) {
-				String pkgName = CorrectionEngine.getProblemArguments(marker)[0];
+				String pkgName = CorrectionEngine
+						.getProblemArguments(marker)[0];
 				if (pkgName != null) {
 					IProject project = marker.getResource().getProject();
 					IScriptProject scriptProject = DLTKCore.create(project);
-					return new IMarkerResolution[] { new TclRequirePackageMarkerResolution(
-							pkgName, scriptProject) };
+					return new IMarkerResolution[] {
+							new TclRequirePackageMarkerResolution(pkgName,
+									scriptProject) };
 				}
 			} else if (idValue == TclProblems.UNKNOWN_SOURCE_CORRECTION) {
-				String pkgName = CorrectionEngine.getProblemArguments(marker)[0];
+				String pkgName = CorrectionEngine
+						.getProblemArguments(marker)[0];
 				if (pkgName != null) {
 					IProject project = marker.getResource().getProject();
 					IScriptProject scriptProject = DLTKCore.create(project);
@@ -44,21 +49,20 @@ public class TclRequireMarkerResolutionGenerator implements
 					if (resource.getType() == IResource.FILE) {
 						ISourceModule file = (ISourceModule) DLTKCore
 								.create(resource);
-						List<IMarkerResolution> resolutions = new ArrayList<IMarkerResolution>();
-						resolutions
-								.add(new TclSourceCorrectionMarkerResolution(
-										pkgName, scriptProject, file));
+						List<IMarkerResolution> resolutions = new ArrayList<>();
+						resolutions.add(new TclSourceCorrectionMarkerResolution(
+								pkgName, scriptProject, file));
 
 						addGlobalVariableCorrections(pkgName, project,
 								scriptProject, resolutions);
 
-						return resolutions
-								.toArray(new IMarkerResolution[resolutions
-										.size()]);
+						return resolutions.toArray(
+								new IMarkerResolution[resolutions.size()]);
 					}
 				}
 			} else if (idValue == TclProblems.UNKNOWN_REQUIRED_PACKAGE_CORRECTION) {
-				String pkgName = CorrectionEngine.getProblemArguments(marker)[0];
+				String pkgName = CorrectionEngine
+						.getProblemArguments(marker)[0];
 				if (pkgName != null) {
 					final IResource resource = marker.getResource();
 					if (resource.getType() == IResource.FILE) {
@@ -66,15 +70,14 @@ public class TclRequireMarkerResolutionGenerator implements
 								.create((IFile) resource);
 						IProject project = resource.getProject();
 						IScriptProject scriptProject = DLTKCore.create(project);
-						List<IMarkerResolution> resolutions = new ArrayList<IMarkerResolution>();
-						resolutions
-								.add(new TclRequirePackageCorrectionMarkerResolution(
+						List<IMarkerResolution> resolutions = new ArrayList<>();
+						resolutions.add(
+								new TclRequirePackageCorrectionMarkerResolution(
 										pkgName, scriptProject, module));
 						addGlobalVariableCorrections(pkgName, project,
 								scriptProject, resolutions);
-						return resolutions
-								.toArray(new IMarkerResolution[resolutions
-										.size()]);
+						return resolutions.toArray(
+								new IMarkerResolution[resolutions.size()]);
 					}
 				}
 			}
@@ -85,13 +88,13 @@ public class TclRequireMarkerResolutionGenerator implements
 	private void addGlobalVariableCorrections(String pkgName, IProject project,
 			IScriptProject scriptProject, List<IMarkerResolution> resolutions) {
 		String[] names = TclVariableResolver.extractVariableNames(pkgName);
-		Map<String, String> eMap = TclPackagesManager.getVariables(project
-				.getName());
+		Map<String, String> eMap = TclPackagesManager
+				.getVariables(project.getName());
 		if (names != null) {
 			for (String var : names) {
 				if (!eMap.containsKey(var)) {
-					resolutions
-							.add(new TclGlobalVariableSourceCorrectionMarkerResolution(
+					resolutions.add(
+							new TclGlobalVariableSourceCorrectionMarkerResolution(
 									var, scriptProject));
 				}
 			}

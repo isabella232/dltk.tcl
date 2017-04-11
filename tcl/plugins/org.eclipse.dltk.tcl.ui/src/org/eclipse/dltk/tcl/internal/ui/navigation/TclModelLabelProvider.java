@@ -20,6 +20,7 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 
 public class TclModelLabelProvider extends LabelProvider {
+	@Override
 	public String getText(Object element) {
 		if (element instanceof TclPackageFragment) {
 			return ((TclPackageFragment) element).getPackageName();
@@ -38,11 +39,11 @@ public class TclModelLabelProvider extends LabelProvider {
 					+ module.getStorage().getFullPath().toString() + ")";
 		} else if (element instanceof TclSourcesSourceModule) {
 			TclSourcesSourceModule module = (TclSourcesSourceModule) element;
-			IEnvironment environment = EnvironmentManager.getEnvironment(module
-					.getScriptProject());
+			IEnvironment environment = EnvironmentManager
+					.getEnvironment(module.getScriptProject());
 			String originalName = module.getOriginalName();
-			String convertedPath = environment.convertPathToString(module
-					.getFullPath());
+			String convertedPath = environment
+					.convertPathToString(module.getFullPath());
 			IFileHandle file = EnvironmentPathUtils.getFile(module);
 			boolean exists = file != null && file.exists();
 			String postFix = exists ? "" : " [Not available]";
@@ -86,6 +87,6 @@ public class TclModelLabelProvider extends LabelProvider {
 		return image;
 	}
 
-	private Map<ImageDescriptor, Image> registry = new HashMap<ImageDescriptor, Image>();
+	private Map<ImageDescriptor, Image> registry = new HashMap<>();
 
 }

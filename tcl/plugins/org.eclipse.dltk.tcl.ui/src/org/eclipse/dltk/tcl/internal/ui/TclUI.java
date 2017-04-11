@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2007 IBM Corporation and others.
+ * Copyright (c) 2005, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -83,7 +83,7 @@ public class TclUI extends AbstractUIPlugin {
 	/**
 	 * Returns an image descriptor for the image file at the given plug-in
 	 * relative path.
-	 * 
+	 *
 	 * @param path
 	 *            the path
 	 * @return the image descriptor
@@ -105,10 +105,8 @@ public class TclUI extends AbstractUIPlugin {
 	}
 
 	public static void error(String message) {
-		plugin.getLog()
-				.log(
-						new Status(IStatus.ERROR, PLUGIN_ID, IStatus.OK,
-								message, null));
+		plugin.getLog().log(new Status(IStatus.ERROR, PLUGIN_ID, IStatus.OK,
+				message, null));
 	}
 
 	public static void error(Throwable t) {

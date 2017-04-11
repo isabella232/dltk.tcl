@@ -1,11 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2007 IBM Corporation and others.
+ * Copyright (c) 2005, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- 
  *******************************************************************************/
 package org.eclipse.dltk.tcl.internal.ui.editor;
 
@@ -37,7 +36,7 @@ public class TclOutlinePage extends ScriptOutlinePage {
 		IToolBarManager toolBarManager = actionBars.getToolBarManager();
 		MemberFilterActionGroup fMemberFilterActionGroup = new MemberFilterActionGroup(
 				fOutlineViewer, fStore);
-		List<MemberFilterAction> actions = new ArrayList<MemberFilterAction>(3);
+		List<MemberFilterAction> actions = new ArrayList<>(3);
 
 		// variables
 		// TODO help support IDLTKHelpContextIds.FILTER_FIELDS_ACTION;
@@ -45,10 +44,10 @@ public class TclOutlinePage extends ScriptOutlinePage {
 				fMemberFilterActionGroup,
 				ActionMessages.MemberFilterActionGroup_hide_variables_label,
 				new ModelElementFilter(IModelElement.FIELD), null, true);
-		hideVariables
-				.setDescription(ActionMessages.MemberFilterActionGroup_hide_variables_description);
-		hideVariables
-				.setToolTipText(ActionMessages.MemberFilterActionGroup_hide_variables_tooltip);
+		hideVariables.setDescription(
+				ActionMessages.MemberFilterActionGroup_hide_variables_description);
+		hideVariables.setToolTipText(
+				ActionMessages.MemberFilterActionGroup_hide_variables_tooltip);
 		DLTKPluginImages.setLocalImageDescriptors(hideVariables,
 				"filter_fields.gif"); //$NON-NLS-1$
 		actions.add(hideVariables);
@@ -59,10 +58,10 @@ public class TclOutlinePage extends ScriptOutlinePage {
 				fMemberFilterActionGroup,
 				ActionMessages.MemberFilterActionGroup_hide_procedures_label,
 				new ModelElementFilter(IModelElement.METHOD), null, true);
-		hideProcedures
-				.setDescription(ActionMessages.MemberFilterActionGroup_hide_procedures_description);
-		hideProcedures
-				.setToolTipText(ActionMessages.MemberFilterActionGroup_hide_procedures_tooltip);
+		hideProcedures.setDescription(
+				ActionMessages.MemberFilterActionGroup_hide_procedures_description);
+		hideProcedures.setToolTipText(
+				ActionMessages.MemberFilterActionGroup_hide_procedures_tooltip);
 		// TODO: add correct icon
 		DLTKPluginImages.setLocalImageDescriptors(hideProcedures,
 				"filter_methods.gif"); //$NON-NLS-1$
@@ -74,10 +73,10 @@ public class TclOutlinePage extends ScriptOutlinePage {
 				fMemberFilterActionGroup,
 				ActionMessages.MemberFilterActionGroup_hide_namespaces_label,
 				new ModelElementFilter(IModelElement.TYPE), null, true);
-		hideNamespaces
-				.setDescription(ActionMessages.MemberFilterActionGroup_hide_namespaces_description);
-		hideNamespaces
-				.setToolTipText(ActionMessages.MemberFilterActionGroup_hide_namespaces_tooltip);
+		hideNamespaces.setDescription(
+				ActionMessages.MemberFilterActionGroup_hide_namespaces_description);
+		hideNamespaces.setToolTipText(
+				ActionMessages.MemberFilterActionGroup_hide_namespaces_tooltip);
 		DLTKPluginImages.setLocalImageDescriptors(hideNamespaces,
 				"filter_classes.gif"); //$NON-NLS-1$
 		actions.add(hideNamespaces);
@@ -87,10 +86,10 @@ public class TclOutlinePage extends ScriptOutlinePage {
 				fMemberFilterActionGroup,
 				ActionMessages.MemberFilterActionGroup_hide_private_label,
 				new ModelElementFlagsFilter(Modifiers.AccPrivate), null, true);
-		hidePrivate
-				.setDescription(ActionMessages.MemberFilterActionGroup_hide_private_description);
-		hidePrivate
-				.setToolTipText(ActionMessages.MemberFilterActionGroup_hide_private_tooltip);
+		hidePrivate.setDescription(
+				ActionMessages.MemberFilterActionGroup_hide_private_description);
+		hidePrivate.setToolTipText(
+				ActionMessages.MemberFilterActionGroup_hide_private_tooltip);
 		DLTKPluginImages.setLocalImageDescriptors(hidePrivate,
 				"filter_private.gif"); //$NON-NLS-1$
 		actions.add(hidePrivate);

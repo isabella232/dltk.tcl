@@ -1,11 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2007 IBM Corporation and others.
+ * Copyright (c) 2005, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- 
  *******************************************************************************/
 package org.eclipse.dltk.tcl.ui;
 
@@ -25,7 +24,7 @@ public class TclPreferenceConstants extends PreferenceConstants {
 	 * Value is of type <code>String</code>. A RGB color value encoded as a
 	 * string using class <code>PreferenceConverter</code>
 	 * </p>
-	 * 
+	 *
 	 * @see org.eclipse.jface.resource.StringConverter
 	 * @see org.eclipse.jface.preference.PreferenceConverter
 	 */
@@ -73,8 +72,8 @@ public class TclPreferenceConstants extends PreferenceConstants {
 	 * comments are rendered in underline. If <code>false</code> the are
 	 * rendered using no italic font style attribute.
 	 * </p>
-	 * 
-	 * 
+	 *
+	 *
 	 */
 	public final static String EDITOR_KEYWORD_RETURN_UNDERLINE = TclColorConstants.TCL_KEYWORD_RETURN
 			+ EDITOR_UNDERLINE_SUFFIX;
@@ -86,7 +85,7 @@ public class TclPreferenceConstants extends PreferenceConstants {
 	 * Value is of type <code>String</code>. A RGB color value encoded as a
 	 * string using class <code>PreferenceConverter</code>
 	 * </p>
-	 * 
+	 *
 	 * @see org.eclipse.jface.resource.StringConverter
 	 * @see org.eclipse.jface.preference.PreferenceConverter
 	 */
@@ -136,8 +135,8 @@ public class TclPreferenceConstants extends PreferenceConstants {
 	 * comments are rendered in underline. If <code>false</code> the are
 	 * rendered using no italic font style attribute.
 	 * </p>
-	 * 
-	 * 
+	 *
+	 *
 	 */
 	public final static String EDITOR_SINGLE_LINE_COMMENT_UNDERLINE = TclColorConstants.TCL_SINGLE_LINE_COMMENT
 			+ EDITOR_UNDERLINE_SUFFIX;
@@ -151,7 +150,7 @@ public class TclPreferenceConstants extends PreferenceConstants {
 	 * Value is of type <code>String</code>. A RGB color value encoded as a
 	 * string using class <code>PreferenceConverter</code>
 	 * </p>
-	 * 
+	 *
 	 * @see org.eclipse.jface.resource.StringConverter
 	 * @see org.eclipse.jface.preference.PreferenceConverter
 	 */
@@ -199,8 +198,8 @@ public class TclPreferenceConstants extends PreferenceConstants {
 	 * comments are rendered in underline. If <code>false</code> the are
 	 * rendered using no italic font style attribute.
 	 * </p>
-	 * 
-	 * 
+	 *
+	 *
 	 */
 	public final static String EDITOR_KEYWORD_UNDERLINE = TclColorConstants.TCL_KEYWORD
 			+ EDITOR_UNDERLINE_SUFFIX;
@@ -214,7 +213,7 @@ public class TclPreferenceConstants extends PreferenceConstants {
 	 * Value is of type <code>String</code>. A RGB color value encoded as a
 	 * string using class <code>PreferenceConverter</code>
 	 * </p>
-	 * 
+	 *
 	 * @see org.eclipse.jface.resource.StringConverter
 	 * @see org.eclipse.jface.preference.PreferenceConverter
 	 */
@@ -262,8 +261,8 @@ public class TclPreferenceConstants extends PreferenceConstants {
 	 * comments are rendered in underline. If <code>false</code> the are
 	 * rendered using no italic font style attribute.
 	 * </p>
-	 * 
-	 * 
+	 *
+	 *
 	 */
 
 	public final static String EDITOR_NUMBER_UNDERLINE = TclColorConstants.TCL_NUMBER
@@ -278,7 +277,7 @@ public class TclPreferenceConstants extends PreferenceConstants {
 	 * Value is of type <code>String</code>. A RGB color value encoded as a
 	 * string using class <code>PreferenceConverter</code>
 	 * </p>
-	 * 
+	 *
 	 * @see org.eclipse.jface.resource.StringConverter
 	 * @see org.eclipse.jface.preference.PreferenceConverter
 	 */
@@ -326,8 +325,8 @@ public class TclPreferenceConstants extends PreferenceConstants {
 	 * comments are rendered in underline. If <code>false</code> the are
 	 * rendered using no italic font style attribute.
 	 * </p>
-	 * 
-	 * 
+	 *
+	 *
 	 */
 
 	public final static String EDITOR_VARIABLE_UNDERLINE = TclColorConstants.TCL_VARIABLE
@@ -342,7 +341,7 @@ public class TclPreferenceConstants extends PreferenceConstants {
 	 * Value is of type <code>String</code>. A RGB color value encoded as a
 	 * string using class <code>PreferenceConverter</code>
 	 * </p>
-	 * 
+	 *
 	 * @see org.eclipse.jface.resource.StringConverter
 	 * @see org.eclipse.jface.preference.PreferenceConverter
 	 */
@@ -390,8 +389,8 @@ public class TclPreferenceConstants extends PreferenceConstants {
 	 * comments are rendered in underline. If <code>false</code> the are
 	 * rendered using no italic font style attribute.
 	 * </p>
-	 * 
-	 * 
+	 *
+	 *
 	 */
 	public final static String EDITOR_STRING_UNDERLINE = TclColorConstants.TCL_STRING
 			+ EDITOR_UNDERLINE_SUFFIX;
@@ -403,7 +402,7 @@ public class TclPreferenceConstants extends PreferenceConstants {
 	 * <p>
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
-	 * 
+	 *
 	 */
 	public final static String EDITOR_SMART_PASTE_MODE = "smartPasteMode"; //$NON-NLS-1$
 	public final static int EDITOR_SMART_PASTE_MODE_SIMPLE = 1;
@@ -415,8 +414,8 @@ public class TclPreferenceConstants extends PreferenceConstants {
 	 * <p>
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
-	 * 
-	 * 
+	 *
+	 *
 	 */
 	public static final String EDITOR_FOLDING_IMPORTS = "editor_folding_default_imports"; //$NON-NLS-1$
 
@@ -465,31 +464,30 @@ public class TclPreferenceConstants extends PreferenceConstants {
 		PreferenceConverter.setDefault(store,
 				TclPreferenceConstants.EDITOR_SINGLE_LINE_COMMENT_COLOR,
 				new RGB(63, 127, 95));
-		PreferenceConverter.setDefault(store, COMMENT_TASK_TAGS, new RGB(127,
-				159, 191));
+		PreferenceConverter.setDefault(store, COMMENT_TASK_TAGS,
+				new RGB(127, 159, 191));
 		PreferenceConverter.setDefault(store,
 				TclPreferenceConstants.EDITOR_KEYWORD_COLOR,
 				new RGB(127, 0, 85));
 		PreferenceConverter.setDefault(store,
-				TclPreferenceConstants.EDITOR_KEYWORD_RETURN_COLOR, new RGB(
-						127, 0, 85));
+				TclPreferenceConstants.EDITOR_KEYWORD_RETURN_COLOR,
+				new RGB(127, 0, 85));
 
-		PreferenceConverter
-				.setDefault(store, TclPreferenceConstants.EDITOR_STRING_COLOR,
-						new RGB(42, 0, 255));
+		PreferenceConverter.setDefault(store,
+				TclPreferenceConstants.EDITOR_STRING_COLOR,
+				new RGB(42, 0, 255));
 		PreferenceConverter.setDefault(store,
 				TclPreferenceConstants.EDITOR_NUMBER_COLOR, new RGB(0, 0, 0));
 		PreferenceConverter.setDefault(store,
 				TclPreferenceConstants.EDITOR_VARIABLE_COLOR,
 				new RGB(200, 0, 0));
 
-		store.setDefault(
-				TclPreferenceConstants.EDITOR_SINGLE_LINE_COMMENT_BOLD, false);
+		store.setDefault(TclPreferenceConstants.EDITOR_SINGLE_LINE_COMMENT_BOLD,
+				false);
 		store.setDefault(COMMENT_TASK_TAGS_BOLD, true);
-		store
-				.setDefault(
-						TclPreferenceConstants.EDITOR_SINGLE_LINE_COMMENT_ITALIC,
-						false);
+		store.setDefault(
+				TclPreferenceConstants.EDITOR_SINGLE_LINE_COMMENT_ITALIC,
+				false);
 
 		store.setDefault(TclPreferenceConstants.EDITOR_KEYWORD_BOLD, true);
 		store.setDefault(TclPreferenceConstants.EDITOR_KEYWORD_ITALIC, false);
@@ -498,10 +496,10 @@ public class TclPreferenceConstants extends PreferenceConstants {
 		store.setDefault(TclPreferenceConstants.EDITOR_KEYWORD_RETURN_ITALIC,
 				false);
 
-		store.setDefault(TclPreferenceConstants.EDITOR_CLOSE_STRINGS, true);
-		store.setDefault(TclPreferenceConstants.EDITOR_CLOSE_BRACKETS, true);
-		store.setDefault(TclPreferenceConstants.EDITOR_CLOSE_BRACES, true);
-		store.setDefault(TclPreferenceConstants.EDITOR_SMART_TAB, true);
+		store.setDefault(PreferenceConstants.EDITOR_CLOSE_STRINGS, true);
+		store.setDefault(PreferenceConstants.EDITOR_CLOSE_BRACKETS, true);
+		store.setDefault(PreferenceConstants.EDITOR_CLOSE_BRACES, true);
+		store.setDefault(PreferenceConstants.EDITOR_SMART_TAB, true);
 		store.setDefault(TclPreferenceConstants.EDITOR_SMART_PASTE_MODE,
 				TclPreferenceConstants.EDITOR_SMART_PASTE_MODE_SIMPLE);
 
@@ -509,8 +507,8 @@ public class TclPreferenceConstants extends PreferenceConstants {
 		store.setDefault(PreferenceConstants.EDITOR_TAB_WIDTH, 4);
 		store.setDefault(PreferenceConstants.EDITOR_SMART_HOME_END, true);
 		store.setDefault(PreferenceConstants.EDITOR_SUB_WORD_NAVIGATION, true);
-		store.setDefault(
-				PreferenceConstants.EDITOR_SYNC_OUTLINE_ON_CURSOR_MOVE, true);
+		store.setDefault(PreferenceConstants.EDITOR_SYNC_OUTLINE_ON_CURSOR_MOVE,
+				true);
 
 		// folding
 		store.setDefault(PreferenceConstants.EDITOR_FOLDING_ENABLED, true);
@@ -526,16 +524,14 @@ public class TclPreferenceConstants extends PreferenceConstants {
 		// TclPreferenceConstants.EDITOR_FOLDING_COMMENTS_WITH_NEWLINES,
 		// true);
 		store.setDefault(
-				TclPreferenceConstants.EDITOR_FOLDING_INIT_HEADER_COMMENTS,
-				true);
+				PreferenceConstants.EDITOR_FOLDING_INIT_HEADER_COMMENTS, true);
 		store.setDefault(PreferenceConstants.EDITOR_FOLDING_LINES_LIMIT, 5);
 
 		store.setDefault(CodeFormatterConstants.FORMATTER_TAB_CHAR,
 				CodeFormatterConstants.MIXED);
 		store.setDefault(CodeFormatterConstants.FORMATTER_TAB_SIZE, "8");
-		store
-				.setDefault(CodeFormatterConstants.FORMATTER_INDENTATION_SIZE,
-						"4");
+		store.setDefault(CodeFormatterConstants.FORMATTER_INDENTATION_SIZE,
+				"4");
 
 		// do more complicated stuff
 		NewScriptProjectPreferencePage.initDefaults(store);
@@ -552,14 +548,15 @@ public class TclPreferenceConstants extends PreferenceConstants {
 
 		store.setDefault(PreferenceConstants.SHOW_SOURCE_MODULE_CHILDREN, true);
 
-		store.setDefault(
-				PreferenceConstants.CODEASSIST_AUTOACTIVATION_TRIGGERS, ":$"); //$NON-NLS-1$
+		store.setDefault(PreferenceConstants.CODEASSIST_AUTOACTIVATION_TRIGGERS,
+				":$"); //$NON-NLS-1$
 
 		store.setDefault(CODEASSIST_FILTER_INTERNAL_API, true);
 	}
 
 	/**
 	 * A preference that controls the selected formatter.
+	 *
 	 * @since 2.0
 	 */
 	public static final String FORMATTER_ID = "formatterId"; //$NON-NLS-1$

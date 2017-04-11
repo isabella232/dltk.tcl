@@ -1,11 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2007 IBM Corporation and others.
+ * Copyright (c) 2005, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- 
  *******************************************************************************/
 package org.eclipse.dltk.tcl.internal.ui.text.completion;
 
@@ -18,12 +17,13 @@ import org.eclipse.dltk.ui.text.completion.ScriptCompletionProposal;
 import org.eclipse.dltk.ui.text.completion.ScriptCompletionProposalCollector;
 import org.eclipse.swt.graphics.Image;
 
-public class TclCompletionProposalCollector extends
-		ScriptCompletionProposalCollector {
+public class TclCompletionProposalCollector
+		extends ScriptCompletionProposalCollector {
 
 	protected final static char[] VAR_TRIGGER = new char[] { '\t', ' ', '=',
 			';', '.' };
 
+	@Override
 	protected char[] getVarTrigger() {
 		return VAR_TRIGGER;
 	}
@@ -32,6 +32,7 @@ public class TclCompletionProposalCollector extends
 		super(module);
 	}
 
+	@Override
 	protected boolean isFiltered(CompletionProposal proposal) {
 		if (isIgnored(proposal.getKind())) {
 			return true;
@@ -48,8 +49,8 @@ public class TclCompletionProposalCollector extends
 			proposal.getCompletion();
 			if (name.equals(pName)) {
 				if (proposal.getModelElement() != null
-						&& proposal.getModelElement().equals(
-								proposals[i].getModelElement())) {
+						&& proposal.getModelElement()
+								.equals(proposals[i].getModelElement())) {
 
 				}
 			}
@@ -66,6 +67,7 @@ public class TclCompletionProposalCollector extends
 	}
 
 	// Specific proposals creation. May be use factory?
+	@Override
 	protected ScriptCompletionProposal createScriptCompletionProposal(
 			String completion, int replaceStart, int length, Image image,
 			String displayString, int i) {
@@ -73,6 +75,7 @@ public class TclCompletionProposalCollector extends
 				length, image, displayString, i);
 	}
 
+	@Override
 	protected ScriptCompletionProposal createScriptCompletionProposal(
 			String completion, int replaceStart, int length, Image image,
 			String displayString, int i, boolean isInDoc) {
@@ -80,35 +83,37 @@ public class TclCompletionProposalCollector extends
 				length, image, displayString, i, isInDoc);
 	}
 
+	@Override
 	protected ScriptCompletionProposal createOverrideCompletionProposal(
 			IScriptProject scriptProject, ISourceModule compilationUnit,
 			String name, String[] paramTypes, int start, int length,
 			String displayName, String completionProposal) {
-		return new TclOverrideCompletionProposal(scriptProject,
-				compilationUnit, name, paramTypes, start, length, displayName,
+		return new TclOverrideCompletionProposal(scriptProject, compilationUnit,
+				name, paramTypes, start, length, displayName,
 				completionProposal);
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.eclipse.dltk.ui.text.completion.ScriptCompletionProposalCollector
 	 * #createKeywordProposal(org.eclipse.dltk.core.CompletionProposal)
 	 */
+	@Override
 	protected IScriptCompletionProposal createKeywordProposal(
 			CompletionProposal proposal) {
-		final ScriptCompletionProposal completionProposal = (ScriptCompletionProposal) super
-				.createKeywordProposal(proposal);
+		final ScriptCompletionProposal completionProposal = (ScriptCompletionProposal) super.createKeywordProposal(
+				proposal);
 		final String prefix;
 		if (proposal.getExtraInfo() instanceof String) {
 			prefix = (String) proposal.getExtraInfo();
 		} else {
 			prefix = completionProposal.getReplacementString();
 		}
-		completionProposal
-				.setContextInformation(new TclKeywordLazyContextInformation(
-						completionProposal, prefix, getSourceModule()));
+		completionProposal.setContextInformation(
+				new TclKeywordLazyContextInformation(completionProposal, prefix,
+						getSourceModule()));
 		return completionProposal;
 	}
 

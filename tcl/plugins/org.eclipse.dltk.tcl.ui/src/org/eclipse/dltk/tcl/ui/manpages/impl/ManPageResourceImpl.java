@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2009 xored software, Inc.  
+ * Copyright (c) 2009, 2017 xored software, Inc. and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html  
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
  *     xored software, Inc. - initial API and Implementation (Alex Panchenko)
@@ -32,8 +32,8 @@ import org.eclipse.emf.ecore.xmi.impl.XMIResourceImpl;
 /**
  * @since 2.0
  */
-public class ManPageResourceImpl extends XMIResourceImpl implements
-		ManPageResource {
+public class ManPageResourceImpl extends XMIResourceImpl
+		implements ManPageResource {
 
 	private class ContentList<E extends EObject> extends AbstractList<E> {
 
@@ -82,9 +82,10 @@ public class ManPageResourceImpl extends XMIResourceImpl implements
 	public static final String ENCODING = "UTF-8"; //$NON-NLS-1$
 
 	public <T extends EObject> List<T> select(Class<T> clazz) {
-		return new ContentList<T>(clazz);
+		return new ContentList<>(clazz);
 	}
 
+	@Override
 	public Documentation findDefault() {
 		for (Documentation documentation : getDocumentations()) {
 			if (documentation.isDefault()) {
@@ -94,6 +95,7 @@ public class ManPageResourceImpl extends XMIResourceImpl implements
 		return null;
 	}
 
+	@Override
 	public Documentation findByName(String name) {
 		if (name != null) {
 			for (Documentation documentation : getDocumentations()) {
@@ -105,6 +107,7 @@ public class ManPageResourceImpl extends XMIResourceImpl implements
 		return null;
 	}
 
+	@Override
 	public Documentation findById(String id) {
 		if (id != null) {
 			for (Documentation documentation : getDocumentations()) {
@@ -116,6 +119,7 @@ public class ManPageResourceImpl extends XMIResourceImpl implements
 		return null;
 	}
 
+	@Override
 	public boolean isEmpty() {
 		return getContents().isEmpty();
 	}
@@ -130,13 +134,15 @@ public class ManPageResourceImpl extends XMIResourceImpl implements
 		checkDefault();
 	}
 
+	@Override
 	public List<Documentation> getDocumentations() {
 		return select(Documentation.class);
 	}
 
+	@Override
 	public void checkDefault() {
 		final List<Documentation> documentations = getDocumentations();
-		final List<Documentation> defaults = new ArrayList<Documentation>();
+		final List<Documentation> defaults = new ArrayList<>();
 		for (Documentation doc : documentations) {
 			if (doc.isDefault()) {
 				defaults.add(doc);
@@ -160,7 +166,7 @@ public class ManPageResourceImpl extends XMIResourceImpl implements
 	@Override
 	public void save(Map<?, ?> options) throws IOException {
 		final StringWriter writer = new StringWriter();
-		final Map<Object, Object> saveOptions = new HashMap<Object, Object>();
+		final Map<Object, Object> saveOptions = new HashMap<>();
 		if (options != null) {
 			saveOptions.putAll(options);
 		}

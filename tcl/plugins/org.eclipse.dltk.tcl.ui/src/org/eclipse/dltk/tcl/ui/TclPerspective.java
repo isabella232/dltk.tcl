@@ -1,13 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2007 IBM Corporation and others.
+ * Copyright (c) 2005, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- 
  *******************************************************************************/
 package org.eclipse.dltk.tcl.ui;
+
+import static org.eclipse.dltk.ui.DLTKUIPlugin.ID_SCRIPT_EXPLORER;
 
 import org.eclipse.dltk.tcl.internal.ui.TclUI;
 import org.eclipse.dltk.tcl.internal.ui.wizards.TclFileCreationWizard;
@@ -19,8 +20,6 @@ import org.eclipse.ui.IPerspectiveFactory;
 import org.eclipse.ui.console.IConsoleConstants;
 import org.eclipse.ui.progress.IProgressConstants;
 
-import static org.eclipse.dltk.ui.DLTKUIPlugin.ID_SCRIPT_EXPLORER;
-
 public class TclPerspective implements IPerspectiveFactory {
 	/**
 	 * @since 2.0
@@ -29,7 +28,7 @@ public class TclPerspective implements IPerspectiveFactory {
 
 	// TODO: move to general class like ScriptPerspective
 
-	public static final String NEW_FOLDER_WIZARD = "org.eclipse.ui.wizards.new.folder"; //$NON-NLS-1$ 
+	public static final String NEW_FOLDER_WIZARD = "org.eclipse.ui.wizards.new.folder"; //$NON-NLS-1$
 
 	public static final String NEW_FILE_WIZARD = "org.eclipse.ui.wizards.new.file"; //$NON-NLS-1$
 
@@ -81,16 +80,16 @@ public class TclPerspective implements IPerspectiveFactory {
 		final String editorArea = layout.getEditorArea();
 
 		// Folder
-		IFolderLayout folder = layout.createFolder(
-				"left", IPageLayout.LEFT, (float) 0.2, editorArea); //$NON-NLS-1$		
+		IFolderLayout folder = layout.createFolder("left", IPageLayout.LEFT, //$NON-NLS-1$
+				(float) 0.2, editorArea);
 
 		folder.addView(ID_SCRIPT_EXPLORER);
 		folder.addView("org.eclipse.dltk.ui.TypeHierarchy"); //$NON-NLS-1$
 		folder.addPlaceholder(IPageLayout.ID_BOOKMARKS);
 
 		// Output folder
-		IFolderLayout outputFolder = layout.createFolder(
-				"bottom", IPageLayout.BOTTOM, (float) 0.75, editorArea); //$NON-NLS-1$
+		IFolderLayout outputFolder = layout.createFolder("bottom", //$NON-NLS-1$
+				IPageLayout.BOTTOM, (float) 0.75, editorArea);
 
 		outputFolder.addView(IPageLayout.ID_PROBLEM_VIEW);
 		outputFolder.addView(IPageLayout.ID_TASK_LIST);
@@ -106,6 +105,7 @@ public class TclPerspective implements IPerspectiveFactory {
 		layout.addPerspectiveShortcut("org.eclipse.debug.ui.DebugPerspective"); //$NON-NLS-1$
 	}
 
+	@Override
 	public void createInitialLayout(IPageLayout layout) {
 		createFolders(layout);
 		addViews(layout);

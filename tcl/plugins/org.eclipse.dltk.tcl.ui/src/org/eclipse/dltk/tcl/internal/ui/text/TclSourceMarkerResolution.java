@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.eclipse.dltk.tcl.internal.ui.text;
 
 import java.net.URI;
@@ -32,8 +29,8 @@ import org.eclipse.dltk.ui.text.IAnnotationResolution;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.ui.IMarkerResolution;
 
-final class TclSourceMarkerResolution implements IMarkerResolution,
-		IAnnotationResolution {
+final class TclSourceMarkerResolution
+		implements IMarkerResolution, IAnnotationResolution {
 	private String sourceName;
 	private IScriptProject project;
 	private ISourceModule module;
@@ -45,6 +42,7 @@ final class TclSourceMarkerResolution implements IMarkerResolution,
 		this.module = module;
 	}
 
+	@Override
 	public String getLabel() {
 		return "Add user specified source file location to buildpath";
 	}
@@ -124,8 +122,8 @@ final class TclSourceMarkerResolution implements IMarkerResolution,
 						}
 					}
 				}
-				IPath sourcePath = resolveSourceValue(modulePath
-						.removeLastSegments(1), this.sourceName, env);
+				IPath sourcePath = resolveSourceValue(
+						modulePath.removeLastSegments(1), this.sourceName, env);
 				if (sourcePath == null) {
 					return false;
 				}
@@ -138,8 +136,8 @@ final class TclSourceMarkerResolution implements IMarkerResolution,
 					// This is almost impossibly situation.
 					info = TclPackagesFactory.eINSTANCE.createTclModuleInfo();
 					info.setHandle(handle);
-					info
-							.setExternal(this.module instanceof IExternalSourceModule);
+					info.setExternal(
+							this.module instanceof IExternalSourceModule);
 					TclSourceEntry sourceEntry = TclPackagesFactory.eINSTANCE
 							.createTclSourceEntry();
 					sourceEntry.setStart(-1);
@@ -165,10 +163,12 @@ final class TclSourceMarkerResolution implements IMarkerResolution,
 		return false;
 	}
 
+	@Override
 	public void run(final IMarker marker) {
 		resolve();
 	}
 
+	@Override
 	public void run(IScriptAnnotation annotation, IDocument document) {
 		resolve();
 	}

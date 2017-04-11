@@ -33,12 +33,11 @@ import org.eclipse.dltk.ui.editor.highlighting.SemanticHighlighting;
 import org.eclipse.dltk.ui.preferences.PreferencesMessages;
 import org.eclipse.emf.common.util.EList;
 
-public class DefaultTclSemanticHighlightingExtension implements
-		ISemanticHighlightingExtension {
+public class DefaultTclSemanticHighlightingExtension
+		implements ISemanticHighlightingExtension {
 
 	private SemanticHighlighting[] highlightings = new SemanticHighlighting[] {
-			new TclTextTools.SH(
-					TclPreferenceConstants.EDITOR_PROCEDURES_COLOR,
+			new TclTextTools.SH(TclPreferenceConstants.EDITOR_PROCEDURES_COLOR,
 					null,
 					PreferencesMessages.DLTKEditorPreferencePage_function_colors),
 			new TclTextTools.SH(TclPreferenceConstants.EDITOR_ARGUMENTS_COLOR,
@@ -90,16 +89,16 @@ public class DefaultTclSemanticHighlightingExtension implements
 		if (node instanceof TypeDeclaration) {
 
 			TypeDeclaration t = (TypeDeclaration) node;
-			List children;
+			List<ASTNode> children;
 
 			// Handle base classes highlighting
 			ASTListNode s = t.getSuperClasses();
 
 			if (s != null && s.getChilds() != null) {
 				children = s.getChilds();
-				Iterator it = children.iterator();
+				Iterator<ASTNode> it = children.iterator();
 				while (it.hasNext()) {
-					ASTNode n = (ASTNode) it.next();
+					ASTNode n = it.next();
 
 					requestor.addPosition(n.sourceStart(), n.sourceEnd(),
 							HL_BASE_CLASSES);
@@ -114,19 +113,21 @@ public class DefaultTclSemanticHighlightingExtension implements
 
 	}
 
+	@Override
 	public void processNode(ASTNode node,
 			ISemanticHighlightingRequestor requestor) {
 		calculatePositions(node, requestor);
 
 	}
 
+	@Override
 	public SemanticHighlighting[] getHighlightings() {
 		return highlightings;
 	}
 
 	/**
 	 * Perform strings highlighting.
-	 * 
+	 *
 	 * @since 2.0
 	 */
 	public void doOtherHighlighting(IModuleSource code,
@@ -136,7 +137,8 @@ public class DefaultTclSemanticHighlightingExtension implements
 			return;
 		}
 		ModuleDeclaration moduleDeclaration = SourceParserUtil
-				.getModuleDeclaration((org.eclipse.dltk.core.ISourceModule) modelElement);
+				.getModuleDeclaration(
+						(org.eclipse.dltk.core.ISourceModule) modelElement);
 		if (moduleDeclaration instanceof TclModuleDeclaration) {
 			TclModuleDeclaration tclModule = (TclModuleDeclaration) moduleDeclaration;
 			TclModule module = tclModule.getTclModule();
@@ -168,9 +170,11 @@ public class DefaultTclSemanticHighlightingExtension implements
 										}
 										// Add region from pos to pos2
 										semanticHighlightingRequestor
-												.addPosition(arg.getStart()
-														+ pos, arg.getStart()
-														+ pos2 + 1, HL_STRINGS);
+												.addPosition(
+														arg.getStart() + pos,
+														arg.getStart() + pos2
+																+ 1,
+														HL_STRINGS);
 										pos = value.indexOf('\"', pos2 + 1);
 									}
 								}
@@ -218,16 +222,18 @@ public class DefaultTclSemanticHighlightingExtension implements
 												.get(i);
 										if (tclArgument instanceof StringArgument) {
 											semanticHighlightingRequestor
-													.addPosition(tclArgument
-															.getStart(),
+													.addPosition(
+															tclArgument
+																	.getStart(),
 															tclArgument
 																	.getEnd(),
 															HL_STRINGS);
 										}
 										if (tclArgument instanceof VariableReference) {
 											semanticHighlightingRequestor
-													.addPosition(tclArgument
-															.getStart(),
+													.addPosition(
+															tclArgument
+																	.getStart(),
 															tclArgument
 																	.getEnd(),
 															HL_VARIABLES);

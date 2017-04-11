@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2009 xored software, Inc.  
+ * Copyright (c) 2009, 2017 xored software, Inc. and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html  
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
  *     xored software, Inc. - initial API and Implementation (Alex Panchenko)
@@ -38,12 +38,9 @@ public class ManPageFinder {
 			return;
 		if (SKIP_DIRS.contains(dir.getName()))
 			return;
-		final File[] children = dir.listFiles(new FileFilter() {
-			public boolean accept(File file) {
-				return file.isDirectory()
-						|| file.getName().startsWith(CONTENTS_HTM);
-			}
-		});
+		final File[] children = dir
+				.listFiles((FileFilter) file -> file.isDirectory()
+						|| file.getName().startsWith(CONTENTS_HTM));
 		for (File child : children) {
 			if (child.isDirectory()) {
 				find(documentation, child);

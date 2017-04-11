@@ -8,6 +8,7 @@ public class TclLibraryPreferencePage extends UserLibraryPreferencePage {
 	public TclLibraryPreferencePage() {
 	}
 
+	@Override
 	protected IDLTKLanguageToolkit getLanguageToolkit() {
 		return TclLanguageToolkit.getDefault();
 	}

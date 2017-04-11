@@ -1,11 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2007 IBM Corporation and others.
+ * Copyright (c) 2005, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- 
  *******************************************************************************/
 package org.eclipse.dltk.tcl.internal.ui.documentation;
 
@@ -24,8 +23,8 @@ import org.eclipse.dltk.utils.TextUtils;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
 
-public class TclCommentDocumentationProvider implements
-		IScriptDocumentationProvider {
+public class TclCommentDocumentationProvider
+		implements IScriptDocumentationProvider {
 
 	private static final char COMMENT_SIGN = '#';
 
@@ -33,7 +32,7 @@ public class TclCommentDocumentationProvider implements
 		return d.get(d.getLineOffset(line), d.getLineLength(line));
 	}
 
-	protected List getHeaderComment(IMember member) {
+	protected List<String> getHeaderComment(IMember member) {
 		// if (member instanceof IField) {
 		// return null;
 		// }
@@ -65,13 +64,14 @@ public class TclCommentDocumentationProvider implements
 				int line = doc.getLineOfOffset(start);
 				--line; // look on the previous line
 				if (line >= 0) {
-					final List result = new ArrayList();
+					final List<String> result = new ArrayList<>();
 					do {
 						final String curLine = getLine(doc, line).trim();
 						if (curLine.length() > 0
 								&& curLine.charAt(0) == COMMENT_SIGN) {
 							result.add(0, curLine);
-						} else if (!(curLine.length() == 0 && result.isEmpty())) {
+						} else if (!(curLine.length() == 0
+								&& result.isEmpty())) {
 							// skip empty lines between comment and code only
 							break;
 						}
@@ -88,9 +88,10 @@ public class TclCommentDocumentationProvider implements
 		return null;
 	}
 
+	@Override
 	public Reader getInfo(IMember member, boolean lookIntoParents,
 			boolean lookIntoExternal) {
-		final List header = getHeaderComment(member);
+		final List<String> header = getHeaderComment(member);
 		if (header != null && !header.isEmpty()) {
 			return new StringReader(convertToHTML(header));
 		} else {
@@ -98,11 +99,11 @@ public class TclCommentDocumentationProvider implements
 		}
 	}
 
-	protected String convertToHTML(List header) {
+	protected String convertToHTML(List<String> header) {
 		final StringBuffer result = new StringBuffer();
 		boolean paragraphStarted = false;
 		for (int line = 0; line < header.size(); line++) {
-			String str = (String) header.get(line);
+			String str = header.get(line);
 			int begin = 0;
 			int end = str.length();
 			while (begin < end && str.charAt(begin) == COMMENT_SIGN) {
@@ -154,6 +155,7 @@ public class TclCommentDocumentationProvider implements
 
 	private static final String LINE_BREAK = "<br>\n"; //$NON-NLS-1$
 
+	@Override
 	public Reader getInfo(String content) {
 		return null;
 	}

@@ -81,6 +81,7 @@ public class TclCorePreferencePage
 				this.itemSeparator = listSeparator;
 			}
 
+			@Override
 			public void customButtonPressed(ListDialogField field, int index) {
 				String edited = null;
 				if (index != IDX_ADD) {
@@ -105,23 +106,26 @@ public class TclCorePreferencePage
 								.containsAll(selectedElements));
 			}
 
+			@Override
 			public void doubleClicked(ListDialogField field) {
 				if (canEdit(field.getSelectedElements())) {
 					customButtonPressed(field, IDX_EDIT);
 				}
 			}
 
+			@Override
 			public void selectionChanged(ListDialogField field) {
 				List<?> selectedElements = field.getSelectedElements();
 				field.enableButton(IDX_EDIT, canEdit(selectedElements));
 			}
 
+			@Override
 			public void dialogFieldChanged(DialogField field) {
 				savePatterns((ListDialogField) field);
 			}
 
 			public void loadPatterns(ListDialogField field) {
-				final List<String> elements = new ArrayList<String>();
+				final List<String> elements = new ArrayList<>();
 				if (contributedElements != null) {
 					elements.addAll(contributedElements);
 				}
@@ -172,6 +176,7 @@ public class TclCorePreferencePage
 				this.highlighted = highlighted;
 			}
 
+			@Override
 			public Font getFont(Object element) {
 				if (highlighted.contains(element)) {
 					return JFaceResources.getFontRegistry()

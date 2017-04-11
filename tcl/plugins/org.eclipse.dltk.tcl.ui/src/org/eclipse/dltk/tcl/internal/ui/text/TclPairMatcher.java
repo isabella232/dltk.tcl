@@ -129,7 +129,7 @@ public final class TclPairMatcher implements ICharacterPairMatcher {
 		if (md == null) {
 			return new PairBlock[0];
 		}
-		final List<PairBlock> result = new ArrayList<PairBlock>();
+		final List<PairBlock> result = new ArrayList<>();
 		try {
 			md.traverse(new ASTVisitor() {
 				@Override
@@ -252,6 +252,7 @@ public final class TclPairMatcher implements ICharacterPairMatcher {
 		return false;
 	}
 
+	@Override
 	public IRegion match(IDocument document, int offset) {
 		if (document == null || offset < 0) {
 			throw new IllegalArgumentException();
@@ -279,15 +280,18 @@ public final class TclPairMatcher implements ICharacterPairMatcher {
 	 *
 	 * @see org.eclipse.jface.text.source.ICharacterPairMatcher#getAnchor()
 	 */
+	@Override
 	public int getAnchor() {
 		return fAnchor;
 	}
 
+	@Override
 	public void dispose() {
 		clear();
 		fDocument = null;
 	}
 
+	@Override
 	public void clear() {
 	}
 

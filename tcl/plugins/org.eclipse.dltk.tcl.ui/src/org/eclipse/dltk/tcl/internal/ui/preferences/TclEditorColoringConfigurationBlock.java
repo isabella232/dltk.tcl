@@ -1,11 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2007 IBM Corporation and others.
+ * Copyright (c) 2005, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- 
  *******************************************************************************/
 package org.eclipse.dltk.tcl.internal.ui.preferences;
 
@@ -19,7 +18,6 @@ import org.eclipse.dltk.tcl.internal.ui.text.TclColorConstants;
 import org.eclipse.dltk.tcl.ui.TclPreferenceConstants;
 import org.eclipse.dltk.tcl.ui.text.TclPartitions;
 import org.eclipse.dltk.ui.preferences.AbstractScriptEditorColoringConfigurationBlock;
-import org.eclipse.dltk.ui.preferences.IPreferenceConfigurationBlock;
 import org.eclipse.dltk.ui.preferences.OverlayPreferenceStore;
 import org.eclipse.dltk.ui.preferences.PreferencesMessages;
 import org.eclipse.dltk.ui.text.IColorManager;
@@ -33,9 +31,8 @@ import org.eclipse.jface.text.source.projection.ProjectionViewer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.texteditor.ITextEditor;
 
-public class TclEditorColoringConfigurationBlock extends
-		AbstractScriptEditorColoringConfigurationBlock implements
-		IPreferenceConfigurationBlock {
+public class TclEditorColoringConfigurationBlock
+		extends AbstractScriptEditorColoringConfigurationBlock {
 
 	private static final String PREVIEW_FILE_NAME = "PreviewFile.txt"; //$NON-NLS-1$
 
@@ -44,11 +41,13 @@ public class TclEditorColoringConfigurationBlock extends
 					TclPreferenceConstants.EDITOR_SINGLE_LINE_COMMENT_COLOR,
 					sCommentsCategory },
 			{ PreferencesMessages.DLTKEditorPreferencePage_CommentTaskTags,
-					TclPreferenceConstants.COMMENT_TASK_TAGS, sCommentsCategory },
+					TclPreferenceConstants.COMMENT_TASK_TAGS,
+					sCommentsCategory },
 			{ PreferencesMessages.DLTKEditorPreferencePage_others,
 					TclColorConstants.TCL_DEFAULT, sCoreCategory },
 			{ PreferencesMessages.DLTKEditorPreferencePage_keywords,
-					TclPreferenceConstants.EDITOR_KEYWORD_COLOR, sCoreCategory },
+					TclPreferenceConstants.EDITOR_KEYWORD_COLOR,
+					sCoreCategory },
 
 			{ PreferencesMessages.DLTKEditorPreferencePage_returnKeyword,
 					TclPreferenceConstants.EDITOR_KEYWORD_RETURN_COLOR,
@@ -60,7 +59,8 @@ public class TclEditorColoringConfigurationBlock extends
 			{ PreferencesMessages.DLTKEditorPreferencePage_numbers,
 					TclPreferenceConstants.EDITOR_NUMBER_COLOR, sCoreCategory },
 			{ PreferencesMessages.DLTKEditorPreferencePage_variables,
-					TclPreferenceConstants.EDITOR_VARIABLE_COLOR, sCoreCategory } };
+					TclPreferenceConstants.EDITOR_VARIABLE_COLOR,
+					sCoreCategory } };
 
 	public TclEditorColoringConfigurationBlock(OverlayPreferenceStore store) {
 		super(store);
@@ -74,7 +74,8 @@ public class TclEditorColoringConfigurationBlock extends
 	@Override
 	protected ProjectionViewer createPreviewViewer(Composite parent,
 			IVerticalRuler verticalRuler, IOverviewRuler overviewRuler,
-			boolean showAnnotationsOverview, int styles, IPreferenceStore store) {
+			boolean showAnnotationsOverview, int styles,
+			IPreferenceStore store) {
 		return new ScriptSourceViewer(parent, verticalRuler, overviewRuler,
 				showAnnotationsOverview, styles, store);
 	}

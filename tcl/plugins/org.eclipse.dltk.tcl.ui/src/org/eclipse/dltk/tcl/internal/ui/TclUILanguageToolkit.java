@@ -1,11 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2007 IBM Corporation and others.
+ * Copyright (c) 2005, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- 
  *******************************************************************************/
 package org.eclipse.dltk.tcl.internal.ui;
 
@@ -47,6 +46,7 @@ public class TclUILanguageToolkit extends AbstractDLTKUILanguageToolkit {
 	}
 
 	private static class TclScriptElementLabels extends ScriptElementLabels {
+		@Override
 		public void getElementLabel(IModelElement element, long flags,
 				StringBuffer buf) {
 			StringBuffer buffer = new StringBuffer(60);
@@ -64,17 +64,18 @@ public class TclUILanguageToolkit extends AbstractDLTKUILanguageToolkit {
 		protected void getImportContainerLabel(IModelElement element,
 				long flags, StringBuffer buf) {
 			IImportContainer container = (IImportContainer) element;
-			if (TclConstants.SOURCE_CONTAINER.equals(container
-					.getContainerName())) {
+			if (TclConstants.SOURCE_CONTAINER
+					.equals(container.getContainerName())) {
 				buf.append("sourced files");
-			} else if (TclConstants.REQUIRE_CONTAINER.equals(container
-					.getContainerName())) {
+			} else if (TclConstants.REQUIRE_CONTAINER
+					.equals(container.getContainerName())) {
 				buf.append("required packages");
 			} else {
 				super.getImportContainerLabel(element, flags, buf);
 			}
 		}
 
+		@Override
 		public void getScriptFolderLabel(IProjectFragment pack, long flags,
 				StringBuffer buf) {
 			if (pack instanceof TclPackageFragment
@@ -87,6 +88,7 @@ public class TclUILanguageToolkit extends AbstractDLTKUILanguageToolkit {
 			super.getScriptFolderLabel(pack, flags, buf);
 		}
 
+		@Override
 		public void getProjectFragmentLabel(IProjectFragment root, long flags,
 				StringBuffer buf) {
 			if (root instanceof TclPackageFragment) {
@@ -100,6 +102,7 @@ public class TclUILanguageToolkit extends AbstractDLTKUILanguageToolkit {
 			super.getProjectFragmentLabel(root, flags, buf);
 		};
 
+		@Override
 		protected void getScriptFolderLabel(IScriptFolder folder, long flags,
 				StringBuffer buf) {
 			// if( folder instanceof PodSourcesFolder ) {
@@ -145,6 +148,7 @@ public class TclUILanguageToolkit extends AbstractDLTKUILanguageToolkit {
 			}
 		}
 
+		@Override
 		protected void getScriptFolderLabel(IScriptFolder folder,
 				StringBuffer buf) {
 			if (folder instanceof TclPackageElement
@@ -156,6 +160,7 @@ public class TclUILanguageToolkit extends AbstractDLTKUILanguageToolkit {
 			buf.append(name);
 		}
 
+		@Override
 		protected void getSourceModule(ISourceModule module, long flags,
 				StringBuffer buf) {
 			if (getFlag(flags, CU_QUALIFIED)) {
@@ -169,25 +174,29 @@ public class TclUILanguageToolkit extends AbstractDLTKUILanguageToolkit {
 			buf.append(module.getElementName());
 
 			if (getFlag(flags, CU_POST_QUALIFIED)) {
-				if ((!(module instanceof TclPackageSourceModule || module instanceof TclSourcesSourceModule))) {
+				if ((!(module instanceof TclPackageSourceModule
+						|| module instanceof TclSourcesSourceModule))) {
 					buf.append(CONCAT_STRING);
 				}
-				getScriptFolderLabel((IScriptFolder) module.getParent(), flags
-						& QUALIFIER_FLAGS, buf);
+				getScriptFolderLabel((IScriptFolder) module.getParent(),
+						flags & QUALIFIER_FLAGS, buf);
 			}
 		};
 	};
 
 	private static TclScriptElementLabels sInstance = new TclScriptElementLabels();
 
+	@Override
 	public ScriptElementLabels getScriptElementLabels() {
 		return sInstance;
 	}
 
+	@Override
 	public IPreferenceStore getPreferenceStore() {
 		return TclUI.getDefault().getPreferenceStore();
 	}
 
+	@Override
 	public IDLTKLanguageToolkit getCoreToolkit() {
 		return TclLanguageToolkit.getDefault();
 	}
@@ -196,33 +205,40 @@ public class TclUILanguageToolkit extends AbstractDLTKUILanguageToolkit {
 		return TclUI.getDefault().getDialogSettings();
 	}
 
+	@Override
 	public String getPartitioningId() {
 		return TclConstants.TCL_PARTITIONING;
 	}
 
+	@Override
 	public String getEditorId(Object inputElement) {
 		return "org.eclipse.dltk.tcl.ui.editor.TclEditor"; //$NON-NLS-1$
 	}
 
+	@Override
 	public String getInterpreterContainerId() {
 		return "org.eclipse.dltk.tcl.launching.INTERPRETER_CONTAINER"; //$NON-NLS-1$
 	}
 
+	@Override
 	public ScriptUILabelProvider createScriptUILabelProvider() {
 		return null;
 	}
 
+	@Override
 	public boolean getProvideMembers(ISourceModule element) {
 		return true;
 	}
 
+	@Override
 	public ScriptTextTools getTextTools() {
 		return TclUI.getDefault().internalgetTextTools();
 	}
 
+	@Override
 	public ScriptSourceViewerConfiguration createSourceViewerConfiguration() {
-		return new SimpleTclSourceViewerConfiguration(getTextTools()
-				.getColorManager(), getPreferenceStore(), null,
+		return new SimpleTclSourceViewerConfiguration(
+				getTextTools().getColorManager(), getPreferenceStore(), null,
 				getPartitioningId(), false);
 	}
 
@@ -238,14 +254,17 @@ public class TclUILanguageToolkit extends AbstractDLTKUILanguageToolkit {
 			"org.eclipse.dltk.tcl.ui.assistance" //$NON-NLS-1$
 	};
 
+	@Override
 	public String getInterpreterPreferencePage() {
 		return INTERPRETERS_PREFERENCE_PAGE_ID;
 	}
 
+	@Override
 	public String getDebugPreferencePage() {
 		return DEBUG_PREFERENCE_PAGE_ID;
 	}
 
+	@Override
 	public String[] getEditorPreferencePages() {
 		return EDITOR_PREFERENCE_PAGES_IDS;
 	}

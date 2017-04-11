@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.eclipse.dltk.tcl.internal.ui.text;
 
 import java.util.HashSet;
@@ -19,8 +16,8 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.IMarkerResolution;
 
-final class TclRequirePackageMarkerResolution implements IMarkerResolution,
-		IAnnotationResolution {
+final class TclRequirePackageMarkerResolution
+		implements IMarkerResolution, IAnnotationResolution {
 	private String pkgName;
 	private IScriptProject project;
 
@@ -30,6 +27,7 @@ final class TclRequirePackageMarkerResolution implements IMarkerResolution,
 		this.project = scriptProject;
 	}
 
+	@Override
 	public String getLabel() {
 		final String msg = Messages.TclRequirePackageMarkerResolution_addPackageToBuildpath;
 		return NLS.bind(msg, pkgName);
@@ -40,14 +38,14 @@ final class TclRequirePackageMarkerResolution implements IMarkerResolution,
 		try {
 			install = ScriptRuntime.getInterpreterInstall(project);
 			if (install != null) {
-				final Set names = new HashSet();
-				final Set autoNames = new HashSet();
+				final Set<String> names = new HashSet<>();
+				final Set<String> autoNames = new HashSet<>();
 				InterpreterContainerHelper.getInterpreterContainerDependencies(
 						project, names, autoNames);
 				if (names.add(pkgName)) {
 					InterpreterContainerHelper
-							.setInterpreterContainerDependencies(project,
-									names, autoNames);
+							.setInterpreterContainerDependencies(project, names,
+									autoNames);
 					return true;
 				}
 			}
@@ -57,10 +55,12 @@ final class TclRequirePackageMarkerResolution implements IMarkerResolution,
 		return false;
 	}
 
+	@Override
 	public void run(final IMarker marker) {
 		resolve();
 	}
 
+	@Override
 	public void run(IScriptAnnotation annotation, IDocument document) {
 		resolve();
 	}

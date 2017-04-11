@@ -23,12 +23,15 @@ public class RemoveSourceAssociation implements IWorkbenchWindowActionDelegate {
 	public RemoveSourceAssociation() {
 	}
 
+	@Override
 	public void dispose() {
 	}
 
+	@Override
 	public void init(IWorkbenchWindow window) {
 	}
 
+	@Override
 	public void run(IAction action) {
 		if (selection == null) {
 			return;
@@ -44,6 +47,7 @@ public class RemoveSourceAssociation implements IWorkbenchWindowActionDelegate {
 		}
 	}
 
+	@Override
 	public void selectionChanged(IAction action, ISelection selection) {
 		if (selection != null && selection instanceof IStructuredSelection) {
 			this.selection = (IStructuredSelection) selection;

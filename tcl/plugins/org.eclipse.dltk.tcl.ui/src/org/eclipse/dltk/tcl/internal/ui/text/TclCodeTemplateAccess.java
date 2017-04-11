@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 xored software, Inc.
+ * Copyright (c) 2009, 2017 xored software, Inc. and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -31,10 +31,11 @@ public class TclCodeTemplateAccess extends CodeTemplateAccess {
 	private static final String CODE_TEMPLATES_KEY = "org.eclipse.dltk.tcl.text.custom_code_templates"; //$NON-NLS-1$
 
 	public TclCodeTemplateAccess() {
-		super(TclUI.PLUGIN_ID, CODE_TEMPLATES_KEY, TclUI.getDefault()
-				.getPreferenceStore());
+		super(TclUI.PLUGIN_ID, CODE_TEMPLATES_KEY,
+				TclUI.getDefault().getPreferenceStore());
 	}
 
+	@Override
 	protected ContextTypeRegistry createContextTypeRegistry() {
 		final ContributionContextTypeRegistry registry = new ContributionContextTypeRegistry();
 		registry.addContextType("org.eclipse.dltk.tcl.text.template.type.tcl");
@@ -43,22 +44,25 @@ public class TclCodeTemplateAccess extends CodeTemplateAccess {
 
 	private ICodeTemplateCategory[] categories = null;
 
+	@Override
 	public ICodeTemplateCategory[] getCategories() {
 		if (categories == null) {
-			Iterator i = getContextTypeRegistry().contextTypes();
-			List contextTypes = new ArrayList();
+			Iterator<TemplateContextType> i = getContextTypeRegistry()
+					.contextTypes();
+			List<TemplateContextType> contextTypes = new ArrayList<>();
 			while (i.hasNext()) {
 				contextTypes.add(i.next());
 			}
 			categories = new ICodeTemplateCategory[] { new CodeTemplateCategory(
-					"Files", true, (TemplateContextType[]) contextTypes
-							.toArray(new TemplateContextType[contextTypes
-									.size()])) };
+					"Files", true, contextTypes.toArray(
+							new TemplateContextType[contextTypes.size()])) };
 		}
 		return categories;
 	}
 
-	public ICodeTemplateCategory getCategoryOfContextType(String contextTypeId) {
+	@Override
+	public ICodeTemplateCategory getCategoryOfContextType(
+			String contextTypeId) {
 		return getCategories()[0];
 	}
 

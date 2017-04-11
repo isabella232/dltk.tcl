@@ -1,11 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2007 IBM Corporation and others.
+ * Copyright (c) 2005, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- 
  *******************************************************************************/
 package org.eclipse.dltk.tcl.internal.ui.navigation;
 
@@ -54,7 +53,8 @@ class PackageFilterAction extends Action {
 	private IPreferenceStore fStore;
 	String preferenceKey;
 
-	private class SimplePackagesContentProvider implements ITreeContentProvider {
+	private class SimplePackagesContentProvider
+			implements ITreeContentProvider {
 		private Object[] NO_ELEMENT = new Object[0];
 		protected Map elements = new HashMap();
 
@@ -89,20 +89,19 @@ class PackageFilterAction extends Action {
 		public void dispose() {
 		}
 
-		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+		public void inputChanged(Viewer viewer, Object oldInput,
+				Object newInput) {
 		}
 	}
 
 	private class SimplePackageLabelProvider extends ScriptUILabelProvider
 			implements IBaseLabelProvider {
+		@Override
 		public Image getImage(Object element) {
 			return DLTKPluginImages.get(DLTKPluginImages.IMG_OBJS_PACKAGE);
 		}
 
-		public String getOriginalText(Object element) {
-			return super.getText(element);
-		}
-
+		@Override
 		public String getText(Object element) {
 			if (element instanceof String)
 				return (String) element;
@@ -118,13 +117,13 @@ class PackageFilterAction extends Action {
 		if (element instanceof IModelElement) {
 			if (viewer instanceof IFilterElementNameProvider) {
 				matchName = ((IFilterElementNameProvider) viewer)
-						.getElementName((IModelElement) element);
+						.getElementName(element);
 			} else {
 				matchName = ((IModelElement) element).getElementName();
 			}
 		} else if (element instanceof IAdaptable) {
 			IAdaptable adaptable = (IAdaptable) element;
-			IModelElement modelElement = (IModelElement) adaptable
+			IModelElement modelElement = adaptable
 					.getAdapter(IModelElement.class);
 			if (modelElement != null)
 				if (viewer instanceof IFilterElementNameProvider) {
@@ -134,8 +133,7 @@ class PackageFilterAction extends Action {
 					matchName = modelElement.getElementName();
 				}
 			else {
-				IResource resource = (IResource) adaptable
-						.getAdapter(IResource.class);
+				IResource resource = adaptable.getAdapter(IResource.class);
 				if (resource != null)
 					matchName = resource.getName();
 			}
@@ -170,10 +168,10 @@ class PackageFilterAction extends Action {
 		List modelElements = null;
 		if (element instanceof IModelElement) {
 			modelElements = new ArrayList();
-			modelElements.add((IModelElement) element);
+			modelElements.add(element);
 		} else if (element instanceof IAdaptable) {
 			IAdaptable adaptable = (IAdaptable) element;
-			modelElements = (List) adaptable.getAdapter(List.class);
+			modelElements = adaptable.getAdapter(List.class);
 		}
 		List result = new ArrayList();
 		synchronized (modelElements) {
@@ -192,6 +190,7 @@ class PackageFilterAction extends Action {
 	private class PackageFilter extends ViewerFilter {
 		List elements = new ArrayList();
 
+		@Override
 		public boolean select(Viewer viewer, Object parentElement,
 				Object element) {
 			IPackageDeclaration decl[] = getPackageDeclaration(element);
@@ -271,6 +270,7 @@ class PackageFilterAction extends Action {
 		}
 	}
 
+	@Override
 	public void run() {
 		BusyIndicator.showWhile(Display.getCurrent(), new Runnable() {
 			public void run() {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,7 +12,6 @@ package org.eclipse.dltk.tcl.internal.ui.text;
 
 import org.eclipse.dltk.tcl.internal.ui.TclUI;
 import org.eclipse.dltk.tcl.ui.text.TclPartitions;
-import org.eclipse.dltk.ui.DLTKUIPlugin;
 import org.eclipse.dltk.ui.PreferenceConstants;
 import org.eclipse.dltk.ui.text.IColorManager;
 import org.eclipse.dltk.ui.text.ScriptTextTools;
@@ -34,8 +33,8 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.texteditor.ITextEditor;
 
-public class CodeTemplateTclSourceViewerConfiguration extends
-		SimpleTclSourceViewerConfiguration {
+public class CodeTemplateTclSourceViewerConfiguration
+		extends SimpleTclSourceViewerConfiguration {
 
 	private final TemplateVariableProcessor fProcessor;
 
@@ -47,9 +46,7 @@ public class CodeTemplateTclSourceViewerConfiguration extends
 		fProcessor = processor;
 	}
 
-	/*
-	 * @see SourceViewerConfiguration#getContentAssistant(ISourceViewer)
-	 */
+	@Override
 	public IContentAssistant getContentAssistant(ISourceViewer sourceViewer) {
 
 		IPreferenceStore store = TclUI.getDefault().getPreferenceStore();
@@ -66,22 +63,22 @@ public class CodeTemplateTclSourceViewerConfiguration extends
 		assistant.setContentAssistProcessor(fProcessor,
 				TclPartitions.TCL_COMMENT);
 
-		assistant.enableAutoInsert(store
-				.getBoolean(PreferenceConstants.CODEASSIST_AUTOINSERT));
+		assistant.enableAutoInsert(
+				store.getBoolean(PreferenceConstants.CODEASSIST_AUTOINSERT));
 		assistant.enableAutoActivation(store
 				.getBoolean(PreferenceConstants.CODEASSIST_AUTOACTIVATION));
 		assistant.setAutoActivationDelay(store
 				.getInt(PreferenceConstants.CODEASSIST_AUTOACTIVATION_DELAY));
-		assistant
-				.setProposalPopupOrientation(IContentAssistant.PROPOSAL_OVERLAY);
-		assistant
-				.setContextInformationPopupOrientation(IContentAssistant.CONTEXT_INFO_ABOVE);
+		assistant.setProposalPopupOrientation(
+				IContentAssistant.PROPOSAL_OVERLAY);
+		assistant.setContextInformationPopupOrientation(
+				IContentAssistant.CONTEXT_INFO_ABOVE);
 		assistant
 				.setInformationControlCreator(new IInformationControlCreator() {
 					public IInformationControl createInformationControl(
 							Shell parent) {
-						return new DefaultInformationControl(parent, EditorsUI
-								.getTooltipAffordanceString());
+						return new DefaultInformationControl(parent,
+								EditorsUI.getTooltipAffordanceString());
 					}
 				});
 
@@ -106,9 +103,10 @@ public class CodeTemplateTclSourceViewerConfiguration extends
 
 	/*
 	 * @see SourceViewerConfiguration#getTextHover(ISourceViewer, String, int)
-	 * 
+	 *
 	 * @since 2.1
 	 */
+	@Override
 	public ITextHover getTextHover(ISourceViewer sourceViewer,
 			String contentType, int stateMask) {
 		return new TemplateVariableTextHover(fProcessor);

@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2009 xored software, Inc.  
+ * Copyright (c) 2009, 2017 xored software, Inc. and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html  
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
  *     xored software, Inc. - initial API and Implementation (Alex Panchenko)
@@ -43,7 +43,7 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -60,8 +60,8 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
-public class ManPagesLocationsDialog extends StatusDialog implements
-		ModifyListener {
+public class ManPagesLocationsDialog extends StatusDialog
+		implements ModifyListener {
 
 	private final boolean isNew;
 	private final ManPageResource documentations;
@@ -78,8 +78,9 @@ public class ManPagesLocationsDialog extends StatusDialog implements
 		this.documentations = documentations;
 		this.input = documentation;
 		this.isNew = documentation == null;
-		this.documentation = documentation != null ? (Documentation) EcoreUtil
-				.copy(documentation) : newDocumentation();
+		this.documentation = documentation != null
+				? (Documentation) EcoreUtil.copy(documentation)
+				: newDocumentation();
 		setTitle(isNew ? ManPagesMessages.ManPagesLocationsDialog_AddTtile
 				: ManPagesMessages.ManPagesLocationsDialog_EditTitle);
 		setShellStyle(getShellStyle() | SWT.RESIZE);
@@ -120,9 +121,8 @@ public class ManPagesLocationsDialog extends StatusDialog implements
 		nameField.addModifyListener(this);
 		final Label pathLabel = new Label(content, SWT.NONE);
 		pathLabel.setText(ManPagesMessages.ManPagesLocationsDialog_Paths);
-		pathLabel.setLayoutData(new GridData(
-				GridData.HORIZONTAL_ALIGN_BEGINNING
-						| GridData.VERTICAL_ALIGN_BEGINNING));
+		pathLabel.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING
+				| GridData.VERTICAL_ALIGN_BEGINNING));
 		final Composite pathComp = new Composite(content, SWT.NONE);
 		pathComp.setLayoutData(new GridData(GridData.FILL_BOTH));
 		final GridLayout pathLayout = new GridLayout(2, false);
@@ -131,7 +131,7 @@ public class ManPagesLocationsDialog extends StatusDialog implements
 		pathViewer = new TreeViewer(pathComp);
 		pathViewer.setContentProvider(new FolderContentProvider());
 		pathViewer.setLabelProvider(new FolderLabelProvider());
-		pathViewer.setSorter(new ViewerSorter());
+		pathViewer.setComparator(new ViewerComparator());
 		final GridData pathGD = new GridData(GridData.FILL_BOTH);
 		pathGD.heightHint = convertHeightInCharsToPixels(16);
 		pathGD.widthHint = convertWidthInCharsToPixels(64);
@@ -170,9 +170,9 @@ public class ManPagesLocationsDialog extends StatusDialog implements
 			}
 
 		});
-		//		
+		//
 		getData(documentation);
-		//	
+		//
 		return dialogArea;
 	}
 
@@ -215,7 +215,8 @@ public class ManPagesLocationsDialog extends StatusDialog implements
 		public void dispose() {
 		}
 
-		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+		public void inputChanged(Viewer viewer, Object oldInput,
+				Object newInput) {
 		}
 
 	}
@@ -240,8 +241,8 @@ public class ManPagesLocationsDialog extends StatusDialog implements
 			if (element instanceof ManPageFolder) {
 				return DLTKPluginImages.get(DLTKPluginImages.IMG_OBJS_LIBRARY);
 			} else {
-				return DLTKUIPlugin.getImageDescriptorRegistry().get(
-						DLTKPluginImages.DESC_OBJS_INFO_OBJ);
+				return DLTKUIPlugin.getImageDescriptorRegistry()
+						.get(DLTKPluginImages.DESC_OBJS_INFO_OBJ);
 			}
 		}
 

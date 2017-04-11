@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -45,13 +45,10 @@ import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.texteditor.AnnotationPreference;
 import org.eclipse.ui.texteditor.ITextEditor;
 
-/**
- * 
- */
 public class TclQuickAssistLightBulbUpdater {
 
-	public static class AssistAnnotation extends Annotation implements
-			IAnnotationPresentation {
+	public static class AssistAnnotation extends Annotation
+			implements IAnnotationPresentation {
 
 		// XXX: To be fully correct this should be a non-static fields in
 		// QuickAssistLightBulbUpdater
@@ -61,8 +58,8 @@ public class TclQuickAssistLightBulbUpdater {
 			Annotation annotation = new Annotation(
 					"org.eclipse.dltk.ui.warning", false, null); //$NON-NLS-1$
 			AnnotationPreference preference = EditorsUI
-					.getAnnotationPreferenceLookup().getAnnotationPreference(
-							annotation);
+					.getAnnotationPreferenceLookup()
+					.getAnnotationPreference(annotation);
 			if (preference != null)
 				LAYER = preference.getPresentationLayer() - 1;
 			else
@@ -75,9 +72,6 @@ public class TclQuickAssistLightBulbUpdater {
 		public AssistAnnotation() {
 		}
 
-		/*
-		 * @see org.eclipse.jface.text.source.IAnnotationPresentation#getLayer()
-		 */
 		public int getLayer() {
 			return LAYER;
 		}
@@ -90,11 +84,6 @@ public class TclQuickAssistLightBulbUpdater {
 			return fImage;
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see IAnnotationPresentation#paint(GC,Canvas,Rectangle)
-		 */
 		public void paint(GC gc, Canvas canvas, Rectangle r) {
 			ImageUtilities.drawImage(getImage(), gc, canvas, r, SWT.CENTER,
 					SWT.TOP);
@@ -105,14 +94,13 @@ public class TclQuickAssistLightBulbUpdater {
 	private final Annotation fAnnotation;
 	private boolean fIsAnnotationShown;
 	private ITextEditor fEditor;
-	private ITextViewer fViewer;
 
 	private ISelectionChangedListener fListener;
 	private IPropertyChangeListener fPropertyChangeListener;
 
-	public TclQuickAssistLightBulbUpdater(ITextEditor part, ITextViewer viewer) {
+	public TclQuickAssistLightBulbUpdater(ITextEditor part,
+			ITextViewer viewer) {
 		fEditor = part;
-		fViewer = viewer;
 		fAnnotation = new AssistAnnotation();
 		fIsAnnotationShown = false;
 		fPropertyChangeListener = null;
@@ -129,8 +117,8 @@ public class TclQuickAssistLightBulbUpdater {
 				ISelection selection = event.getSelection();
 				if (selection instanceof ITextSelection) {
 					ITextSelection textSelection = (ITextSelection) selection;
-					doSelectionChanged(textSelection.getOffset(), textSelection
-							.getLength());
+					doSelectionChanged(textSelection.getOffset(),
+							textSelection.getLength());
 				}
 			}
 		};
@@ -139,8 +127,8 @@ public class TclQuickAssistLightBulbUpdater {
 
 	private void uninstallSelectionListener() {
 		if (fListener != null) {
-			fEditor.getSelectionProvider().removeSelectionChangedListener(
-					this.fListener);
+			fEditor.getSelectionProvider()
+					.removeSelectionChangedListener(this.fListener);
 			fListener = null;
 		}
 		IAnnotationModel model = getAnnotationModel();
@@ -159,8 +147,8 @@ public class TclQuickAssistLightBulbUpdater {
 					doPropertyChanged(event.getProperty());
 				}
 			};
-			TclUI.getDefault().getPreferenceStore().addPropertyChangeListener(
-					fPropertyChangeListener);
+			TclUI.getDefault().getPreferenceStore()
+					.addPropertyChangeListener(fPropertyChangeListener);
 		}
 	}
 
@@ -194,8 +182,8 @@ public class TclQuickAssistLightBulbUpdater {
 	}
 
 	private ISourceModule getSourceModule() {
-		IModelElement elem = DLTKUIPlugin.getEditorInputModelElement(fEditor
-				.getEditorInput());
+		IModelElement elem = DLTKUIPlugin
+				.getEditorInputModelElement(fEditor.getEditorInput());
 		if (elem instanceof ISourceModule) {
 			return (ISourceModule) elem;
 		}
@@ -203,13 +191,13 @@ public class TclQuickAssistLightBulbUpdater {
 	}
 
 	private IAnnotationModel getAnnotationModel() {
-		return DLTKUIPlugin.getDocumentProvider().getAnnotationModel(
-				fEditor.getEditorInput());
+		return DLTKUIPlugin.getDocumentProvider()
+				.getAnnotationModel(fEditor.getEditorInput());
 	}
 
 	private IDocument getDocument() {
-		return DLTKUIPlugin.getDocumentProvider().getDocument(
-				fEditor.getEditorInput());
+		return DLTKUIPlugin.getDocumentProvider()
+				.getDocument(fEditor.getEditorInput());
 	}
 
 	private void doSelectionChanged(int offset, int length) {
@@ -274,9 +262,9 @@ public class TclQuickAssistLightBulbUpdater {
 
 			// this iterator is not protected, it may throw
 			// ConcurrentModificationExceptions
-			Iterator iter = model.getAnnotationIterator();
+			Iterator<Annotation> iter = model.getAnnotationIterator();
 			while (iter.hasNext()) {
-				Annotation annot = (Annotation) iter.next();
+				Annotation annot = iter.next();
 				if (ScriptAnnotationUtils.isQuickFixableType(annot)) {
 					// may throw an IndexOutOfBoundsException upon concurrent
 					// annotation model changes
@@ -284,8 +272,8 @@ public class TclQuickAssistLightBulbUpdater {
 					if (pos != null) {
 						// may throw an IndexOutOfBoundsException upon
 						// concurrent document modification
-						int startLine = document.getLineOfOffset(pos
-								.getOffset());
+						int startLine = document
+								.getLineOfOffset(pos.getOffset());
 						if (startLine == currLine && hasCorrections(annot)) {
 							return true;
 						}

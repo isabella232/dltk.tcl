@@ -1,11 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2007 IBM Corporation and others.
+ * Copyright (c) 2005, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- 
  *******************************************************************************/
 package org.eclipse.dltk.tcl.internal.ui.text;
 
@@ -56,7 +55,8 @@ public final class TclPairMatcher implements ICharacterPairMatcher {
 		 * @param newTimestamp
 		 * @param newHashcode
 		 */
-		public ParserThread(String content, long newTimestamp, long newHashcode) {
+		public ParserThread(String content, long newTimestamp,
+				long newHashcode) {
 			super(ParserThread.class.getName());
 			this.content = content;
 			this.newTimestamp = newTimestamp;
@@ -77,8 +77,8 @@ public final class TclPairMatcher implements ICharacterPairMatcher {
 					parsedAt = startTime;
 				}
 				if (DEBUG) {
-					System.out
-							.println("ParserThread - END " + (System.currentTimeMillis() - startTime)); //$NON-NLS-1$
+					System.out.println("ParserThread - END " //$NON-NLS-1$
+							+ (System.currentTimeMillis() - startTime));
 				}
 			} finally {
 				synchronized (lock) {
@@ -100,14 +100,12 @@ public final class TclPairMatcher implements ICharacterPairMatcher {
 		public PairBlock(int start, int end, char c) {
 			this.start = start;
 			this.end = end;
-			this.c = c;
 		}
 
 		int start;
 
 		int end;
 
-		char c;
 	};
 
 	private PairBlock[] cachedPairs;
@@ -126,8 +124,8 @@ public final class TclPairMatcher implements ICharacterPairMatcher {
 		 */
 		final ISourceParser pp = DLTKLanguageManager
 				.getSourceParser(TclNature.NATURE_ID);
-		final ModuleDeclaration md = (ModuleDeclaration) pp.parse(
-				new ModuleSource(contents), null);
+		final ModuleDeclaration md = (ModuleDeclaration) pp
+				.parse(new ModuleSource(contents), null);
 		if (md == null) {
 			return new PairBlock[0];
 		}
@@ -137,14 +135,14 @@ public final class TclPairMatcher implements ICharacterPairMatcher {
 				@Override
 				public boolean visitGeneral(ASTNode be) throws Exception {
 					if (be instanceof StringLiteral) {
-						result.add(new PairBlock(be.sourceStart(), be
-								.sourceEnd() - 1, '\"'));
+						result.add(new PairBlock(be.sourceStart(),
+								be.sourceEnd() - 1, '\"'));
 					} else if (be instanceof TclExecuteExpression) {
-						result.add(new PairBlock(be.sourceStart(), be
-								.sourceEnd() - 1, '['));
+						result.add(new PairBlock(be.sourceStart(),
+								be.sourceEnd() - 1, '['));
 					} else if (be instanceof TclAdvancedExecuteExpression) {
-						result.add(new PairBlock(be.sourceStart() - 1, be
-								.sourceEnd(), '['));
+						result.add(new PairBlock(be.sourceStart() - 1,
+								be.sourceEnd(), '['));
 					} else if (be instanceof Block) {
 						int start = be.sourceStart();
 						if (start != 0) {
@@ -176,7 +174,7 @@ public final class TclPairMatcher implements ICharacterPairMatcher {
 
 	/**
 	 * Fully recalcs pairs for document
-	 * 
+	 *
 	 * @param doc
 	 * @throws BadLocationException
 	 */
@@ -234,7 +232,7 @@ public final class TclPairMatcher implements ICharacterPairMatcher {
 	/**
 	 * Tests that either the symbol at <code>offset</code> or the previous one
 	 * is a brace. This function checks that offsets are in the allowed range.
-	 * 
+	 *
 	 * @param document
 	 * @param offset
 	 * @return
@@ -243,7 +241,8 @@ public final class TclPairMatcher implements ICharacterPairMatcher {
 	private static boolean isBraceAt(IDocument document, int offset)
 			throws BadLocationException {
 		// test symbol at offset
-		if (offset < document.getLength() && isBrace(document.getChar(offset))) {
+		if (offset < document.getLength()
+				&& isBrace(document.getChar(offset))) {
 			return true;
 		}
 		// test previous symbol
@@ -277,7 +276,7 @@ public final class TclPairMatcher implements ICharacterPairMatcher {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.jface.text.source.ICharacterPairMatcher#getAnchor()
 	 */
 	public int getAnchor() {

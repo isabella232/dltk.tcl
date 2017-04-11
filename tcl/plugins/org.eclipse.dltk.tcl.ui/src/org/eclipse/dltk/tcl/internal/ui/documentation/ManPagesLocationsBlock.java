@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2007 IBM Corporation and others.
+ * Copyright (c) 2005, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,8 +17,8 @@ import java.util.List;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.dltk.tcl.ui.manpages.Documentation;
-import org.eclipse.dltk.tcl.ui.manpages.ManPageLoader;
 import org.eclipse.dltk.tcl.ui.manpages.ManPageFolder;
+import org.eclipse.dltk.tcl.ui.manpages.ManPageLoader;
 import org.eclipse.dltk.tcl.ui.manpages.ManPageResource;
 import org.eclipse.dltk.ui.DLTKPluginImages;
 import org.eclipse.dltk.ui.DLTKUIPlugin;
@@ -39,7 +39,7 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.jface.window.IShellProvider;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
@@ -82,13 +82,14 @@ public class ManPagesLocationsBlock implements ISelectionChangedListener {
 	private final IStatusChangeListener fPage;
 	private final boolean fEditable;
 
-	public ManPagesLocationsBlock(IStatusChangeListener page, boolean editable) {
+	public ManPagesLocationsBlock(IStatusChangeListener page,
+			boolean editable) {
 		fPage = page;
 		fEditable = editable;
 	}
 
-	private static class ManPagesLabelProvider extends LabelProvider implements
-			IFontProvider {
+	private static class ManPagesLabelProvider extends LabelProvider
+			implements IFontProvider {
 
 		public ManPagesLabelProvider() {
 		}
@@ -96,8 +97,8 @@ public class ManPagesLocationsBlock implements ISelectionChangedListener {
 		@Override
 		public Image getImage(Object element) {
 			if (element instanceof Documentation) {
-				return DLTKUIPlugin.getImageDescriptorRegistry().get(
-						DLTKPluginImages.DESC_OBJS_JAVADOCTAG);
+				return DLTKUIPlugin.getImageDescriptorRegistry()
+						.get(DLTKPluginImages.DESC_OBJS_JAVADOCTAG);
 			} else if (element instanceof ManPageFolder) {
 				return DLTKPluginImages.get(DLTKPluginImages.IMG_OBJS_LIBRARY);
 			} else {
@@ -125,8 +126,8 @@ public class ManPagesLocationsBlock implements ISelectionChangedListener {
 			if (element instanceof Documentation) {
 				final Documentation doc = (Documentation) element;
 				if (doc.isDefault()) {
-					return JFaceResources.getFontRegistry().getBold(
-							JFaceResources.DIALOG_FONT);
+					return JFaceResources.getFontRegistry()
+							.getBold(JFaceResources.DIALOG_FONT);
 				}
 			}
 			return null;
@@ -135,8 +136,8 @@ public class ManPagesLocationsBlock implements ISelectionChangedListener {
 
 	private ManPageResource documentations = null;
 
-	private static class ManLocationsContentProvider implements
-			ITreeContentProvider {
+	private static class ManLocationsContentProvider
+			implements ITreeContentProvider {
 
 		public ManLocationsContentProvider() {
 		}
@@ -173,14 +174,15 @@ public class ManPagesLocationsBlock implements ISelectionChangedListener {
 		public void dispose() {
 		}
 
-		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+		public void inputChanged(Viewer viewer, Object oldInput,
+				Object newInput) {
 		}
 
 	};
 
 	/**
 	 * Creates and returns the source lookup control.
-	 * 
+	 *
 	 * @param parent
 	 *            the parent widget of this control
 	 */
@@ -201,7 +203,7 @@ public class ManPagesLocationsBlock implements ISelectionChangedListener {
 		fLocationsViewer.getControl().setLayoutData(gd);
 		fLocationsViewer.setContentProvider(new ManLocationsContentProvider());
 		fLocationsViewer.setLabelProvider(new ManPagesLabelProvider());
-		fLocationsViewer.setSorter(new ViewerSorter());
+		fLocationsViewer.setComparator(new ViewerComparator());
 		fLocationsViewer.addSelectionChangedListener(this);
 		if (fEditable) {
 			createButtons(comp);
@@ -216,8 +218,8 @@ public class ManPagesLocationsBlock implements ISelectionChangedListener {
 		pathButtonLayout.marginHeight = 0;
 		pathButtonLayout.marginWidth = 0;
 		pathButtonComp.setLayout(pathButtonLayout);
-		pathButtonComp.setLayoutData(new GridData(
-				GridData.VERTICAL_ALIGN_BEGINNING
+		pathButtonComp
+				.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING
 						| GridData.HORIZONTAL_ALIGN_FILL));
 
 		fAddButton = createPushButton(pathButtonComp,
@@ -234,8 +236,8 @@ public class ManPagesLocationsBlock implements ISelectionChangedListener {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				final IStructuredSelection selection = getSelection();
-				if (selection.size() == 1
-						&& selection.getFirstElement() instanceof Documentation) {
+				if (selection.size() == 1 && selection
+						.getFirstElement() instanceof Documentation) {
 					edit((Documentation) selection.getFirstElement());
 				}
 			}
@@ -258,8 +260,8 @@ public class ManPagesLocationsBlock implements ISelectionChangedListener {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				final IStructuredSelection selection = getSelection();
-				if (selection.size() == 1
-						&& selection.getFirstElement() instanceof Documentation) {
+				if (selection.size() == 1 && selection
+						.getFirstElement() instanceof Documentation) {
 					setDefault((Documentation) selection.getFirstElement());
 				}
 			}
@@ -278,7 +280,7 @@ public class ManPagesLocationsBlock implements ISelectionChangedListener {
 
 	/**
 	 * Creates and returns a button
-	 * 
+	 *
 	 * @param parent
 	 *            parent widget
 	 * @param label
@@ -341,7 +343,7 @@ public class ManPagesLocationsBlock implements ISelectionChangedListener {
 
 	/**
 	 * Saves settings
-	 * 
+	 *
 	 * @throws IOException
 	 */
 	public void save() throws IOException {

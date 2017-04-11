@@ -13,7 +13,6 @@ import org.eclipse.dltk.internal.ui.scriptview.BuildPathContainer;
 import org.eclipse.dltk.launching.ScriptRuntime;
 import org.eclipse.dltk.tcl.internal.core.packages.TclPackageElement;
 import org.eclipse.dltk.tcl.internal.core.packages.TclPackageFragment;
-import org.eclipse.dltk.tcl.internal.core.sources.TclSourcesElement;
 import org.eclipse.dltk.tcl.internal.core.sources.TclSourcesFragment;
 import org.eclipse.dltk.ui.IModelContentProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
@@ -30,8 +29,8 @@ public class TclModelContentProvider implements IModelContentProvider {
 		if (parentElement instanceof BuildPathContainer) {
 			BuildPathContainer container = (BuildPathContainer) parentElement;
 			IBuildpathEntry entry = container.getBuildpathEntry();
-			if (!entry.getPath().segment(0).equals(
-					ScriptRuntime.INTERPRETER_CONTAINER)) {
+			if (!entry.getPath().segment(0)
+					.equals(ScriptRuntime.INTERPRETER_CONTAINER)) {
 				return;
 			}
 
@@ -82,8 +81,8 @@ public class TclModelContentProvider implements IModelContentProvider {
 				if (children[i] instanceof BuildPathContainer) {
 					BuildPathContainer container = (BuildPathContainer) children[i];
 					IBuildpathEntry entry = container.getBuildpathEntry();
-					if (entry.getPath().segment(0).equals(
-							ScriptRuntime.INTERPRETER_CONTAINER)) {
+					if (entry.getPath().segment(0)
+							.equals(ScriptRuntime.INTERPRETER_CONTAINER)) {
 						return container;
 					}
 				}

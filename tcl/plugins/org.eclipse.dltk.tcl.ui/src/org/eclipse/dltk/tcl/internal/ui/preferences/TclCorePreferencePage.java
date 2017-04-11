@@ -49,7 +49,6 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.ViewerComparator;
-import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.layout.GridData;
@@ -60,8 +59,8 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.preferences.IWorkbenchPreferenceContainer;
 
 @SuppressWarnings("restriction")
-public class TclCorePreferencePage extends
-		AbstractConfigurationBlockPropertyAndPreferencePage {
+public class TclCorePreferencePage
+		extends AbstractConfigurationBlockPropertyAndPreferencePage {
 
 	private static int IDX_ADD = 0;
 	private static int IDX_EDIT = 1;
@@ -69,8 +68,8 @@ public class TclCorePreferencePage extends
 
 	protected static class TclCorePreferenceBlock extends AbstractOptionsBlock {
 
-		private class TclCheckContentAdapter implements IListAdapter,
-				IDialogFieldListener {
+		private class TclCheckContentAdapter
+				implements IListAdapter, IDialogFieldListener {
 
 			private Set<String> contributedElements = null;
 			private final PreferenceKey listKey;
@@ -149,7 +148,7 @@ public class TclCorePreferencePage extends
 
 		}
 
-		private static class AssociationViwerSorter extends ViewerSorter {
+		private static class AssociationViwerSorter extends ViewerComparator {
 
 			private final Set<String> highlighted;
 
@@ -175,8 +174,8 @@ public class TclCorePreferencePage extends
 
 			public Font getFont(Object element) {
 				if (highlighted.contains(element)) {
-					return JFaceResources.getFontRegistry().getBold(
-							JFaceResources.DIALOG_FONT);
+					return JFaceResources.getFontRegistry()
+							.getBold(JFaceResources.DIALOG_FONT);
 				}
 				return null;
 			}
@@ -207,8 +206,9 @@ public class TclCorePreferencePage extends
 				@Override
 				protected IStatus run(IProgressMonitor monitor) {
 					try {
-						final IScriptProject[] projects = DLTKCore.create(
-								ResourcesPlugin.getWorkspace().getRoot())
+						final IScriptProject[] projects = DLTKCore
+								.create(ResourcesPlugin.getWorkspace()
+										.getRoot())
 								.getScriptProjects(TclNature.NATURE_ID);
 						ResourcesPlugin.getWorkspace().run(
 								new ProjectRefreshOperation(projects), monitor);
@@ -260,9 +260,10 @@ public class TclCorePreferencePage extends
 		@Override
 		protected void validateValuePresenceFor(PreferenceKey key) {
 			if (key.belongsTo(TclPlugin.PLUGIN_ID)
-					&& (DLTKCore.LANGUAGE_FILENAME_ASSOCIATIONS.equals(key
-							.getName()) || TclSourceElementParser2.class
-							.getName().equals(key.getName()))) {
+					&& (DLTKCore.LANGUAGE_FILENAME_ASSOCIATIONS
+							.equals(key.getName())
+							|| TclSourceElementParser2.class.getName()
+									.equals(key.getName()))) {
 				return;
 			}
 			super.validateValuePresenceFor(key);
@@ -289,29 +290,27 @@ public class TclCorePreferencePage extends
 		protected Control createOptionsBlock(Composite parent) {
 			Composite block = SWTFactory.createComposite(parent,
 					parent.getFont(), 1, 1, GridData.FILL_BOTH);
-			SWTFactory
-					.createLabel(
-							block,
-							TclPreferencesMessages.TclCorePreferencePage_checkContentWithoutExtension,
-							1);
+			SWTFactory.createLabel(block,
+					TclPreferencesMessages.TclCorePreferencePage_checkContentWithoutExtension,
+					1);
 			createCheckbox(block,
-					TclPreferencesMessages.TclCorePreferencePage_local, KEYS[0]);
+					TclPreferencesMessages.TclCorePreferencePage_local,
+					KEYS[0]);
 			createCheckbox(block,
 					TclPreferencesMessages.TclCorePreferencePage_remote,
 					KEYS[1]);
-			SWTFactory
-					.createLabel(
-							block,
-							TclPreferencesMessages.TclCorePreferencePage_checkContentAnyExtension,
-							1);
+			SWTFactory.createLabel(block,
+					TclPreferencesMessages.TclCorePreferencePage_checkContentAnyExtension,
+					1);
 			createCheckbox(block,
-					TclPreferencesMessages.TclCorePreferencePage_local, KEYS[2]);
+					TclPreferencesMessages.TclCorePreferencePage_local,
+					KEYS[2]);
 			createCheckbox(block,
 					TclPreferencesMessages.TclCorePreferencePage_remote,
 					KEYS[3]);
 
-			final Composite patternComposite = SWTFactory.createComposite(
-					block, block.getFont(), 1, 1, GridData.FILL_BOTH);
+			final Composite patternComposite = SWTFactory.createComposite(block,
+					block.getFont(), 1, 1, GridData.FILL_BOTH);
 			final GridLayout patternLayout = new GridLayout();
 			patternLayout.numColumns = 2;
 			patternLayout.marginHeight = 0;
@@ -323,11 +322,9 @@ public class TclCorePreferencePage extends
 					TclPreferencesMessages.TclCorePreferencePage_checkContentEditExclude,
 					TclPreferencesMessages.TclCorePreferencePage_checkContentRemoveExclude };
 			{
-				SWTFactory
-						.createLabel(
-								patternComposite,
-								TclPreferencesMessages.TclCorePreferencePage_Associations,
-								2);
+				SWTFactory.createLabel(patternComposite,
+						TclPreferencesMessages.TclCorePreferencePage_Associations,
+						2);
 				final Set<String> associations = DLTKLanguageManager
 						.loadFilenameAssociations(TclNature.NATURE_ID);
 				includeAdapter.setContributedElements(associations);
@@ -354,8 +351,8 @@ public class TclCorePreferencePage extends
 				includeDialog.setDialogFieldListener(includeAdapter);
 				includeDialog.setRemoveButtonIndex(IDX_REMOVE);
 
-				includeDialog.setViewerComparator(new AssociationViwerSorter(
-						associations));
+				includeDialog.setViewerComparator(
+						new AssociationViwerSorter(associations));
 				final Control listControl = includeDialog
 						.getListControl(patternComposite);
 				final GridData listControlLayoutData = new GridData(
@@ -368,11 +365,9 @@ public class TclCorePreferencePage extends
 								| GridData.VERTICAL_ALIGN_BEGINNING));
 			}
 			{
-				SWTFactory
-						.createLabel(
-								patternComposite,
-								TclPreferencesMessages.TclCorePreferencePage_checkContentExcludes,
-								2);
+				SWTFactory.createLabel(patternComposite,
+						TclPreferencesMessages.TclCorePreferencePage_checkContentExcludes,
+						2);
 				excludeDialog = new ListDialogField(excludeAdapter, buttons,
 						new LabelProvider());
 				excludeDialog.setDialogFieldListener(excludeAdapter);
@@ -402,10 +397,12 @@ public class TclCorePreferencePage extends
 				container);
 	}
 
+	@Override
 	protected String getHelpId() {
 		return null;
 	}
 
+	@Override
 	protected String getProjectHelpId() {
 		return null;
 	}
@@ -415,18 +412,22 @@ public class TclCorePreferencePage extends
 		return TclNature.NATURE_ID;
 	}
 
+	@Override
 	protected void setDescription() {
 		// empty
 	}
 
+	@Override
 	protected void setPreferenceStore() {
 		// empty
 	}
 
+	@Override
 	protected String getPreferencePageId() {
 		return null;
 	}
 
+	@Override
 	protected String getPropertyPageId() {
 		return null;
 	}

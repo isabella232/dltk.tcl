@@ -17,8 +17,8 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.window.IShellProvider;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -38,9 +38,10 @@ public class SourcesSelectionDialog extends Dialog {
 		}
 	}
 
-	private final class SourcesContentProvider implements
-			IStructuredContentProvider {
-		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+	private final class SourcesContentProvider
+			implements IStructuredContentProvider {
+		public void inputChanged(Viewer viewer, Object oldInput,
+				Object newInput) {
 		}
 
 		public void dispose() {
@@ -54,16 +55,13 @@ public class SourcesSelectionDialog extends Dialog {
 	private ListViewer sourcesViewer;
 	private Set<String> sources = new HashSet<String>();
 	private IEnvironmentUI environmentUI;
-	private IEnvironment environment;
 	private Button remove;
 	private Button add;
 
 	protected SourcesSelectionDialog(IShellProvider parentShell,
 			IEnvironment environment) {
 		super(parentShell);
-		this.environment = environment;
-		this.environmentUI = (IEnvironmentUI) environment
-				.getAdapter(IEnvironmentUI.class);
+		this.environmentUI = environment.getAdapter(IEnvironmentUI.class);
 	}
 
 	@Override
@@ -80,44 +78,39 @@ public class SourcesSelectionDialog extends Dialog {
 		sourcesViewer.setLabelProvider(new SourcesLabelProvider());
 		sourcesViewer.setContentProvider(new SourcesContentProvider());
 		sourcesViewer.setInput(sources);
-		sourcesViewer.getControl().setLayoutData(
-				new GridData(SWT.FILL, SWT.FILL, true, true));
+		sourcesViewer.getControl()
+				.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
 		Composite buttons = new Composite(contents, SWT.NONE);
 		buttons.setLayoutData(new GridData(SWT.DEFAULT, SWT.FILL, false, true));
 		buttons.setLayout(new GridLayout(1, false));
 		add = new Button(buttons, SWT.PUSH);
 		add.setText("Add");
-		add.addSelectionListener(new SelectionListener() {
+		add.addSelectionListener(new SelectionAdapter() {
 
+			@Override
 			public void widgetSelected(SelectionEvent e) {
-				String file = environmentUI.selectFile(sourcesViewer.getList()
-						.getShell(), IEnvironmentUI.DEFAULT);
+				String file = environmentUI.selectFile(
+						sourcesViewer.getList().getShell(),
+						IEnvironmentUI.DEFAULT);
 				if (file != null) {
 					sources.add(file);
 					sourcesViewer.refresh();
 				}
-			}
-
-			public void widgetDefaultSelected(SelectionEvent e) {
-
 			}
 		});
 		add.setLayoutData(new GridData(SWT.FILL, SWT.DEFAULT, true, false));
 		remove = new Button(buttons, SWT.PUSH);
 		remove.setText("Remove");
 		remove.setLayoutData(new GridData(SWT.FILL, SWT.DEFAULT, true, false));
-		remove.addSelectionListener(new SelectionListener() {
+		remove.addSelectionListener(new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				String path = getSelection();
 				if (path != null) {
 					sources.remove(path);
 					sourcesViewer.refresh();
 				}
-			}
-
-			public void widgetDefaultSelected(SelectionEvent e) {
-
 			}
 		});
 		updateEnablement();

@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2008 xored software, Inc.  
+ * Copyright (c) 2008, 2017 xored software, Inc. and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html  
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
  *     xored software, Inc. - initial API and Implementation (Yuri Strot)
@@ -15,6 +15,7 @@ import org.eclipse.dltk.core.search.SearchPatternProcessor;
 
 public class TclSearchPatternProcessor extends SearchPatternProcessor {
 
+	@Override
 	public char[] extractDeclaringTypeQualification(String patternString) {
 		int pos1 = patternString.lastIndexOf("::");
 		if (pos1 != -1) {
@@ -28,6 +29,7 @@ public class TclSearchPatternProcessor extends SearchPatternProcessor {
 		return null;
 	}
 
+	@Override
 	public char[] extractDeclaringTypeSimpleName(String patternString) {
 		int pos1 = patternString.lastIndexOf("::");
 		if (pos1 != -1) {
@@ -37,6 +39,7 @@ public class TclSearchPatternProcessor extends SearchPatternProcessor {
 		return null;
 	}
 
+	@Override
 	public char[] extractSelector(String patternString) {
 		return getLastTclNameElement(patternString).toCharArray();
 	}
@@ -49,6 +52,7 @@ public class TclSearchPatternProcessor extends SearchPatternProcessor {
 		return patternString;
 	}
 
+	@Override
 	public String getDelimiterReplacementString() {
 		return SEPARATOR;
 	}
@@ -59,11 +63,12 @@ public class TclSearchPatternProcessor extends SearchPatternProcessor {
 	public ITypePattern parseType(String patternString) {
 		int pos = patternString.lastIndexOf(SEPARATOR);
 		if (pos != -1) {
-			return new TypePatten(patternString.substring(0, pos).replace(
-					SEPARATOR, TYPE_SEPARATOR_STR), patternString.substring(pos
-					+ SEPARATOR.length()));
+			return new TypePattern(
+					patternString.substring(0, pos).replace(SEPARATOR,
+							TYPE_SEPARATOR_STR),
+					patternString.substring(pos + SEPARATOR.length()));
 		} else {
-			return new TypePatten(null, patternString);
+			return new TypePattern(null, patternString);
 		}
 	}
 }

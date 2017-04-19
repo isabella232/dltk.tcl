@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2016 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,6 @@ package org.eclipse.dltk.tcl.internal.debug.ui.interpreters;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import org.eclipse.core.runtime.IStatus;
@@ -58,15 +57,13 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 
 public class AddTclInterpreterDialog extends AddScriptInterpreterDialog {
-	public AddTclInterpreterDialog(IAddInterpreterDialogRequestor requestor,
-			Shell shell, IInterpreterInstallType[] interpreterInstallTypes,
-			IInterpreterInstall editedInterpreter) {
+	public AddTclInterpreterDialog(IAddInterpreterDialogRequestor requestor, Shell shell,
+			IInterpreterInstallType[] interpreterInstallTypes, IInterpreterInstall editedInterpreter) {
 		super(requestor, shell, interpreterInstallTypes, editedInterpreter);
 	}
 
 	@Override
-	protected AbstractInterpreterLibraryBlock createLibraryBlock(
-			AddScriptInterpreterDialog dialog) {
+	protected AbstractInterpreterLibraryBlock createLibraryBlock(AddScriptInterpreterDialog dialog) {
 		return new TclInterpreterLibraryBlock(dialog);
 	}
 
@@ -82,8 +79,7 @@ public class AddTclInterpreterDialog extends AddScriptInterpreterDialog {
 	private ExpandableBlock environmentExpandableNode;
 
 	@Override
-	protected Composite createEnvironmentVariablesBlockParent(Composite parent,
-			int numColumns) {
+	protected Composite createEnvironmentVariablesBlockParent(Composite parent, int numColumns) {
 		environmentExpandableNode = new ExpandableBlock(parent, 0);
 		environmentExpandableNode
 				.setText(InterpretersMessages.AddScriptInterpreterDialog_interpreterEnvironmentVariables);
@@ -95,11 +91,9 @@ public class AddTclInterpreterDialog extends AddScriptInterpreterDialog {
 	}
 
 	@Override
-	protected Composite createLibraryBlockParent(Composite parent,
-			int numColumns) {
+	protected Composite createLibraryBlockParent(Composite parent, int numColumns) {
 		libraryExpandableNode = new ExpandableBlock(parent, 0);
-		libraryExpandableNode
-				.setText("Custom library locations (addition to TCLLIBPATH):");
+		libraryExpandableNode.setText("Custom library locations (addition to TCLLIBPATH):");
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
 		gd.horizontalSpan = numColumns;
 		libraryExpandableNode.setLayoutData(gd);
@@ -129,8 +123,7 @@ public class AddTclInterpreterDialog extends AddScriptInterpreterDialog {
 		documentationField.doFillIntoGrid(parent, numColumns - 1);
 		final Button configureDocumentation = new Button(parent, SWT.PUSH);
 		configureDocumentation.setText("Configure...");
-		configureDocumentation.setLayoutData(StringButtonDialogField
-				.gridDataForButton(configureDocumentation, 1));
+		configureDocumentation.setLayoutData(StringButtonDialogField.gridDataForButton(configureDocumentation, 1));
 		configureDocumentation.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -140,29 +133,21 @@ public class AddTclInterpreterDialog extends AddScriptInterpreterDialog {
 	}
 
 	protected void configureDocumentation() {
-		final ManPagesConfigurationDialog dialog = new ManPagesConfigurationDialog(
-				getShell());
+		final ManPagesConfigurationDialog dialog = new ManPagesConfigurationDialog(getShell());
 		if (dialog.open() == Window.OK) {
 			final int index = documentationField.getSelectionIndex();
-			final String docId = index > 0 ? this.documentations.get(index - 1)
-					.getId() : null;
+			final String docId = index > 0 ? this.documentations.get(index - 1).getId() : null;
 			loadDocumentations();
 			final Documentation doc = findById(docId);
-			documentationField.selectItem(doc != null ? this.documentations
-					.indexOf(doc) + 1 : 0);
+			documentationField.selectItem(doc != null ? this.documentations.indexOf(doc) + 1 : 0);
 		}
 	}
 
 	private void loadDocumentations() {
-		documentations = new ArrayList<Documentation>(ManPageLoader.load()
-				.getDocumentations());
+		documentations = new ArrayList<>(ManPageLoader.load().getDocumentations());
 		final String[] names = new String[documentations.size() + 1];
 		names[0] = documentations.isEmpty() ? "(not configured)" : "(default)";
-		Collections.sort(documentations, new Comparator<Documentation>() {
-			public int compare(Documentation o1, Documentation o2) {
-				return o1.getName().compareToIgnoreCase(o2.getName());
-			}
-		});
+		Collections.sort(documentations, (o1, o2) -> o1.getName().compareToIgnoreCase(o2.getName()));
 		for (int i = 0; i < documentations.size(); ++i) {
 			names[i + 1] = documentations.get(i).getName();
 		}
@@ -173,8 +158,7 @@ public class AddTclInterpreterDialog extends AddScriptInterpreterDialog {
 	protected void createDialogBlocks(final Composite parent, int numColumns) {
 		super.createDialogBlocks(parent, numColumns);
 		globalsExpandableNode = new ExpandableBlock(parent, 0);
-		globalsExpandableNode
-				.setText(TclInterpreterMessages.AddTclInterpreterDialog_0);
+		globalsExpandableNode.setText(TclInterpreterMessages.AddTclInterpreterDialog_0);
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
 		gd.horizontalSpan = numColumns;
 		globalsExpandableNode.setLayoutData(gd);
@@ -234,8 +218,7 @@ public class AddTclInterpreterDialog extends AddScriptInterpreterDialog {
 		// interpreter.
 		IInterpreterInstall install = getLastInterpreterInstall();
 		if (install != null) {
-			IContentCache coreCache = ModelManager.getModelManager()
-					.getCoreCache();
+			IContentCache coreCache = ModelManager.getModelManager().getCoreCache();
 			coreCache.clearCacheEntryAttributes(install.getInstallLocation());
 			TclPackagesManager.removeInterpreterInfo(install);
 		}
@@ -252,28 +235,23 @@ public class AddTclInterpreterDialog extends AddScriptInterpreterDialog {
 		if (install != null) {
 			final InterpreterDocumentation documentation = (InterpreterDocumentation) install
 					.findExtension(ManpagesPackage.Literals.INTERPRETER_DOCUMENTATION);
-			final String docId = documentation != null ? documentation
-					.getDocumentationId() : null;
+			final String docId = documentation != null ? documentation.getDocumentationId() : null;
 			final Documentation doc = findById(docId);
-			documentationField.selectItem(doc != null ? documentations
-					.indexOf(doc) + 1 : 0);
-			VariableMap variableMap = (VariableMap) install
-					.findExtension(TclPackagesPackage.Literals.VARIABLE_MAP);
+			documentationField.selectItem(doc != null ? documentations.indexOf(doc) + 1 : 0);
+			VariableMap variableMap = (VariableMap) install.findExtension(TclPackagesPackage.Literals.VARIABLE_MAP);
 			if (variableMap != null) {
 				globals.setValues(variableMap.getVariables());
 			} else {
-				globals.setValues(ECollections
-						.<String, VariableValue> emptyEMap());
+				globals.setValues(ECollections.<String, VariableValue>emptyEMap());
 			}
 		} else {
 			documentationField.selectItem(0);
-			globals.setValues(ECollections.<String, VariableValue> emptyEMap());
+			globals.setValues(ECollections.<String, VariableValue>emptyEMap());
 		}
 
 		// Set initial expanding
 		globalsExpandableNode.setExpanded(!globals.getValues().isEmpty());
-		environmentExpandableNode.setExpanded(fEnvironmentVariablesBlock
-				.getEnvironmentVariables().length > 0);
+		environmentExpandableNode.setExpanded(fEnvironmentVariablesBlock.getEnvironmentVariables().length > 0);
 	}
 
 	@Override
@@ -281,19 +259,15 @@ public class AddTclInterpreterDialog extends AddScriptInterpreterDialog {
 		super.setFieldValuesToInterpreter(install);
 		int index = documentationField.getSelectionIndex();
 		if (index == 0) {
-			install.replaceExtension(
-					ManpagesPackage.Literals.INTERPRETER_DOCUMENTATION, null);
+			install.replaceExtension(ManpagesPackage.Literals.INTERPRETER_DOCUMENTATION, null);
 		} else {
 			final Documentation doc = documentations.get(index - 1);
-			final InterpreterDocumentation idoc = ManpagesFactory.eINSTANCE
-					.createInterpreterDocumentation();
+			final InterpreterDocumentation idoc = ManpagesFactory.eINSTANCE.createInterpreterDocumentation();
 			idoc.setDocumentationId(doc.getId());
-			install.replaceExtension(
-					ManpagesPackage.Literals.INTERPRETER_DOCUMENTATION, idoc);
+			install.replaceExtension(ManpagesPackage.Literals.INTERPRETER_DOCUMENTATION, idoc);
 		}
 		final EMap<String, VariableValue> newVars = globals.getValues();
-		final EMap<String, VariableValue> oldVars = TclPackagesManager
-				.getVariablesEMap(install);
+		final EMap<String, VariableValue> oldVars = TclPackagesManager.getVariablesEMap(install);
 		if (!GlobalVariableBlock.equalsEMap(newVars, oldVars)) {
 			TclPackagesManager.setVariables(install, newVars);
 		}
@@ -303,8 +277,7 @@ public class AddTclInterpreterDialog extends AddScriptInterpreterDialog {
 	 * @since 2.0
 	 */
 	public InterpreterStandin getInterpreterStandin() {
-		InterpreterStandin standin = new InterpreterStandin(
-				fSelectedInterpreterType, "$fake$");
+		InterpreterStandin standin = new InterpreterStandin(fSelectedInterpreterType, "$fake$");
 		IEnvironment selectedEnv = getEnvironment();
 		String locationName = getInterpreterPath();
 		final IFileHandle file;
@@ -312,12 +285,10 @@ public class AddTclInterpreterDialog extends AddScriptInterpreterDialog {
 			file = null;
 			return null;
 		} else {
-			file = PlatformFileUtils.findAbsoluteOrEclipseRelativeFile(
-					selectedEnv, new Path(locationName));
+			file = PlatformFileUtils.findAbsoluteOrEclipseRelativeFile(selectedEnv, new Path(locationName));
 			EnvironmentVariable[] environmentVariables = null;
 			if (fEnvironmentVariablesBlock != null) {
-				environmentVariables = fEnvironmentVariablesBlock
-						.getEnvironmentVariables();
+				environmentVariables = fEnvironmentVariablesBlock.getEnvironmentVariables();
 			}
 			LibraryLocation[] locations = fLibraryBlock.getLibraryLocations();
 			standin.setInstallLocation(file);

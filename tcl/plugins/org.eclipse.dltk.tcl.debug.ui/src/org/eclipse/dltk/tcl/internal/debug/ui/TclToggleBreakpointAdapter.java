@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 xored software, Inc.  and others.
+ * Copyright (c) 2016, 2017 xored software, Inc. and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -51,8 +51,7 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
 
-public class TclToggleBreakpointAdapter extends ScriptToggleBreakpointAdapter
-		implements IToggleSpawnpointsTarget {
+public class TclToggleBreakpointAdapter extends ScriptToggleBreakpointAdapter implements IToggleSpawnpointsTarget {
 	private static final IScriptBreakpointLineValidator validator = ScriptBreakpointLineValidatorFactory
 			.createNonEmptyNoCommentValidator("#"); //$NON-NLS-1$
 
@@ -66,18 +65,18 @@ public class TclToggleBreakpointAdapter extends ScriptToggleBreakpointAdapter
 		return validator;
 	}
 
-	public void toggleMethodBreakpoints(IWorkbenchPart part,
-			ISelection selection) throws CoreException {
+	@Override
+	public void toggleMethodBreakpoints(IWorkbenchPart part, ISelection selection) throws CoreException {
 		// Not implemented for TCL yet
 	}
 
-	public boolean canToggleMethodBreakpoints(IWorkbenchPart part,
-			ISelection selection) {
+	@Override
+	public boolean canToggleMethodBreakpoints(IWorkbenchPart part, ISelection selection) {
 		return false;
 	}
 
-	public boolean canToggleWatchpoints(IWorkbenchPart part,
-			ISelection selection) {
+	@Override
+	public boolean canToggleWatchpoints(IWorkbenchPart part, ISelection selection) {
 		if (isRemote(part, selection)) {
 			return false;
 		}
@@ -88,19 +87,17 @@ public class TclToggleBreakpointAdapter extends ScriptToggleBreakpointAdapter
 		return selection instanceof ITextSelection;
 	}
 
-	public void toggleWatchpoints(final IWorkbenchPart part,
-			final ISelection finalSelection) throws CoreException {
+	@Override
+	public void toggleWatchpoints(final IWorkbenchPart part, final ISelection finalSelection) throws CoreException {
 		report(null, part);
 		ISelection selection = finalSelection;
 		int lineNumber = -1;
 		IResource resource = ResourcesPlugin.getWorkspace().getRoot();
-		IBreakpoint[] breakpoints = DebugPlugin.getDefault()
-				.getBreakpointManager().getBreakpoints(getDebugModelId());
+		IBreakpoint[] breakpoints = DebugPlugin.getDefault().getBreakpointManager().getBreakpoints(getDebugModelId());
 		if (selection instanceof ITextSelection && part instanceof ITextEditor) {
 			// one based line number
 			lineNumber = ((ITextSelection) selection).getStartLine() + 1;
-			resource = BreakpointUtils
-					.getBreakpointResource((ITextEditor) part);
+			resource = BreakpointUtils.getBreakpointResource((ITextEditor) part);
 		}
 		List<?> fields;
 		if (selection instanceof IStructuredSelection) {
@@ -117,18 +114,13 @@ public class TclToggleBreakpointAdapter extends ScriptToggleBreakpointAdapter
 			ITextEditor textEditor = getTextEditor(part);
 			if (textEditor != null) {
 				IEditorInput editorInput = textEditor.getEditorInput();
-				IDocumentProvider documentProvider = textEditor
-						.getDocumentProvider();
+				IDocumentProvider documentProvider = textEditor.getDocumentProvider();
 				if (documentProvider != null) {
-					IDocument document = documentProvider
-							.getDocument(editorInput);
-					IRegion reg = ScriptWordFinder.findWord(document,
-							((ITextSelection) selection).getOffset());
-					final TclAddWatchpointDialog dialog = new TclAddWatchpointDialog(
-							part.getSite().getShell());
+					IDocument document = documentProvider.getDocument(editorInput);
+					IRegion reg = ScriptWordFinder.findWord(document, ((ITextSelection) selection).getOffset());
+					final TclAddWatchpointDialog dialog = new TclAddWatchpointDialog(part.getSite().getShell());
 					try {
-						dialog.setExpression(document.get(reg.getOffset(), reg
-								.getLength()));
+						dialog.setExpression(document.get(reg.getOffset(), reg.getLength()));
 					} catch (BadLocationException e) {
 						// ignore
 					}
@@ -164,13 +156,10 @@ public class TclToggleBreakpointAdapter extends ScriptToggleBreakpointAdapter
 			boolean found = false;
 			for (int j = 0; j < breakpoints.length; j++) {
 				final IBreakpoint breakpoint = breakpoints[j];
-				if (breakpoint instanceof IScriptWatchpoint
-						&& breakpoint.getMarker() != null
-						&& resource
-								.equals(breakpoint.getMarker().getResource())) {
+				if (breakpoint instanceof IScriptWatchpoint && breakpoint.getMarker() != null
+						&& resource.equals(breakpoint.getMarker().getResource())) {
 					IScriptWatchpoint wp = (IScriptWatchpoint) breakpoint;
-					if (wp.getLineNumber() == lineNumber
-							&& watchExpression.equals(wp.getFieldName())) {
+					if (wp.getLineNumber() == lineNumber && watchExpression.equals(wp.getFieldName())) {
 						// delete existing breakpoint
 						breakpoint.delete();
 						found = true;
@@ -178,33 +167,33 @@ public class TclToggleBreakpointAdapter extends ScriptToggleBreakpointAdapter
 				}
 			}
 			if (!found) {
-				new ScriptWatchpoint(getDebugModelId(), resource, resource
-						.getType() == IResource.FILE ? resource.getLocation()
-						: null, lineNumber, start, end, watchExpression);
+				new ScriptWatchpoint(getDebugModelId(), resource,
+						resource.getType() == IResource.FILE ? resource.getLocation() : null, lineNumber, start, end,
+						watchExpression);
 			}
 		}
 	}
 
-	public void toggleBreakpoints(IWorkbenchPart part, ISelection selection)
-			throws CoreException {
+	@Override
+	public void toggleBreakpoints(IWorkbenchPart part, ISelection selection) throws CoreException {
 		toggleLineBreakpoints(part, selection);
 	}
 
-	public boolean canToggleBreakpoints(IWorkbenchPart part,
-			ISelection selection) {
+	@Override
+	public boolean canToggleBreakpoints(IWorkbenchPart part, ISelection selection) {
 		return canToggleLineBreakpoints(part, selection);
 	}
 
-	public boolean canToggleSpawnpoints(IWorkbenchPart part,
-			ITextSelection selection) {
+	@Override
+	public boolean canToggleSpawnpoints(IWorkbenchPart part, ITextSelection selection) {
 		if (isRemote(part, selection)) {
 			return false;
 		}
 		return true;
 	}
 
-	public void toggleSpawnpoints(final IWorkbenchPart part,
-			final ITextSelection selection) throws CoreException {
+	@Override
+	public void toggleSpawnpoints(final IWorkbenchPart part, final ITextSelection selection) throws CoreException {
 		Job job = new Job("Script Toggle Spawnpoint") { //$NON-NLS-1$
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
@@ -219,41 +208,32 @@ public class TclToggleBreakpointAdapter extends ScriptToggleBreakpointAdapter
 
 						int lineNumber = selection.getStartLine() + 1;
 
-						final IBreakpoint breakpoint = BreakpointUtils
-								.findLineBreakpoint(editor, lineNumber);
+						final IBreakpoint breakpoint = BreakpointUtils.findLineBreakpoint(editor, lineNumber);
 
 						if (breakpoint != null) {
 							// if breakpoint already exists, delete it
 							breakpoint.delete();
 						} else {
-							final IDocumentProvider documentProvider = editor
-									.getDocumentProvider();
+							final IDocumentProvider documentProvider = editor.getDocumentProvider();
 							if (documentProvider == null) {
 								return Status.CANCEL_STATUS;
 							}
 
-							final IDocument document = documentProvider
-									.getDocument(editor.getEditorInput());
+							final IDocument document = documentProvider.getDocument(editor.getEditorInput());
 
-							lineNumber = findBreakpointLine(document,
-									lineNumber - 1, getValidator()) + 1;
+							lineNumber = findBreakpointLine(document, lineNumber - 1, getValidator()) + 1;
 
 							if (lineNumber != BREAKPOINT_LINE_NOT_FOUND) {
 								// Check if already breakpoint set to the same
 								// location
-								if (BreakpointUtils.findLineBreakpoint(editor,
-										lineNumber) == null) {
-									BreakpointUtils.addSpawnpoint(editor,
-											lineNumber);
+								if (BreakpointUtils.findLineBreakpoint(editor, lineNumber) == null) {
+									BreakpointUtils.addSpawnpoint(editor, lineNumber);
 								} else {
 									final String template = Messages.ScriptToggleBreakpointAdapter_breakpointAlreadySetAtLine;
-									report(NLS.bind(template, Integer
-											.toString(lineNumber)), part);
+									report(NLS.bind(template, Integer.toString(lineNumber)), part);
 								}
 							} else {
-								report(
-										Messages.ScriptToggleBreakpointAdapter_invalidBreakpointPosition,
-										part);
+								report(Messages.ScriptToggleBreakpointAdapter_invalidBreakpointPosition, part);
 							}
 						}
 					} catch (CoreException e) {

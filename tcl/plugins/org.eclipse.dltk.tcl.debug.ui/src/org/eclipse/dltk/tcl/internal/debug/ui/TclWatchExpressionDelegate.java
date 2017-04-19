@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 xored software, Inc.  and others.
+ * Copyright (c) 2016, 2017 xored software, Inc. and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,12 +31,10 @@ public class TclWatchExpressionDelegate extends ScriptWatchExpressionDelegate {
 		return expression;
 	}
 
-	private static final class TclWatchExpressionValueProxy extends
-			ScriptValueProxy {
+	private static final class TclWatchExpressionValueProxy extends ScriptValueProxy {
 		private final String expression;
 
-		private TclWatchExpressionValueProxy(IScriptValue origin,
-				String expression) {
+		private TclWatchExpressionValueProxy(IScriptValue origin, String expression) {
 			super(origin);
 			this.expression = expression;
 		}
@@ -47,14 +45,12 @@ public class TclWatchExpressionDelegate extends ScriptWatchExpressionDelegate {
 		}
 
 		@Override
-		public IScriptEvaluationCommand createEvaluationCommand(
-				String messageTemplate, IScriptThread thread) {
+		public IScriptEvaluationCommand createEvaluationCommand(String messageTemplate, IScriptThread thread) {
 			return null;
 		}
 	}
 
-	private static class TclWatchExpressionResult implements
-			IWatchExpressionResult {
+	private static class TclWatchExpressionResult implements IWatchExpressionResult {
 
 		private final String[] errorMessages;
 		private final DebugException exception;
@@ -69,9 +65,8 @@ public class TclWatchExpressionDelegate extends ScriptWatchExpressionDelegate {
 		 * @param value
 		 * @param errors
 		 */
-		public TclWatchExpressionResult(String[] errorMessages,
-				DebugException exception, String expressionText, IValue value,
-				boolean errors) {
+		public TclWatchExpressionResult(String[] errorMessages, DebugException exception, String expressionText,
+				IValue value, boolean errors) {
 			this.errorMessages = errorMessages;
 			this.errors = errors;
 			this.exception = exception;
@@ -79,22 +74,27 @@ public class TclWatchExpressionDelegate extends ScriptWatchExpressionDelegate {
 			this.value = value;
 		}
 
+		@Override
 		public String[] getErrorMessages() {
 			return errorMessages;
 		}
 
+		@Override
 		public DebugException getException() {
 			return exception;
 		}
 
+		@Override
 		public String getExpressionText() {
 			return expressionText;
 		}
 
+		@Override
 		public IValue getValue() {
 			return value;
 		}
 
+		@Override
 		public boolean hasErrors() {
 			return errors;
 		}
@@ -105,8 +105,7 @@ public class TclWatchExpressionDelegate extends ScriptWatchExpressionDelegate {
 
 		private final String expression;
 
-		public TclListenerAdapter(IWatchExpressionListener listener,
-				String expression) {
+		public TclListenerAdapter(IWatchExpressionListener listener, String expression) {
 			super(listener);
 			this.expression = expression;
 		}
@@ -114,10 +113,9 @@ public class TclWatchExpressionDelegate extends ScriptWatchExpressionDelegate {
 		@Override
 		public void evaluationComplete(IScriptEvaluationResult result) {
 			if (result != null && result.getValue() != null) {
-				listener.watchEvaluationFinished(new TclWatchExpressionResult(
-						result.getErrorMessages(), result.getException(),
-						expression, new TclWatchExpressionValueProxy(result
-								.getValue(), expression), result.hasErrors()));
+				listener.watchEvaluationFinished(
+						new TclWatchExpressionResult(result.getErrorMessages(), result.getException(), expression,
+								new TclWatchExpressionValueProxy(result.getValue(), expression), result.hasErrors()));
 			} else {
 				super.evaluationComplete(result);
 			}
@@ -126,8 +124,7 @@ public class TclWatchExpressionDelegate extends ScriptWatchExpressionDelegate {
 	}
 
 	@Override
-	protected ListenerAdpater createListener(IWatchExpressionListener listener,
-			String expression) {
+	protected ListenerAdpater createListener(IWatchExpressionListener listener, String expression) {
 		return new TclListenerAdapter(listener, expression);
 	}
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 xored software, Inc.  and others.
+ * Copyright (c) 2016, 2017 xored software, Inc.  and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,12 +29,10 @@ import org.eclipse.dltk.ui.DLTKPluginImages;
 import org.eclipse.dltk.ui.wizards.IBuildpathContainerPageExtension;
 import org.eclipse.dltk.ui.wizards.NewElementWizardPage;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
@@ -52,8 +50,8 @@ import org.eclipse.ui.dialogs.ListDialog;
 /**
  * FIXME Remove TclPackagesContainerPage class if not used anywhere
  */
-public class TclPackagesContainerPage extends NewElementWizardPage implements
-		IBuildpathContainerPage, IBuildpathContainerPageExtension {
+public class TclPackagesContainerPage extends NewElementWizardPage
+		implements IBuildpathContainerPage, IBuildpathContainerPageExtension {
 	public class PackagesLabelProvider extends LabelProvider {
 
 		@Override
@@ -71,19 +69,22 @@ public class TclPackagesContainerPage extends NewElementWizardPage implements
 
 	}
 
-	private Set<String> packages = new HashSet<String>();
-	private Set<String> autoPackages = new HashSet<String>();
+	private Set<String> packages = new HashSet<>();
+	private Set<String> autoPackages = new HashSet<>();
 
 	private class PackagesContentProvider implements ITreeContentProvider {
 
 		private final Object[] NONE_OBJECT = new Object[0];
 
+		@Override
 		public void dispose() {
 		}
 
+		@Override
 		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 		}
 
+		@Override
 		public Object[] getChildren(Object parentElement) {
 			if (parentElement instanceof Set) {
 				return getElements(parentElement);
@@ -91,14 +92,17 @@ public class TclPackagesContainerPage extends NewElementWizardPage implements
 			return NONE_OBJECT;
 		}
 
+		@Override
 		public Object getParent(Object element) {
 			return null;
 		}
 
+		@Override
 		public boolean hasChildren(Object element) {
 			return false;
 		}
 
+		@Override
 		public Object[] getElements(Object inputElement) {
 			if (inputElement instanceof Set) {
 				return packages.toArray();
@@ -121,26 +125,28 @@ public class TclPackagesContainerPage extends NewElementWizardPage implements
 		return new TclInterpreterComboBlock(null);
 	}
 
+	@Override
 	public boolean finish() {
 		return true;
 	}
 
+	@Override
 	public IBuildpathEntry getSelection() {
-		IBuildpathEntry createPackagesContainer = InterpreterContainerHelper
-				.createPackagesContainer(this.packages, this.autoPackages,
-						new Path(InterpreterContainerHelper.CONTAINER_PATH)
-								.append(this.scriptProject.getElementName()));
+		IBuildpathEntry createPackagesContainer = InterpreterContainerHelper.createPackagesContainer(this.packages,
+				this.autoPackages,
+				new Path(InterpreterContainerHelper.CONTAINER_PATH).append(this.scriptProject.getElementName()));
 		return createPackagesContainer;
 	}
 
+	@Override
 	public void setSelection(IBuildpathEntry containerEntry) {
 		this.entry = containerEntry;
 	}
 
+	@Override
 	public void createControl(Composite parent) {
 		Composite composite = new Composite(parent, SWT.NONE);
-		org.eclipse.swt.layout.GridLayout gridLayout = new org.eclipse.swt.layout.GridLayout(
-				2, false);
+		org.eclipse.swt.layout.GridLayout gridLayout = new org.eclipse.swt.layout.GridLayout(2, false);
 		composite.setLayout(gridLayout);
 
 		this.fElements = new TreeViewer(composite);
@@ -193,16 +199,13 @@ public class TclPackagesContainerPage extends NewElementWizardPage implements
 		this.fElements.setContentProvider(new PackagesContentProvider());
 		this.fElements.setLabelProvider(new PackagesLabelProvider());
 		this.fElements.setInput(this.packages);
-		this.fElements
-				.addSelectionChangedListener(new ISelectionChangedListener() {
-					public void selectionChanged(SelectionChangedEvent event) {
-						ISelection selection = event.getSelection();
-						if (selection instanceof IStructuredSelection) {
-							IStructuredSelection sel = (IStructuredSelection) selection;
-							remove.setEnabled(!sel.isEmpty());
-						}
-					}
-				});
+		this.fElements.addSelectionChangedListener(event -> {
+			ISelection selection = event.getSelection();
+			if (selection instanceof IStructuredSelection) {
+				IStructuredSelection sel = (IStructuredSelection) selection;
+				remove.setEnabled(!sel.isEmpty());
+			}
+		});
 		remove.setEnabled(false);
 	}
 
@@ -225,11 +228,7 @@ public class TclPackagesContainerPage extends NewElementWizardPage implements
 	}
 
 	private void refreshView() {
-		PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-			public void run() {
-				fElements.refresh();
-			}
-		});
+		PlatformUI.getWorkbench().getDisplay().asyncExec(() -> fElements.refresh());
 	}
 
 	protected void addPackage() {
@@ -242,22 +241,22 @@ public class TclPackagesContainerPage extends NewElementWizardPage implements
 			}
 		}
 		if (install != null) {
-			Set<String> packages = TclPackagesManager
-					.getPackageInfosAsString(install);
-			final Set<String> names = new HashSet<String>();
+			Set<String> packages = TclPackagesManager.getPackageInfosAsString(install);
+			final Set<String> names = new HashSet<>();
 			names.addAll(packages);
-			ListDialog dialog = new ListDialog(this.fElements.getControl()
-					.getShell());
+			ListDialog dialog = new ListDialog(this.fElements.getControl().getShell());
 			dialog.setContentProvider(new IStructuredContentProvider() {
+				@Override
 				public Object[] getElements(Object inputElement) {
 					return names.toArray();
 				}
 
+				@Override
 				public void dispose() {
 				}
 
-				public void inputChanged(Viewer viewer, Object oldInput,
-						Object newInput) {
+				@Override
+				public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 				}
 			});
 			dialog.setLabelProvider(new PackagesLabelProvider());
@@ -271,9 +270,8 @@ public class TclPackagesContainerPage extends NewElementWizardPage implements
 				refreshView();
 			}
 		} else {
-			MessageBox box = new MessageBox(this.fElements.getControl()
-					.getShell(), SWT.OK | SWT.ICON_INFORMATION
-					| SWT.APPLICATION_MODAL);
+			MessageBox box = new MessageBox(this.fElements.getControl().getShell(),
+					SWT.OK | SWT.ICON_INFORMATION | SWT.APPLICATION_MODAL);
 			box.setText("Packages");
 			box.setText("Project interpreter could not be found...");
 			box.open();
@@ -290,28 +288,25 @@ public class TclPackagesContainerPage extends NewElementWizardPage implements
 			}
 		}
 		if (install != null) {
-			Set<String> packages = TclPackagesManager
-					.getPackageInfosAsString(install);
+			Set<String> packages = TclPackagesManager.getPackageInfosAsString(install);
 			this.packages.addAll(packages);
 
 			refreshView();
 		} else {
-			MessageBox box = new MessageBox(this.fElements.getControl()
-					.getShell(), SWT.OK | SWT.ICON_INFORMATION
-					| SWT.APPLICATION_MODAL);
+			MessageBox box = new MessageBox(this.fElements.getControl().getShell(),
+					SWT.OK | SWT.ICON_INFORMATION | SWT.APPLICATION_MODAL);
 			box.setText("Packages");
 			box.setText("Project interpreter could not be found...");
 			box.open();
 		}
 	}
 
-	public void initialize(IScriptProject project,
-			IBuildpathEntry[] currentEntries) {
+	@Override
+	public void initialize(IScriptProject project, IBuildpathEntry[] currentEntries) {
 		this.scriptProject = project;
-		Set<String> set = new HashSet<String>();
-		Set<String> autoSet = new HashSet<String>();
-		InterpreterContainerHelper.getInterpreterContainerDependencies(project,
-				set, autoSet);
+		Set<String> set = new HashSet<>();
+		Set<String> autoSet = new HashSet<>();
+		InterpreterContainerHelper.getInterpreterContainerDependencies(project, set, autoSet);
 		this.packages.addAll(set);
 		this.autoPackages.addAll(autoSet);
 	}

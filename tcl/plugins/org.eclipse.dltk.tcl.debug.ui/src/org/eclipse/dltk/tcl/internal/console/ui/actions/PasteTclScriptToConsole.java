@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2016 IBM Corporation and others.
+ * Copyright (c) 2005, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,15 +27,16 @@ public class PasteTclScriptToConsole implements IObjectActionDelegate {
 
 	private ISelection selection;
 
+	@Override
 	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
 
 	}
 
+	@Override
 	public void run(IAction action) {
 		ScriptConsoleManager manager = ScriptConsoleManager.getInstance();
 
-		IScriptConsole console = manager
-				.getActiveScriptConsole(TclConsole.CONSOLE_TYPE);
+		IScriptConsole console = manager.getActiveScriptConsole(TclConsole.CONSOLE_TYPE);
 
 		if (console == null) {
 			return;
@@ -54,8 +55,7 @@ public class PasteTclScriptToConsole implements IObjectActionDelegate {
 				if (obj instanceof ISourceModule) {
 					ISourceModule mo = (ISourceModule) obj;
 					try {
-						text = "#Tcl source:" + mo.getElementName() + "\n"
-								+ mo.getSource() + "\n";
+						text = "#Tcl source:" + mo.getElementName() + "\n" + mo.getSource() + "\n";
 					} catch (ModelException e) {
 						if (DLTKCore.DEBUG) {
 							e.printStackTrace();
@@ -69,6 +69,7 @@ public class PasteTclScriptToConsole implements IObjectActionDelegate {
 		}
 	}
 
+	@Override
 	public void selectionChanged(IAction action, ISelection selection) {
 		this.selection = selection;
 	}

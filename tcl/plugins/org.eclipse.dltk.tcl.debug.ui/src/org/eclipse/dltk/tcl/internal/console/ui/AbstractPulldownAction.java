@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2009 xored software, Inc.  
+ * Copyright (c) 2009, 2017 xored software, Inc. and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html  
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
  *     xored software, Inc. - initial API and Implementation (Alex Panchenko)
@@ -29,11 +29,10 @@ import org.eclipse.ui.IWorkbenchWindowPulldownDelegate2;
  * <p>
  * Clients may subclass this class.
  * </p>
- * 
+ *
  * @since 2.0
  */
-public abstract class AbstractPulldownAction implements
-		IWorkbenchWindowPulldownDelegate2 {
+public abstract class AbstractPulldownAction implements IWorkbenchWindowPulldownDelegate2 {
 
 	/**
 	 * The menu created by this action
@@ -46,14 +45,14 @@ public abstract class AbstractPulldownAction implements
 	private IAction fAction;
 
 	/**
-	 * Indicates whether the launch history has changed and the sub menu needs
-	 * to be recreated.
+	 * Indicates whether the launch history has changed and the sub menu needs to be
+	 * recreated.
 	 */
 	protected boolean fRecreateMenu = false;
 
 	/**
 	 * Sets the action used to render this delegate.
-	 * 
+	 *
 	 * @param action
 	 *            the action used to render this delegate
 	 */
@@ -63,7 +62,7 @@ public abstract class AbstractPulldownAction implements
 
 	/**
 	 * Returns the action used to render this delegate.
-	 * 
+	 *
 	 * @return the action used to render this delegate
 	 */
 	protected IAction getAction() {
@@ -71,9 +70,9 @@ public abstract class AbstractPulldownAction implements
 	}
 
 	/**
-	 * Adds the given action to the specified menu with an accelerator specified
-	 * by the given number.
-	 * 
+	 * Adds the given action to the specified menu with an accelerator specified by
+	 * the given number.
+	 *
 	 * @param menu
 	 *            the menu to add the action to
 	 * @param action
@@ -88,10 +87,10 @@ public abstract class AbstractPulldownAction implements
 	}
 
 	/**
-	 * Initialize this action so that it can dynamically set its tool-tip. Also
-	 * set the enabled state of the underlying action based on whether there are
-	 * any registered launch configuration types that understand how to launch
-	 * in the mode of this action.
+	 * Initialize this action so that it can dynamically set its tool-tip. Also set
+	 * the enabled state of the underlying action based on whether there are any
+	 * registered launch configuration types that understand how to launch in the
+	 * mode of this action.
 	 */
 	private void initialize(IAction action) {
 		setAction(action);
@@ -111,16 +110,12 @@ public abstract class AbstractPulldownAction implements
 		// FIXME getAction().setToolTipText(getToolTip());
 	}
 
-	/**
-	 * @see org.eclipse.ui.IWorkbenchWindowActionDelegate#dispose()
-	 */
+	@Override
 	public void dispose() {
 		setMenu(null);
 	}
 
-	/**
-	 * @see org.eclipse.ui.IWorkbenchWindowPulldownDelegate#getMenu(org.eclipse.swt.widgets.Control)
-	 */
+	@Override
 	public Menu getMenu(Control parent) {
 		setMenu(new Menu(parent));
 		fillMenu(fMenu);
@@ -128,9 +123,7 @@ public abstract class AbstractPulldownAction implements
 		return fMenu;
 	}
 
-	/**
-	 * @see org.eclipse.jface.action.IMenuCreator#getMenu(org.eclipse.swt.widgets.Menu)
-	 */
+	@Override
 	public Menu getMenu(Menu parent) {
 		setMenu(new Menu(parent));
 		fillMenu(fMenu);
@@ -162,7 +155,7 @@ public abstract class AbstractPulldownAction implements
 
 	/**
 	 * Sets this action's drop-down menu, disposing the previous menu.
-	 * 
+	 *
 	 * @param menu
 	 *            the new menu
 	 */
@@ -175,7 +168,7 @@ public abstract class AbstractPulldownAction implements
 
 	/**
 	 * Fills the drop-down menu with favorites and launch history
-	 * 
+	 *
 	 * @param menu
 	 *            the menu to fill
 	 */
@@ -183,7 +176,7 @@ public abstract class AbstractPulldownAction implements
 
 	/**
 	 * Adds a separator to the given menu
-	 * 
+	 *
 	 * @param menu
 	 */
 	protected void addSeparator(Menu menu) {
@@ -198,26 +191,19 @@ public abstract class AbstractPulldownAction implements
 		return menu2;
 	}
 
-	/**
-	 * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
-	 */
+	@Override
 	public void run(IAction action) {
 		// do nothing - this is just a menu
 	}
 
-	/**
-	 * @see org.eclipse.ui.IActionDelegate#selectionChanged(org.eclipse.jface.action.IAction,
-	 *      org.eclipse.jface.viewers.ISelection)
-	 */
+	@Override
 	public void selectionChanged(IAction action, ISelection selection) {
 		if (fAction == null) {
 			initialize(action);
 		}
 	}
 
-	/**
-	 * @see org.eclipse.ui.IWorkbenchWindowActionDelegate#init(org.eclipse.ui.IWorkbenchWindow)
-	 */
+	@Override
 	public void init(IWorkbenchWindow window) {
 		//
 	}

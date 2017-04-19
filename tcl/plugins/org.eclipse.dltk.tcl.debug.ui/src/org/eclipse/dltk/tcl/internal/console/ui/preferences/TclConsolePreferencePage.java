@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2016 IBM Corporation and others.
+ * Copyright (c) 2005, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,8 +13,6 @@ import org.eclipse.dltk.tcl.internal.debug.ui.TclDebugUIPlugin;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -26,8 +24,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
-public class TclConsolePreferencePage extends PreferencePage implements
-		IWorkbenchPreferencePage {
+public class TclConsolePreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
 
 	private Text newPrompt;
 
@@ -56,13 +53,8 @@ public class TclConsolePreferencePage extends PreferencePage implements
 		newPromptLabel.setText("New command:");
 
 		newPrompt = new Text(group, SWT.BORDER);
-		newPrompt.addModifyListener(new ModifyListener() {
-			public void modifyText(ModifyEvent e) {
-				validateValues();
-			}
-		});
-		newPrompt.setLayoutData(new GridData(GridData.FILL, SWT.NONE, true,
-				false));
+		newPrompt.addModifyListener(e -> validateValues());
+		newPrompt.setLayoutData(new GridData(GridData.FILL, SWT.NONE, true, false));
 
 		// Append command
 		Label appendCommandLabel = new Label(group, SWT.NONE);
@@ -70,13 +62,8 @@ public class TclConsolePreferencePage extends PreferencePage implements
 		appendCommandLabel.setText("Append command:");
 
 		appendPrompt = new Text(group, SWT.BORDER);
-		appendPrompt.addModifyListener(new ModifyListener() {
-			public void modifyText(ModifyEvent e) {
-				validateValues();
-			}
-		});
-		appendPrompt.setLayoutData(new GridData(GridData.FILL, SWT.NONE, true,
-				false));
+		appendPrompt.addModifyListener(e -> validateValues());
+		appendPrompt.setLayoutData(new GridData(GridData.FILL, SWT.NONE, true, false));
 	}
 
 	@Override
@@ -101,8 +88,7 @@ public class TclConsolePreferencePage extends PreferencePage implements
 
 		newPrompt.setText(store.getString(TclConsoleConstants.PREF_NEW_PROMPT));
 
-		appendPrompt.setText(store
-				.getString(TclConsoleConstants.PREF_CONTINUE_PROMPT));
+		appendPrompt.setText(store.getString(TclConsoleConstants.PREF_CONTINUE_PROMPT));
 	}
 
 	protected void validateValues() {
@@ -118,6 +104,7 @@ public class TclConsolePreferencePage extends PreferencePage implements
 		}
 	}
 
+	@Override
 	public void init(IWorkbench workbench) {
 
 	}
@@ -132,11 +119,8 @@ public class TclConsolePreferencePage extends PreferencePage implements
 	public boolean performOk() {
 		IPreferenceStore store = getPreferenceStore();
 
-		store
-				.setValue(TclConsoleConstants.PREF_NEW_PROMPT, newPrompt
-						.getText());
-		store.setValue(TclConsoleConstants.PREF_CONTINUE_PROMPT, appendPrompt
-				.getText());
+		store.setValue(TclConsoleConstants.PREF_NEW_PROMPT, newPrompt.getText());
+		store.setValue(TclConsoleConstants.PREF_CONTINUE_PROMPT, appendPrompt.getText());
 
 		return true;
 	}

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2016 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,8 +27,7 @@ import org.eclipse.swt.graphics.Image;
 /**
  * Control used to edit the libraries associated with a Interpreter install
  */
-public class TclInterpreterEnvironmentVariablesBlock extends
-		AbstractInterpreterEnvironmentVariablesBlock {
+public class TclInterpreterEnvironmentVariablesBlock extends AbstractInterpreterEnvironmentVariablesBlock {
 
 	public TclInterpreterEnvironmentVariablesBlock(AddScriptInterpreterDialog d) {
 		super(d);
@@ -36,25 +35,25 @@ public class TclInterpreterEnvironmentVariablesBlock extends
 
 	@Override
 	protected IBaseLabelProvider getLabelProvider() {
-		return new DecoratingLabelProvider((ILabelProvider) super
-				.getLabelProvider(), new EnvironmentVariableDecorator());
+		return new DecoratingLabelProvider((ILabelProvider) super.getLabelProvider(),
+				new EnvironmentVariableDecorator());
 	}
 
-	private class EnvironmentVariableDecorator extends BaseLabelProvider
-			implements ILabelDecorator {
+	private class EnvironmentVariableDecorator extends BaseLabelProvider implements ILabelDecorator {
 
+		@Override
 		public Image decorateImage(Image image, Object element) {
 			if (element instanceof EnvironmentVariable) {
 				final EnvironmentVariable env = (EnvironmentVariable) element;
 				if (!isSafe(env) || !env.validate().isOK()) {
-					return registry.get(new DecorationOverlayIcon(image,
-							DLTKPluginImages.DESC_OVR_WARNING,
+					return registry.get(new DecorationOverlayIcon(image, DLTKPluginImages.DESC_OVR_WARNING,
 							IDecoration.BOTTOM_LEFT));
 				}
 			}
 			return image;
 		}
 
+		@Override
 		public String decorateText(String text, Object element) {
 			return text;
 		}
@@ -65,16 +64,14 @@ public class TclInterpreterEnvironmentVariablesBlock extends
 			registry.dispose();
 		}
 
-		private final ImageDescriptorRegistry registry = new ImageDescriptorRegistry(
-				false);
+		private final ImageDescriptorRegistry registry = new ImageDescriptorRegistry(false);
 
 		private boolean isSafe(EnvironmentVariable env) {
 			final IEnvironment environment = getEnvironment();
 			if (environment != null) {
 				final IExecutionEnvironment execEnvironment = environment.getAdapter(IExecutionEnvironment.class);
 				if (execEnvironment != null) {
-					return execEnvironment.isSafeEnvironmentVariable(env
-							.getName());
+					return execEnvironment.isSafeEnvironmentVariable(env.getName());
 				}
 			}
 			return true;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2016 IBM Corporation and others.
+ * Copyright (c) 2005, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,15 +30,11 @@ import org.eclipse.dltk.tcl.core.TclNature;
 import org.eclipse.dltk.tcl.core.TclPackagesManager;
 import org.eclipse.dltk.ui.DLTKPluginImages;
 import org.eclipse.dltk.ui.util.PixelConverter;
-import org.eclipse.jface.util.IPropertyChangeListener;
-import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
@@ -68,8 +64,8 @@ public class TclInterpreterComboBlock extends AbstractInterpreterComboBlock {
 		super(context);
 	}
 
-	private Set<String> packages = new HashSet<String>();
-	private Set<String> autoPackages = new HashSet<String>();
+	private Set<String> packages = new HashSet<>();
+	private Set<String> autoPackages = new HashSet<>();
 
 	public class PackagesLabelProvider extends LabelProvider {
 
@@ -79,17 +75,14 @@ public class TclInterpreterComboBlock extends AbstractInterpreterComboBlock {
 				String packageName = ((Package) element).name;
 				IInterpreterInstall install = getInterpreter();
 				if (install == null) {
-					install = ScriptRuntime
-							.getDefaultInterpreterInstall(TclNature.NATURE_ID,
-									LocalEnvironment.getInstance());
+					install = ScriptRuntime.getDefaultInterpreterInstall(TclNature.NATURE_ID,
+							LocalEnvironment.getInstance());
 				}
 				if (install != null) {
-					final Set<String> names = TclPackagesManager
-							.getPackageInfosAsString(install);
+					final Set<String> names = TclPackagesManager.getPackageInfosAsString(install);
 
 					if (!names.contains(packageName)) {
-						return DLTKPluginImages
-								.get(DLTKPluginImages.IMG_OBJS_ERROR);
+						return DLTKPluginImages.get(DLTKPluginImages.IMG_OBJS_ERROR);
 					}
 				}
 				return DLTKPluginImages.get(DLTKPluginImages.IMG_OBJS_PACKAGE);
@@ -124,15 +117,17 @@ public class TclInterpreterComboBlock extends AbstractInterpreterComboBlock {
 		}
 	}
 
-	private static class PackagesContentProvider implements
-			ITreeContentProvider {
+	private static class PackagesContentProvider implements ITreeContentProvider {
 
+		@Override
 		public void dispose() {
 		}
 
+		@Override
 		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 		}
 
+		@Override
 		public Object[] getChildren(Object parentElement) {
 			if (parentElement instanceof PackageCategory) {
 				return ((PackageCategory) parentElement).getPackages();
@@ -141,6 +136,7 @@ public class TclInterpreterComboBlock extends AbstractInterpreterComboBlock {
 			}
 		}
 
+		@Override
 		public Object getParent(Object element) {
 			if (element instanceof Package) {
 				return ((Package) element).parent;
@@ -148,6 +144,7 @@ public class TclInterpreterComboBlock extends AbstractInterpreterComboBlock {
 			return null;
 		}
 
+		@Override
 		public boolean hasChildren(Object element) {
 			if (element instanceof PackageCategory) {
 				return !((PackageCategory) element).packages.isEmpty();
@@ -155,6 +152,7 @@ public class TclInterpreterComboBlock extends AbstractInterpreterComboBlock {
 			return false;
 		}
 
+		@Override
 		public Object[] getElements(Object inputElement) {
 			if (inputElement instanceof PackageInput) {
 				return ((PackageInput) inputElement).getCategories();
@@ -184,8 +182,7 @@ public class TclInterpreterComboBlock extends AbstractInterpreterComboBlock {
 
 		this.fElements = new TreeViewer(composite);
 		GridData data = new GridData(SWT.FILL, SWT.FILL, true, true);
-		data.heightHint = new PixelConverter(ancestor)
-				.convertHeightInCharsToPixels(8);
+		data.heightHint = new PixelConverter(ancestor).convertHeightInCharsToPixels(8);
 
 		this.fElements.getTree().setLayoutData(data);
 
@@ -201,8 +198,7 @@ public class TclInterpreterComboBlock extends AbstractInterpreterComboBlock {
 
 		addButton = new Button(buttons, SWT.PUSH);
 		addButton.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
-		addButton
-				.setText(TclInterpreterMessages.TclInterpreterComboBlock_buttonAdd);
+		addButton.setText(TclInterpreterMessages.TclInterpreterComboBlock_buttonAdd);
 		if (editablePackages) {
 			addButton.addSelectionListener(new SelectionAdapter() {
 				@Override
@@ -214,10 +210,8 @@ public class TclInterpreterComboBlock extends AbstractInterpreterComboBlock {
 			addButton.setEnabled(false);
 		}
 		addAllButton = new Button(buttons, SWT.PUSH);
-		addAllButton.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false,
-				false));
-		addAllButton
-				.setText(TclInterpreterMessages.TclInterpreterComboBlock_buttonAddAll);
+		addAllButton.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
+		addAllButton.setText(TclInterpreterMessages.TclInterpreterComboBlock_buttonAddAll);
 		if (editablePackages) {
 			addAllButton.addSelectionListener(new SelectionAdapter() {
 				@Override
@@ -229,8 +223,7 @@ public class TclInterpreterComboBlock extends AbstractInterpreterComboBlock {
 			addAllButton.setEnabled(false);
 		}
 		remove = new Button(buttons, SWT.PUSH);
-		remove
-				.setText(TclInterpreterMessages.TclInterpreterComboBlock_buttonRemove);
+		remove.setText(TclInterpreterMessages.TclInterpreterComboBlock_buttonRemove);
 		remove.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
 		if (editablePackages) {
 			remove.addSelectionListener(new SelectionAdapter() {
@@ -247,22 +240,14 @@ public class TclInterpreterComboBlock extends AbstractInterpreterComboBlock {
 		this.fElements.setContentProvider(new PackagesContentProvider());
 		this.fElements.setLabelProvider(new PackagesLabelProvider());
 		if (editablePackages) {
-			this.fElements
-					.addSelectionChangedListener(new ISelectionChangedListener() {
-						public void selectionChanged(SelectionChangedEvent event) {
-							remove.setEnabled(canRemove(event.getSelection()));
-						}
-					});
+			this.fElements.addSelectionChangedListener(event -> remove.setEnabled(canRemove(event.getSelection())));
 		}
 		this.fElements.setComparator(new PackageComparator());
 		showPackages();
 
-		this.addPropertyChangeListener(new IPropertyChangeListener() {
-
-			public void propertyChange(PropertyChangeEvent event) {
-				if (event.getProperty().equals(PROPERTY_INTERPRETER)) {
-					refreshView();
-				}
+		this.addPropertyChangeListener(event -> {
+			if (event.getProperty().equals(PROPERTY_INTERPRETER)) {
+				refreshView();
 			}
 		});
 	}
@@ -270,26 +255,19 @@ public class TclInterpreterComboBlock extends AbstractInterpreterComboBlock {
 	private void showPackages() {
 		if (fElements != null) {
 			PackageInput input = new PackageInput();
-			input
-					.addCategory(
-							TclInterpreterMessages.TclInterpreterComboBlock_CategoryManual,
-							this.packages, false);
-			input
-					.addCategory(
-							TclInterpreterMessages.TclInterpreterComboBlock_CategoryAutomatic,
-							this.autoPackages, true);
+			input.addCategory(TclInterpreterMessages.TclInterpreterComboBlock_CategoryManual, this.packages, false);
+			input.addCategory(TclInterpreterMessages.TclInterpreterComboBlock_CategoryAutomatic, this.autoPackages,
+					true);
 			fElements.setInput(input);
 			fElements.expandToLevel(2);
 		}
 	}
 
 	private static class PackageInput {
-		private final List<PackageCategory> categories = new ArrayList<PackageCategory>();
+		private final List<PackageCategory> categories = new ArrayList<>();
 
-		public void addCategory(String category, Set<String> packagesSet,
-				boolean readOnly) {
-			categories
-					.add(new PackageCategory(category, packagesSet, readOnly));
+		public void addCategory(String category, Set<String> packagesSet, boolean readOnly) {
+			categories.add(new PackageCategory(category, packagesSet, readOnly));
 		}
 
 		public PackageCategory[] getCategories() {
@@ -315,8 +293,7 @@ public class TclInterpreterComboBlock extends AbstractInterpreterComboBlock {
 		final Set<String> packages;
 		final boolean readOnly;
 
-		public PackageCategory(String category, Set<String> packagesSet,
-				boolean readOnly) {
+		public PackageCategory(String category, Set<String> packagesSet, boolean readOnly) {
 			this.category = category;
 			this.readOnly = readOnly;
 			this.packages = packagesSet;
@@ -402,8 +379,7 @@ public class TclInterpreterComboBlock extends AbstractInterpreterComboBlock {
 		if (selection instanceof IStructuredSelection) {
 			final IStructuredSelection ss = (IStructuredSelection) selection;
 			int updates = 0;
-			for (@SuppressWarnings("unchecked")
-			Iterator<String> iterator = ss.iterator(); iterator.hasNext();) {
+			for (Iterator<String> iterator = ss.iterator(); iterator.hasNext();) {
 				final Object pkg = iterator.next();
 				if (pkg instanceof Package && !((Package) pkg).parent.readOnly) {
 					if (this.packages.remove(((Package) pkg).name)) {
@@ -422,18 +398,14 @@ public class TclInterpreterComboBlock extends AbstractInterpreterComboBlock {
 	}
 
 	private void refreshView(final String selection) {
-		PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-			public void run() {
-				if (fElements.getControl().isDisposed())
-					return;
-				fElements.refresh();
-				if (selection != null) {
-					PackageCategory category = ((PackageInput) fElements
-							.getInput())
-							.get(TclInterpreterMessages.TclInterpreterComboBlock_CategoryManual);
-					fElements.setSelection(new StructuredSelection(new Package(
-							category, selection)));
-				}
+		PlatformUI.getWorkbench().getDisplay().asyncExec(() -> {
+			if (fElements.getControl().isDisposed())
+				return;
+			fElements.refresh();
+			if (selection != null) {
+				PackageCategory category = ((PackageInput) fElements.getInput())
+						.get(TclInterpreterMessages.TclInterpreterComboBlock_CategoryManual);
+				fElements.setSelection(new StructuredSelection(new Package(category, selection)));
 			}
 		});
 	}
@@ -441,29 +413,27 @@ public class TclInterpreterComboBlock extends AbstractInterpreterComboBlock {
 	protected void addPackage() {
 		IInterpreterInstall install = this.getInterpreter();
 		if (install == null) {
-			install = ScriptRuntime.getDefaultInterpreterInstall(
-					TclNature.NATURE_ID, LocalEnvironment.getInstance());
+			install = ScriptRuntime.getDefaultInterpreterInstall(TclNature.NATURE_ID, LocalEnvironment.getInstance());
 		}
 		if (install != null) {
-			Set<String> packages = TclPackagesManager
-					.getPackageInfosAsString(install);
-			final List<String> names = new ArrayList<String>();
+			Set<String> packages = TclPackagesManager.getPackageInfosAsString(install);
+			final List<String> names = new ArrayList<>();
 			names.addAll(packages);
 			Collections.sort(names, String.CASE_INSENSITIVE_ORDER);
-			ListDialog dialog = new ListDialog(this.fElements.getControl()
-					.getShell());
-			dialog
-					.setTitle(TclInterpreterMessages.TclInterpreterComboBlock_title);
+			ListDialog dialog = new ListDialog(this.fElements.getControl().getShell());
+			dialog.setTitle(TclInterpreterMessages.TclInterpreterComboBlock_title);
 			dialog.setContentProvider(new IStructuredContentProvider() {
+				@Override
 				public Object[] getElements(Object inputElement) {
 					return names.toArray();
 				}
 
+				@Override
 				public void dispose() {
 				}
 
-				public void inputChanged(Viewer viewer, Object oldInput,
-						Object newInput) {
+				@Override
+				public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 				}
 			});
 			dialog.setLabelProvider(new PackagesLabelProvider());
@@ -477,13 +447,10 @@ public class TclInterpreterComboBlock extends AbstractInterpreterComboBlock {
 				refreshView((String) (result.length != 0 ? result[0] : null));
 			}
 		} else {
-			MessageBox box = new MessageBox(this.fElements.getControl()
-					.getShell(), SWT.OK | SWT.ICON_WARNING
-					| SWT.APPLICATION_MODAL);
-			box
-					.setText(TclInterpreterMessages.TclInterpreterComboBlock_errorTitle);
-			box
-					.setMessage(TclInterpreterMessages.TclInterpreterComboBlock_errorMessage);
+			MessageBox box = new MessageBox(this.fElements.getControl().getShell(),
+					SWT.OK | SWT.ICON_WARNING | SWT.APPLICATION_MODAL);
+			box.setText(TclInterpreterMessages.TclInterpreterComboBlock_errorTitle);
+			box.setMessage(TclInterpreterMessages.TclInterpreterComboBlock_errorMessage);
 			box.open();
 		}
 	}
@@ -498,19 +465,15 @@ public class TclInterpreterComboBlock extends AbstractInterpreterComboBlock {
 			}
 		}
 		if (install != null) {
-			Set<String> packages = TclPackagesManager
-					.getPackageInfosAsString(install);
+			Set<String> packages = TclPackagesManager.getPackageInfosAsString(install);
 			this.packages.addAll(packages);
 
 			refreshView();
 		} else {
-			MessageBox box = new MessageBox(this.fElements.getControl()
-					.getShell(), SWT.OK | SWT.ICON_INFORMATION
-					| SWT.APPLICATION_MODAL);
-			box
-					.setText(TclInterpreterMessages.TclInterpreterComboBlock_errorTitle);
-			box
-					.setText(TclInterpreterMessages.TclInterpreterComboBlock_errorMessage);
+			MessageBox box = new MessageBox(this.fElements.getControl().getShell(),
+					SWT.OK | SWT.ICON_INFORMATION | SWT.APPLICATION_MODAL);
+			box.setText(TclInterpreterMessages.TclInterpreterComboBlock_errorTitle);
+			box.setText(TclInterpreterMessages.TclInterpreterComboBlock_errorMessage);
 			box.open();
 		}
 	}
@@ -520,10 +483,9 @@ public class TclInterpreterComboBlock extends AbstractInterpreterComboBlock {
 	 */
 	public void initialize(IScriptProject project) {
 		this.scriptProject = project;
-		final Set<String> set = new HashSet<String>();
-		final Set<String> autoSet = new HashSet<String>();
-		InterpreterContainerHelper.getInterpreterContainerDependencies(project,
-				set, autoSet);
+		final Set<String> set = new HashSet<>();
+		final Set<String> autoSet = new HashSet<>();
+		InterpreterContainerHelper.getInterpreterContainerDependencies(project, set, autoSet);
 		this.packages.clear();
 		this.packages.addAll(set);
 		this.autoPackages.clear();
@@ -533,9 +495,8 @@ public class TclInterpreterComboBlock extends AbstractInterpreterComboBlock {
 
 	@Override
 	public IBuildpathEntry getEntry() {
-		IBuildpathEntry createPackagesContainer = InterpreterContainerHelper
-				.createPackagesContainer(this.packages, this.autoPackages,
-						getInterpreterPath());
+		IBuildpathEntry createPackagesContainer = InterpreterContainerHelper.createPackagesContainer(this.packages,
+				this.autoPackages, getInterpreterPath());
 		return createPackagesContainer;
 	}
 }

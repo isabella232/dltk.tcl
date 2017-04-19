@@ -1,11 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- 
  *******************************************************************************/
 package org.eclipse.dltk.tcl.internal.debug.ui.console;
 
@@ -54,12 +53,15 @@ public class TclFileHyperlink implements IHyperlink {
 		fConsole = console;
 	}
 
+	@Override
 	public void linkEntered() {
 	}
 
+	@Override
 	public void linkExited() {
 	}
 
+	@Override
 	public void linkActivated() {
 		try {
 			String fileName;
@@ -69,10 +71,8 @@ public class TclFileHyperlink implements IHyperlink {
 				fileName = getFileName(linkText);
 				lineNumber = getLineNumber(linkText);
 			} catch (CoreException e1) {
-				ErrorDialog.openError(DLTKDebugUIPlugin
-						.getActiveWorkbenchShell(),
-						ConsoleMessages.TclFileHyperlink_Error,
-						ConsoleMessages.TclFileHyperlink_Error, e1.getStatus());
+				ErrorDialog.openError(DLTKDebugUIPlugin.getActiveWorkbenchShell(),
+						ConsoleMessages.TclFileHyperlink_Error, ConsoleMessages.TclFileHyperlink_Error, e1.getStatus());
 				return;
 			}
 
@@ -83,19 +83,16 @@ public class TclFileHyperlink implements IHyperlink {
 			Object sourceElement = getSourceModule(fileName);
 			if (sourceElement != null) {
 				IEditorPart part = EditorUtility.openInEditor(sourceElement);
-				IEditorPart editorPart = EditorUtility
-						.openInEditor(sourceElement);
+				IEditorPart editorPart = EditorUtility.openInEditor(sourceElement);
 				if (editorPart instanceof ITextEditor && lineNumber >= 0) {
 					ITextEditor textEditor = (ITextEditor) editorPart;
-					IDocumentProvider provider = textEditor
-							.getDocumentProvider();
+					IDocumentProvider provider = textEditor.getDocumentProvider();
 					IEditorInput input = part.getEditorInput();
 					provider.connect(input);
 					IDocument document = provider.getDocument(input);
 					try {
 						IRegion line = document.getLineInformation(lineNumber);
-						textEditor.selectAndReveal(line.getOffset(), line
-								.getLength());
+						textEditor.selectAndReveal(line.getOffset(), line.getLength());
 					} catch (BadLocationException e) {
 
 					}
@@ -104,27 +101,19 @@ public class TclFileHyperlink implements IHyperlink {
 				return;
 			}
 			// did not find source
-			MessageDialog
-					.openInformation(
-							DLTKDebugUIPlugin.getActiveWorkbenchShell(),
-							ConsoleMessages.TclFileHyperlink_Information_1,
-							NLS
-									.bind(
-											ConsoleMessages.TclFileHyperlink_Source_not_found_for__0__2,
-											new String[] { fileName }));
+			MessageDialog.openInformation(DLTKDebugUIPlugin.getActiveWorkbenchShell(),
+					ConsoleMessages.TclFileHyperlink_Information_1,
+					NLS.bind(ConsoleMessages.TclFileHyperlink_Source_not_found_for__0__2, new String[] { fileName }));
 		} catch (CoreException e) {
 			DLTKDebugUIPlugin
-					.errorDialog(
-							ConsoleMessages.TclFileHyperlink_An_exception_occurred_while_following_link__3,
-							e);
+					.errorDialog(ConsoleMessages.TclFileHyperlink_An_exception_occurred_while_following_link__3, e);
 			return;
 		}
 	}
 
 	public String getEditorId(IEditorInput input, Object inputObject) {
 		try {
-			IEditorDescriptor descriptor = IDE.getEditorDescriptor(input
-					.getName());
+			IEditorDescriptor descriptor = IDE.getEditorDescriptor(input.getName(), true, false);
 			return descriptor.getId();
 		} catch (PartInitException e) {
 			return null;
@@ -133,21 +122,16 @@ public class TclFileHyperlink implements IHyperlink {
 
 	protected Object getSourceModule(String fileName) throws CoreException {
 		if (fConsole instanceof org.eclipse.debug.ui.console.IConsole) {
-			final IProcess process = ((org.eclipse.debug.ui.console.IConsole) fConsole)
-					.getProcess();
+			final IProcess process = ((org.eclipse.debug.ui.console.IConsole) fConsole).getProcess();
 			if (process != null) {
 				final ILaunch launch = process.getLaunch();
 				if (launch != null) {
-					final ILaunchConfiguration configuration = launch
-							.getLaunchConfiguration();
+					final ILaunchConfiguration configuration = launch.getLaunchConfiguration();
 					if (configuration != null) {
-						final IProject project = LaunchConfigurationUtils
-								.getProject(configuration);
+						final IProject project = LaunchConfigurationUtils.getProject(configuration);
 						if (project != null) {
-							final ProjectSourceLookup lookup = new ProjectSourceLookup(
-									project);
-							final IProjectLookupResult result = lookup
-									.find(new Path(fileName));
+							final ProjectSourceLookup lookup = new ProjectSourceLookup(project);
+							final IProjectLookupResult result = lookup.find(new Path(fileName));
 							if (result != null) {
 								return result.toArray()[0];
 							}
@@ -157,14 +141,13 @@ public class TclFileHyperlink implements IHyperlink {
 			}
 		}
 		// compatibility: search local workspace files
-		IFile f = ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(
-				new Path(fileName));
+		IFile f = ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(new Path(fileName));
 		return f;
 	}
 
 	/**
 	 * Returns the fully qualified name of the type to open
-	 * 
+	 *
 	 * @return fully qualified type name
 	 * @exception CoreException
 	 *                if unable to parse the type name
@@ -176,18 +159,14 @@ public class TclFileHyperlink implements IHyperlink {
 			String name = m.group(1);
 			return name;
 		}
-		IStatus status = new Status(
-				IStatus.ERROR,
-				DLTKDebugUIPlugin.getUniqueIdentifier(),
-				0,
-				ConsoleMessages.TclFileHyperlink_Unable_to_parse_type_name_from_hyperlink__5,
-				null);
+		IStatus status = new Status(IStatus.ERROR, DLTKDebugUIPlugin.getUniqueIdentifier(), 0,
+				ConsoleMessages.TclFileHyperlink_Unable_to_parse_type_name_from_hyperlink__5, null);
 		throw new CoreException(status);
 	}
 
 	/**
 	 * Returns the line number associated with the stack trace or -1 if none.
-	 * 
+	 *
 	 * @exception CoreException
 	 *                if unable to parse the number
 	 */
@@ -199,27 +178,19 @@ public class TclFileHyperlink implements IHyperlink {
 			try {
 				return Integer.parseInt(lineText);
 			} catch (NumberFormatException e) {
-				IStatus status = new Status(
-						IStatus.ERROR,
-						DLTKDebugUIPlugin.getUniqueIdentifier(),
-						0,
-						ConsoleMessages.TclFileHyperlink_Unable_to_parse_line_number_from_hyperlink__6,
-						e);
+				IStatus status = new Status(IStatus.ERROR, DLTKDebugUIPlugin.getUniqueIdentifier(), 0,
+						ConsoleMessages.TclFileHyperlink_Unable_to_parse_line_number_from_hyperlink__6, e);
 				throw new CoreException(status);
 			}
 		}
-		IStatus status = new Status(
-				IStatus.ERROR,
-				DLTKDebugUIPlugin.getUniqueIdentifier(),
-				0,
-				ConsoleMessages.TclFileHyperlink_Unable_to_parse_line_number_from_hyperlink__7,
-				null);
+		IStatus status = new Status(IStatus.ERROR, DLTKDebugUIPlugin.getUniqueIdentifier(), 0,
+				ConsoleMessages.TclFileHyperlink_Unable_to_parse_line_number_from_hyperlink__7, null);
 		throw new CoreException(status);
 	}
 
 	/**
 	 * Returns the console this link is contained in.
-	 * 
+	 *
 	 * @return console
 	 */
 	protected TextConsole getConsole() {
@@ -228,7 +199,7 @@ public class TclFileHyperlink implements IHyperlink {
 
 	/**
 	 * Returns this link's text
-	 * 
+	 *
 	 * @exception CoreException
 	 *                if unable to retrieve the text
 	 */
@@ -248,15 +219,10 @@ public class TclFileHyperlink implements IHyperlink {
 			int linkEnd = line.indexOf(')', regionOffsetInLine);
 			int linkStart = line.lastIndexOf(' ', regionOffsetInLine);
 
-			return line.substring(linkStart == -1 ? 0 : linkStart + 1,
-					linkEnd + 1);
+			return line.substring(linkStart == -1 ? 0 : linkStart + 1, linkEnd + 1);
 		} catch (BadLocationException e) {
-			IStatus status = new Status(
-					IStatus.ERROR,
-					DLTKDebugUIPlugin.getUniqueIdentifier(),
-					0,
-					ConsoleMessages.TclFileHyperlink_Unable_to_retrieve_hyperlink_text__8,
-					e);
+			IStatus status = new Status(IStatus.ERROR, DLTKDebugUIPlugin.getUniqueIdentifier(), 0,
+					ConsoleMessages.TclFileHyperlink_Unable_to_retrieve_hyperlink_text__8, e);
 			throw new CoreException(status);
 		}
 	}

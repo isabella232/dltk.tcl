@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2016 IBM Corporation and others.
+ * Copyright (c) 2005, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,62 +18,61 @@ import org.eclipse.dltk.console.ui.ScriptConsoleCompletionProcessor;
 import org.eclipse.dltk.ui.DLTKPluginImages;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.TextPresentation;
+import org.eclipse.jface.text.contentassist.CompletionProposal;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.jface.text.contentassist.IContextInformationPresenter;
 import org.eclipse.jface.text.contentassist.IContextInformationValidator;
 import org.eclipse.swt.graphics.Image;
 
+public class TclConsoleCompletionProcessor extends ScriptConsoleCompletionProcessor {
 
-public class TclConsoleCompletionProcessor extends
-		ScriptConsoleCompletionProcessor {
-
-	protected static class Validator implements IContextInformationValidator,
-			IContextInformationPresenter {
+	protected static class Validator implements IContextInformationValidator, IContextInformationPresenter {
 
 		protected int installOffset;
 
+		@Override
 		public boolean isContextInformationValid(int offset) {
 			return Math.abs(installOffset - offset) < 5;
 		}
 
-		public void install(IContextInformation info, ITextViewer viewer,
-				int offset) {
+		@Override
+		public void install(IContextInformation info, ITextViewer viewer, int offset) {
 			installOffset = offset;
 		}
 
-		public boolean updatePresentation(int documentPosition,
-				TextPresentation presentation) {
+		@Override
+		public boolean updatePresentation(int documentPosition, TextPresentation presentation) {
 			return false;
 		}
 	}
 
 	protected IProposalDecorator tclDecorator = new IProposalDecorator() {
+		@Override
 		public String formatProposal(ScriptConsoleCompletionProposal c) {
 			return c.getDisplay();
 		}
 
+		@Override
 		public Image getImage(ScriptConsoleCompletionProposal c) {
 			String type = c.getType();
-			if (type.equals("var")){
-				return DLTKPluginImages
-				.get(DLTKPluginImages.IMG_OBJS_LOCAL_VARIABLE); 
-			} else if (type.equals("proc")){
+			if (type.equals("var")) {
+				return DLTKPluginImages.get(DLTKPluginImages.IMG_OBJS_LOCAL_VARIABLE);
+			} else if (type.equals("proc")) {
 				return DLTKPluginImages.get(DLTKPluginImages.IMG_METHOD_PUBLIC);
-			} else if (type.equals("command")){
+			} else if (type.equals("command")) {
 				return DLTKPluginImages.get(DLTKPluginImages.IMG_METHOD_PRIVATE);
-			} else if (type.equals("func")){
+			} else if (type.equals("func")) {
 				return DLTKPluginImages.get(DLTKPluginImages.IMG_OBJS_FIELD);
 			}
-			
-			return null; 
+
+			return null;
 		}
 	};
-	
+
 	private IContextInformationValidator validator;
-	
-	public TclConsoleCompletionProcessor(
-			IScriptConsoleShell interpreterShell) {
+
+	public TclConsoleCompletionProcessor(IScriptConsoleShell interpreterShell) {
 		super(interpreterShell);
 	}
 
@@ -83,20 +82,17 @@ public class TclConsoleCompletionProcessor extends
 	}
 
 	@Override
-	protected ICompletionProposal[] computeCompletionProposalsImpl(
-			IScriptConsoleViewer viewer, int offset) {
+	protected ICompletionProposal[] computeCompletionProposalsImpl(IScriptConsoleViewer viewer, int offset) {
 
 		try {
 			String commandLine = viewer.getCommandLine();
 			int cursorPosition = offset - viewer.getCommandLineOffset();
 
-			List list = getInterpreterShell().getCompletions(commandLine,
-					cursorPosition);
+			List list = getInterpreterShell().getCompletions(commandLine, cursorPosition);
 
-			List proposals = createProposalsFromString(list, offset, tclDecorator);
+			List<CompletionProposal> proposals = createProposalsFromString(list, offset, tclDecorator);
 
-			return (ICompletionProposal[]) proposals
-					.toArray(new ICompletionProposal[proposals.size()]);
+			return proposals.toArray(new ICompletionProposal[proposals.size()]);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -105,11 +101,11 @@ public class TclConsoleCompletionProcessor extends
 	}
 
 	@Override
-	protected IContextInformation[] computeContextInformationImpl(
-			ITextViewer viewer, int offset) {
+	protected IContextInformation[] computeContextInformationImpl(ITextViewer viewer, int offset) {
 		return null;
 	}
 
+	@Override
 	public IContextInformationValidator getContextInformationValidator() {
 		if (validator == null) {
 			validator = new Validator();

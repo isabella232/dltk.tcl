@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2016 xored software, Inc. and others.
+ * Copyright (c) 2008, 2017 xored software, Inc. and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -36,7 +36,7 @@ import org.eclipse.ui.texteditor.IUpdate;
  * <p>
  * Clients may instantiate this class.
  * </p>
- * 
+ *
  * @since 3.1
  * @see org.eclipse.dltk.tcl.internal.debug.ui.actions.RulerToggleSpawnpointActionDelegate
  * @noextend This class is not intended to be subclassed by clients.
@@ -48,9 +48,9 @@ public class ToggleSpawnpointAction extends Action implements IUpdate {
 	private IVerticalRulerInfo fRulerInfo;
 
 	/**
-	 * Constructs a new action to toggle a breakpoint in the given part
-	 * containing the given document and ruler.
-	 * 
+	 * Constructs a new action to toggle a breakpoint in the given part containing
+	 * the given document and ruler.
+	 *
 	 * @param part
 	 *            the part in which to toggle the breakpoint - provides an
 	 *            <code>IToggleBreakpointsTarget</code> adapter
@@ -60,8 +60,7 @@ public class ToggleSpawnpointAction extends Action implements IUpdate {
 	 * @param rulerInfo
 	 *            specifies location the user has double-clicked
 	 */
-	public ToggleSpawnpointAction(IWorkbenchPart part, IDocument document,
-			IVerticalRulerInfo rulerInfo) {
+	public ToggleSpawnpointAction(IWorkbenchPart part, IDocument document, IVerticalRulerInfo rulerInfo) {
 		super(ActionMessages.ToggleSpawnpointAction_0);
 		fPart = part;
 		fDocument = document;
@@ -74,13 +73,11 @@ public class ToggleSpawnpointAction extends Action implements IUpdate {
 		if (document == null) {
 			return;
 		}
-		IToggleSpawnpointsTarget adapter = fPart
-				.getAdapter(IToggleSpawnpointsTarget.class);
+		IToggleSpawnpointsTarget adapter = fPart.getAdapter(IToggleSpawnpointsTarget.class);
 		if (adapter == null) {
 			// attempt to force load adapter
 			IAdapterManager manager = Platform.getAdapterManager();
-			if (manager.hasAdapter(fPart, IToggleSpawnpointsTarget.class
-					.getName())) {
+			if (manager.hasAdapter(fPart, IToggleSpawnpointsTarget.class.getName())) {
 				adapter = (IToggleSpawnpointsTarget) manager.loadAdapter(fPart,
 						IToggleSpawnpointsTarget.class.getName());
 			}
@@ -108,19 +105,18 @@ public class ToggleSpawnpointAction extends Action implements IUpdate {
 
 	/**
 	 * Report an error to the user.
-	 * 
+	 *
 	 * @param e
 	 *            underlying exception
 	 */
 	private void reportException(Exception e) {
-		DebugUIPlugin.errorDialog(fPart.getSite().getShell(),
-				ActionMessages.ToggleSpawnpointAction_1,
+		DebugUIPlugin.errorDialog(fPart.getSite().getShell(), ActionMessages.ToggleSpawnpointAction_1,
 				ActionMessages.ToggleSpawnpointAction_2, e);
 	}
 
 	/**
-	 * Disposes this action. Clients must call this method when this action is
-	 * no longer needed.
+	 * Disposes this action. Clients must call this method when this action is no
+	 * longer needed.
 	 */
 	public void dispose() {
 		fDocument = null;
@@ -130,7 +126,7 @@ public class ToggleSpawnpointAction extends Action implements IUpdate {
 
 	/**
 	 * Returns the document on which this action operates.
-	 * 
+	 *
 	 * @return the document or <code>null</code> if none
 	 */
 	private IDocument getDocument() {
@@ -152,26 +148,24 @@ public class ToggleSpawnpointAction extends Action implements IUpdate {
 		return null;
 	}
 
+	@Override
 	public void update() {
 		IDocument document = getDocument();
 		if (document != null) {
-			IToggleSpawnpointsTarget adapter = fPart
-					.getAdapter(IToggleSpawnpointsTarget.class);
+			IToggleSpawnpointsTarget adapter = fPart.getAdapter(IToggleSpawnpointsTarget.class);
 			if (adapter == null) {
 				// attempt to force load adapter
 				IAdapterManager manager = Platform.getAdapterManager();
-				if (manager.hasAdapter(fPart, IToggleSpawnpointsTarget.class
-						.getName())) {
-					adapter = (IToggleSpawnpointsTarget) manager.loadAdapter(
-							fPart, IToggleSpawnpointsTarget.class.getName());
+				if (manager.hasAdapter(fPart, IToggleSpawnpointsTarget.class.getName())) {
+					adapter = (IToggleSpawnpointsTarget) manager.loadAdapter(fPart,
+							IToggleSpawnpointsTarget.class.getName());
 				}
 			}
 			if (adapter != null) {
 				int line = fRulerInfo.getLineOfLastMouseButtonActivity();
 				if (line > -1) {
 					try {
-						ITextSelection selection = getTextSelection(document,
-								line);
+						ITextSelection selection = getTextSelection(document, line);
 						if (adapter.canToggleSpawnpoints(fPart, selection)) {
 							setEnabled(true);
 							return;
@@ -186,11 +180,11 @@ public class ToggleSpawnpointAction extends Action implements IUpdate {
 	}
 
 	/**
-	 * Determines the text selection for the breakpoint action. If clicking on
-	 * the ruler inside the highlighted text, return the text selection for the
-	 * highlighted text. Otherwise, return a text selection representing the
-	 * start of the line.
-	 * 
+	 * Determines the text selection for the breakpoint action. If clicking on the
+	 * ruler inside the highlighted text, return the text selection for the
+	 * highlighted text. Otherwise, return a text selection representing the start
+	 * of the line.
+	 *
 	 * @param document
 	 *            The IDocument backing the Editor.
 	 * @param line
@@ -199,16 +193,13 @@ public class ToggleSpawnpointAction extends Action implements IUpdate {
 	 * @throws BadLocationException
 	 *             If underlying operations throw.
 	 */
-	private ITextSelection getTextSelection(IDocument document, int line)
-			throws BadLocationException {
+	private ITextSelection getTextSelection(IDocument document, int line) throws BadLocationException {
 		IRegion region = document.getLineInformation(line);
-		ITextSelection textSelection = new TextSelection(document, region
-				.getOffset(), 0);
+		ITextSelection textSelection = new TextSelection(document, region.getOffset(), 0);
 		ISelectionProvider provider = fPart.getSite().getSelectionProvider();
 		if (provider != null) {
 			ISelection selection = provider.getSelection();
-			if (selection instanceof ITextSelection
-					&& ((ITextSelection) selection).getStartLine() <= line
+			if (selection instanceof ITextSelection && ((ITextSelection) selection).getStartLine() <= line
 					&& ((ITextSelection) selection).getEndLine() >= line) {
 				textSelection = (ITextSelection) selection;
 			}

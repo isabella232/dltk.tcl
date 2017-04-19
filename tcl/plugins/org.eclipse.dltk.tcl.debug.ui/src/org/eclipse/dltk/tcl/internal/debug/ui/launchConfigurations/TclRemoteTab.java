@@ -1,11 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2007 IBM Corporation and others.
+ * Copyright (c) 2005, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- 
  *******************************************************************************/
 package org.eclipse.dltk.tcl.internal.debug.ui.launchConfigurations;
 
@@ -16,8 +15,6 @@ import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
 import org.eclipse.dltk.debug.core.DLTKDebugPlugin;
 import org.eclipse.dltk.launching.ScriptLaunchConfigurationConstants;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -63,14 +60,13 @@ public class TclRemoteTab extends AbstractLaunchConfigurationTab {
 	protected void createInstruction(Composite parent, Object data) {
 		Label instruction = new Label(parent, SWT.NONE);
 		instruction.setLayoutData(data);
-		instruction
-				.setText("To start Tcl debugging engine use this command temlate:");
+		instruction.setText("To start Tcl debugging engine use this command temlate:");
 	}
 
 	protected void createPathTemplate(Composite parent, Object data) {
 		Text text = new Text(parent, SWT.NONE);
-		text
-				.setText("${DEBUGGIN_ENGINE} -host-ide ${HOST} -port-ide ${PORT} -app-shell ${TCL_INTERPRETER} -ide-key ${SESSION_ID} -app-file {TCL_FILE}");
+		text.setText(
+				"${DEBUGGIN_ENGINE} -host-ide ${HOST} -port-ide ${PORT} -app-shell ${TCL_INTERPRETER} -ide-key ${SESSION_ID} -app-file {TCL_FILE}");
 	}
 
 	protected void createConnectionPropertiesGroup(Composite parent, Object data) {
@@ -87,44 +83,29 @@ public class TclRemoteTab extends AbstractLaunchConfigurationTab {
 		portLabel.setText("Local port:");
 
 		portText = new Text(group, SWT.BORDER);
-		portText.addModifyListener(new ModifyListener() {
-			public void modifyText(ModifyEvent e) {
-
-				updateLaunchConfigurationDialog();
-			}
-		});
-		portText.setLayoutData(new GridData(GridData.FILL, SWT.NONE, true,
-				false));
+		portText.addModifyListener(e -> updateLaunchConfigurationDialog());
+		portText.setLayoutData(new GridData(GridData.FILL, SWT.NONE, true, false));
 
 		// Id string
 		Label idLabel = new Label(group, SWT.NONE);
 		idLabel.setText("Connection id:");
 
 		sessionIdText = new Text(group, SWT.BORDER);
-		sessionIdText.addModifyListener(new ModifyListener() {
-			public void modifyText(ModifyEvent e) {
-				updateLaunchConfigurationDialog();
-			}
-		});
+		sessionIdText.addModifyListener(e -> updateLaunchConfigurationDialog());
 
-		sessionIdText.setLayoutData(new GridData(GridData.FILL, SWT.NONE, true,
-				false));
+		sessionIdText.setLayoutData(new GridData(GridData.FILL, SWT.NONE, true, false));
 
 		// Timeout
 		Label timeoutLabel = new Label(group, SWT.NONE);
 		timeoutLabel.setText("Waiting timeout:");
 
 		timeoutText = new Text(group, SWT.BORDER);
-		timeoutText.addModifyListener(new ModifyListener() {
-			public void modifyText(ModifyEvent e) {
-				updateLaunchConfigurationDialog();
-			}
-		});
+		timeoutText.addModifyListener(e -> updateLaunchConfigurationDialog());
 
-		timeoutText.setLayoutData(new GridData(GridData.FILL, SWT.NONE, true,
-				false));
+		timeoutText.setLayoutData(new GridData(GridData.FILL, SWT.NONE, true, false));
 	}
 
+	@Override
 	public void createControl(Composite parent) {
 		Composite composite = new Composite(parent, SWT.NONE);
 		setControl(composite);
@@ -133,85 +114,65 @@ public class TclRemoteTab extends AbstractLaunchConfigurationTab {
 		layout.numColumns = 1;
 		composite.setLayout(layout);
 
-		createConnectionPropertiesGroup(composite, new GridData(GridData.FILL,
-				SWT.NONE, true, false));
+		createConnectionPropertiesGroup(composite, new GridData(GridData.FILL, SWT.NONE, true, false));
 
-		createInstruction(composite, new GridData(GridData.FILL, SWT.NONE,
-				true, false));
+		createInstruction(composite, new GridData(GridData.FILL, SWT.NONE, true, false));
 
-		createPathTemplate(composite, new GridData(GridData.FILL, SWT.NONE,
-				true, false));
+		createPathTemplate(composite, new GridData(GridData.FILL, SWT.NONE, true, false));
 	}
 
+	@Override
 	public String getName() {
 		return "Tcl Remote Properties";
 	}
 
+	@Override
 	public void initializeFrom(ILaunchConfiguration configuration) {
 		try {
 			// Port
-			int port = configuration.getAttribute(
-					ScriptLaunchConfigurationConstants.ATTR_DLTK_DBGP_PORT, -1);
+			int port = configuration.getAttribute(ScriptLaunchConfigurationConstants.ATTR_DLTK_DBGP_PORT, -1);
 
 			setPort(port != -1 ? port : DEFAULT_PORT);
 
 			// Session id
-			String sessionId = configuration
-					.getAttribute(
-							ScriptLaunchConfigurationConstants.ATTR_DLTK_DBGP_SESSION_ID,
-							(String) null);
+			String sessionId = configuration.getAttribute(ScriptLaunchConfigurationConstants.ATTR_DLTK_DBGP_SESSION_ID,
+					(String) null);
 
 			setSessionId(sessionId != null ? sessionId : DEFAULT_SESSION_ID);
 
 			// Timeout
-			int timeout = configuration
-					.getAttribute(
-							ScriptLaunchConfigurationConstants.ATTR_DLTK_DBGP_WAITING_TIMEOUT,
-							DLTKDebugPlugin.getConnectionTimeout());
+			int timeout = configuration.getAttribute(ScriptLaunchConfigurationConstants.ATTR_DLTK_DBGP_WAITING_TIMEOUT,
+					DLTKDebugPlugin.getConnectionTimeout());
 			setTimeout(timeout);
 		} catch (CoreException e) {
 			// TODO: Log this
 		}
 	}
 
+	@Override
 	public void performApply(ILaunchConfigurationWorkingCopy configuration) {
 		try {
 			setErrorMessage(null);
 
-			configuration.setAttribute(
-					ScriptLaunchConfigurationConstants.ATTR_DLTK_DBGP_REMOTE,
-					true);
+			configuration.setAttribute(ScriptLaunchConfigurationConstants.ATTR_DLTK_DBGP_REMOTE, true);
 
-			configuration.setAttribute(
-					ScriptLaunchConfigurationConstants.ATTR_DLTK_DBGP_PORT,
-					getPort());
+			configuration.setAttribute(ScriptLaunchConfigurationConstants.ATTR_DLTK_DBGP_PORT, getPort());
 
-			configuration
-					.setAttribute(
-							ScriptLaunchConfigurationConstants.ATTR_DLTK_DBGP_SESSION_ID,
-							getSessionId());
+			configuration.setAttribute(ScriptLaunchConfigurationConstants.ATTR_DLTK_DBGP_SESSION_ID, getSessionId());
 
-			configuration
-					.setAttribute(
-							ScriptLaunchConfigurationConstants.ATTR_DLTK_DBGP_WAITING_TIMEOUT,
-							getTimeout());
+			configuration.setAttribute(ScriptLaunchConfigurationConstants.ATTR_DLTK_DBGP_WAITING_TIMEOUT, getTimeout());
 		} catch (NumberFormatException e) {
 			setErrorMessage("Should be a number instead of string");
 		}
 	}
 
+	@Override
 	public void setDefaults(ILaunchConfigurationWorkingCopy configuration) {
-		configuration.setAttribute(
-				ScriptLaunchConfigurationConstants.ATTR_DLTK_DBGP_PORT,
-				DEFAULT_PORT);
+		configuration.setAttribute(ScriptLaunchConfigurationConstants.ATTR_DLTK_DBGP_PORT, DEFAULT_PORT);
 
-		configuration.setAttribute(
-				ScriptLaunchConfigurationConstants.ATTR_DLTK_DBGP_SESSION_ID,
-				DEFAULT_SESSION_ID);
+		configuration.setAttribute(ScriptLaunchConfigurationConstants.ATTR_DLTK_DBGP_SESSION_ID, DEFAULT_SESSION_ID);
 
-		configuration
-				.setAttribute(
-						ScriptLaunchConfigurationConstants.ATTR_DLTK_DBGP_WAITING_TIMEOUT,
-						DLTKDebugPlugin.getConnectionTimeout());
+		configuration.setAttribute(ScriptLaunchConfigurationConstants.ATTR_DLTK_DBGP_WAITING_TIMEOUT,
+				DLTKDebugPlugin.getConnectionTimeout());
 	}
 }

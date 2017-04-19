@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2009 xored software, Inc.  
+ * Copyright (c) 2009, 2017 xored software, Inc. and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html  
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
  *     xored software, Inc. - initial API and Implementation (Alex Panchenko)
@@ -41,11 +41,11 @@ public class CombinedSet<E> extends AbstractSet<E> {
 	@Override
 	public Iterator<E> iterator() {
 		if (children.length == 0) {
-			return Collections.<E> emptySet().iterator();
+			return Collections.<E>emptySet().iterator();
 		} else if (children.length == 1) {
 			return children[0].iterator();
 		} else {
-			Set<E> temp = new HashSet<E>();
+			Set<E> temp = new HashSet<>();
 			for (Set<E> child : children) {
 				temp.addAll(child);
 			}
@@ -68,7 +68,7 @@ public class CombinedSet<E> extends AbstractSet<E> {
 			}
 			return size;
 		} else {
-			Set<E> temp = new HashSet<E>();
+			Set<E> temp = new HashSet<>();
 			for (Set<E> child : children) {
 				temp.addAll(child);
 			}

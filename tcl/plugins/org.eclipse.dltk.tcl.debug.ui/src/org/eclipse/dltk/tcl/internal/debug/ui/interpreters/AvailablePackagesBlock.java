@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 xored software, Inc.  and others.
+ * Copyright (c) 2016, 2017 xored software, Inc. and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,7 +12,6 @@ package org.eclipse.dltk.tcl.internal.debug.ui.interpreters;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import org.eclipse.dltk.tcl.core.TclPackagesManager;
@@ -81,8 +80,7 @@ public class AvailablePackagesBlock {
 			@Override
 			public Image getImage(Object element) {
 				if (element instanceof TclPackageInfo) {
-					return DLTKPluginImages
-							.get(DLTKPluginImages.IMG_OBJS_PACKAGE);
+					return DLTKPluginImages.get(DLTKPluginImages.IMG_OBJS_PACKAGE);
 				}
 				if (element instanceof Node) {
 					Object image = ((Node) element).image;
@@ -101,34 +99,32 @@ public class AvailablePackagesBlock {
 				registry.dispose();
 			}
 
-			final ImageDescriptorRegistry registry = new ImageDescriptorRegistry(
-					false);
+			final ImageDescriptorRegistry registry = new ImageDescriptorRegistry(false);
 
 		});
 		viewer.setContentProvider(new ITreeContentProvider() {
-			public void inputChanged(Viewer viewer, Object oldInput,
-					Object newInput) {
+			@Override
+			public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 			}
 
+			@Override
 			public void dispose() {
 			}
 
+			@Override
 			public Object[] getElements(Object inputElement) {
 				if (inputElement instanceof TclInterpreterInfo) {
 					TclInterpreterInfo info = (TclInterpreterInfo) inputElement;
 					EList<TclPackageInfo> packages = info.getPackages();
-					List<TclPackageInfo> sorted = new ArrayList<TclPackageInfo>();
+					List<TclPackageInfo> sorted = new ArrayList<>();
 					sorted.addAll(packages);
-					Collections.sort(sorted, new Comparator<TclPackageInfo>() {
-						public int compare(TclPackageInfo o1, TclPackageInfo o2) {
-							return o1.getName().compareTo(o2.getName());
-						}
-					});
+					Collections.sort(sorted, (o1, o2) -> o1.getName().compareTo(o2.getName()));
 					return sorted.toArray();
 				}
 				return new Object[0];
 			}
 
+			@Override
 			public boolean hasChildren(Object element) {
 				if (element instanceof TclPackageInfo) {
 					return true;
@@ -136,21 +132,20 @@ public class AvailablePackagesBlock {
 				return false;
 			}
 
+			@Override
 			public Object getParent(Object element) {
 				return null;
 			}
 
+			@Override
 			public Object[] getChildren(final Object parentElement) {
 				if (parentElement instanceof TclPackageInfo) {
 					final TclPackageInfo info = (TclPackageInfo) parentElement;
 					if (!info.isFetched()) {
-						TclPackagesManager.getPackageInfo(
-								AvailablePackagesBlock.this.dialog
-										.getInterpreterStandin(), info
-										.getName(), true,
-								AvailablePackagesBlock.this.interpreter, null);
+						TclPackagesManager.getPackageInfo(AvailablePackagesBlock.this.dialog.getInterpreterStandin(),
+								info.getName(), true, AvailablePackagesBlock.this.interpreter, null);
 					}
-					List<Node> result = new ArrayList<Node>();
+					List<Node> result = new ArrayList<>();
 					EList<String> sources = info.getSources();
 					for (String source : sources) {
 						Node nde = new Node();
@@ -162,8 +157,7 @@ public class AvailablePackagesBlock {
 					for (String source : libs) {
 						Node nde = new Library();
 						nde.value = source;
-						nde.image = DLTKPluginImages
-								.get(DLTKPluginImages.IMG_OBJS_LIBRARY);
+						nde.image = DLTKPluginImages.get(DLTKPluginImages.IMG_OBJS_LIBRARY);
 						result.add(nde);
 					}
 					return result.toArray();
@@ -186,11 +180,9 @@ public class AvailablePackagesBlock {
 	public void updatePackages(TclInterpreterInfo info) {
 		this.interpreter = info;
 		// Collections.sort(elements);
-		viewer.getControl().getDisplay().asyncExec(new Runnable() {
-			public void run() {
-				viewer.setInput(interpreter);
-				viewer.refresh();
-			}
+		viewer.getControl().getDisplay().asyncExec(() -> {
+			viewer.setInput(interpreter);
+			viewer.refresh();
 		});
 	}
 }

@@ -32,6 +32,7 @@ public class UnreachableCodeCheck implements ITclCheck {
 	public UnreachableCodeCheck() {
 	}
 
+	@Override
 	public void checkCommands(final List<TclCommand> tclCommands,
 			final ITclErrorReporter reporter, Map<String, String> options,
 			IScriptProject project, ISourceLineTracker sourceLineTracker) {

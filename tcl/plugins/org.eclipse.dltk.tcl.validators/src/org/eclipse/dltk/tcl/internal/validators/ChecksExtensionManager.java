@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2008 xored software, Inc.  
+ * Copyright (c) 2008, 2017 xored software, Inc. and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html  
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
  *     xored software, Inc. - initial API and Implementation (Andrei Sobolev)
@@ -33,7 +33,7 @@ public class ChecksExtensionManager {
 	private static final String EXTENSION_ID = TclValidatorsCore.PLUGIN_ID
 			+ ".tclCheck";
 	private static ChecksExtensionManager sInstance;
-	private List<TclCheckInfo> checks = new ArrayList<TclCheckInfo>();
+	private List<TclCheckInfo> checks = new ArrayList<>();
 	private boolean initialized = false;
 
 	public static class TclCheckInfo {
@@ -82,8 +82,8 @@ public class ChecksExtensionManager {
 		}
 		initialized = true;
 		IConfigurationElement[] configurationElements = Platform
-				.getExtensionRegistry().getConfigurationElementsFor(
-						EXTENSION_ID);
+				.getExtensionRegistry()
+				.getConfigurationElementsFor(EXTENSION_ID);
 		for (IConfigurationElement config : configurationElements) {
 			try {
 				String id = config.getAttribute(ID_ATTR);

@@ -36,6 +36,7 @@ public class UndefinedProcCheck implements ITclCheck {
 	public UndefinedProcCheck() {
 	}
 
+	@Override
 	public void checkCommands(List<TclCommand> commands,
 			final ITclErrorReporter reporter, Map<String, String> options,
 			final IScriptProject project,

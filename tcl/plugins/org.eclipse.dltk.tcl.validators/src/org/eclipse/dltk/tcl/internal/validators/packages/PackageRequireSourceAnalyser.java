@@ -81,7 +81,7 @@ public class PackageRequireSourceAnalyser implements IBuildParticipant,
 
 	private final PackageSourceCollector packageCollector = new PackageSourceCollector();
 
-	private final List<ModuleInfo> modules = new ArrayList<ModuleInfo>();
+	private final List<ModuleInfo> modules = new ArrayList<>();
 
 	private static class ModuleInfo {
 		final String name;
@@ -134,12 +134,13 @@ public class PackageRequireSourceAnalyser implements IBuildParticipant,
 
 	private int buildType;
 	private boolean autoAddPackages;
-	private Set<TclModuleInfo> providedByRequiredProjects = new HashSet<TclModuleInfo>();
+	private Set<TclModuleInfo> providedByRequiredProjects = new HashSet<>();
 
+	@Override
 	public boolean beginBuild(int buildType) {
 		this.buildType = buildType;
 		this.autoAddPackages = ScriptProjectUtil.isBuilderEnabled(project);
-		List<TclModuleInfo> moduleInfos = new ArrayList<TclModuleInfo>();
+		List<TclModuleInfo> moduleInfos = new ArrayList<>();
 		moduleInfos.addAll(
 				TclPackagesManager.getProjectModules(project.getElementName()));
 		if (buildType == IBuildParticipantExtension.FULL_BUILD) {
@@ -183,6 +184,7 @@ public class PackageRequireSourceAnalyser implements IBuildParticipant,
 
 	private List<TclPackageInfo> knownInfos;
 
+	@Override
 	public void buildExternalModule(IBuildContext context)
 			throws CoreException {
 		ISourceModule module = context.getSourceModule();
@@ -196,6 +198,7 @@ public class PackageRequireSourceAnalyser implements IBuildParticipant,
 		addInfoForModule(context, module, null);
 	}
 
+	@Override
 	public void build(IBuildContext context) throws CoreException {
 		ISourceModule module = context.getSourceModule();
 		TclModule tclModule = TclBuildContext.getStatements(context);
@@ -251,15 +254,16 @@ public class PackageRequireSourceAnalyser implements IBuildParticipant,
 		return modulePath;
 	}
 
+	@Override
 	public void endBuild(IProgressMonitor monitor) {
 		monitor.subTask(Messages.TclCheckBuilder_retrievePackages);
 		// initialize manager caches after they are collected
-		final Set<String> names = new HashSet<String>();
-		final Set<String> autoNames = new HashSet<String>();
+		final Set<String> names = new HashSet<>();
+		final Set<String> autoNames = new HashSet<>();
 		InterpreterContainerHelper.getInterpreterContainerDependencies(project,
 				names, autoNames);
 		// process all modules
-		final Set<String> newDependencies = new HashSet<String>();
+		final Set<String> newDependencies = new HashSet<>();
 		int remainingWork = modules.size();
 		IEnvironment environment = EnvironmentManager
 				.getEnvironment(this.project);
@@ -271,7 +275,7 @@ public class PackageRequireSourceAnalyser implements IBuildParticipant,
 				// Check for user override for selected source value
 				EList<UserCorrection> corrections = moduleInfo.moduleInfo
 						.getPackageCorrections();
-				List<TclSourceEntry> toCheck = new ArrayList<TclSourceEntry>();
+				List<TclSourceEntry> toCheck = new ArrayList<>();
 
 				for (UserCorrection userCorrection : corrections) {
 					if (userCorrection.getOriginalValue()
@@ -321,7 +325,7 @@ public class PackageRequireSourceAnalyser implements IBuildParticipant,
 					// Check for user override for selected source value
 					EList<UserCorrection> corrections = moduleInfo
 							.getPackageCorrections();
-					List<TclSourceEntry> toCheck = new ArrayList<TclSourceEntry>();
+					List<TclSourceEntry> toCheck = new ArrayList<>();
 
 					for (UserCorrection userCorrection : corrections) {
 						if (userCorrection.getOriginalValue()
@@ -372,7 +376,7 @@ public class PackageRequireSourceAnalyser implements IBuildParticipant,
 		if (buildType != IBuildParticipantExtension.RECONCILE_BUILD) {
 			List<TclModuleInfo> mods = packageCollector.getModules()
 					.get(project);
-			List<TclModuleInfo> result = new ArrayList<TclModuleInfo>();
+			List<TclModuleInfo> result = new ArrayList<>();
 			// Clean modules without required items
 			for (TclModuleInfo tclModuleInfo : mods) {
 				// Clean old corrections.
@@ -414,7 +418,7 @@ public class PackageRequireSourceAnalyser implements IBuildParticipant,
 
 	private void cleanCorrections(EList<UserCorrection> corrections,
 			EList<TclSourceEntry> entries) {
-		final Set<String> values = new HashSet<String>();
+		final Set<String> values = new HashSet<>();
 		for (TclSourceEntry tclSourceEntry : entries) {
 			values.add(tclSourceEntry.getValue());
 		}
@@ -438,7 +442,7 @@ public class PackageRequireSourceAnalyser implements IBuildParticipant,
 		// Convert path to real path.
 		for (TclSourceEntry source : moduleInfo.moduleInfo.getSourced()) {
 			final String value = source.getValue();
-			final Set<IPath> sourcedPaths = new HashSet<IPath>();
+			final Set<IPath> sourcedPaths = new HashSet<>();
 			for (Iterator<UserCorrection> i = corrections.iterator(); i
 					.hasNext();) {
 				final UserCorrection userCorrection = i.next();
@@ -704,12 +708,14 @@ public class PackageRequireSourceAnalyser implements IBuildParticipant,
 		return autoAddPackages;
 	}
 
+	@Override
 	public void prepare(IBuildChange buildChange, IBuildState buildState) {
 	}
 
 	/**
 	 * @since 2.0
 	 */
+	@Override
 	public void clean() {
 		TclPackagesManager.setProjectModules(project.getElementName(),
 				Collections.<TclModuleInfo> emptyList());

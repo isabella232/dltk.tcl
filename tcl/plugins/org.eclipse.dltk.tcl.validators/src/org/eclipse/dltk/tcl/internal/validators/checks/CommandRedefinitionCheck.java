@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2008 xored software, Inc.  
+ * Copyright (c) 2008, 2017 xored software, Inc. and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html  
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
  *     xored software, Inc. - initial API and Implementation (Andrei Sobolev)
@@ -37,13 +37,15 @@ public class CommandRedefinitionCheck implements ITclCheck {
 	public CommandRedefinitionCheck() {
 	}
 
+	@Override
 	public void checkCommands(final List<TclCommand> tclCommands,
 			final ITclErrorReporter reporter, Map<String, String> options,
-			IScriptProject project, final ISourceLineTracker sourceLineTracker) {
+			IScriptProject project,
+			final ISourceLineTracker sourceLineTracker) {
 		final IScopeProcessor processor = DefinitionManager.getInstance()
 				.createProcessor();
 		TclParserUtils.traverse(tclCommands, new TclVisitor() {
-			Map<String, Integer> userCommands = new HashMap<String, Integer>();
+			Map<String, Integer> userCommands = new HashMap<>();
 
 			@Override
 			public boolean visit(TclCommand tclCommand) {
@@ -69,16 +71,15 @@ public class CommandRedefinitionCheck implements ITclCheck {
 							reporter.report(
 									ICheckKinds.BUILTIN_COMMAND_REDEFINITION,
 									"Built-in command redefinition", null,
-									nameArgument.getStart(), nameArgument
-											.getEnd(),
+									nameArgument.getStart(),
+									nameArgument.getEnd(),
 									ITclErrorReporter.WARNING);
 						Set<String> names = userCommands.keySet();
 						for (String name : names) {
 							if (name.equals(current)) {
-								final String msg = NLS
-										.bind(
-												"Procedure {0} is already defined on line {1}",
-												name, userCommands.get(name));
+								final String msg = NLS.bind(
+										"Procedure {0} is already defined on line {1}",
+										name, userCommands.get(name));
 								reporter.report(
 										ICheckKinds.USER_COMMAND_REDEFINITION,
 										msg, null, nameArgument.getStart(),
@@ -87,8 +88,8 @@ public class CommandRedefinitionCheck implements ITclCheck {
 							}
 						}
 						int start = tclCommand.getStart();
-						userCommands.put(current, sourceLineTracker
-								.getLineNumberOfOffset(start));
+						userCommands.put(current,
+								sourceLineTracker.getLineNumberOfOffset(start));
 					}
 				}
 				return true;

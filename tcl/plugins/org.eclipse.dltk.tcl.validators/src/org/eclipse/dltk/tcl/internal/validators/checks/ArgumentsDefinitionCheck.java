@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2008 xored software, Inc.  
+ * Copyright (c) 2008, 2017 xored software, Inc. and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html  
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
  *     xored software, Inc. - initial API and Implementation (Andrei Sobolev)
@@ -34,6 +34,7 @@ public class ArgumentsDefinitionCheck implements ITclCheck {
 		// TODO Auto-generated constructor stub
 	}
 
+	@Override
 	public void checkCommands(List<TclCommand> commands,
 			final ITclErrorReporter reporter, Map<String, String> options,
 			IScriptProject project, ISourceLineTracker sourceLineTracker) {
@@ -70,18 +71,18 @@ public class ArgumentsDefinitionCheck implements ITclCheck {
 					ArgumentDefinition definition = list.get(i);
 					if (definition.getName() == null) {
 						reporter.report(ICheckKinds.CHECK_BAD_ARG_DEFINITION,
-								"Bad argument definition", null, definition
-										.getArgument().getStart(), definition
-										.getArgument().getEnd(),
+								"Bad argument definition", null,
+								definition.getArgument().getStart(),
+								definition.getArgument().getEnd(),
 								ITclErrorReporter.WARNING);
 					} else {
 						for (int j = 0; j < i; j++) {
 							ArgumentDefinition other = list.get(j);
 							if (definition.getName().equals(other.getName()))
-								reporter.report(
-										ICheckKinds.CHECK_SAME_ARG_NAME,
+								reporter.report(ICheckKinds.CHECK_SAME_ARG_NAME,
 										"Argument with the same name "
-												+ "has been declared", null,
+												+ "has been declared",
+										null,
 										definition.getArgument().getStart(),
 										definition.getArgument().getEnd(),
 										ITclErrorReporter.WARNING);
@@ -91,14 +92,11 @@ public class ArgumentsDefinitionCheck implements ITclCheck {
 						wasArgs = true;
 						if (definition.isDefaulted()
 								&& !definition.isDefaultEmtpy()) {
-							reporter
-									.report(
-											ICheckKinds.CHECK_ARGS_DEFAULT,
-											"\"args\" cannot be defaulted. Default value is ignored.",
-											null, definition.getArgument()
-													.getStart(), definition
-													.getArgument().getEnd(),
-											ITclErrorReporter.WARNING);
+							reporter.report(ICheckKinds.CHECK_ARGS_DEFAULT,
+									"\"args\" cannot be defaulted. Default value is ignored.",
+									null, definition.getArgument().getStart(),
+									definition.getArgument().getEnd(),
+									ITclErrorReporter.WARNING);
 						}
 					} else {
 						if (wasArgs) {
@@ -111,8 +109,7 @@ public class ArgumentsDefinitionCheck implements ITclCheck {
 						if (definition.isDefaulted()) {
 							wasDef = true;
 						} else if (wasDef) {
-							reporter.report(
-									ICheckKinds.CHECK_NON_DEF_AFTER_DEF,
+							reporter.report(ICheckKinds.CHECK_NON_DEF_AFTER_DEF,
 									"Non-default arg specified after default",
 									null, definition.getArgument().getStart(),
 									definition.getArgument().getEnd(),

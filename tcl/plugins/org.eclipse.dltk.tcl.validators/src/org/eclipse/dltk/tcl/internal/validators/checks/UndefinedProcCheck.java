@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2008 xored software, Inc.  
+ * Copyright (c) 2008, 2017 xored software, Inc. and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html  
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
  *     xored software, Inc. - initial API and Implementation (Andrei Sobolev)
@@ -15,6 +15,7 @@ package org.eclipse.dltk.tcl.internal.validators.checks;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.builder.ISourceLineTracker;
 import org.eclipse.dltk.core.mixin.IMixinElement;
@@ -37,7 +38,8 @@ public class UndefinedProcCheck implements ITclCheck {
 
 	public void checkCommands(List<TclCommand> commands,
 			final ITclErrorReporter reporter, Map<String, String> options,
-			final IScriptProject project, ISourceLineTracker sourceLineTracker) {
+			final IScriptProject project,
+			ISourceLineTracker sourceLineTracker) {
 		TclParserUtils.traverse(commands, new TclVisitor() {
 			@Override
 			public boolean visit(TclCommand command) {
@@ -54,9 +56,10 @@ public class UndefinedProcCheck implements ITclCheck {
 					return true;
 				}
 				IMixinElement[] elements = TclMixinModel.getInstance()
-						.getMixin(project).find(
-								qName.replaceAll("::",
-										IMixinRequestor.MIXIN_NAME_SEPARATOR));
+						.getMixin(project)
+						.find(qName.replaceAll("::",
+								IMixinRequestor.MIXIN_NAME_SEPARATOR),
+								new NullProgressMonitor());
 				String realName = ((StringArgument) name).getValue();
 				if (realName.indexOf("::") != -1) {
 					realName = realName
@@ -74,8 +77,8 @@ public class UndefinedProcCheck implements ITclCheck {
 				}
 				if (!found) {
 					reporter.report(ICheckKinds.CHECK_UNDEFINED_PROC,
-							"Call to undefined proc:" + realName, null, name
-									.getStart(), name.getEnd(),
+							"Call to undefined proc:" + realName, null,
+							name.getStart(), name.getEnd(),
 							ITclErrorReporter.WARNING);
 				}
 				return true;

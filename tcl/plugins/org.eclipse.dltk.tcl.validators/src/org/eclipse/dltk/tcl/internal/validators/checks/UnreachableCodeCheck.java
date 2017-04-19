@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2008 xored software, Inc.  
+ * Copyright (c) 2008, 2017 xored software, Inc. and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html  
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
  *     xored software, Inc. - initial API and Implementation (Andrei Sobolev)
@@ -64,10 +64,10 @@ public class UnreachableCodeCheck implements ITclCheck {
 				}
 			}
 
+			@Override
 			public void endVisit(TclCommand tclCommand) {
 				Assert.isNotNull(tclCommand);
-				if (tclCommand != null
-						&& tclCommand.getDefinition() != null
+				if (tclCommand != null && tclCommand.getDefinition() != null
 						&& "return"
 								.equals(tclCommand.getDefinition().getName())) {
 					error = false;
@@ -94,8 +94,8 @@ public class UnreachableCodeCheck implements ITclCheck {
 					traverse(substitution.getCommands(), visitor);
 					int size = substitution.getCommands().size();
 					if (size != 0)
-						visitor.endVisit(substitution.getCommands().get(
-								size - 1));
+						visitor.endVisit(
+								substitution.getCommands().get(size - 1));
 				}
 			} else if (nde instanceof TclCommand) {
 				TclCommand command = (TclCommand) nde;

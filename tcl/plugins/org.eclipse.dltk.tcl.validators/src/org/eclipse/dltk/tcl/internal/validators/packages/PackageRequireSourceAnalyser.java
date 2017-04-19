@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 xored software, Inc.
+ * Copyright (c) 2008, 2017 xored software, Inc. and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -72,8 +72,7 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.osgi.util.NLS;
 
 public class PackageRequireSourceAnalyser implements IBuildParticipant,
-		IBuildParticipantExtension, IBuildParticipantExtension2,
-		IBuildParticipantExtension3 {
+		IBuildParticipantExtension2, IBuildParticipantExtension3 {
 
 	private final IScriptProject project;
 	private final IInterpreterInstall install;
@@ -116,16 +115,16 @@ public class PackageRequireSourceAnalyser implements IBuildParticipant,
 		this.project = project;
 		if (!project.exists()) {
 			// thrown exception is caught in the PackageRequireCheckerFactory
-			throw new IllegalStateException(NLS.bind(
-					Messages.TclCheckBuilder_interpreterNotFound,
-					project.getElementName()));
+			throw new IllegalStateException(
+					NLS.bind(Messages.TclCheckBuilder_interpreterNotFound,
+							project.getElementName()));
 		}
 		install = ScriptRuntime.getInterpreterInstall(project);
 		if (install == null) {
 			// thrown exception is caught in the PackageRequireCheckerFactory
-			throw new IllegalStateException(NLS.bind(
-					Messages.TclCheckBuilder_interpreterNotFound,
-					project.getElementName()));
+			throw new IllegalStateException(
+					NLS.bind(Messages.TclCheckBuilder_interpreterNotFound,
+							project.getElementName()));
 		}
 		knownInfos = TclPackagesManager.getPackageInfos(install);
 		variableResolver = new TclVariableResolver(
@@ -141,8 +140,8 @@ public class PackageRequireSourceAnalyser implements IBuildParticipant,
 		this.buildType = buildType;
 		this.autoAddPackages = ScriptProjectUtil.isBuilderEnabled(project);
 		List<TclModuleInfo> moduleInfos = new ArrayList<TclModuleInfo>();
-		moduleInfos.addAll(TclPackagesManager.getProjectModules(project
-				.getElementName()));
+		moduleInfos.addAll(
+				TclPackagesManager.getProjectModules(project.getElementName()));
 		if (buildType == IBuildParticipantExtension.FULL_BUILD) {
 			// We need to clear all information of builds instead of correction
 			// information. Empty modules will be removed later.
@@ -171,8 +170,8 @@ public class PackageRequireSourceAnalyser implements IBuildParticipant,
 			final IBuildpathEntry entry = resolvedBuildpath[i];
 			if (entry.getEntryKind() == IBuildpathEntry.BPE_PROJECT) {
 				final IPath path = entry.getPath();
-				final IProject project = workspaceRoot.getProject(path
-						.lastSegment());
+				final IProject project = workspaceRoot
+						.getProject(path.lastSegment());
 				if (project.exists()) {
 					List<TclModuleInfo> list = TclPackagesManager
 							.getProjectModules(project.getName());
@@ -184,7 +183,8 @@ public class PackageRequireSourceAnalyser implements IBuildParticipant,
 
 	private List<TclPackageInfo> knownInfos;
 
-	public void buildExternalModule(IBuildContext context) throws CoreException {
+	public void buildExternalModule(IBuildContext context)
+			throws CoreException {
 		ISourceModule module = context.getSourceModule();
 		if (module instanceof TclPackageSourceModule) {
 			/* Do not process modules which are parts of packages */
@@ -234,12 +234,13 @@ public class PackageRequireSourceAnalyser implements IBuildParticipant,
 			mInfo.getRequired().addAll(info.getRequired());
 			mInfo.getSourced().addAll(info.getSourced());
 		}
-		modules.add(new ModuleInfo(module.getElementName(), context
-				.getLineTracker(), context.getProblemReporter(), mInfo,
+		modules.add(new ModuleInfo(module.getElementName(),
+				context.getLineTracker(), context.getProblemReporter(), mInfo,
 				modulePath, module));
 	}
 
-	private IPath updateModulePath(IPath modulePath, IEnvironment env, URI uri) {
+	private IPath updateModulePath(IPath modulePath, IEnvironment env,
+			URI uri) {
 		URI[] uris = EnvironmentManager.resolve(uri);
 		if (uris.length > 0) {
 			IFileHandle file = env.getFile(uris[0]);
@@ -275,7 +276,8 @@ public class PackageRequireSourceAnalyser implements IBuildParticipant,
 				for (UserCorrection userCorrection : corrections) {
 					if (userCorrection.getOriginalValue()
 							.equals(ref.getValue())) {
-						for (String correction : userCorrection.getUserValue()) {
+						for (String correction : userCorrection
+								.getUserValue()) {
 							TclSourceEntry to = TclPackagesFactory.eINSTANCE
 									.createTclSourceEntry();
 							to.setEnd(ref.getEnd());
@@ -287,8 +289,8 @@ public class PackageRequireSourceAnalyser implements IBuildParticipant,
 					}
 				}
 				if (toCheck.isEmpty()) {
-					final String resolved = variableResolver.resolve(ref
-							.getValue());
+					final String resolved = variableResolver
+							.resolve(ref.getValue());
 					if (resolved == null || resolved.equals(ref.getValue())) {
 						toCheck.add(ref);
 					} else if (resolved != null) {
@@ -322,8 +324,8 @@ public class PackageRequireSourceAnalyser implements IBuildParticipant,
 					List<TclSourceEntry> toCheck = new ArrayList<TclSourceEntry>();
 
 					for (UserCorrection userCorrection : corrections) {
-						if (userCorrection.getOriginalValue().equals(
-								ref.getValue())) {
+						if (userCorrection.getOriginalValue()
+								.equals(ref.getValue())) {
 							for (String correction : userCorrection
 									.getUserValue()) {
 								TclSourceEntry to = TclPackagesFactory.eINSTANCE
@@ -337,9 +339,10 @@ public class PackageRequireSourceAnalyser implements IBuildParticipant,
 						}
 					}
 					if (toCheck.isEmpty()) {
-						final String resolved = variableResolver.resolve(ref
-								.getValue());
-						if (resolved == null || resolved.equals(ref.getValue())) {
+						final String resolved = variableResolver
+								.resolve(ref.getValue());
+						if (resolved == null
+								|| resolved.equals(ref.getValue())) {
 							toCheck.add(ref);
 						} else {
 							// resolved != null;
@@ -367,8 +370,8 @@ public class PackageRequireSourceAnalyser implements IBuildParticipant,
 		// }
 		// }
 		if (buildType != IBuildParticipantExtension.RECONCILE_BUILD) {
-			List<TclModuleInfo> mods = packageCollector.getModules().get(
-					project);
+			List<TclModuleInfo> mods = packageCollector.getModules()
+					.get(project);
 			List<TclModuleInfo> result = new ArrayList<TclModuleInfo>();
 			// Clean modules without required items
 			for (TclModuleInfo tclModuleInfo : mods) {
@@ -382,8 +385,8 @@ public class PackageRequireSourceAnalyser implements IBuildParticipant,
 				if (!(tclModuleInfo.getProvided().isEmpty()
 						&& tclModuleInfo.getRequired().isEmpty()
 						&& tclModuleInfo.getSourced().isEmpty()
-						&& sourceCorrections.isEmpty() && pkgCorrections
-						.isEmpty())) {
+						&& sourceCorrections.isEmpty()
+						&& pkgCorrections.isEmpty())) {
 					result.add(tclModuleInfo);
 				}
 			}
@@ -398,9 +401,7 @@ public class PackageRequireSourceAnalyser implements IBuildParticipant,
 
 			// Do delta refresh
 			try {
-				ModelManager
-						.getModelManager()
-						.getDeltaProcessor()
+				ModelManager.getModelManager().getDeltaProcessor()
 						.checkExternalChanges(new IModelElement[] { project },
 								new NullProgressMonitor());
 			} catch (ModelException e) {
@@ -417,7 +418,8 @@ public class PackageRequireSourceAnalyser implements IBuildParticipant,
 		for (TclSourceEntry tclSourceEntry : entries) {
 			values.add(tclSourceEntry.getValue());
 		}
-		for (Iterator<UserCorrection> i = corrections.iterator(); i.hasNext();) {
+		for (Iterator<UserCorrection> i = corrections.iterator(); i
+				.hasNext();) {
 			final UserCorrection userCorrection = i.next();
 			if (!values.contains(userCorrection.getOriginalValue())) {
 				i.remove();
@@ -443,7 +445,8 @@ public class PackageRequireSourceAnalyser implements IBuildParticipant,
 				if (!userCorrection.isVariable()
 						&& userCorrection.getOriginalValue().equals(value)) {
 					for (String userValue : userCorrection.getUserValue()) {
-						final IPath sourcedPath = toPath(environment, userValue);
+						final IPath sourcedPath = toPath(environment,
+								userValue);
 						if (!sourcedPaths.add(sourcedPath)) {
 							i.remove();
 						}
@@ -466,23 +469,17 @@ public class PackageRequireSourceAnalyser implements IBuildParticipant,
 			for (IPath sourcedPath : sourcedPaths) {
 				final IFileHandle file = environment.getFile(sourcedPath);
 				if (!file.exists()) {
-					reportSourceProblemCorrection(
-							source,
-							moduleInfo.reporter,
+					reportSourceProblemCorrection(source, moduleInfo.reporter,
 							NLS.bind(
 									Messages.PackageRequireSourceAnalyser_CouldNotLocateSourcedFile,
-									file.toOSString()), value,
-							moduleInfo.lineTracker);
+									file.toOSString()),
+							value, moduleInfo.lineTracker);
 				} else if (file.isDirectory()) {
-					reportSourceProblemCorrection(
-							source,
-							moduleInfo.reporter,
+					reportSourceProblemCorrection(source, moduleInfo.reporter,
 							Messages.PackageRequireSourceAnalyser_FolderSourcingNotSupported,
 							value, moduleInfo.lineTracker);
 				} else if (!isAutoAddPackages()) {
-					reportSourceProblem(
-							source,
-							moduleInfo.reporter,
+					reportSourceProblem(source, moduleInfo.reporter,
 							Messages.PackageRequireSourceAnalyser_SourceNotAddedToBuildpath,
 							value, moduleInfo.lineTracker);
 				} else if (autoCorrected
@@ -492,12 +489,11 @@ public class PackageRequireSourceAnalyser implements IBuildParticipant,
 			}
 			if (sourcedPaths.isEmpty()) {
 				if (!TclPackagesManager.isValidName(value)) {
-					reportSourceProblemCorrection(
-							source,
-							moduleInfo.reporter,
+					reportSourceProblemCorrection(source, moduleInfo.reporter,
 							NLS.bind(
 									Messages.PackageRequireSourceAnalyser_CouldNotLocateSourcedFileCorrectionRequired,
-									value), value, moduleInfo.lineTracker);
+									value),
+							value, moduleInfo.lineTracker);
 				}
 			}
 		}
@@ -505,7 +501,8 @@ public class PackageRequireSourceAnalyser implements IBuildParticipant,
 
 	private static void setAutoCorrection(EList<UserCorrection> corrections,
 			String src, String value) {
-		for (Iterator<UserCorrection> i = corrections.iterator(); i.hasNext();) {
+		for (Iterator<UserCorrection> i = corrections.iterator(); i
+				.hasNext();) {
 			final UserCorrection userCorrection = i.next();
 			if (userCorrection.isVariable()) {
 				if (userCorrection.getOriginalValue().equals(src)) {
@@ -586,9 +583,9 @@ public class PackageRequireSourceAnalyser implements IBuildParticipant,
 		}
 		reporter.reportProblem(new DefaultProblem(message,
 				TclProblems.UNKNOWN_REQUIRED_PACKAGE_CORRECTION,
-				new String[] { pkgName }, ProblemSeverities.Warning, pkg
-						.getStart(), pkg.getEnd(), lineTracker
-						.getLineNumberOfOffset(pkg.getStart())));
+				new String[] { pkgName }, ProblemSeverities.Warning,
+				pkg.getStart(), pkg.getEnd(),
+				lineTracker.getLineNumberOfOffset(pkg.getStart())));
 	}
 
 	private void reportSourceProblem(TclSourceEntry pkg,
@@ -607,10 +604,9 @@ public class PackageRequireSourceAnalyser implements IBuildParticipant,
 			IProblemReporter reporter, String message, String pkgName,
 			ISourceLineTracker lineTracker) {
 		reporter.reportProblem(new DefaultProblem(message,
-				TclProblems.UNKNOWN_SOURCE_CORRECTION,
-				new String[] { pkgName }, ProblemSeverities.Warning, pkg
-						.getStart(), pkg.getEnd(), lineTracker
-						.getLineNumberOfOffset(pkg.getStart())));
+				TclProblems.UNKNOWN_SOURCE_CORRECTION, new String[] { pkgName },
+				ProblemSeverities.Warning, pkg.getStart(), pkg.getEnd(),
+				lineTracker.getLineNumberOfOffset(pkg.getStart())));
 	}
 
 	private void checkPackage(TclSourceEntry pkg, IProblemReporter reporter,
@@ -618,8 +614,8 @@ public class PackageRequireSourceAnalyser implements IBuildParticipant,
 			Set<String> names, Set<String> autoNames) {
 		final String packageName = pkg.getValue();
 
-		List<TclModuleInfo> collected = packageCollector.getModules().get(
-				project);
+		List<TclModuleInfo> collected = packageCollector.getModules()
+				.get(project);
 		if (collected != null) {
 			if (isProvided(packageName, collected)) {
 				return;
@@ -633,16 +629,14 @@ public class PackageRequireSourceAnalyser implements IBuildParticipant,
 
 		if (!isKnownPackage(packageName)) {
 			if (!TclPackagesManager.isValidName(packageName)) {
-				reportPackageProblemCorrection(
-						pkg,
-						reporter,
-						NLS.bind(
-								Messages.PackageRequireSourceAnalyser_CouldNotDetectPackageCorrectionRequired,
-								packageName), packageName, lineTracker);
+				reportPackageProblemCorrection(pkg, reporter, NLS.bind(
+						Messages.PackageRequireSourceAnalyser_CouldNotDetectPackageCorrectionRequired,
+						packageName), packageName, lineTracker);
 				return;
 			} else {
-				reportPackageProblem(pkg, reporter, NLS.bind(
-						Messages.TclCheckBuilder_unknownPackage, packageName),
+				reportPackageProblem(pkg, reporter,
+						NLS.bind(Messages.TclCheckBuilder_unknownPackage,
+								packageName),
 						packageName, lineTracker);
 			}
 			return;
@@ -654,9 +648,11 @@ public class PackageRequireSourceAnalyser implements IBuildParticipant,
 			// enabled.
 			if (!names.contains(packageName)
 					&& !autoNames.contains(packageName)) {
-				reportPackageProblem(pkg, reporter, NLS.bind(
-						Messages.TclCheckBuilder_unresolvedDependencies,
-						packageName), packageName, lineTracker);
+				reportPackageProblem(pkg, reporter,
+						NLS.bind(
+								Messages.TclCheckBuilder_unresolvedDependencies,
+								packageName),
+						packageName, lineTracker);
 			}
 			return;
 		}
@@ -683,8 +679,8 @@ public class PackageRequireSourceAnalyser implements IBuildParticipant,
 			EList<TclSourceEntry> provided = tclModuleInfo.getProvided();
 			for (TclSourceEntry tclSourceEntry : provided) {
 				if (tclSourceEntry.getValue().equals(packageName)) {
-					IModelElement element = DLTKCore.create(tclModuleInfo
-							.getHandle());
+					IModelElement element = DLTKCore
+							.create(tclModuleInfo.getHandle());
 					// Check for file existence
 					if (element != null && element.exists()) {
 						return true; // Found provided package

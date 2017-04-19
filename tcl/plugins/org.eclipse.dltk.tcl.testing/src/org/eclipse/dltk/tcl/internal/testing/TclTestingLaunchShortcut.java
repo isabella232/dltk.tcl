@@ -41,20 +41,17 @@ import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 
 public class TclTestingLaunchShortcut implements ILaunchShortcut {
 
-	private static final String EMPTY_STRING= ""; //$NON-NLS-1$
-	
+	private static final String EMPTY_STRING = ""; //$NON-NLS-1$
+
 	/**
 	 * Default constructor.
 	 */
 	public TclTestingLaunchShortcut() {
 	}
-	
-	
-	/* (non-Javadoc)
-	 * @see org.eclipse.debug.ui.ILaunchShortcut#launch(org.eclipse.ui.IEditorPart, java.lang.String)
-	 */
+
+	@Override
 	public void launch(IEditorPart editor, String mode) {
-		IModelElement element= DLTKUIPlugin.getEditorInputModelElement(editor.getEditorInput());
+		IModelElement element = DLTKUIPlugin.getEditorInputModelElement(editor.getEditorInput());
 		if (element != null) {
 			launch(new Object[] { element }, mode);
 		} else {
@@ -62,9 +59,7 @@ public class TclTestingLaunchShortcut implements ILaunchShortcut {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.debug.ui.ILaunchShortcut#launch(org.eclipse.jface.viewers.ISelection, java.lang.String)
-	 */
+	@Override
 	public void launch(ISelection selection, String mode) {
 		if (selection instanceof IStructuredSelection) {
 			launch(((IStructuredSelection) selection).toArray(), mode);
@@ -75,38 +70,38 @@ public class TclTestingLaunchShortcut implements ILaunchShortcut {
 
 	private void launch(Object[] elements, String mode) {
 		try {
-			IModelElement elementToLaunch= null;
-			
+			IModelElement elementToLaunch = null;
+
 			if (elements.length == 1) {
-				Object selected= elements[0];
+				Object selected = elements[0];
 				if (selected instanceof IFolder) {
 					performLaunch((IFolder) selected, mode);
 					return;
 				}
 				if (!(selected instanceof IModelElement) && selected instanceof IAdaptable) {
-					selected= ((IAdaptable) selected).getAdapter(IModelElement.class);
+					selected = ((IAdaptable) selected).getAdapter(IModelElement.class);
 				}
 				if (selected instanceof IModelElement) {
-					IModelElement element= (IModelElement) selected;
+					IModelElement element = (IModelElement) selected;
 					switch (element.getElementType()) {
-						case IModelElement.SCRIPT_PROJECT: {
-							IProject project = ((IScriptProject) element).getProject();
-							IFolder specFolder = project.getFolder("test");
-							if (specFolder != null && specFolder.exists()) {
-								performLaunch(specFolder, mode);
-								return;
-							}
-						}
-						break;
-						case IModelElement.PROJECT_FRAGMENT:
-						case IModelElement.SCRIPT_FOLDER: {
-							performLaunch((IFolder) element.getResource(), mode);
+					case IModelElement.SCRIPT_PROJECT: {
+						IProject project = ((IScriptProject) element).getProject();
+						IFolder specFolder = project.getFolder("test");
+						if (specFolder != null && specFolder.exists()) {
+							performLaunch(specFolder, mode);
 							return;
 						}
-						case IModelElement.SOURCE_MODULE:
-						case IModelElement.METHOD:
-							elementToLaunch= element;
-							break;
+					}
+						break;
+					case IModelElement.PROJECT_FRAGMENT:
+					case IModelElement.SCRIPT_FOLDER: {
+						performLaunch((IFolder) element.getResource(), mode);
+						return;
+					}
+					case IModelElement.SOURCE_MODULE:
+					case IModelElement.METHOD:
+						elementToLaunch = element;
+						break;
 					}
 				}
 			}
@@ -118,7 +113,8 @@ public class TclTestingLaunchShortcut implements ILaunchShortcut {
 		} catch (InterruptedException e) {
 			// OK, silently move on
 		} catch (CoreException e) {
-			ExceptionHandler.handle(e, getShell(), "XUnit Launch", "Launching of XUnit tests unexpectedly failed. Check log for details.");
+			ExceptionHandler.handle(e, getShell(), "XUnit Launch",
+					"Launching of XUnit tests unexpectedly failed. Check log for details.");
 		}
 	}
 
@@ -127,42 +123,48 @@ public class TclTestingLaunchShortcut implements ILaunchShortcut {
 	}
 
 	private void performLaunch(IModelElement element, String mode) throws InterruptedException, CoreException {
-		ILaunchConfigurationWorkingCopy temporary= createLaunchConfiguration(element);
-		if( temporary == null ) {
+		ILaunchConfigurationWorkingCopy temporary = createLaunchConfiguration(element);
+		if (temporary == null) {
 			return;
 		}
-		ILaunchConfiguration config= findExistingLaunchConfiguration(temporary, mode);
+		ILaunchConfiguration config = findExistingLaunchConfiguration(temporary, mode);
 		if (config == null) {
 			// no existing found: create a new one
-			config= temporary.doSave();
+			config = temporary.doSave();
 		}
 		DebugUITools.launch(config, mode);
 	}
 
 	private void performLaunch(IFolder folder, String mode) throws InterruptedException, CoreException {
-		String name= folder.getName();
-		String testName= name.substring(name.lastIndexOf(IPath.SEPARATOR) + 1);
-		
-		ILaunchConfigurationType configType= getLaunchManager().getLaunchConfigurationType(getLaunchConfigurationTypeId());
-		ILaunchConfigurationWorkingCopy wc= configType.newInstance(null, getLaunchManager().generateUniqueLaunchConfigurationNameFrom(testName));
-			
+		String name = folder.getName();
+		String testName = name.substring(name.lastIndexOf(IPath.SEPARATOR) + 1);
+
+		ILaunchConfigurationType configType = getLaunchManager()
+				.getLaunchConfigurationType(getLaunchConfigurationTypeId());
+		ILaunchConfigurationWorkingCopy wc = configType.newInstance(null,
+				getLaunchManager().generateUniqueLaunchConfigurationNameFrom(testName));
+
 		wc.setAttribute(ScriptLaunchConfigurationConstants.ATTR_PROJECT_NAME, folder.getProject().getName());
 		wc.setMappedResources(new IResource[] { folder });
 
-//		wc.setAttribute(ScriptLaunchConfigurationConstants.ATTR_TEST_NAME, EMPTY_STRING);
-//		wc.setAttribute(ScriptLaunchConfigurationConstants.ATTR_CONTAINER_PATH, folder.getFullPath().toPortableString());
-//		wc.setAttribute(ScriptLaunchConfigurationConstants.ATTR_TEST_ELEMENT_NAME, EMPTY_STRING);
+		// wc.setAttribute(ScriptLaunchConfigurationConstants.ATTR_TEST_NAME,
+		// EMPTY_STRING);
+		// wc.setAttribute(ScriptLaunchConfigurationConstants.ATTR_CONTAINER_PATH,
+		// folder.getFullPath().toPortableString());
+		// wc.setAttribute(ScriptLaunchConfigurationConstants.ATTR_TEST_ELEMENT_NAME,
+		// EMPTY_STRING);
 
-		ILaunchConfiguration config= findExistingLaunchConfiguration(wc, mode);
+		ILaunchConfiguration config = findExistingLaunchConfiguration(wc, mode);
 		if (config == null) {
 			// no existing found: create a new one
-			config= wc.doSave();
+			config = wc.doSave();
 		}
 		DebugUITools.launch(config, mode);
 	}
 
 	private IType chooseType(IType[] types, String mode) throws InterruptedException {
-		ElementListSelectionDialog dialog= new ElementListSelectionDialog(getShell(), new ModelElementLabelProvider(ModelElementLabelProvider.SHOW_POST_QUALIFIED));
+		ElementListSelectionDialog dialog = new ElementListSelectionDialog(getShell(),
+				new ModelElementLabelProvider(ModelElementLabelProvider.SHOW_POST_QUALIFIED));
 		dialog.setElements(types);
 		dialog.setTitle("Test Selection");
 		if (mode.equals(ILaunchManager.DEBUG_MODE)) {
@@ -186,18 +188,18 @@ public class TclTestingLaunchShortcut implements ILaunchShortcut {
 	}
 
 	/**
-	 * Show a selection dialog that allows the user to choose one of the
-	 * specified launch configurations. Return the chosen config, or
-	 * <code>null</code> if the user cancelled the dialog.
-	 * 
+	 * Show a selection dialog that allows the user to choose one of the specified
+	 * launch configurations. Return the chosen config, or <code>null</code> if the
+	 * user cancelled the dialog.
+	 *
 	 * @param configList
 	 * @param mode
 	 * @return ILaunchConfiguration
 	 * @throws InterruptedException
 	 */
 	private ILaunchConfiguration chooseConfiguration(List configList, String mode) throws InterruptedException {
-		IDebugModelPresentation labelProvider= DebugUITools.newDebugModelPresentation();
-		ElementListSelectionDialog dialog= new ElementListSelectionDialog(getShell(), labelProvider);
+		IDebugModelPresentation labelProvider = DebugUITools.newDebugModelPresentation();
+		ElementListSelectionDialog dialog = new ElementListSelectionDialog(getShell(), labelProvider);
 		dialog.setElements(configList.toArray());
 		dialog.setTitle("Select a Test Configuration");
 		if (mode.equals(ILaunchManager.DEBUG_MODE)) {
@@ -206,7 +208,7 @@ public class TclTestingLaunchShortcut implements ILaunchShortcut {
 			dialog.setMessage("Select configuration to run");
 		}
 		dialog.setMultipleSelection(false);
-		int result= dialog.open();
+		int result = dialog.open();
 		if (result == Window.OK) {
 			return (ILaunchConfiguration) dialog.getFirstResult();
 		}
@@ -214,53 +216,63 @@ public class TclTestingLaunchShortcut implements ILaunchShortcut {
 	}
 
 	/**
-	 * Returns the launch configuration type id of the launch configuration this shortcut will create. Clients can override this method to
-	 * return the id of their launch configuration.
-	 * 
-	 * @return the launch configuration type id of the launch configuration this shortcut will create
+	 * Returns the launch configuration type id of the launch configuration this
+	 * shortcut will create. Clients can override this method to return the id of
+	 * their launch configuration.
+	 *
+	 * @return the launch configuration type id of the launch configuration this
+	 *         shortcut will create
 	 */
 	protected String getLaunchConfigurationTypeId() {
 		return "org.eclipse.dltk.tcl.testing.launchConfig";
 	}
-	
+
 	/**
-	 * Creates a launch configuration working copy for the given element. The launch configuration type created will be of the type returned by {@link #getLaunchConfigurationTypeId}.
-	 * The element type can only be of type {@link IJavaProject}, {@link IPackageFragmentRoot}, {@link IPackageFragment}, {@link IType} or {@link IMethod}.
-	 *  
-	 * Clients can extend this method (should call super) to configure additional attributes on the launch configuration working copy.
-	 * 
-	 * @return a launch configuration working copy for the given element 
+	 * Creates a launch configuration working copy for the given element. The launch
+	 * configuration type created will be of the type returned by
+	 * {@link #getLaunchConfigurationTypeId}. The element type can only be of type
+	 * {@link IJavaProject}, {@link IPackageFragmentRoot}, {@link IPackageFragment},
+	 * {@link IType} or {@link IMethod}.
+	 *
+	 * Clients can extend this method (should call super) to configure additional
+	 * attributes on the launch configuration working copy.
+	 *
+	 * @return a launch configuration working copy for the given element
 	 */
 	protected ILaunchConfigurationWorkingCopy createLaunchConfiguration(IModelElement element) throws CoreException {
 		String testFileName;
 		String containerHandleId;
 		String testElementName;
 
-		String name= ScriptElementLabels.getDefault().getTextLabel(element, ScriptElementLabels.F_FULLY_QUALIFIED);
-		String testName= name.substring(name.lastIndexOf(IPath.SEPARATOR) + 1);
-		
+		String name = ScriptElementLabels.getDefault().getTextLabel(element, ScriptElementLabels.F_FULLY_QUALIFIED);
+		String testName = name.substring(name.lastIndexOf(IPath.SEPARATOR) + 1);
+
 		switch (element.getElementType()) {
-			case IModelElement.SOURCE_MODULE: {
-				containerHandleId= EMPTY_STRING;
-				testFileName= element.getResource().getProjectRelativePath().toPortableString();
-				testElementName= EMPTY_STRING;
-			}
-			break;
-			case IModelElement.METHOD: {
-				containerHandleId= EMPTY_STRING;
-				testFileName= element.getResource().getProjectRelativePath().toPortableString();
-				testElementName= element.getElementName();
-//				testName+= "[" + testElementName + "]";
-			}
-			break;
-			default:
-				throw new IllegalArgumentException("Invalid element type to create a launch configuration: " + element.getClass().getName()); //$NON-NLS-1$
+		case IModelElement.SOURCE_MODULE: {
+			containerHandleId = EMPTY_STRING;
+			testFileName = element.getResource().getProjectRelativePath().toPortableString();
+			testElementName = EMPTY_STRING;
 		}
-		
-		ILaunchConfigurationType configType= getLaunchManager().getLaunchConfigurationType(getLaunchConfigurationTypeId());
-		ILaunchConfigurationWorkingCopy wc= configType.newInstance(null, getLaunchManager().generateUniqueLaunchConfigurationNameFrom(testName));
-			
-		wc.setAttribute(ScriptLaunchConfigurationConstants.ATTR_PROJECT_NAME, element.getScriptProject().getElementName());
+			break;
+		case IModelElement.METHOD: {
+			containerHandleId = EMPTY_STRING;
+			testFileName = element.getResource().getProjectRelativePath().toPortableString();
+			testElementName = element.getElementName();
+			// testName+= "[" + testElementName + "]";
+		}
+			break;
+		default:
+			throw new IllegalArgumentException(
+					"Invalid element type to create a launch configuration: " + element.getClass().getName()); //$NON-NLS-1$
+		}
+
+		ILaunchConfigurationType configType = getLaunchManager()
+				.getLaunchConfigurationType(getLaunchConfigurationTypeId());
+		ILaunchConfigurationWorkingCopy wc = configType.newInstance(null,
+				getLaunchManager().generateUniqueLaunchConfigurationNameFrom(testName));
+
+		wc.setAttribute(ScriptLaunchConfigurationConstants.ATTR_PROJECT_NAME,
+				element.getScriptProject().getElementName());
 		// wc.setAttribute(ITestKind.LAUNCH_ATTR_TEST_KIND, "#");
 		wc.setAttribute(ScriptLaunchConfigurationConstants.ATTR_MAIN_SCRIPT_NAME, testFileName);
 		wc.setAttribute(ScriptLaunchConfigurationConstants.ATTR_SCRIPT_NATURE, TclNature.NATURE_ID);
@@ -269,50 +281,54 @@ public class TclTestingLaunchShortcut implements ILaunchShortcut {
 		if (resource != null) {
 			wc.setMappedResources(new IResource[] { resource });
 		}
-//		wc.setAttribute(XUnitLaunchConfigurationConstants.ATTR_TEST_NAME, testFileName);
-//		wc.setAttribute(ScriptLaunchConfigurationConstants.ATTR_CONTAINER_PATH, containerHandleId);
-//		wc.setAttribute(XUnitLaunchConfigurationConstants.ATTR_TEST_ELEMENT_NAME, testElementName);
-//		XUnitMigrationDelegate.mapResources(wc);
+		// wc.setAttribute(XUnitLaunchConfigurationConstants.ATTR_TEST_NAME,
+		// testFileName);
+		// wc.setAttribute(ScriptLaunchConfigurationConstants.ATTR_CONTAINER_PATH,
+		// containerHandleId);
+		// wc.setAttribute(XUnitLaunchConfigurationConstants.ATTR_TEST_ELEMENT_NAME,
+		// testElementName);
+		// XUnitMigrationDelegate.mapResources(wc);
 		ITclTestingEngine[] engines = TclTestingEngineManager.getEngines();
 		ISourceModule module = (ISourceModule) element.getAncestor(IModelElement.SOURCE_MODULE);
 		boolean engineFound = false;
 		for (int i = 0; i < engines.length; i++) {
-			if( engines[i].isValidModule(module)) {
+			if (engines[i].isValidModule(module)) {
 				wc.setAttribute(DLTKTestingConstants.ATTR_ENGINE_ID, engines[i].getId());
 				engineFound = true;
 				break;
 			}
 		}
-//		if( engineFound == false ) {
-//			return null;
-//		}
+		// if( engineFound == false ) {
+		// return null;
+		// }
 
 		return wc;
 	}
-	
+
 	/**
-	 * Returns the attribute names of the attributes that are compared when looking for an existing similar launch configuration.
-	 * Clients can override and replace to customize. 
-	 * 
+	 * Returns the attribute names of the attributes that are compared when looking
+	 * for an existing similar launch configuration. Clients can override and
+	 * replace to customize.
+	 *
 	 * @return the attribute names of the attributes that are compared
 	 */
 	protected String[] getAttributeNamesToCompare() {
-		return new String[] {
-			ScriptLaunchConfigurationConstants.ATTR_PROJECT_NAME,
-			ScriptLaunchConfigurationConstants.ATTR_MAIN_SCRIPT_NAME,
-//			IDLTKTestingConstants.ENGINE_ID_ATR,
-			ScriptLaunchConfigurationConstants.ATTR_SCRIPT_NATURE
-//			XUnitLaunchConfigurationConstants.ATTR_TEST_NAME,
-//			XUnitLaunchConfigurationConstants.ATTR_TEST_CONTAINER,
-//			XUnitLaunchConfigurationConstants.ATTR_TEST_ELEMENT_NAME
+		return new String[] { ScriptLaunchConfigurationConstants.ATTR_PROJECT_NAME,
+				ScriptLaunchConfigurationConstants.ATTR_MAIN_SCRIPT_NAME,
+				// IDLTKTestingConstants.ENGINE_ID_ATR,
+				ScriptLaunchConfigurationConstants.ATTR_SCRIPT_NATURE
+				// XUnitLaunchConfigurationConstants.ATTR_TEST_NAME,
+				// XUnitLaunchConfigurationConstants.ATTR_TEST_CONTAINER,
+				// XUnitLaunchConfigurationConstants.ATTR_TEST_ELEMENT_NAME
 		};
 	}
-	
-	private static boolean hasSameAttributes(ILaunchConfiguration config1, ILaunchConfiguration config2, String[] attributeToCompare) {
+
+	private static boolean hasSameAttributes(ILaunchConfiguration config1, ILaunchConfiguration config2,
+			String[] attributeToCompare) {
 		try {
-			for (int i= 0; i < attributeToCompare.length; i++) {
-				String val1= config1.getAttribute(attributeToCompare[i], EMPTY_STRING);
-				String val2= config2.getAttribute(attributeToCompare[i], EMPTY_STRING);
+			for (int i = 0; i < attributeToCompare.length; i++) {
+				String val1 = config1.getAttribute(attributeToCompare[i], EMPTY_STRING);
+				String val2 = config2.getAttribute(attributeToCompare[i], EMPTY_STRING);
 				if (!val1.equals(val2)) {
 					return false;
 				}
@@ -323,17 +339,17 @@ public class TclTestingLaunchShortcut implements ILaunchShortcut {
 		}
 		return false;
 	}
-	
 
-	private ILaunchConfiguration findExistingLaunchConfiguration(ILaunchConfigurationWorkingCopy temporary, String mode) throws InterruptedException, CoreException {
-		ILaunchConfigurationType configType= temporary.getType();
+	private ILaunchConfiguration findExistingLaunchConfiguration(ILaunchConfigurationWorkingCopy temporary, String mode)
+			throws InterruptedException, CoreException {
+		ILaunchConfigurationType configType = temporary.getType();
 
-		ILaunchConfiguration[] configs= getLaunchManager().getLaunchConfigurations(configType);
-		String[] attributeToCompare= getAttributeNamesToCompare();
-		
-		ArrayList candidateConfigs= new ArrayList(configs.length);
-		for (int i= 0; i < configs.length; i++) {
-			ILaunchConfiguration config= configs[i];
+		ILaunchConfiguration[] configs = getLaunchManager().getLaunchConfigurations(configType);
+		String[] attributeToCompare = getAttributeNamesToCompare();
+
+		ArrayList candidateConfigs = new ArrayList(configs.length);
+		for (int i = 0; i < configs.length; i++) {
+			ILaunchConfiguration config = configs[i];
 			if (hasSameAttributes(config, temporary, attributeToCompare)) {
 				candidateConfigs.add(config);
 			}
@@ -345,7 +361,7 @@ public class TclTestingLaunchShortcut implements ILaunchShortcut {
 		// Otherwise, if there is more than one config associated with the
 		// IType, prompt the
 		// user to choose one.
-		int candidateCount= candidateConfigs.size();
+		int candidateCount = candidateConfigs.size();
 		if (candidateCount == 0) {
 			return null;
 		} else if (candidateCount == 1) {
@@ -355,7 +371,7 @@ public class TclTestingLaunchShortcut implements ILaunchShortcut {
 			// cancelled the dialog, in which case this method returns null,
 			// since cancelling the dialog should also cancel launching
 			// anything.
-			ILaunchConfiguration config= chooseConfiguration(candidateConfigs, mode);
+			ILaunchConfiguration config = chooseConfiguration(candidateConfigs, mode);
 			if (config != null) {
 				return config;
 			}

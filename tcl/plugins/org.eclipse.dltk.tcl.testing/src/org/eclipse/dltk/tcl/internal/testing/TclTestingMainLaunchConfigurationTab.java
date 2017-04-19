@@ -13,8 +13,6 @@ import org.eclipse.dltk.tcl.internal.debug.ui.launchConfigurations.TclMainLaunch
 import org.eclipse.dltk.tcl.testing.ITclTestingEngine;
 import org.eclipse.dltk.testing.DLTKTestingConstants;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Font;
@@ -25,8 +23,7 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 
-public class TclTestingMainLaunchConfigurationTab extends
-		TclMainLaunchConfigurationTab {
+public class TclTestingMainLaunchConfigurationTab extends TclMainLaunchConfigurationTab {
 
 	private Button detect;
 	private Combo engineType;
@@ -36,9 +33,9 @@ public class TclTestingMainLaunchConfigurationTab extends
 		super(mode);
 	}
 
+	@Override
 	protected void doCreateControl(Composite composite) {
-		createMainModuleEditor(composite,
-				DLTKLaunchConfigurationsMessages.mainTab_mainModule);
+		createMainModuleEditor(composite, DLTKLaunchConfigurationsMessages.mainTab_mainModule);
 		createVerticalSpacer(composite, 1);
 		createTestEngineEditor(composite, "Tcl Testing engine");
 
@@ -54,16 +51,11 @@ public class TclTestingMainLaunchConfigurationTab extends
 		layout.numColumns = 2;
 		mainGroup.setLayout(layout);
 		mainGroup.setFont(font);
-		engineType = new Combo(mainGroup, SWT.SINGLE | SWT.BORDER
-				| SWT.DROP_DOWN);
+		engineType = new Combo(mainGroup, SWT.SINGLE | SWT.BORDER | SWT.DROP_DOWN);
 		gd = new GridData(GridData.FILL_HORIZONTAL);
 		engineType.setLayoutData(gd);
 		engineType.setFont(font);
-		engineType.addModifyListener(new ModifyListener() {
-			public void modifyText(ModifyEvent e) {
-				updateLaunchConfigurationDialog();
-			}
-		});
+		engineType.addModifyListener(e -> updateLaunchConfigurationDialog());
 		detect = createPushButton(mainGroup, "Detect", null);
 
 		ITclTestingEngine[] engines = TclTestingEngineManager.getEngines();
@@ -73,6 +65,7 @@ public class TclTestingMainLaunchConfigurationTab extends
 			nameToId.put(name, engines[i].getId());
 		}
 		detect.addSelectionListener(new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				handleDetectButtonSelected();
 			}
@@ -93,6 +86,7 @@ public class TclTestingMainLaunchConfigurationTab extends
 		}
 	}
 
+	@Override
 	protected boolean validate() {
 		return super.validate() && validateEngine();
 	}
@@ -103,8 +97,7 @@ public class TclTestingMainLaunchConfigurationTab extends
 			ITclTestingEngine[] engines = TclTestingEngineManager.getEngines();
 			for (int i = 0; i < engines.length; i++) {
 				String selectedEngine = this.getEngineId();
-				if (engines[i].getId().equals(selectedEngine)
-						&& engines[i].isValidModule(module)) {
+				if (engines[i].getId().equals(selectedEngine) && engines[i].isValidModule(module)) {
 					return true;
 				}
 			}
@@ -113,6 +106,7 @@ public class TclTestingMainLaunchConfigurationTab extends
 		return true;
 	}
 
+	@Override
 	protected void doPerformApply(ILaunchConfigurationWorkingCopy config) {
 		super.doPerformApply(config);
 		config.setAttribute(DLTKTestingConstants.ATTR_ENGINE_ID, getEngineId());
@@ -122,6 +116,7 @@ public class TclTestingMainLaunchConfigurationTab extends
 		return (String) this.nameToId.get(this.engineType.getText());
 	}
 
+	@Override
 	protected void doInitializeForm(ILaunchConfiguration config) {
 		super.doInitializeForm(config);
 		ITclTestingEngine[] engines = TclTestingEngineManager.getEngines();

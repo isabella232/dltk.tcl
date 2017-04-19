@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2009 xored software, Inc.  
+ * Copyright (c) 2009, 2017 xored software, Inc. and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html  
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
  *     xored software, Inc. - initial API and Implementation (Alex Panchenko)
@@ -25,11 +25,11 @@ public class TclTestingPropertyTester extends PropertyTester {
 
 	private static final String PROPERTY_CAN_LAUNCH_AS_JUNIT_TEST = "canLaunchAsTest"; //$NON-NLS-1$
 
-	public boolean test(Object receiver, String property, Object[] args,
-			Object expectedValue) {
+	@Override
+	public boolean test(Object receiver, String property, Object[] args, Object expectedValue) {
 		if (!(receiver instanceof IAdaptable)) {
-			throw new IllegalArgumentException(
-					"Element must be of type 'IAdaptable', is " + receiver == null ? "null" : receiver.getClass().getName()); //$NON-NLS-1$ //$NON-NLS-2$
+			throw new IllegalArgumentException("Element must be of type 'IAdaptable', is " + receiver == null ? "null" //$NON-NLS-1$ //$NON-NLS-2$
+					: receiver.getClass().getName());
 		}
 		IModelElement element;
 		if (receiver instanceof IModelElement) {
@@ -40,11 +40,9 @@ public class TclTestingPropertyTester extends PropertyTester {
 				return false;
 			}
 		} else { // is IAdaptable
-			element = (IModelElement) ((IAdaptable) receiver)
-					.getAdapter(IModelElement.class);
+			element = ((IAdaptable) receiver).getAdapter(IModelElement.class);
 			if (element == null) {
-				IResource resource = (IResource) ((IAdaptable) receiver)
-						.getAdapter(IResource.class);
+				IResource resource = ((IAdaptable) receiver).getAdapter(IResource.class);
 				element = DLTKCore.create(resource);
 				if (element == null) {
 					return false;
@@ -56,8 +54,7 @@ public class TclTestingPropertyTester extends PropertyTester {
 		} else if (PROPERTY_CAN_LAUNCH_AS_JUNIT_TEST.equals(property)) {
 			return canLaunchAsTest(element);
 		}
-		throw new IllegalArgumentException(
-				"Unknown test property '" + property + "'"); //$NON-NLS-1$ //$NON-NLS-2$
+		throw new IllegalArgumentException("Unknown test property '" + property + "'"); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	private boolean canLaunchAsTest(IModelElement element) {
@@ -79,8 +76,7 @@ public class TclTestingPropertyTester extends PropertyTester {
 	private boolean isTest(IModelElement element) {
 		if (element instanceof ISourceModule) {
 			final ISourceModule module = (ISourceModule) element;
-			for (ITclTestingEngine engine : TclTestingEngineManager
-					.getEngines()) {
+			for (ITclTestingEngine engine : TclTestingEngineManager.getEngines()) {
 				if (engine.isValidModule(module)) {
 					return true;
 				}

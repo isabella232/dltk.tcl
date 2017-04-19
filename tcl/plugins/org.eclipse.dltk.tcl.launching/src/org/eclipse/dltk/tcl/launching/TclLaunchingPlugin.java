@@ -1,11 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2007 IBM Corporation and others.
+ * Copyright (c) 2005, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- 
  *******************************************************************************/
 package org.eclipse.dltk.tcl.launching;
 
@@ -32,10 +31,12 @@ public class TclLaunchingPlugin extends Plugin {
 		plugin = this;
 	}
 
+	@Override
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 	}
 
+	@Override
 	public void stop(BundleContext context) throws Exception {
 		plugin = null;
 		super.stop(context);
@@ -43,7 +44,7 @@ public class TclLaunchingPlugin extends Plugin {
 
 	/**
 	 * Returns the shared instance
-	 * 
+	 *
 	 * @return the shared instance
 	 */
 	public static TclLaunchingPlugin getDefault() {
@@ -59,13 +60,11 @@ public class TclLaunchingPlugin extends Plugin {
 	}
 
 	public static void log(String message) {
-		log(new Status(IStatus.ERROR, getUniqueIdentifier(), IStatus.ERROR,
-				message, null));
+		log(new Status(IStatus.ERROR, getUniqueIdentifier(), IStatus.ERROR, message, null));
 	}
 
 	public static void log(Throwable e) {
-		log(new Status(IStatus.ERROR, getUniqueIdentifier(), IStatus.ERROR, e
-				.getMessage(), e));
+		log(new Status(IStatus.ERROR, getUniqueIdentifier(), IStatus.ERROR, e.getMessage(), e));
 	}
 
 	public String getConsoleProxy() {

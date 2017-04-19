@@ -1,11 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- 
  *******************************************************************************/
 package org.eclipse.dltk.tcl.internal.launching;
 
@@ -43,6 +42,7 @@ public class TclInterpreterRunner extends AbstractInterpreterRunner {
 		super(install);
 	}
 
+	@Override
 	protected String getProcessType() {
 		return TclLaunchConfigurationConstants.ID_TCL_PROCESS_TYPE;
 	}
@@ -53,32 +53,26 @@ public class TclInterpreterRunner extends AbstractInterpreterRunner {
 		if (vars != null) {
 			String var = config.getEnvVar(TclLibpathUtils.TCLLIBPATH);
 			if (var != null) {
-				List<EnvironmentVariable> resultingVars = new ArrayList<EnvironmentVariable>();
+				List<EnvironmentVariable> resultingVars = new ArrayList<>();
 				for (EnvironmentVariable envVar : vars) {
 					if (envVar.getName().equals(TclLibpathUtils.TCLLIBPATH)) {
-						EnvironmentVariable[] variables = EnvironmentResolver
-								.resolve(config.getEnvVars(),
-										new EnvironmentVariable[] { envVar },
-										true);
-						String newValue = var
-								+ " "
-								+ TclLibpathUtils
-										.convertToTclLibPathFormat(variables[0]
-												.getValue());
+						EnvironmentVariable[] variables = EnvironmentResolver.resolve(config.getEnvVars(),
+								new EnvironmentVariable[] { envVar }, true);
+						String newValue = var + " "
+								+ TclLibpathUtils.convertToTclLibPathFormat(variables[0].getValue());
 						config.addEnvVar(TclLibpathUtils.TCLLIBPATH, newValue);
 					} else {
 						resultingVars.add(envVar);
 					}
 				}
-				return config
-						.getEnvironmentAsStringsIncluding(resultingVars
-								.toArray(new EnvironmentVariable[resultingVars
-										.size()]));
+				return config.getEnvironmentAsStringsIncluding(
+						resultingVars.toArray(new EnvironmentVariable[resultingVars.size()]));
 			}
 		}
 		return config.getEnvironmentAsStringsIncluding(vars);
 	}
 
+	@Override
 	protected void alterConfig(ILaunch launch, InterpreterConfig config) {
 		super.alterConfig(launch, config);
 		if (!ILaunchManager.RUN_MODE.equals(launch.getLaunchMode())) {
@@ -90,9 +84,7 @@ public class TclInterpreterRunner extends AbstractInterpreterRunner {
 			boolean useTclConsole = false;
 			try {
 				useTclConsole = configuration
-						.getAttribute(
-								ScriptLaunchConfigurationConstants.ATTR_USE_INTERACTIVE_CONSOLE,
-								false);
+						.getAttribute(ScriptLaunchConfigurationConstants.ATTR_USE_INTERACTIVE_CONSOLE, false);
 			} catch (CoreException e) {
 				if (DLTKCore.DEBUG) {
 					e.printStackTrace();
@@ -103,30 +95,21 @@ public class TclInterpreterRunner extends AbstractInterpreterRunner {
 				String port = Integer.toString(server.getPort());
 
 				try {
-					IExecutionEnvironment executionEnvironment = config
-							.getExecutionEnvironment();
-					IDeployment deployment = executionEnvironment
-							.createDeployment();
+					IExecutionEnvironment executionEnvironment = config.getExecutionEnvironment();
+					IDeployment deployment = executionEnvironment.createDeployment();
 					if (deployment == null) {
-						throw new CoreException(
-								new Status(IStatus.ERROR,
-										TclLaunchingPlugin.PLUGIN_ID,
-										"Could not establish connection with environment."));
+						throw new CoreException(new Status(IStatus.ERROR, TclLaunchingPlugin.PLUGIN_ID,
+								"Could not establish connection with environment."));
 					}
-					DeploymentManager.getInstance().addDeployment(launch,
-							deployment);
-					IPath path = deployment.add(TclLaunchingPlugin.getDefault()
-							.getBundle(), TclLaunchingPlugin.getDefault()
-							.getConsoleProxy());
+					DeploymentManager.getInstance().addDeployment(launch, deployment);
+					IPath path = deployment.add(TclLaunchingPlugin.getDefault().getBundle(),
+							TclLaunchingPlugin.getDefault().getConsoleProxy());
 					IFileHandle scriptFile = deployment.getFile(path);
 
-					String id = configuration
-							.getAttribute(
-									ScriptLaunchConfigurationConstants.ATTR_DLTK_CONSOLE_ID,
-									(String) null);
+					String id = configuration.getAttribute(ScriptLaunchConfigurationConstants.ATTR_DLTK_CONSOLE_ID,
+							(String) null);
 					config.addInterpreterArg(scriptFile.toOSString());
-					config.addInterpreterArg(DLTKDebugPlugin.getDefault()
-							.getBindAddress());
+					config.addInterpreterArg(DLTKDebugPlugin.getDefault().getBindAddress());
 					IPath scriptFilePath = config.getScriptFilePath();
 					if (scriptFilePath == null) {
 						config.setScriptFile(new Path("--noscript"));
@@ -136,10 +119,8 @@ public class TclInterpreterRunner extends AbstractInterpreterRunner {
 					if (id != null) {
 						config.addInterpreterArg(id);
 					} else {
-						throw new CoreException(
-								new Status(IStatus.ERROR,
-										TclLaunchingPlugin.PLUGIN_ID,
-										"Error to obtain console ID. Please update launch configuratin."));
+						throw new CoreException(new Status(IStatus.ERROR, TclLaunchingPlugin.PLUGIN_ID,
+								"Error to obtain console ID. Please update launch configuratin."));
 					}
 				} catch (IOException e) {
 					if (DLTKCore.DEBUG) {

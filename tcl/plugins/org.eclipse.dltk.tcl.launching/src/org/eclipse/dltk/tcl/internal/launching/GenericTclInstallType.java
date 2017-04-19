@@ -1,11 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2007 IBM Corporation and others.
+ * Copyright (c) 2005, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- 
  *******************************************************************************/
 package org.eclipse.dltk.tcl.internal.launching;
 
@@ -39,7 +38,6 @@ import org.eclipse.dltk.tcl.core.TclNature;
 import org.eclipse.dltk.tcl.core.TclPackagesManager;
 import org.eclipse.dltk.tcl.core.TclPlugin;
 import org.eclipse.dltk.tcl.core.packages.TclInterpreterInfo;
-import org.eclipse.dltk.tcl.core.packages.TclPackageInfo;
 import org.eclipse.dltk.tcl.core.packages.TclPackagesFactory;
 import org.eclipse.dltk.tcl.internal.core.packages.ProcessOutputCollector;
 import org.eclipse.dltk.tcl.launching.TclLaunchingPlugin;
@@ -52,11 +50,10 @@ public class GenericTclInstallType extends AbstractInterpreterInstallType {
 	 * @since 1.1
 	 */
 	public static final String TYPE_ID = "org.eclipse.dltk.internal.debug.ui.launcher.GenericTclInstallType";
-	private static final String[] INTERPRETER_NAMES = { "tclsh", "tclsh84",
-			"tclsh8.4", "tclsh85", "tclsh8.5", "tclsh8.6",
+	private static final String[] INTERPRETER_NAMES = { "tclsh", "tclsh84", "tclsh8.4", "tclsh85", "tclsh8.5",
+			"tclsh8.6",
 
-			"wish", "wish84", "wish85", "wish86", "wish8.4", "wish85",
-			"wish8.5", "wish8.6",
+			"wish", "wish84", "wish85", "wish86", "wish8.4", "wish85", "wish8.5", "wish8.6",
 
 			"vtk",
 
@@ -64,76 +61,72 @@ public class GenericTclInstallType extends AbstractInterpreterInstallType {
 
 			"base-tcl-linux", "base-tk-linux",
 
-			"base-tcl-thread", "base-tk-thread", "base-tcl8.5-thread",
-			"base-tcl8.6-thread", "base-tk8.5-thread", "base-tk8.6-thread" };
+			"base-tcl-thread", "base-tk-thread", "base-tcl8.5-thread", "base-tcl8.6-thread", "base-tk8.5-thread",
+			"base-tk8.6-thread" };
 
+	@Override
 	public String getNatureId() {
 		return TclNature.NATURE_ID;
 	}
 
+	@Override
 	public String getName() {
 		return INSTALL_TYPE_NAME;
 	}
 
+	@Override
 	protected String getPluginId() {
 		return TclLaunchingPlugin.PLUGIN_ID;
 	}
 
+	@Override
 	protected String[] getPossibleInterpreterNames() {
 		return INTERPRETER_NAMES;
 	}
 
+	@Override
 	protected IInterpreterInstall doCreateInterpreterInstall(String id) {
 		return new GenericTclInstall(this, id);
 	}
 
-	protected void filterEnvironment(Map environment) {
+	@Override
+	protected void filterEnvironment(Map<String, String> environment) {
 		// make sure that $auto_path is clean
 		environment.remove("TCLLIBPATH");
 		// block wish from showing window under linux
 		environment.remove("DISPLAY");
 	}
 
-	public IStatus validateInstallLocation(IFileHandle installLocation,
-			EnvironmentVariable[] variables, LibraryLocation[] libraries,
-			IProgressMonitor monitor) {
-		/* Progress monitoring */monitor.beginTask("Validate Tcl interpreter",
-				100);
+	@Override
+	public IStatus validateInstallLocation(IFileHandle installLocation, EnvironmentVariable[] variables,
+			LibraryLocation[] libraries, IProgressMonitor monitor) {
+		/* Progress monitoring */monitor.beginTask("Validate Tcl interpreter", 100);
 		try {
 			if (!installLocation.exists() || !installLocation.isFile()) {
-				return createStatus(
-						IStatus.ERROR,
-						InterpreterMessages.errNonExistentOrInvalidInstallLocation,
-						null);
+				return createStatus(IStatus.ERROR, InterpreterMessages.errNonExistentOrInvalidInstallLocation, null);
 			}
 			IEnvironment environment = installLocation.getEnvironment();
-			IExecutionEnvironment executionEnvironment = (IExecutionEnvironment) environment
-					.getAdapter(IExecutionEnvironment.class);
-			/* Progress monitoring */monitor
-					.subTask("Deploy validation script");
+			IExecutionEnvironment executionEnvironment = environment.getAdapter(IExecutionEnvironment.class);
+			/* Progress monitoring */monitor.subTask("Deploy validation script");
 			IDeployment deployment = executionEnvironment.createDeployment();
 			if (deployment == null) {
 				// happens if RSE is not initialized yet or no connection
 				// established
 				return createStatus(IStatus.ERROR,
-						"Failed to deploy validation script to host:"
-								+ environment.getName(), null);
+						"Failed to deploy validation script to host:" + environment.getName(), null);
 			}
 			List<String> output = null;
 			Bundle bundle = TclPlugin.getDefault().getBundle();
 			try {
-				IFileHandle builderFile = deployment.getFile(deployment.add(
-						bundle, "scripts/dltk.tcl"));
+				IFileHandle builderFile = deployment.getFile(deployment.add(bundle, "scripts/dltk.tcl"));
 				/* Progress monitoring */monitor.worked(10);
-				InterpreterConfig config = ScriptLaunchUtil
-						.createInterpreterConfig(executionEnvironment,
-								builderFile, builderFile.getParent());
+				InterpreterConfig config = ScriptLaunchUtil.createInterpreterConfig(executionEnvironment, builderFile,
+						builderFile.getParent());
 				config.addScriptArg("get-pkgs");
 				// Configure environment variables
-				final Map<String, String> envVars = new HashMap<String, String>();
+				final Map<String, String> envVars = new HashMap<>();
 
-				Map<String, String> envVars2 = executionEnvironment
-						.getEnvironmentVariables(false);
+				Map<String, String> envVars2 = executionEnvironment.getEnvironmentVariables(false);
 				if (envVars2 != null) {
 					envVars.putAll(envVars2);
 				}
@@ -141,27 +134,21 @@ public class GenericTclInstallType extends AbstractInterpreterInstallType {
 				config.addEnvVars(envVars);
 				config.removeEnvVar("DISPLAY"); //$NON-NLS-1$
 				TclLibpathUtils.addTclLibPath(config, libraries, environment);
-				/* Progress monitoring */monitor
-						.subTask("Running validation script");
-				String[] cmdLine = config.renderCommandLine(
-						executionEnvironment.getEnvironment(), installLocation
-								.toOSString());
+				/* Progress monitoring */monitor.subTask("Running validation script");
+				String[] cmdLine = config.renderCommandLine(executionEnvironment.getEnvironment(),
+						installLocation.toOSString());
 
-				String[] environmentAsStrings = config
-						.getEnvironmentAsStringsIncluding(variables);
+				String[] environmentAsStrings = config.getEnvironmentAsStringsIncluding(variables);
 				IPath workingDirectoryPath = config.getWorkingDirectoryPath();
 				if (DLTKLaunchingPlugin.TRACE_EXECUTION) {
-					ScriptLaunchUtil.traceExecution(
-							"runScript with interpreter", cmdLine, //$NON-NLS-1$
+					ScriptLaunchUtil.traceExecution("runScript with interpreter", cmdLine, //$NON-NLS-1$
 							environmentAsStrings);
 				}
-				final Process process = executionEnvironment.exec(cmdLine,
-						workingDirectoryPath, environmentAsStrings);
+				final Process process = executionEnvironment.exec(cmdLine, workingDirectoryPath, environmentAsStrings);
 				/* Progress monitoring */monitor.worked(10);
 
 				SubProgressMonitor sm = new SubProgressMonitor(monitor, 70);
-				sm.beginTask("Running validation script",
-						IProgressMonitor.UNKNOWN);
+				sm.beginTask("Running validation script", IProgressMonitor.UNKNOWN);
 				sm.done();
 				output = ProcessOutputCollector.execute(process, sm);
 
@@ -172,9 +159,7 @@ public class GenericTclInstallType extends AbstractInterpreterInstallType {
 					exitValue = -1;
 				}
 				if (exitValue != 0) {
-					return createStatus(IStatus.ERROR,
-							"Interpreter return abnormal exit code:"
-									+ exitValue, null);
+					return createStatus(IStatus.ERROR, "Interpreter return abnormal exit code:" + exitValue, null);
 				}
 			} catch (IOException e1) {
 				if (DLTKCore.DEBUG) {
@@ -190,9 +175,7 @@ public class GenericTclInstallType extends AbstractInterpreterInstallType {
 				deployment.dispose();
 			}
 			if (output == null) {
-				return createStatus(IStatus.ERROR,
-						InterpreterMessages.errNoInterpreterExecutablesFound,
-						null);
+				return createStatus(IStatus.ERROR, InterpreterMessages.errNoInterpreterExecutablesFound, null);
 			}
 			boolean correct = output.contains(TclPackagesManager.END_OF_STREAM);
 
@@ -200,48 +183,44 @@ public class GenericTclInstallType extends AbstractInterpreterInstallType {
 				monitor.subTask("Processing validation result");
 				// Parse list of packages from output
 				// Generate fake interpreter install
-				TclInterpreterInfo info = TclPackagesFactory.eINSTANCE
-						.createTclInterpreterInfo();
+				TclInterpreterInfo info = TclPackagesFactory.eINSTANCE.createTclInterpreterInfo();
 				TclPackagesManager.fillPackagesFromContent(output, info);
 				monitor.worked(10);
 				return new StatusWithPackages(info);
 			} else {
-				return createStatus(IStatus.ERROR,
-						InterpreterMessages.errNoInterpreterExecutablesFound,
-						null);
+				return createStatus(IStatus.ERROR, InterpreterMessages.errNoInterpreterExecutablesFound, null);
 			}
 		} finally {
 			monitor.done();
 		}
 	}
 
-	protected ILookupRunnable createLookupRunnable(
-			final IFileHandle installLocation, final List locations,
-			final EnvironmentVariable[] variables) {
-		return new ILookupRunnable() {
-			public void run(IProgressMonitor monitor) {
-				// This retrieval could not receive paths in some cases.
-				// String result = retrivePaths(installLocation, locations,
-				// monitor, createPathFile(), variables);
-				// This is safe retrieval
-				// String[] autoPath = DLTKTclHelper.getDefaultPath(
-				// installLocation, variables);
-				// IEnvironment env = installLocation.getEnvironment();
-				// if (autoPath != null) {
-				// for (int i = 0; i < autoPath.length; i++) {
-				// Path libraryPath = new Path(autoPath[i]);
-				// IFileHandle file = env.getFile(libraryPath);
-				// if (file.exists()) {
-				// locations.add(new LibraryLocation(libraryPath));
-				// }
-				// }
-				// }
-			}
+	@Override
+	protected ILookupRunnable createLookupRunnable(final IFileHandle installLocation,
+			final List<LibraryLocation> locations, final EnvironmentVariable[] variables) {
+		return monitor -> {
+			// This retrieval could not receive paths in some cases.
+			// String result = retrivePaths(installLocation, locations,
+			// monitor, createPathFile(), variables);
+			// This is safe retrieval
+			// String[] autoPath = DLTKTclHelper.getDefaultPath(
+			// installLocation, variables);
+			// IEnvironment env = installLocation.getEnvironment();
+			// if (autoPath != null) {
+			// for (int i = 0; i < autoPath.length; i++) {
+			// Path libraryPath = new Path(autoPath[i]);
+			// IFileHandle file = env.getFile(libraryPath);
+			// if (file.exists()) {
+			// locations.add(new LibraryLocation(libraryPath));
+			// }
+			// }
+			// }
 		};
 	}
 
+	@Override
 	protected String[] parsePaths(String res) {
-		ArrayList paths = new ArrayList();
+		ArrayList<String> paths = new ArrayList<>();
 		String subs = null;
 		int index = 0;
 		String result = res;
@@ -250,8 +229,7 @@ public class GenericTclInstallType extends AbstractInterpreterInstallType {
 		}
 		while (index < result.length()) {
 			// skip whitespaces
-			while (index < result.length()
-					&& Character.isWhitespace(result.charAt(index)))
+			while (index < result.length() && Character.isWhitespace(result.charAt(index)))
 				index++;
 			if (index == result.length())
 				break;
@@ -274,13 +252,15 @@ public class GenericTclInstallType extends AbstractInterpreterInstallType {
 			index++;
 		}
 
-		return (String[]) paths.toArray(new String[paths.size()]);
+		return paths.toArray(new String[paths.size()]);
 	}
 
+	@Override
 	protected ILog getLog() {
 		return TclLaunchingPlugin.getDefault().getLog();
 	}
 
+	@Override
 	protected IPath createPathFile(IDeployment deployment) throws IOException {
 		return null;
 	}

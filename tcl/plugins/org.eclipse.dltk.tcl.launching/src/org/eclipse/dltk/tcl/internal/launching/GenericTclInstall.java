@@ -1,11 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2007 IBM Corporation and others.
+ * Copyright (c) 2005, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- 
  *******************************************************************************/
 package org.eclipse.dltk.tcl.internal.launching;
 
@@ -46,10 +45,9 @@ public class GenericTclInstall extends AbstractInterpreterInstall {
 		boolean initialized = false;
 
 		void load() {
-			final IContentCache cache = ModelManager.getModelManager()
-					.getCoreCache();
-			String builtins = cache.getCacheEntryAttributeString(install
-					.getInstallLocation(), BUILTINST_INFORMATION, true);
+			final IContentCache cache = ModelManager.getModelManager().getCoreCache();
+			String builtins = cache.getCacheEntryAttributeString(install.getInstallLocation(), BUILTINST_INFORMATION,
+					true);
 			if (builtins != null) {
 				source.append(builtins);
 				lastModified = System.currentTimeMillis();
@@ -57,24 +55,18 @@ public class GenericTclInstall extends AbstractInterpreterInstall {
 				return;
 			}
 			Job loadTclBuiltin = new Job("Generate Tcl builtin file...") {
+				@Override
 				protected IStatus run(final IProgressMonitor monitor) {
-					monitor.beginTask("Generate Tcl builtin file",
-							IProgressMonitor.UNKNOWN);
+					monitor.beginTask("Generate Tcl builtin file", IProgressMonitor.UNKNOWN);
 					IExecutionEnvironment exeEnv = install.getExecEnvironment();
 					if (exeEnv == null)
 						return Status.CANCEL_STATUS;
 
 					String bundlePath = "scripts/builtins.tcl";
-					String content = ScriptLaunchUtil
-							.runEmbeddedScriptReadContent(
-									exeEnv,
-									bundlePath,
-									TclLaunchingPlugin.getDefault().getBundle(),
-									install.getInstallLocation(), monitor);
+					String content = ScriptLaunchUtil.runEmbeddedScriptReadContent(exeEnv, bundlePath,
+							TclLaunchingPlugin.getDefault().getBundle(), install.getInstallLocation(), monitor);
 					if (content != null) {
-						cache.setCacheEntryAttribute(install
-								.getInstallLocation(), BUILTINST_INFORMATION,
-								content);
+						cache.setCacheEntryAttribute(install.getInstallLocation(), BUILTINST_INFORMATION, content);
 					}
 					if (content != null) {
 						source.append(content);
@@ -100,6 +92,7 @@ public class GenericTclInstall extends AbstractInterpreterInstall {
 		super(type, id);
 	}
 
+	@Override
 	public IInterpreterRunner getInterpreterRunner(String mode) {
 		IInterpreterRunner runner = super.getInterpreterRunner(mode);
 
@@ -114,18 +107,21 @@ public class GenericTclInstall extends AbstractInterpreterInstall {
 		return null;
 	}
 
+	@Override
 	public String getNatureId() {
 		return TclNature.NATURE_ID;
 	}
 
-	private static final Map<IInterpreterInstall, BuiltinsHelper> helpers = new HashMap<IInterpreterInstall, BuiltinsHelper>();
+	private static final Map<IInterpreterInstall, BuiltinsHelper> helpers = new HashMap<>();
 
 	// Builtins
+	@Override
 	public String getBuiltinModuleContent(String name) {
 		BuiltinsHelper helper = initialize();
 		return helper.source.toString();
 	}
 
+	@Override
 	public long lastModified() {
 		BuiltinsHelper helper = initialize();
 		return helper.lastModified;
@@ -148,6 +144,7 @@ public class GenericTclInstall extends AbstractInterpreterInstall {
 		return helper;
 	}
 
+	@Override
 	public String[] getBuiltinModules() {
 		return new String[] { "builtins.tcl" }; //$NON-NLS-1$
 	}

@@ -1,11 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2007 IBM Corporation and others.
+ * Copyright (c) 2005, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- 
  *******************************************************************************/
 package org.eclipse.dltk.tcl.console;
 
@@ -31,15 +30,12 @@ import org.eclipse.dltk.tcl.core.TclNature;
 import org.eclipse.dltk.tcl.launching.TclLaunchingPlugin;
 
 public class TclConsoleUtil {
-	public static ILaunch runDefaultTclInterpreter(TclInterpreter interpreter)
-			throws CoreException, IOException {
-		final ConsoleDeployment deployment = deployConsoleScript(EnvironmentManager
-				.getLocalEnvironment());
+	public static ILaunch runDefaultTclInterpreter(TclInterpreter interpreter) throws CoreException, IOException {
+		final ConsoleDeployment deployment = deployConsoleScript(EnvironmentManager.getLocalEnvironment());
 		if (deployment == null) {
 			return null;
 		}
-		final ILaunch launch = ScriptLaunchUtil.runScript(TclNature.NATURE_ID,
-				deployment.scriptFile, null, null,
+		final ILaunch launch = ScriptLaunchUtil.runScript(TclNature.NATURE_ID, deployment.scriptFile, null, null,
 				constructConsoleArgs(interpreter), null);
 		registerForCleanup(launch, deployment, interpreter);
 		return launch;
@@ -48,15 +44,13 @@ public class TclConsoleUtil {
 	/**
 	 * @since 1.1
 	 */
-	public static ILaunch runTclInterpreter(IInterpreterInstall install,
-			TclInterpreter interpreter) throws CoreException, IOException {
-		final ConsoleDeployment deployment = deployConsoleScript(install
-				.getEnvironment());
+	public static ILaunch runTclInterpreter(IInterpreterInstall install, TclInterpreter interpreter)
+			throws CoreException, IOException {
+		final ConsoleDeployment deployment = deployConsoleScript(install.getEnvironment());
 		if (deployment == null) {
 			return null;
 		}
-		final ILaunch launch = ScriptLaunchUtil.runScript(install,
-				deployment.scriptFile, null, null,
+		final ILaunch launch = ScriptLaunchUtil.runScript(install, deployment.scriptFile, null, null,
 				constructConsoleArgs(interpreter), null);
 		registerForCleanup(launch, deployment, interpreter);
 		return launch;
@@ -73,45 +67,38 @@ public class TclConsoleUtil {
 
 	}
 
-	private static ConsoleDeployment deployConsoleScript(
-			IEnvironment environment) throws IOException {
-		final IExecutionEnvironment exeEnv = (IExecutionEnvironment) environment
-				.getAdapter(IExecutionEnvironment.class);
+	private static ConsoleDeployment deployConsoleScript(IEnvironment environment) throws IOException {
+		final IExecutionEnvironment exeEnv = environment.getAdapter(IExecutionEnvironment.class);
 		final IDeployment deployment = exeEnv.createDeployment();
 		if (deployment == null) {
 			return null;
 		}
-		final IPath path = deployment
-				.add(TclLaunchingPlugin.getDefault().getBundle(),
-						TclLaunchingPlugin.getDefault().getConsoleProxy());
+		final IPath path = deployment.add(TclLaunchingPlugin.getDefault().getBundle(),
+				TclLaunchingPlugin.getDefault().getConsoleProxy());
 		return new ConsoleDeployment(deployment, deployment.getFile(path));
 	}
 
 	private static String[] constructConsoleArgs(TclInterpreter interpreter) {
 		ScriptConsoleServer server = ScriptConsoleServer.getInstance();
-		return new String[] { DLTKDebugPlugin.getDefault().getBindAddress(),
-				Integer.toString(server.getPort()),
+		return new String[] { DLTKDebugPlugin.getDefault().getBindAddress(), Integer.toString(server.getPort()),
 				server.register(interpreter) };
 	}
 
-	private static void registerForCleanup(final ILaunch launch,
-			final ConsoleDeployment deployment, TclInterpreter interpreter) {
+	private static void registerForCleanup(final ILaunch launch, final ConsoleDeployment deployment,
+			TclInterpreter interpreter) {
 		if (launch == null) {
 			return;
 		}
-		DeploymentManager.getInstance().addDeployment(launch,
-				deployment.deployment);
-		interpreter.addCloseOperation(new Runnable() {
-			public void run() {
-				IProcess[] processes = launch.getProcesses();
-				if (processes != null) {
-					for (int i = 0; i < processes.length; i++) {
-						try {
-							processes[i].terminate();
-						} catch (DebugException e) {
-							if (DLTKCore.DEBUG) {
-								e.printStackTrace();
-							}
+		DeploymentManager.getInstance().addDeployment(launch, deployment.deployment);
+		interpreter.addCloseOperation(() -> {
+			IProcess[] processes = launch.getProcesses();
+			if (processes != null) {
+				for (int i = 0; i < processes.length; i++) {
+					try {
+						processes[i].terminate();
+					} catch (DebugException e) {
+						if (DLTKCore.DEBUG) {
+							e.printStackTrace();
 						}
 					}
 				}

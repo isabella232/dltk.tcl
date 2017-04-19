@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2008 xored software, Inc.  
+ * Copyright (c) 2008, 2017 xored software, Inc. and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html  
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
  *     xored software, Inc. - initial API and Implementation (Sergey Kanshin)
@@ -26,32 +26,26 @@ import org.eclipse.dltk.ui.preferences.PreferenceKey;
 
 public class TclFormatterFactory extends AbstractScriptFormatterFactory {
 
-	private static final String[] KEYS = {
-			TclFormatterConstants.FORMATTER_TAB_CHAR,
-			TclFormatterConstants.FORMATTER_INDENTATION_SIZE,
-			TclFormatterConstants.FORMATTER_TAB_SIZE,
-			TclFormatterConstants.INDENT_SCRIPT,
-			TclFormatterConstants.INDENT_AFTER_BACKSLASH,
-			TclFormatterConstants.LINES_PRESERVE,
-			TclFormatterConstants.LINES_FILE_AFTER_PACKAGE,
-			TclFormatterConstants.LINES_FILE_BETWEEN_PROC,
-			TclFormatterConstants.WRAP_COMMENTS,
+	private static final String[] KEYS = { TclFormatterConstants.FORMATTER_TAB_CHAR,
+			TclFormatterConstants.FORMATTER_INDENTATION_SIZE, TclFormatterConstants.FORMATTER_TAB_SIZE,
+			TclFormatterConstants.INDENT_SCRIPT, TclFormatterConstants.INDENT_AFTER_BACKSLASH,
+			TclFormatterConstants.LINES_PRESERVE, TclFormatterConstants.LINES_FILE_AFTER_PACKAGE,
+			TclFormatterConstants.LINES_FILE_BETWEEN_PROC, TclFormatterConstants.WRAP_COMMENTS,
 			TclFormatterConstants.WRAP_COMMENTS_LENGTH };
 
-	@SuppressWarnings("unchecked")
-	public IScriptFormatter createFormatter(String lineDelimiter,
-			Map preferences) {
+	@Override
+	public IScriptFormatter createFormatter(String lineDelimiter, Map<String, String> preferences) {
 		return new TclFormatter(lineDelimiter, preferences);
 	}
 
+	@Override
 	public PreferenceKey[] getPreferenceKeys() {
 		final PreferenceKey[] result = new PreferenceKey[KEYS.length];
 		for (int i = 0; i < KEYS.length; ++i) {
 			final String key = KEYS[i];
 			final String qualifier;
 			if (TclFormatterConstants.FORMATTER_TAB_CHAR.equals(key)
-					|| TclFormatterConstants.FORMATTER_INDENTATION_SIZE
-							.equals(key)
+					|| TclFormatterConstants.FORMATTER_INDENTATION_SIZE.equals(key)
 					|| TclFormatterConstants.FORMATTER_TAB_SIZE.equals(key)) {
 				qualifier = TclUI.PLUGIN_ID;
 			} else {
@@ -63,20 +57,17 @@ public class TclFormatterFactory extends AbstractScriptFormatterFactory {
 	}
 
 	@Override
-	public Map<String, String> changeToIndentingOnly(
-			Map<String, String> preferences) {
-		Map<String, String> result = new HashMap<String, String>(preferences);
-		result.put(TclFormatterConstants.LINES_FILE_AFTER_PACKAGE, String
-				.valueOf(-1));
-		result.put(TclFormatterConstants.LINES_FILE_BETWEEN_PROC, String
-				.valueOf(-1));
+	public Map<String, String> changeToIndentingOnly(Map<String, String> preferences) {
+		Map<String, String> result = new HashMap<>(preferences);
+		result.put(TclFormatterConstants.LINES_FILE_AFTER_PACKAGE, String.valueOf(-1));
+		result.put(TclFormatterConstants.LINES_FILE_BETWEEN_PROC, String.valueOf(-1));
 		result.put(TclFormatterConstants.LINES_PRESERVE, String.valueOf(-1));
 		result.put(TclFormatterConstants.WRAP_COMMENTS, String.valueOf(false));
 		return result;
 	}
 
-	public IFormatterModifyDialog createDialog(
-			IFormatterModifyDialogOwner dialogOwner) {
+	@Override
+	public IFormatterModifyDialog createDialog(IFormatterModifyDialogOwner dialogOwner) {
 		return new TclFormatterModifyDialog(dialogOwner, this);
 	}
 
@@ -85,15 +76,14 @@ public class TclFormatterFactory extends AbstractScriptFormatterFactory {
 		return getClass().getResource("preferences/formatterPreview.txt"); //$NON-NLS-1$
 	}
 
+	@Override
 	public PreferenceKey getActiveProfileKey() {
-		return new PreferenceKey(TclFormatterPlugin.PLUGIN_ID,
-				TclFormatterConstants.FORMATTER_PROFILES);
+		return new PreferenceKey(TclFormatterPlugin.PLUGIN_ID, TclFormatterConstants.FORMATTER_PROFILES);
 	}
 
 	@Override
 	public PreferenceKey getProfilesKey() {
-		return new PreferenceKey(TclFormatterPlugin.PLUGIN_ID,
-				TclFormatterConstants.FORMATTER_ACTIVE_PROFILE);
+		return new PreferenceKey(TclFormatterPlugin.PLUGIN_ID, TclFormatterConstants.FORMATTER_ACTIVE_PROFILE);
 	}
 
 }

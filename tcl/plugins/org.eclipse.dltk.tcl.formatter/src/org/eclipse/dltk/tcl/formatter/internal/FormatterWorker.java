@@ -40,23 +40,19 @@ public class FormatterWorker extends TclVisitor {
 	 * @param indentGenerator
 	 * @param wrapLength
 	 */
-	public FormatterWorker(TclFormatterWriter writer,
-			IFormatterDocument document, IFormatterContext context) {
+	public FormatterWorker(TclFormatterWriter writer, IFormatterDocument document, IFormatterContext context) {
 		this.writer = writer;
 		this.document = document;
 		this.context = context;
 	}
 
-	private static boolean isBackSlashLine(final IFormatterDocument document,
-			String line) {
-		return document
-				.getBoolean(TclFormatterConstants.INDENT_AFTER_BACKSLASH)
-				&& (line.contains(BACKSLASH + "\n") || line.contains(BACKSLASH
-						+ "\r"));
+	private static boolean isBackSlashLine(final IFormatterDocument document, String line) {
+		return document.getBoolean(TclFormatterConstants.INDENT_AFTER_BACKSLASH)
+				&& (line.contains(BACKSLASH + "\n") || line.contains(BACKSLASH + "\r"));
 	}
 
 	private static List<String> splitComments(String input) {
-		List<String> result = new ArrayList<String>();
+		List<String> result = new ArrayList<>();
 		List<String> lines = splitLines(input);
 		StringBuffer sb = new StringBuffer();
 		for (String line : lines) {
@@ -74,7 +70,7 @@ public class FormatterWorker extends TclVisitor {
 
 	private static List<String> splitLines(String text) {
 		char[] input = text.toCharArray();
-		List<String> lines = new ArrayList<String>();
+		List<String> lines = new ArrayList<>();
 		StringBuffer sb = new StringBuffer();
 		for (int i = 0; i < input.length; i++) {
 			sb.append(input[i]);
@@ -98,11 +94,9 @@ public class FormatterWorker extends TclVisitor {
 	}
 
 	private static boolean isIf0Comment(TclCommand command) {
-		return "if".equals(command.getQualifiedName())
-				&& command.getArguments().size() == 2
+		return "if".equals(command.getQualifiedName()) && command.getArguments().size() == 2
 				&& command.getArguments().get(0) instanceof StringArgument
-				&& "0".equals(((StringArgument) command.getArguments().get(0))
-						.getValue())
+				&& "0".equals(((StringArgument) command.getArguments().get(0)).getValue())
 				&& command.getArguments().get(1) instanceof Script;
 	}
 
@@ -111,7 +105,7 @@ public class FormatterWorker extends TclVisitor {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param commands
 	 * @param document
 	 * @return formatted code
@@ -134,19 +128,16 @@ public class FormatterWorker extends TclVisitor {
 			}
 			wasPackageDirective = true;
 		} else if (wasPackageDirective) {
-			context.setBlankLines(document
-					.getInt(TclFormatterConstants.LINES_FILE_AFTER_PACKAGE));
+			context.setBlankLines(document.getInt(TclFormatterConstants.LINES_FILE_AFTER_PACKAGE));
 			wasPackageDirective = false;
 		}
 		// 'proc' directive handling
 		if (PROC_DIRECTIVE.equals(command.getQualifiedName())) {
-			List<String> comments = splitComments(document.get(lastReaderPos,
-					command.getStart()));
+			List<String> comments = splitComments(document.get(lastReaderPos, command.getStart()));
 			for (int i = 0; i < comments.size() - 1; i++) {
 				write(lastReaderPos + comments.get(i).length());
 			}
-			context.setBlankLines(document
-					.getInt(TclFormatterConstants.LINES_FILE_BETWEEN_PROC));
+			context.setBlankLines(document.getInt(TclFormatterConstants.LINES_FILE_BETWEEN_PROC));
 		} else if (isIf0Comment(command)) { // if 0 { comments }
 			lastComment = true;
 			write(command.getEnd());
@@ -159,8 +150,7 @@ public class FormatterWorker extends TclVisitor {
 	@Override
 	public void endVisit(TclCommand command) {
 		if (PROC_DIRECTIVE.equals(command.getQualifiedName())) {
-			context.setBlankLines(document
-					.getInt(TclFormatterConstants.LINES_FILE_BETWEEN_PROC));
+			context.setBlankLines(document.getInt(TclFormatterConstants.LINES_FILE_BETWEEN_PROC));
 		}
 	}
 
@@ -283,8 +273,7 @@ public class FormatterWorker extends TclVisitor {
 			// Wrapping comments option
 			if (line.trim().startsWith("#")) {
 				final boolean savedWrapping = context.isWrapping();
-				context.setWrapping(document
-						.getBoolean(TclFormatterConstants.WRAP_COMMENTS));
+				context.setWrapping(document.getBoolean(TclFormatterConstants.WRAP_COMMENTS));
 				try {
 					writer.write(context, lastReaderPos, end);
 				} catch (Exception e) {

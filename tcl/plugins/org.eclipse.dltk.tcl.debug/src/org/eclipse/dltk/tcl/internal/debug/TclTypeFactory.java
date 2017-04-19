@@ -14,6 +14,7 @@ public class TclTypeFactory implements IScriptTypeFactory {
 			super(STRING);
 		}
 
+		@Override
 		public String formatValue(IScriptValue value) {
 			String string = value.getRawValue();
 			if (string == null) {
@@ -22,6 +23,7 @@ public class TclTypeFactory implements IScriptTypeFactory {
 			return escapeString(string, false);
 		}
 
+		@Override
 		public String formatDetails(IScriptValue value) {
 			String string = value.getRawValue();
 			if (string == null) {
@@ -85,21 +87,6 @@ public class TclTypeFactory implements IScriptTypeFactory {
 			return result.toString();
 		}
 
-		/**
-		 * @param value
-		 * @return
-		 */
-		private static boolean canBraceEscape(String value) {
-			final int length = value.length();
-			for (int i = 0; i < length; i++) {
-				final char c = value.charAt(i);
-				if (c < 32 || c == '{' || c == '}') {
-					return false;
-				}
-			}
-			return true;
-		}
-
 		private static char toHexChar(int value) {
 			if (value <= 9) {
 				return (char) ('0' + value);
@@ -143,6 +130,7 @@ public class TclTypeFactory implements IScriptTypeFactory {
 			super(NAMESPACE);
 		}
 
+		@Override
 		public String formatValue(IScriptValue value) {
 			return NAMESPACE;
 		}
@@ -154,6 +142,7 @@ public class TclTypeFactory implements IScriptTypeFactory {
 
 	private static final String NAMESPACE = "namespace"; //$NON-NLS-1$
 
+	@Override
 	public IScriptType buildType(String type) {
 		if (STRING.equals(type)) {
 			return stringType;

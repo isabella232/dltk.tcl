@@ -8,6 +8,7 @@ import org.eclipse.dltk.debug.core.DLTKDebugPreferenceConstants;
 public class TclDebugPreferenceInitializer extends
 		AbstractPreferenceInitializer {
 
+	@Override
 	public void initializeDefaultPreferences() {
 		Preferences store = TclDebugPlugin.getDefault().getPluginPreferences();
 

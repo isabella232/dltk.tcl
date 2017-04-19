@@ -11,7 +11,6 @@ import org.eclipse.dltk.compiler.CharOperation;
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.IMethod;
 import org.eclipse.dltk.core.IModelElement;
-import org.eclipse.dltk.core.IModelElementVisitor;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ISourceRange;
 import org.eclipse.dltk.core.ModelException;
@@ -26,6 +25,7 @@ public class TclHotCodeReplaceProvider implements IHotCodeReplaceProvider {
 	public TclHotCodeReplaceProvider() {
 	}
 
+	@Override
 	public void performCodeReplace(IScriptDebugTarget target,
 			IResource[] resources) throws DebugException {
 		final IScriptThread[] threads = (IScriptThread[]) target.getThreads();
@@ -52,18 +52,14 @@ public class TclHotCodeReplaceProvider implements IHotCodeReplaceProvider {
 		if (module == null) {
 			return null;
 		}
-		final List<IMethod> procList = new ArrayList<IMethod>();
+		final List<IMethod> procList = new ArrayList<>();
 		try {
-			module.accept(new IModelElementVisitor() {
-
-				public boolean visit(IModelElement element) {
-					if (element.getElementType() == IModelElement.METHOD) {
-						procList.add((IMethod) element);
-						return false;
-					}
-					return true;
+			module.accept(element -> {
+				if (element.getElementType() == IModelElement.METHOD) {
+					procList.add((IMethod) element);
+					return false;
 				}
-
+				return true;
 			});
 			if (procList.isEmpty()) {
 				return null;
@@ -106,7 +102,7 @@ public class TclHotCodeReplaceProvider implements IHotCodeReplaceProvider {
 	 * @return
 	 */
 	private String[] collectNamespaces(IMethod method) {
-		final List<String> types = new ArrayList<String>();
+		final List<String> types = new ArrayList<>();
 		IModelElement parent = method.getParent();
 		while (parent.getElementType() == IModelElement.TYPE) {
 			types.add(parent.getElementName());

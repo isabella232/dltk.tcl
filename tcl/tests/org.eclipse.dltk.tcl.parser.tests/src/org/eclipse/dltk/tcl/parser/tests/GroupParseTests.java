@@ -31,7 +31,7 @@ import org.eclipse.emf.common.util.EList;
 import org.junit.Test;
 
 public class GroupParseTests {
-	public Command createConstantsCommand() throws Exception {
+	public Command createConstantsCommand() {
 		DefinitionsFactory factory = DefinitionsFactory.eINSTANCE;
 
 		Command command = factory.createCommand();
@@ -71,43 +71,42 @@ public class GroupParseTests {
 	}
 
 	@Test
-	public void test001() throws Exception {
+	public void test001() {
 		String source = "group";
 		typedCheck(source, 0, 0);
 	}
 
 	@Test
-	public void test002() throws Exception {
+	public void test002() {
 		String source = "group const val";
 		typedCheck(source, 1, 0);
 	}
 
 	@Test
-	public void test003() throws Exception {
+	public void test003() {
 		String source = "group const val val";
 		typedCheck(source, 0, 0);
 	}
 
 	@Test
-	public void test004() throws Exception {
+	public void test004() {
 		String source = "group val val";
 		typedCheck(source, 1, 0);
 	}
 
 	@Test
-	public void test005() throws Exception {
+	public void test005() {
 		String source = "group const val val val";
 		typedCheck(source, 1, 0);
 	}
 
 	@Test
-	public void test006() throws Exception {
+	public void test006() {
 		String source = "group const val val const val val";
 		typedCheck(source, 0, 0);
 	}
 
-	private void typedCheck(String source, int errs, int code)
-			throws Exception {
+	private void typedCheck(String source, int errs, int code) {
 		TclParser parser = TestUtils.createParser();
 		TestScopeProcessor manager = new TestScopeProcessor();
 		TclErrorCollector errors = new TclErrorCollector();

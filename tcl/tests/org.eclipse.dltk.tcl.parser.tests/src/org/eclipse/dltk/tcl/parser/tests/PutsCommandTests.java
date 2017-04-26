@@ -30,61 +30,60 @@ public class PutsCommandTests {
 	NamespaceScopeProcessor processor;
 
 	@Test
-	public void test001() throws Exception {
+	public void test001() {
 		String source = "puts message";
 		typedCheck(source, 0, 0);
 	}
 
 	@Test
-	public void test002() throws Exception {
+	public void test002() {
 		String source = "puts file0 message";
 		typedCheck(source, 0, 0);
 	}
 
 	@Test
-	public void test003() throws Exception {
+	public void test003() {
 		String source = "puts -nonewline message";
 		typedCheck(source, 0, 0);
 	}
 
 	@Test
-	public void test004() throws Exception {
+	public void test004() {
 		String source = "puts -nonewline file0 message";
 		typedCheck(source, 0, 0);
 	}
 
 	@Test
-	public void test005() throws Exception {
+	public void test005() {
 		String source = "puts -nonewline";
 		typedCheck(source, 1, 0);
 	}
 
 	@Test
-	public void test006() throws Exception {
+	public void test006() {
 		String source = "puts -nonewline file0";
 		typedCheck(source, 0, 0);
 	}
 
 	@Test
-	public void test007() throws Exception {
+	public void test007() {
 		String source = "puts";
 		typedCheck(source, 1, 0);
 	}
 
 	@Test
-	public void test008() throws Exception {
+	public void test008() {
 		String source = "puts -nonewline file0 msg0 msg1";
 		typedCheck(source, 1, 0);
 	}
 
 	@Test
-	public void test009() throws Exception {
+	public void test009() {
 		String source = "puts msg0 msg1 msg2";
 		typedCheck(source, 1, 0);
 	}
 
-	private void typedCheck(String source, int errs, int code)
-			throws Exception {
+	private void typedCheck(String source, int errs, int code) {
 		processor = DefinitionManager.getInstance().createProcessor();
 		TclParser parser = TestUtils.createParser("8.4");
 		TclErrorCollector errors = new TclErrorCollector();

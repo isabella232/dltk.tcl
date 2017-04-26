@@ -30,79 +30,78 @@ public class IfCommandTests {
 	NamespaceScopeProcessor processor;
 
 	@Test
-	public void test001() throws Exception {
+	public void test001() {
 		String source = "if {} {set a 20}";
 		typedCheck(source, 0, 1);
 	}
 
 	@Test
-	public void test002() throws Exception {
+	public void test002() {
 		String source = "if {} then {set a 20}";
 		typedCheck(source, 0, 1);
 	}
 
 	@Test
-	public void test003() throws Exception {
+	public void test003() {
 		String source = "if {} {set a 20} elseif {} {set a 20}";
 		typedCheck(source, 0, 2);
 	}
 
 	@Test
-	public void test004() throws Exception {
+	public void test004() {
 		String source = "if {} {set a 20} elseif {} then {set a 20}";
 		typedCheck(source, 0, 2);
 	}
 
 	@Test
-	public void test005() throws Exception {
+	public void test005() {
 		String source = "if {} {set a 20} elseif {} {set a 20} elseif {} {set a 20}";
 		typedCheck(source, 0, 3);
 	}
 
 	@Test
-	public void test006() throws Exception {
+	public void test006() {
 		String source = "if {} {set a 20} elseif {} {set a 20} else {set a 20}";
 		typedCheck(source, 0, 3);
 	}
 
 	@Test
-	public void test007() throws Exception {
+	public void test007() {
 		String source = "if {} {set a 20} elseif {} {set a 20} else {set a 20}";
 		typedCheck(source, 0, 3);
 	}
 
 	@Test
-	public void test008() throws Exception {
+	public void test008() {
 		String source = "if {} {set a 20} {set a 20}";
 		typedCheck(source, 0, 2);
 	}
 
 	@Test
-	public void test009() throws Exception {
+	public void test009() {
 		String source = "if {} {set a 20} else {set a 20} else {set a 20}";
 		typedCheck(source, 1, 2);
 	}
 
 	@Test
-	public void test010() throws Exception {
+	public void test010() {
 		String source = "if {} {set a 20} elseif";
 		typedCheck(source, 1, 1);
 	}
 
 	@Test
-	public void test011() throws Exception {
+	public void test011() {
 		String source = "if {} {set a 20} elseif {}";
 		typedCheck(source, 1, 1);
 	}
 
 	@Test
-	public void test012() throws Exception {
+	public void test012() {
 		String source = "if {$a} then {} else if";
 		typedCheck(source, 1, 2);
 	}
 
-	private void typedCheck(String source, int errs, int code)
-			throws Exception {
+	private void typedCheck(String source, int errs, int code) {
 		processor = DefinitionManager.getInstance().createProcessor();
 		TclParser parser = TestUtils.createParser();
 		TclErrorCollector errors = new TclErrorCollector();

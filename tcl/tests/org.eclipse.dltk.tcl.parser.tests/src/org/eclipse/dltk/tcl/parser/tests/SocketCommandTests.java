@@ -30,31 +30,30 @@ public class SocketCommandTests {
 	NamespaceScopeProcessor processor;
 
 	@Test
-	public void test001() throws Exception {
+	public void test001() {
 		String source = "socket $host $port";
 		typedCheck(source, 0, 0);
 	}
 
 	@Test
-	public void test002() throws Exception {
+	public void test002() {
 		String source = "socket -server [list ::ftpd::PasvAccept $sock] 0";
 		typedCheck(source, 0, 0);
 	}
 
 	@Test
-	public void test003() throws Exception {
+	public void test003() {
 		String source = "set data(sock2a) [socket -server [list ::ftpd::PasvAccept $sock] 0]";
 		typedCheck(source, 0, 0);
 	}
 
 	@Test
-	public void test004() throws Exception {
+	public void test004() {
 		String source = "socket -server lala";
 		typedCheck(source, 1, 0);
 	}
 
-	private void typedCheck(String source, int errs, int code)
-			throws Exception {
+	private void typedCheck(String source, int errs, int code) {
 		processor = DefinitionManager.getInstance().createProcessor();
 		TclParser parser = TestUtils.createParser();
 		TclErrorCollector errors = new TclErrorCollector();

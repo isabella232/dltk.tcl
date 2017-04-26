@@ -19,7 +19,7 @@ public class SynopsisTests {
 	NamespaceScopeProcessor processor;
 
 	@Test
-	public void test001() throws Exception {
+	public void test001() {
 		String source = "after";
 		String synopsis = "after ms ?script ...?\n" + "after cancel id\n"
 				+ "after cancel script ?script ...?\n"
@@ -28,21 +28,21 @@ public class SynopsisTests {
 	}
 
 	@Test
-	public void test002() throws Exception {
+	public void test002() {
 		String source = "append";
 		String synopsis = "append varName ?value ...?";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test003() throws Exception {
+	public void test003() {
 		String source = "apply";
 		String synopsis = "apply {args body ?namespace?} ?arg ...?";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test004() throws Exception {
+	public void test004() {
 		String source = "array";
 		String synopsis = "array anymore arrayName searchId\n"
 				+ "array donesearch arrayName searchId\n"
@@ -57,56 +57,56 @@ public class SynopsisTests {
 	}
 
 	@Test
-	public void test005() throws Exception {
+	public void test005() {
 		String source = "auto_execok";
 		String synopsis = "auto_execok cmd";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test006() throws Exception {
+	public void test006() {
 		String source = "auto_import";
 		String synopsis = "auto_import pattern";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test007() throws Exception {
+	public void test007() {
 		String source = "auto_load";
 		String synopsis = "auto_load cmd ?namespace?";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test008() throws Exception {
+	public void test008() {
 		String source = "auto_mkindex";
 		String synopsis = "auto_mkindex dir pattern ?pattern ...?";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test009() throws Exception {
+	public void test009() {
 		String source = "auto_mkindex_old";
 		String synopsis = "auto_mkindex_old dir pattern ?pattern ...?";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test010() throws Exception {
+	public void test010() {
 		String source = "auto_qualify";
 		String synopsis = "auto_qualify command namespace";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test011() throws Exception {
+	public void test011() {
 		String source = "auto_reset";
 		String synopsis = "auto_reset";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test012() throws Exception {
+	public void test012() {
 		String source = "binary";
 		String synopsis = "binary format formatString ?arg ...?\n"
 				+ "binary scan string formatString ?varName ...?";
@@ -114,14 +114,14 @@ public class SynopsisTests {
 	}
 
 	@Test
-	public void test013() throws Exception {
+	public void test013() {
 		String source = "break";
 		String synopsis = "break";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test014() throws Exception {
+	public void test014() {
 		String source = "catch";
 		String synopsis = "catch script ?resultVarName? ?optionsVarName?";
 		String synopsis_8_4 = "catch script ?resultVarName?";
@@ -130,14 +130,14 @@ public class SynopsisTests {
 	}
 
 	@Test
-	public void test015() throws Exception {
+	public void test015() {
 		String source = "cd";
 		String synopsis = "cd ?dirName?";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test016() throws Exception {
+	public void test016() {
 		String source = "chan";
 		String synopsis = "chan blocked channelId\n" + "chan close channelId\n"
 				+ "chan configure channelId ?option? ?value? ?option value ...?\n"
@@ -156,7 +156,7 @@ public class SynopsisTests {
 	}
 
 	@Test
-	public void test017() throws Exception {
+	public void test017() {
 		String source = "clock";
 		String synopsis_8_4 = "clock clicks ?-milliseconds?\n"
 				+ "clock format clockValue ?option value ...?\n"
@@ -173,28 +173,28 @@ public class SynopsisTests {
 	}
 
 	@Test
-	public void test018() throws Exception {
+	public void test018() {
 		String source = "close";
 		String synopsis = "close channelId";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test019() throws Exception {
+	public void test019() {
 		String source = "concat";
 		String synopsis = "concat ?arg ...?";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test020() throws Exception {
+	public void test020() {
 		String source = "continue";
 		String synopsis = "continue";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test021() throws Exception {
+	public void test021() {
 		String source = "dde";
 		String synopsis_8_4 = "dde servername ?topic?\n"
 				+ "dde execute ?-async? service topic data\n"
@@ -213,7 +213,7 @@ public class SynopsisTests {
 	}
 
 	@Test
-	public void test022() throws Exception {
+	public void test022() {
 		String source = "dict";
 		String synopsis = "dict append dictionaryVariable key ?string ...?\n"
 				+ "dict create ?key value ...?\n"
@@ -240,7 +240,7 @@ public class SynopsisTests {
 	}
 
 	@Test
-	public void test023() throws Exception {
+	public void test023() {
 		String source = "encoding";
 		String synopsis_8_4 = "encoding convertfrom ?encoding? data\n"
 				+ "encoding convertto ?encoding? string\n" + "encoding names\n"
@@ -254,28 +254,28 @@ public class SynopsisTests {
 	}
 
 	@Test
-	public void test024() throws Exception {
+	public void test024() {
 		String source = "eof";
 		String synopsis = "eof channelId";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test025() throws Exception {
+	public void test025() {
 		String source = "error";
 		String synopsis = "error message ?info? ?code?";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test026() throws Exception {
+	public void test026() {
 		String source = "eval";
 		String synopsis = "eval arg ?arg ...?";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test027() throws Exception {
+	public void test027() {
 		String source = "exec";
 		String synopsis_8_4 = "exec ?-keepnewline? ?--? arg ?arg ...?";
 		String synopsis = "exec ?-ignorestderr? ?-keepnewline? ?--? arg ?arg ...?";
@@ -284,42 +284,42 @@ public class SynopsisTests {
 	}
 
 	@Test
-	public void test028() throws Exception {
+	public void test028() {
 		String source = "exit";
 		String synopsis = "exit ?returnCode?";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test029() throws Exception {
+	public void test029() {
 		String source = "expr";
 		String synopsis = "expr arg ?arg ...?";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test030() throws Exception {
+	public void test030() {
 		String source = "fblocked";
 		String synopsis = "fblocked channelId";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test031() throws Exception {
+	public void test031() {
 		String source = "fconfigure";
 		String synopsis = "fconfigure channelId ?name? ?value? ?name value ...?";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test032() throws Exception {
+	public void test032() {
 		String source = "fcopy";
 		String synopsis = "fcopy inchan outchan ?-size size? ?-command callback?";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test033() throws Exception {
+	public void test033() {
 		String source = "file";
 		String synopsis = "file atime name ?time?\n"
 				+ "file attributes name ?option? ?value? ?option value ...?\n"
@@ -348,7 +348,7 @@ public class SynopsisTests {
 	}
 
 	@Test
-	public void test034() throws Exception {
+	public void test034() {
 		String source = "fileevent";
 		String synopsis = "fileevent channelId readable ?script?\n"
 				+ "fileevent channelId writable ?script?";
@@ -356,56 +356,56 @@ public class SynopsisTests {
 	}
 
 	@Test
-	public void test035() throws Exception {
+	public void test035() {
 		String source = "flush";
 		String synopsis = "flush channelId";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test036() throws Exception {
+	public void test036() {
 		String source = "for";
 		String synopsis = "for start test next body";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test037() throws Exception {
+	public void test037() {
 		String source = "foreach";
 		String synopsis = "foreach varname list ?varname list ...? body";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test038() throws Exception {
+	public void test038() {
 		String source = "format";
 		String synopsis = "format formatString ?arg ...?";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test039() throws Exception {
+	public void test039() {
 		String source = "gets";
 		String synopsis = "gets channelId ?varName?";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test040() throws Exception {
+	public void test040() {
 		String source = "glob";
 		String synopsis = "glob ?switches ...? ?--? pattern ?pattern ...?";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test041() throws Exception {
+	public void test041() {
 		String source = "global";
 		String synopsis = "global varname ?varname ...?";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test042() throws Exception {
+	public void test042() {
 		String source = "history";
 		String synopsis = "history\n" + "history add command ?exec?\n"
 				+ "history change newValue ?event?\n" + "history clear\n"
@@ -416,112 +416,112 @@ public class SynopsisTests {
 	}
 
 	@Test
-	public void test043() throws Exception {
+	public void test043() {
 		String source = "::http::config";
 		String synopsis = "config ?option? ?value? ?option value ...?";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test044() throws Exception {
+	public void test044() {
 		String source = "::http::geturl";
 		String synopsis = "geturl url ?option? ?value? ?option value ...?";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test045() throws Exception {
+	public void test045() {
 		String source = "::http::formatQuery";
 		String synopsis = "formatQuery key value ?key value ...?";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test046() throws Exception {
+	public void test046() {
 		String source = "::http::reset";
 		String synopsis = "reset token ?why?";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test047() throws Exception {
+	public void test047() {
 		String source = "::http::wait";
 		String synopsis = "wait token";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test048() throws Exception {
+	public void test048() {
 		String source = "::http::status";
 		String synopsis = "status token";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test049() throws Exception {
+	public void test049() {
 		String source = "::http::size";
 		String synopsis = "size token";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test050() throws Exception {
+	public void test050() {
 		String source = "::http::code";
 		String synopsis = "code token";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test051() throws Exception {
+	public void test051() {
 		String source = "::http::ncode";
 		String synopsis = "ncode token";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test052() throws Exception {
+	public void test052() {
 		String source = "::http::meta";
 		String synopsis = "meta token";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test053() throws Exception {
+	public void test053() {
 		String source = "::http::data";
 		String synopsis = "data token";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test054() throws Exception {
+	public void test054() {
 		String source = "::http::error";
 		String synopsis = "error token";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test055() throws Exception {
+	public void test055() {
 		String source = "::http::cleanup";
 		String synopsis = "cleanup token";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test056() throws Exception {
+	public void test056() {
 		String source = "::http::register";
 		String synopsis = "register proto port command";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test057() throws Exception {
+	public void test057() {
 		String source = "::http::unregister";
 		String synopsis = "unregister proto";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test058() throws Exception {
+	public void test058() {
 		String source = "if";
 		String synopsis = "if expr1 ?then? body1 "
 				+ "?elseif expr2 ?then? body2 ...? ?else? ?bodyN?";
@@ -529,14 +529,14 @@ public class SynopsisTests {
 	}
 
 	@Test
-	public void test059() throws Exception {
+	public void test059() {
 		String source = "incr";
 		String synopsis = "incr varName ?increment?";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test060() throws Exception {
+	public void test060() {
 		String source = "info";
 		String synopsis_8_4 = "info args procname\n" + "info body procname\n"
 				+ "info cmdcount\n" + "info commands ?pattern?\n"
@@ -567,7 +567,7 @@ public class SynopsisTests {
 	}
 
 	@Test
-	public void test061() throws Exception {
+	public void test061() {
 		String source = "interp";
 		String synopsis = "interp alias srcPath srcToken\n"
 				+ "interp alias srcPath srcToken {}\n"
@@ -591,105 +591,105 @@ public class SynopsisTests {
 	}
 
 	@Test
-	public void test062() throws Exception {
+	public void test062() {
 		String source = "join";
 		String synopsis = "join list ?joinString?";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test063() throws Exception {
+	public void test063() {
 		String source = "lappend";
 		String synopsis = "lappend varName ?value ...?";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test064() throws Exception {
+	public void test064() {
 		String source = "lassign";
 		String synopsis = "lassign list varName ?varName ...?";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test065() throws Exception {
+	public void test065() {
 		String source = "lindex";
 		String synopsis = "lindex list ?index ...?";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test066() throws Exception {
+	public void test066() {
 		String source = "linsert";
 		String synopsis = "linsert list index element ?element ...?";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test067() throws Exception {
+	public void test067() {
 		String source = "list";
 		String synopsis = "list ?arg ...?";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test068() throws Exception {
+	public void test068() {
 		String source = "llength";
 		String synopsis = "llength list";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test069() throws Exception {
+	public void test069() {
 		String source = "load";
 		String synopsis = "load fileName ?packageName? ?interp?";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test070() throws Exception {
+	public void test070() {
 		String source = "lrange";
 		String synopsis = "lrange list first last";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test071() throws Exception {
+	public void test071() {
 		String source = "lrepeat";
 		String synopsis = "lrepeat number element ?element ...?";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test072() throws Exception {
+	public void test072() {
 		String source = "lreplace";
 		String synopsis = "lreplace list first last ?element ...?";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test073() throws Exception {
+	public void test073() {
 		String source = "lreverse list";
 		String synopsis = "lreverse list";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test074() throws Exception {
+	public void test074() {
 		String source = "lsearch";
 		String synopsis = "lsearch ?options ...? list pattern";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test075() throws Exception {
+	public void test075() {
 		String source = "lset";
 		String synopsis = "lset varName ?index ...? newValue";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test076() throws Exception {
+	public void test076() {
 		String source = "lsort";
 		String synopsis = "lsort ?options ...? list";
 		typedCheck(source, synopsis, "8.4");
@@ -698,7 +698,7 @@ public class SynopsisTests {
 	}
 
 	@Test
-	public void test077() throws Exception {
+	public void test077() {
 		String source = "memory";
 		String synopsis = "memory active file\n"
 				+ "memory break_on_malloc count\n" + "memory info\n"
@@ -710,63 +710,63 @@ public class SynopsisTests {
 	}
 
 	@Test
-	public void test078() throws Exception {
+	public void test078() {
 		String source = "::msgcat::mc";
 		String synopsis = "mc src-string ?arg ...?";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test079() throws Exception {
+	public void test079() {
 		String source = "::msgcat::mcmax";
 		String synopsis = "mcmax ?src-string ...?";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test080() throws Exception {
+	public void test080() {
 		String source = "::msgcat::mclocale ?newLocale?";
 		String synopsis = "mclocale ?newLocale?";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test081() throws Exception {
+	public void test081() {
 		String source = "::msgcat::mcpreferences";
 		String synopsis = "mcpreferences";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test082() throws Exception {
+	public void test082() {
 		String source = "::msgcat::mcload";
 		String synopsis = "mcload dirname";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test083() throws Exception {
+	public void test083() {
 		String source = "::msgcat::mcset";
 		String synopsis = "mcset locale src-string ?translate-string?";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test084() throws Exception {
+	public void test084() {
 		String source = "::msgcat::mcmset";
 		String synopsis = "mcmset locale src-trans-list";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test085() throws Exception {
+	public void test085() {
 		String source = "::msgcat::mcunknown";
 		String synopsis = "mcunknown locale src-string";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test086() throws Exception {
+	public void test086() {
 		String source = "namespace";
 		String synopsis_8_4 = "namespace children ?namespace? ?pattern?\n"
 				+ "namespace code script\n" + "namespace current\n"
@@ -803,14 +803,14 @@ public class SynopsisTests {
 	}
 
 	@Test
-	public void test087() throws Exception {
+	public void test087() {
 		String source = "open";
 		String synopsis = "open fileName ?access? ?permissions?";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test088() throws Exception {
+	public void test088() {
 		String source = "package";
 		String synopsis_8_4 = "package forget ?package ...?\n"
 				+ "package ifneeded package version ?script?\n"
@@ -842,21 +842,21 @@ public class SynopsisTests {
 	}
 
 	@Test
-	public void test089() throws Exception {
+	public void test089() {
 		String source = "parray";
 		String synopsis = "parray arrayName";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test090() throws Exception {
+	public void test090() {
 		String source = "pid";
 		String synopsis = "pid ?fileId?";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test091() throws Exception {
+	public void test091() {
 		String source = "::pkg::create";
 		String synopsis = "create -name packageName -version "
 				+ "packageVersion ?-load filespec? ?-source filespec?";
@@ -864,77 +864,77 @@ public class SynopsisTests {
 	}
 
 	@Test
-	public void test092() throws Exception {
+	public void test092() {
 		String source = "pkg_mkIndex";
 		String synopsis = "pkg_mkIndex ?options ...? ?--? dir ?pattern ...?";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test093() throws Exception {
+	public void test093() {
 		String source = "platform::generic";
 		String synopsis = "generic";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test094() throws Exception {
+	public void test094() {
 		String source = "platform::identify";
 		String synopsis = "identify";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test095() throws Exception {
+	public void test095() {
 		String source = "platform::patterns";
 		String synopsis = "patterns identifier";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test096() throws Exception {
+	public void test096() {
 		String source = "platform::shell::generic";
 		String synopsis = "generic shell";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test097() throws Exception {
+	public void test097() {
 		String source = "platform::shell::identify";
 		String synopsis = "identify shell";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test098() throws Exception {
+	public void test098() {
 		String source = "platform::shell::platform";
 		String synopsis = "platform shell";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test099() throws Exception {
+	public void test099() {
 		String source = "proc";
 		String synopsis = "proc name args body";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test100() throws Exception {
+	public void test100() {
 		String source = "puts";
 		String synopsis = "puts -nonewline ?channelId? string\nputs ?channelId? string ?nonewline?";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test101() throws Exception {
+	public void test101() {
 		String source = "pwd";
 		String synopsis = "pwd";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test102() throws Exception {
+	public void test102() {
 		String source = "read";
 		String synopsis = "read channelId ?numChars?\n"
 				+ "read -nonewline channelId";
@@ -942,14 +942,14 @@ public class SynopsisTests {
 	}
 
 	@Test
-	public void test103() throws Exception {
+	public void test103() {
 		String source = "regexp";
 		String synopsis = "regexp ?options ...? ?--? exp string ?matchVar ...?";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test104() throws Exception {
+	public void test104() {
 		String source = "registry";
 		String synopsis = "registry broadcast keyName ?-timeout milliseconds?\n"
 				+ "registry delete keyName ?valueName?\n"
@@ -962,7 +962,7 @@ public class SynopsisTests {
 	}
 
 	@Test
-	public void test105() throws Exception {
+	public void test105() {
 		String source = "regsub";
 		String synopsis = "regsub ?options ...? ?--? exp string subSpec ?varName?";
 		typedCheck(source, synopsis, "8.5");
@@ -970,91 +970,91 @@ public class SynopsisTests {
 	}
 
 	@Test
-	public void test106() throws Exception {
+	public void test106() {
 		String source = "rename";
 		String synopsis = "rename oldName newName";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test107() throws Exception {
+	public void test107() {
 		String source = "return";
 		String synopsis = "return ?option value ...? ?result?";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test108() throws Exception {
+	public void test108() {
 		String source = "::safe::interpCreate";
 		String synopsis = "interpCreate ?slave? ?options ...?";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test109() throws Exception {
+	public void test109() {
 		String source = "::safe::interpInit";
 		String synopsis = "interpInit slave ?options ...?";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test110() throws Exception {
+	public void test110() {
 		String source = "::safe::interpConfigure";
 		String synopsis = "interpConfigure slave ?options ...?";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test111() throws Exception {
+	public void test111() {
 		String source = "::safe::interpDelete";
 		String synopsis = "interpDelete slave";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test112() throws Exception {
+	public void test112() {
 		String source = "::safe::interpAddToAccessPath";
 		String synopsis = "interpAddToAccessPath slave directory";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test113() throws Exception {
+	public void test113() {
 		String source = "::safe::interpFindInAccessPath";
 		String synopsis = "interpFindInAccessPath slave directory";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test114() throws Exception {
+	public void test114() {
 		String source = "::safe::setLogCmd";
 		String synopsis = "setLogCmd ?cmd? ?arg ...?";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test115() throws Exception {
+	public void test115() {
 		String source = "scan";
 		String synopsis = "scan string format ?varName ...?";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test116() throws Exception {
+	public void test116() {
 		String source = "seek";
 		String synopsis = "seek channelId offset ?[start|current|end]?";// origin
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test117() throws Exception {
+	public void test117() {
 		String source = "set";
 		String synopsis = "set varName ?value?";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test118() throws Exception {
+	public void test118() {
 		String source = "socket";
 		String synopsis = "socket -server command ?-myaddr addr? port\n"
 				+ "socket ?-myaddr addr? ?-myport port? ?-async? host port";
@@ -1062,21 +1062,21 @@ public class SynopsisTests {
 	}
 
 	@Test
-	public void test119() throws Exception {
+	public void test119() {
 		String source = "source";
 		String synopsis = "source ?-encoding encodingName? fileName";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test120() throws Exception {
+	public void test120() {
 		String source = "split";
 		String synopsis = "split string ?splitChars?";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test121() throws Exception {
+	public void test121() {
 		String source = "string";
 		String synopsis_8_4 = "string bytelength string\n"
 				+ "string compare ?-nocase? ?-length int? string1 string2\n"
@@ -1126,14 +1126,14 @@ public class SynopsisTests {
 	}
 
 	@Test
-	public void test122() throws Exception {
+	public void test122() {
 		String source = "subst";
 		String synopsis = "subst ?-nobackslashes? ?-nocommands? ?-novariables? string";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test123() throws Exception {
+	public void test123() {
 		String source = "switch";
 		String synopsis = "switch ?options ...? ?--? string pattern body ?pattern body ...?\n"
 				+ "switch ?options ...? ?--? string {pattern body ?pattern body ...?}";
@@ -1141,56 +1141,56 @@ public class SynopsisTests {
 	}
 
 	@Test
-	public void test124() throws Exception {
+	public void test124() {
 		String source = "tcl_endOfWord";
 		String synopsis = "tcl_endOfWord str start";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test125() throws Exception {
+	public void test125() {
 		String source = "tcl_startOfNextWord";
 		String synopsis = "tcl_startOfNextWord str start";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test126() throws Exception {
+	public void test126() {
 		String source = "tcl_startOfPreviousWord";
 		String synopsis = "tcl_startOfPreviousWord str start";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test127() throws Exception {
+	public void test127() {
 		String source = "tcl_wordBreakAfter";
 		String synopsis = "tcl_wordBreakAfter str start";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test128() throws Exception {
+	public void test128() {
 		String source = "tcl_wordBreakBefore";
 		String synopsis = "tcl_wordBreakBefore str start";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test129() throws Exception {
+	public void test129() {
 		String source = "tell";
 		String synopsis = "tell channelId";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test130() throws Exception {
+	public void test130() {
 		String source = "time";
 		String synopsis = "time script ?count?";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test131() throws Exception {
+	public void test131() {
 		String source = "::tcl::tm::path";
 		String synopsis = "path add path ?path ...?\n"
 				+ "path remove path ?path ...?\n" + "path list";
@@ -1198,14 +1198,14 @@ public class SynopsisTests {
 	}
 
 	@Test
-	public void test132() throws Exception {
+	public void test132() {
 		String source = "::tcl::tm::roots";
 		String synopsis = "roots path ?path ...?";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test133() throws Exception {
+	public void test133() {
 		String source = "trace";
 		String synopsis = "trace add command name ops commandPrefix\n"
 				+ "trace add execution name ops commandPrefix\n"
@@ -1221,70 +1221,69 @@ public class SynopsisTests {
 	}
 
 	@Test
-	public void test134() throws Exception {
+	public void test134() {
 		String source = "unknown";
 		String synopsis = "unknown cmdName ?arg ...?";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test135() throws Exception {
+	public void test135() {
 		String source = "unload";
 		String synopsis = "unload ?-nocomplain? ?-keeplibrary? ?--? fileName ?packageName? ?interp?";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test136() throws Exception {
+	public void test136() {
 		String source = "unset";
 		String synopsis = "unset ?-nocomplain? ?--? ?name ...?";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test137() throws Exception {
+	public void test137() {
 		String source = "update";
 		String synopsis = "update ?idletasks?";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test138() throws Exception {
+	public void test138() {
 		String source = "uplevel";
 		String synopsis = "uplevel ?level? arg ?arg ...?";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test139() throws Exception {
+	public void test139() {
 		String source = "upvar";
 		String synopsis = "upvar ?level? otherVar myVar ?otherVar myVar ...?";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test140() throws Exception {
+	public void test140() {
 		String source = "variable";
 		String synopsis = "variable ?name value ...? name ?value?";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test141() throws Exception {
+	public void test141() {
 		String source = "vwait";
 		String synopsis = "vwait varName";
 		typedCheck(source, synopsis, "8.5");
 	}
 
 	@Test
-	public void test142() throws Exception {
+	public void test142() {
 		String source = "while";
 		String synopsis = "while test body";
 		typedCheck(source, synopsis, "8.5");
 	}
 
-	private void typedCheck(String source, String expected, String version)
-			throws Exception {
+	private void typedCheck(String source, String expected, String version) {
 		processor = DefinitionManager.getInstance().createProcessor();
 		TclParser parser = TestUtils.createParser(version);
 		TclErrorCollector errors = new TclErrorCollector();

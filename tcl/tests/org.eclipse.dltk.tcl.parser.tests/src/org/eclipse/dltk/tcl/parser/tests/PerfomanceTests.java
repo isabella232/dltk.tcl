@@ -28,7 +28,7 @@ import org.junit.Test;
 
 public class PerfomanceTests {
 	@Test
-	public void testBigFilePerfomance() throws Exception {
+	public void testBigFilePerfomance() {
 		PerformanceMonitor.getDefault().begin("LOAD BIG FILE:");
 		String contents = BigFileGenerator.generateBigFile001();
 		PerformanceMonitor.getDefault().end("LOAD BIG FILE:");

@@ -29,13 +29,12 @@ public class PackageCommandTests {
 	NamespaceScopeProcessor processor;
 
 	@Test
-	public void test001() throws Exception {
+	public void test001() {
 		String source = "package require cool";
 		typedCheck(source, 0, 0);
 	}
 
-	private void typedCheck(String source, int errs, int code)
-			throws Exception {
+	private void typedCheck(String source, int errs, int code) {
 		processor = DefinitionManager.getInstance().createProcessor();
 		TclParser parser = TestUtils.createParser();
 		TclErrorCollector errors = new TclErrorCollector();

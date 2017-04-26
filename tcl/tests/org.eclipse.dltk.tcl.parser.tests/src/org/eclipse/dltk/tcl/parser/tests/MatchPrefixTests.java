@@ -33,61 +33,60 @@ public class MatchPrefixTests {
 	NamespaceScopeProcessor processor;
 
 	@Test
-	public void test001() throws Exception {
+	public void test001() {
 		String source = "array names arg";
 		typedCheck(source, 0, 0);
 	}
 
 	@Test
-	public void test002() throws Exception {
+	public void test002() {
 		String source = "array name arg";
 		typedCheck(source, 0, 0);
 	}
 
 	@Test
-	public void test003() throws Exception {
+	public void test003() {
 		String source = "array na arg";
 		typedCheck(source, 0, 0);
 	}
 
 	@Test
-	public void test005() throws Exception {
+	public void test005() {
 		String source = "array n arg";
 		typedCheck(source, 1, 0);
 	}
 
 	@Test
-	public void test006() throws Exception {
+	public void test006() {
 		String source = "array name";
 		typedCheck(source, 1, 0);
 	}
 
 	@Test
-	public void test007() throws Exception {
+	public void test007() {
 		String source = "fconfigure stdin -blocking";
 		typedCheck(source, 0, 0);
 	}
 
 	@Test
-	public void test008() throws Exception {
+	public void test008() {
 		String source = "fconfigure stdin -block";
 		typedCheck(source, 0, 0);
 	}
 
 	@Test
-	public void test009() throws Exception {
+	public void test009() {
 		String source = "fconfigure stdin -b";
 		typedCheck(source, 1, 0);
 	}
 
 	@Test
-	public void test010() throws Exception {
+	public void test010() {
 		String source = "fconfigure stdin -blockingg";
 		typedCheck(source, 1, 0);
 	}
 
-	private void typedCheck(String source, int errs, int code)
-			throws Exception {
+	private void typedCheck(String source, int errs, int code) {
 		processor = DefinitionManager.getInstance().createProcessor();
 		TclParser parser = TestUtils.createParser("8.4");
 		TclErrorCollector errors = new TclErrorCollector();

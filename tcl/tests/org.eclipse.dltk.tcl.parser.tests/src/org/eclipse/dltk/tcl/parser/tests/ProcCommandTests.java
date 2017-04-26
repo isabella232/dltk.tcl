@@ -30,7 +30,7 @@ public class ProcCommandTests {
 	NamespaceScopeProcessor processor;
 
 	@Test
-	public void test001() throws Exception {
+	public void test001() {
 		String source = "proc cmd arg {puts alpha}";
 		TclCommand cmd = typedCheck(source, 0, 1);
 		// TclArgument[] arguments = TclParserUtils.getTypedMatch(cmd, "arg");
@@ -38,79 +38,78 @@ public class ProcCommandTests {
 	}
 
 	@Test
-	public void test002() throws Exception {
+	public void test002() {
 		String source = "proc cmd {arg} {puts alpha}";
 		typedCheck(source, 0, 1);
 	}
 
 	@Test
-	public void test003() throws Exception {
+	public void test003() {
 		String source = "proc cmd {arg1 arg2} {puts alpha}";
 		typedCheck(source, 0, 1);
 	}
 
 	@Test
-	public void test004() throws Exception {
+	public void test004() {
 		String source = "proc cmd {arg1 {arg2 def2}} {puts alpha}";
 		typedCheck(source, 0, 1);
 	}
 
 	@Test
-	public void test005() throws Exception {
+	public void test005() {
 		String source = "proc cmd {arg1 {arg2 def2} args} {puts alpha}";
 		typedCheck(source, 0, 1);
 	}
 
 	@Test
-	public void test006() throws Exception {
+	public void test006() {
 		String source = "proc cmd {{arg1} {{arg2}}} {puts alpha}";
 		typedCheck(source, 0, 1);
 	}
 
 	@Test
-	public void test007() throws Exception {
+	public void test007() {
 		String source = "proc cmd {} {puts alpha}";
 		typedCheck(source, 0, 1);
 	}
 
 	@Test
-	public void test008() throws Exception {
+	public void test008() {
 		String source = "proc cmd {arg1 {arg2 def2 def22} args} {puts alpha}";
 		typedCheck(source, 1, 1);
 	}
 
 	@Test
-	public void test009() throws Exception {
+	public void test009() {
 		String source = "proc cmd {puts alpha}";
 		typedCheck(source, 1, 0);
 	}
 
 	@Test
-	public void test010() throws Exception {
+	public void test010() {
 		String source = "proc cmd arg1 puts alpha";
 		typedCheck(source, 2, 1);
 	}
 
 	@Test
-	public void test011() throws Exception {
+	public void test011() {
 		String source = "proc cmd {{{{arg1}}}} {puts alpha}";
 		typedCheck(source, 0, 1);
 	}
 
 	@Test
-	public void test012() throws Exception {
+	public void test012() {
 		String source = "proc al {q} {}";
 		typedCheck(source, 0, 1);
 	}
 
 	@Test
-	public void test013() throws Exception {
+	public void test013() {
 		String source = "proc alfa {q} {} {}";
 		typedCheck(source, 1, 1);
 	}
 
-	private TclCommand typedCheck(String source, int errs, int code)
-			throws Exception {
+	private TclCommand typedCheck(String source, int errs, int code) {
 		processor = DefinitionManager.getInstance().createProcessor();
 		TclParser parser = TestUtils.createParser("8.4");
 		TclErrorCollector errors = new TclErrorCollector();

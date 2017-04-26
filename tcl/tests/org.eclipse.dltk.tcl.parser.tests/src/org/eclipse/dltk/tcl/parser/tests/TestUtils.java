@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 xored software, Inc.
+ * Copyright (c) 2008, 2017 xored software, Inc. and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -23,9 +23,8 @@ import java.net.URL;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.dltk.tcl.parser.ITclErrorReporter;
+import org.eclipse.dltk.tcl.parser.ITclErrorConstants;
 import org.eclipse.dltk.tcl.parser.TclErrorCollector;
 import org.eclipse.dltk.tcl.parser.TclParser;
 import org.eclipse.dltk.tcl.parser.internal.tests.TestTclParser;
@@ -84,7 +83,7 @@ public class TestUtils {
 		System.out.println("-----------------ERRORS----------------------\n");
 		final CodeModel model = new CodeModel(source);
 		errors.reportAll((code, message, extraMessage, start, end, kind) -> {
-			System.out.println((kind == ITclErrorReporter.ERROR ? "Error:"
+			System.out.println((kind == ITclErrorConstants.ERROR ? "Error:"
 					: "Warning/Info:") + code + " (" + start + "," + end
 					+ ") message:" + message);
 			int line = model.getLineNumber(start, end);
@@ -135,87 +134,90 @@ public class TestUtils {
 	}
 
 	public static void exractZipInto(String location, URL entry,
-			String[] skipFiles) throws IOException, CoreException {
-		InputStream openStream = entry.openStream();
-		ZipInputStream zis = new ZipInputStream(
-				new BufferedInputStream(openStream, 4096));
-		File root = new File(location);
-		root.mkdirs();
-		while (true) {
-			ZipEntry nextEntry = zis.getNextEntry();
-			if (nextEntry != null) {
-				String name = nextEntry.getName();
-				if (!nextEntry.isDirectory()) {
-					boolean skip = false;
-					for (int i = 0; i < skipFiles.length; i++) {
-						if (name.equals(skipFiles[i])) {
-							skip = true;
-							break;
+			String[] skipFiles) throws IOException {
+		try (InputStream openStream = entry.openStream();
+				ZipInputStream zis = new ZipInputStream(
+						new BufferedInputStream(openStream, 4096))) {
+			File root = new File(location);
+			root.mkdirs();
+			while (true) {
+				ZipEntry nextEntry = zis.getNextEntry();
+				if (nextEntry != null) {
+					String name = nextEntry.getName();
+					if (!nextEntry.isDirectory()) {
+						boolean skip = false;
+						for (int i = 0; i < skipFiles.length; i++) {
+							if (name.equals(skipFiles[i])) {
+								skip = true;
+								break;
+							}
+						}
+						if (skip) {
+							zis.closeEntry();
+							continue;
+						}
+						try (FileOutputStream fileOutput = new FileOutputStream(
+								new File(new Path(location).append(name)
+										.toOSString()))) {
+
+							byte[] buf = new byte[1024];
+							int len;
+							try (OutputStream arrayOut = new BufferedOutputStream(
+									fileOutput, 4096)) {
+								while ((len = zis.read(buf)) > 0) {
+									arrayOut.write(buf, 0, len);
+								}
+							}
 						}
 					}
-					if (skip) {
-						zis.closeEntry();
-						continue;
-					}
-					FileOutputStream fileOutput = new FileOutputStream(new File(
-							new Path(location).append(name).toOSString()));
-
-					byte[] buf = new byte[1024];
-					int len;
-					OutputStream arrayOut = new BufferedOutputStream(fileOutput,
-							4096);
-					while ((len = zis.read(buf)) > 0) {
-						arrayOut.write(buf, 0, len);
-					}
-					arrayOut.close();
+					zis.closeEntry();
+				} else {
+					break;
 				}
-				zis.closeEntry();
-			} else {
-				break;
 			}
 		}
-		openStream.close();
 	}
 
 	public static void exractFilesInto(String location, URL entry,
-			String[] skipFiles) throws IOException, CoreException {
-		InputStream openStream = entry.openStream();
-		ZipInputStream zis = new ZipInputStream(
-				new BufferedInputStream(openStream, 4096));
-		File root = new File(location);
-		root.mkdirs();
-		while (true) {
-			ZipEntry nextEntry = zis.getNextEntry();
-			if (nextEntry != null) {
-				String name = nextEntry.getName();
-				if (!nextEntry.isDirectory()) {
-					boolean found = false;
-					for (int i = 0; i < skipFiles.length; i++) {
-						if (name.equals(skipFiles[i])) {
-							found = true;
+			String[] skipFiles) throws IOException {
+		try (InputStream openStream = entry.openStream();
+				ZipInputStream zis = new ZipInputStream(
+						new BufferedInputStream(openStream, 4096))) {
+			File root = new File(location);
+			root.mkdirs();
+			while (true) {
+				ZipEntry nextEntry = zis.getNextEntry();
+				if (nextEntry != null) {
+					String name = nextEntry.getName();
+					if (!nextEntry.isDirectory()) {
+						boolean found = false;
+						for (int i = 0; i < skipFiles.length; i++) {
+							if (name.equals(skipFiles[i])) {
+								found = true;
+							}
+						}
+						if (!found) {
+							zis.closeEntry();
+							continue;
+						}
+						byte[] buf = new byte[1024];
+						int len;
+						try (FileOutputStream fileOutput = new FileOutputStream(
+								new File(new Path(location).append(name)
+										.toOSString()));
+								OutputStream arrayOut = new BufferedOutputStream(
+										fileOutput, 4096)) {
+							while ((len = zis.read(buf)) > 0) {
+								arrayOut.write(buf, 0, len);
+							}
 						}
 					}
-					if (!found) {
-						zis.closeEntry();
-						continue;
-					}
-					FileOutputStream fileOutput = new FileOutputStream(new File(
-							new Path(location).append(name).toOSString()));
-					byte[] buf = new byte[1024];
-					int len;
-					OutputStream arrayOut = new BufferedOutputStream(fileOutput,
-							4096);
-					while ((len = zis.read(buf)) > 0) {
-						arrayOut.write(buf, 0, len);
-					}
-					arrayOut.close();
+					zis.closeEntry();
+				} else {
+					break;
 				}
-				zis.closeEntry();
-			} else {
-				break;
 			}
 		}
-		openStream.close();
 	}
 
 	public static TclParser createParser() {

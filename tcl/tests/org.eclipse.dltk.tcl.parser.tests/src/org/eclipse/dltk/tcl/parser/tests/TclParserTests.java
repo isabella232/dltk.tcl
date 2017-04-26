@@ -29,7 +29,7 @@ import org.junit.Test;
 
 public class TclParserTests {
 	@Test
-	public void testParser001() throws Exception {
+	public void testParser001() {
 		TclParser parser = TestUtils.createParser();
 		String source = "set a 20\n" + "set c 30";
 		List<TclCommand> module = parser.parse(source);
@@ -53,7 +53,7 @@ public class TclParserTests {
 	}
 
 	@Test
-	public void testParser002() throws Exception {
+	public void testParser002() {
 		TclParser parser = TestUtils.createParser();
 		String source = "set a \"wer\"\n" + "set c 30";
 		List<TclCommand> module = parser.parse(source);
@@ -78,7 +78,7 @@ public class TclParserTests {
 	}
 
 	@Test
-	public void testParser003() throws Exception {
+	public void testParser003() {
 		TclParser parser = TestUtils.createParser();
 		String source = "set a {wer}\n" + "set c 30";
 		List<TclCommand> module = parser.parse(source);
@@ -103,7 +103,7 @@ public class TclParserTests {
 	}
 
 	@Test
-	public void testParser004() throws Exception {
+	public void testParser004() {
 		TclParser parser = TestUtils.createParser();
 		String source = "set a [wer]\n" + "set c 30";
 		List<TclCommand> module = parser.parse(source);
@@ -137,7 +137,7 @@ public class TclParserTests {
 	}
 
 	@Test
-	public void testParser005() throws Exception {
+	public void testParser005() {
 		TclParser parser = TestUtils.createParser();
 		String source = "puts \"alfa[de]be$teta\" $delta";
 		List<TclCommand> module = parser.parse(source);
@@ -152,7 +152,7 @@ public class TclParserTests {
 	}
 
 	@Test
-	public void testParser006() throws Exception {
+	public void testParser006() {
 		TclParser parser = TestUtils.createParser();
 		String source = "incr i -$length";
 		List<TclCommand> module = parser.parse(source);
@@ -167,7 +167,7 @@ public class TclParserTests {
 	}
 
 	@Test
-	public void testSimpleErrors001() throws Exception {
+	public void testSimpleErrors001() {
 		TclParser parser = TestUtils.createParser();
 		String source = "set a \"This is\nset b 20";
 		TclErrorCollector collector = new TclErrorCollector();
@@ -178,7 +178,7 @@ public class TclParserTests {
 	}
 
 	@Test
-	public void testSimpleErrors002() throws Exception {
+	public void testSimpleErrors002() {
 		TclParser parser = TestUtils.createParser();
 		String source = "set a [This is\nset b 20";
 		TclErrorCollector collector = new TclErrorCollector();
@@ -189,7 +189,7 @@ public class TclParserTests {
 	}
 
 	@Test
-	public void testSimpleErrors003() throws Exception {
+	public void testSimpleErrors003() {
 		TclParser parser = TestUtils.createParser();
 		String source = "set a {This is\nset b 20";
 		TclErrorCollector collector = new TclErrorCollector();

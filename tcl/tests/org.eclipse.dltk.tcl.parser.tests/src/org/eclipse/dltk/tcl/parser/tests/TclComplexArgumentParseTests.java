@@ -31,7 +31,7 @@ import org.eclipse.dltk.tcl.parser.TclVisitor;
 import org.junit.Test;
 
 public class TclComplexArgumentParseTests {
-	public Command createConstantsCommand() throws Exception {
+	public Command createConstantsCommand() {
 		DefinitionsFactory factory = DefinitionsFactory.eINSTANCE;
 
 		Command command = factory.createCommand();
@@ -68,45 +68,44 @@ public class TclComplexArgumentParseTests {
 	}
 
 	@Test
-	public void test001() throws Exception {
+	public void test001() {
 		String source = "constants";
 		constantsCheck(source, 1, 0);
 	}
 
 	@Test
-	public void test002() throws Exception {
+	public void test002() {
 		String source = "constants {a {set a 20}} ";
 		constantsCheck(source, 0, 1);
 	}
 
 	@Test
-	public void test003() throws Exception {
+	public void test003() {
 		String source = "constants {a {set a 20}} {a {set a 20}}";
 		constantsCheck(source, 0, 2);
 	}
 
 	@Test
-	public void test004() throws Exception {
+	public void test004() {
 		String source = "constants {} {a {set a 20}}";
 		constantsCheck(source, 0, 1);
 	}
 
 	@Test
-	public void test005() throws Exception {
+	public void test005() {
 		String source = "constants {a {set a 20} b {set a 20} c {set a 20}} {a {set a 20}}";
 		constantsCheck(source, 0, 4);
 	}
 
 	@Test
-	public void test006() throws Exception {
+	public void test006() {
 		String source = "constants {\n" + "a {\n" + "	set a 20\n" + "}\n"
 				+ "b {\n" + "	set a 20\n" + "}\n" + "c {\n" + "	set a 20\n"
 				+ "}\n" + "} {a {set a 20}}";
 		constantsCheck(source, 0, 4);
 	}
 
-	private void constantsCheck(String source, int errs, int codeBlocks)
-			throws Exception {
+	private void constantsCheck(String source, int errs, int codeBlocks) {
 		TclParser parser = TestUtils.createParser();
 		TestScopeProcessor manager = new TestScopeProcessor();
 		TclErrorCollector errors = new TclErrorCollector();

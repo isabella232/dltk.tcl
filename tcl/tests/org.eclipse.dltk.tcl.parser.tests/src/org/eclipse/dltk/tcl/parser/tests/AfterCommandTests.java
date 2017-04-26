@@ -29,25 +29,24 @@ public class AfterCommandTests {
 	NamespaceScopeProcessor processor;
 
 	@Test
-	public void test001() throws Exception {
+	public void test001() {
 		String source = "after 10 {puts alpha}";
 		typedCheck(source, 0, 1);
 	}
 
 	@Test
-	public void test002() throws Exception {
+	public void test002() {
 		String source = "after cancel {puts alpha} {puts beta}";
 		typedCheck(source, 0, 0);
 	}
 
 	@Test
-	public void test003() throws Exception {
+	public void test003() {
 		String source = "after $cancel lala";
 		typedCheck(source, 0, 1);
 	}
 
-	private void typedCheck(String source, int errs, int code)
-			throws Exception {
+	private void typedCheck(String source, int errs, int code) {
 		processor = DefinitionManager.getInstance().createProcessor();
 		TclParser parser = TestUtils.createParser("8.4");
 		TclErrorCollector errors = new TclErrorCollector();

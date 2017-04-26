@@ -24,7 +24,7 @@ import org.eclipse.dltk.tcl.parser.TclParser;
 import org.junit.Test;
 
 public class TclConstantsParseTests {
-	public Command createConstantsCommand() throws Exception {
+	public Command createConstantsCommand() {
 		DefinitionsFactory factory = DefinitionsFactory.eINSTANCE;
 
 		Command command = factory.createCommand();
@@ -55,108 +55,108 @@ public class TclConstantsParseTests {
 	}
 
 	@Test
-	public void test001() throws Exception {
+	public void test001() {
 		String source = "constants alfa gamma gamma";
 		constantsCheck(source, 0);
 	}
 
 	@Test
-	public void test002() throws Exception {
+	public void test002() {
 		String source = "constants alfa beta gamma gamma";
 		constantsCheck(source, 0);
 	}
 
 	@Test
-	public void test003() throws Exception {
+	public void test003() {
 		String source = "constants alfa beta gamma";
 		constantsCheck(source, 0);
 	}
 
 	@Test
-	public void test004() throws Exception {
+	public void test004() {
 		String source = "constants alfa beta";
 		constantsCheck(source, 0);
 	}
 
 	@Test
-	public void test005() throws Exception {
+	public void test005() {
 		String source = "constants alfa";
 		constantsCheck(source, 0);
 	}
 
 	@Test
-	public void test006() throws Exception {
+	public void test006() {
 		String source = "constants alfa gamma";
 		constantsCheck(source, 0);
 	}
 
 	@Test
-	public void test007() throws Exception {
+	public void test007() {
 		String source = "constants";
 		constantsCheck(source, 1);
 	}
 
 	@Test
-	public void test008() throws Exception {
+	public void test008() {
 		String source = "constants alfa alfa";
 		constantsCheck(source, 1);
 	}
 
 	@Test
-	public void test009() throws Exception {
+	public void test009() {
 		String source = "constants alfa alfa beta beta";
 		constantsCheck(source, 1);
 	}
 
 	@Test
-	public void test010() throws Exception {
+	public void test010() {
 		String source = "constants alfa alfa beta beta beta";
 		constantsCheck(source, 1);
 	}
 
 	@Test
-	public void test011() throws Exception {
+	public void test011() {
 		String source = "constants alfa alfa beta beta beta gamma";
 		constantsCheck(source, 1);
 	}
 
 	@Test
-	public void test012() throws Exception {
+	public void test012() {
 		String source = "constants alfa alfa beta beta beta gamma gamma gamma";
 		constantsCheck(source, 1);
 	}
 
 	@Test
-	public void test013() throws Exception {
+	public void test013() {
 		String source = "constants alfa beta beta beta gamma gamma gamma";
 		constantsCheck(source, 1);
 	}
 
 	@Test
-	public void test014() throws Exception {
+	public void test014() {
 		String source = "constants [alfa] beta gamma";
 		constantsCheck(source, 1);
 	}
 
 	@Test
-	public void test015() throws Exception {
+	public void test015() {
 		String source = "constants [alfa] alfa beta gamma";
 		constantsCheck(source, 1);
 	}
 
 	@Test
-	public void test016() throws Exception {
+	public void test016() {
 		String source = "constants [alfa] [beta] gamma";
 		constantsCheck(source, 1);
 	}
 
 	@Test
-	public void test017() throws Exception {
+	public void test017() {
 		String source = "constants beta gamma";
 		constantsCheck(source, 1);
 	}
 
-	private void constantsCheck(String source, int errs) throws Exception {
+	private void constantsCheck(String source, int errs) {
 		TclParser parser = TestUtils.createParser();
 		TestScopeProcessor manager = new TestScopeProcessor();
 		TclErrorCollector errors = new TclErrorCollector();

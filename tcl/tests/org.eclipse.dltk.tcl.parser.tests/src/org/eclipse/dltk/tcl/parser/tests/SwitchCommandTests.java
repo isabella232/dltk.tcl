@@ -30,90 +30,89 @@ public class SwitchCommandTests {
 	NamespaceScopeProcessor processor;
 
 	@Test
-	public void test001() throws Exception {
+	public void test001() {
 		String source = "switch $some {a {puts $some}}";
 		typedCheck(source, 0, 1);
 	}
 
 	@Test
-	public void test002() throws Exception {
+	public void test002() {
 		String source = "switch -glob -- -some {a concat2}";
 		typedCheck(source, 0, 1);
 	}
 
 	@Test
-	public void test003() throws Exception {
+	public void test003() {
 		String source = "switch -glob -- $some {a \"puts $some\"}";
 		typedCheck(source, 0, 1);
 	}
 
 	@Test
-	public void test004() throws Exception {
+	public void test004() {
 		String source = "switch -glob -- $some {a {puts $some} b \"puts $some\" c history}";
 		typedCheck(source, 0, 3);
 	}
 
 	@Test
-	public void test006() throws Exception {
+	public void test006() {
 		String source = "switch -exact -- $caller {cancel {puts cancel}}";
 		typedCheck(source, 0, 1);
 	}
 
 	@Test
-	public void test007() throws Exception {
+	public void test007() {
 		String source = "switch $caller {cancel return cancel2 return}";
 		typedCheck(source, 0, 2);
 	}
 
 	@Test
-	public void test008() throws Exception {
+	public void test008() {
 		String source = "switch -- $caller {cancel return cancel2 return}";
 		typedCheck(source, 0, 2);
 	}
 
 	@Test
-	public void test009() throws Exception {
+	public void test009() {
 		String source = "switch -- $caller cancel return cancel2 return2";
 		typedCheck(source, 0, 2);
 	}
 
 	@Test
-	public void test010() throws Exception {
+	public void test010() {
 		// cancel - unknown command - ats_rmserver
 		String source = "switch $caller {{cancel} {puts cancel}}";
 		typedCheck(source, 0, 1);
 	}
 
 	@Test
-	public void test011() throws Exception {
+	public void test011() {
 		// -jobs unknown command - autoeasy_abort
 		String source = "switch -exact -- $i { -jobs { set flag 1} }";
 		typedCheck(source, 0, 1);
 	}
 
 	@Test
-	public void test012() throws Exception {
+	public void test012() {
 		// -jobs unknown command - autoeasy_abort
 		String source = "switch -exact -- $i { \"jobs\" { set flag 1} }";
 		typedCheck(source, 0, 1);
 	}
 
 	@Test
-	public void test013() throws Exception {
+	public void test013() {
 		String script = "switch -exact -regexp -glob \"\" {"
 				+ "	[func] {puts py!}" + "	default {puts boo}" + " }";
 		typedCheck(script, 0, 2);
 	}
 
 	@Test
-	public void test014() throws Exception {
+	public void test014() {
 		String script = "switch string {" + "set {" + "	pid" + "} "
 				+ "default {puts boo}}";
 		typedCheck(script, 0, 2);
 	}
 
-	private void typedCheck(final String source, int errs, int code)
-			throws Exception {
+	private void typedCheck(final String source, int errs, int code) {
 		System.out.println("=============================================");
 		processor = DefinitionManager.getInstance().createProcessor();
 		TclParser parser = TestUtils.createParser("8.4");

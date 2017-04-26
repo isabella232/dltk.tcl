@@ -31,7 +31,7 @@ import org.eclipse.emf.common.util.EList;
 import org.junit.Test;
 
 public class TclGroupArgumentsParseTests {
-	public Command createGroupCommand001() throws Exception {
+	public Command createGroupCommand001() {
 		DefinitionsFactory factory = DefinitionsFactory.eINSTANCE;
 
 		Command command = factory.createCommand();
@@ -56,7 +56,7 @@ public class TclGroupArgumentsParseTests {
 		return command;
 	}
 
-	public Command createGroupCommand002() throws Exception {
+	public Command createGroupCommand002() {
 		DefinitionsFactory factory = DefinitionsFactory.eINSTANCE;
 
 		Command command = factory.createCommand();
@@ -97,91 +97,91 @@ public class TclGroupArgumentsParseTests {
 	}
 
 	@Test
-	public void test001() throws Exception {
+	public void test001() {
 		String source = "constants -id {set a 20}";
 		check001(source, 0, 1);
 	}
 
 	@Test
-	public void test002() throws Exception {
+	public void test002() {
 		String source = "constants -id {set a 20} -id {set a 20}";
 		check001(source, 0, 2);
 	}
 
 	@Test
-	public void test003() throws Exception {
+	public void test003() {
 		String source = "constants";
 		check001(source, 1, 0);
 	}
 
 	@Test
-	public void test004() throws Exception {
+	public void test004() {
 		String source = "constants -id {set a 20} -id {set a 20} -id {set a 20}";
 		check001(source, 1, 2);
 	}
 
 	@Test
-	public void test005() throws Exception {
+	public void test005() {
 		String source = "constants -id {set a 20} -id {set a 20} -- {set a 20}";
 		check002(source, 0, 3);
 	}
 
 	@Test
-	public void test006() throws Exception {
+	public void test006() {
 		String source = "constants -id {set a 20} -- {set a 20}";
 		check002(source, 0, 2);
 	}
 
 	@Test
-	public void test007() throws Exception {
+	public void test007() {
 		String source = "constants -- {set a 20}";
 		check002(source, 0, 1);
 	}
 
 	@Test
-	public void test008() throws Exception {
+	public void test008() {
 		String source = "constants --- {set a 20}";
 		check002(source, 1, 0);
 	}
 
 	@Test
-	public void test009() throws Exception {
+	public void test009() {
 		String source = "constants -- {set a 20} {set a 20}";
 		check002(source, 1, 1);
 	}
 
 	@Test
-	public void test010() throws Exception {
+	public void test010() {
 		String source = "constants -- -- {set a 20} {set a 20}";
 		check002(source, 2, 1);
 	}
 
 	@Test
-	public void test011() throws Exception {
+	public void test011() {
 		String source = "constants -id { set a 30 } -- {set a 20} {set a 20}";
 		check002(source, 1, 2);
 	}
 
 	@Test
-	public void test012() throws Exception {
+	public void test012() {
 		String source = "constants -id { set a 30 } -- {set a 20}";
 		check002(source, 0, 2);
 	}
 
-	private void check001(String source, int errs, int code) throws Exception {
+	private void check001(String source, int errs, int code) {
 		TestScopeProcessor manager = new TestScopeProcessor();
 		manager.add(createGroupCommand001());
 		check(source, errs, code, manager);
 	}
 
-	private void check002(String source, int errs, int code) throws Exception {
+	private void check002(String source, int errs, int code) {
 		TestScopeProcessor manager = new TestScopeProcessor();
 		manager.add(createGroupCommand002());
 		check(source, errs, code, manager);
 	}
 
 	private void check(String source, int errs, int code,
-			TestScopeProcessor manager) throws Exception {
+			TestScopeProcessor manager) {
 		TclParser parser = TestUtils.createParser();
 		TclErrorCollector errors = new TclErrorCollector();
 		List<TclCommand> module = parser.parse(source, errors, manager);

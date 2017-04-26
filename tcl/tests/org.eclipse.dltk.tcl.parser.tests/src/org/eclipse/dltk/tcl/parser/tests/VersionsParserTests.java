@@ -107,7 +107,7 @@ public class VersionsParserTests {
 	}
 
 	@Test
-	public void testCommandVersions001() throws Exception {
+	public void testCommandVersions001() {
 		String v1 = "(-;8.5)";
 		String v2 = "[8.5;-]";
 		String v = "8.4";
@@ -116,7 +116,7 @@ public class VersionsParserTests {
 	}
 
 	@Test
-	public void testCommandVersions002() throws Exception {
+	public void testCommandVersions002() {
 		String v1 = "(-;8.5)";
 		String v2 = "[8.5;-]";
 		String v = "8.4.1";
@@ -125,7 +125,7 @@ public class VersionsParserTests {
 	}
 
 	@Test
-	public void testCommandVersions003() throws Exception {
+	public void testCommandVersions003() {
 		String v1 = null;
 		String v2 = "[8.5;-]";
 		String v = "8.4.1";
@@ -134,7 +134,7 @@ public class VersionsParserTests {
 	}
 
 	@Test
-	public void testCommandVersions004() throws Exception {
+	public void testCommandVersions004() {
 		String v1 = "(-;8.5)";
 		String v2 = "[8.5;-]";
 		String v = "8.5";
@@ -143,7 +143,7 @@ public class VersionsParserTests {
 	}
 
 	@Test
-	public void testCommandVersions005() throws Exception {
+	public void testCommandVersions005() {
 		String v1 = "(-;8.5)";
 		String v2 = "[8.5;-]";
 		String v = "8.6";
@@ -152,7 +152,7 @@ public class VersionsParserTests {
 	}
 
 	@Test
-	public void testCommandVersions006() throws Exception {
+	public void testCommandVersions006() {
 		String v1 = "(8.4;8.5)";
 		String v = "8.4.1";
 		NamespaceScopeProcessor processor = new NamespaceScopeProcessor();
@@ -168,7 +168,7 @@ public class VersionsParserTests {
 	}
 
 	@Test
-	public void testCommandVersions007() throws Exception {
+	public void testCommandVersions007() {
 		String v1 = "(8.4;8.5)";
 		String v = "8.3.1";
 		NamespaceScopeProcessor processor = new NamespaceScopeProcessor();
@@ -185,7 +185,7 @@ public class VersionsParserTests {
 	}
 
 	@Test
-	public void testDeprecated001() throws Exception {
+	public void testDeprecated001() {
 		String v1 = "(8.4;8.5)";
 		String v = "8.4.1";
 		NamespaceScopeProcessor processor = new NamespaceScopeProcessor();
@@ -203,7 +203,7 @@ public class VersionsParserTests {
 	}
 
 	@Test
-	public void testDeprecated002() throws Exception {
+	public void testDeprecated002() {
 		String v1 = "(8.4;8.5)";
 		String v = "8.4.6";
 		NamespaceScopeProcessor processor = new NamespaceScopeProcessor();

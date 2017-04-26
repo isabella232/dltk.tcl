@@ -89,10 +89,9 @@ public class PerformanceParsingTests {
 							.getInstance().createProcessor();
 					parser.setOptionValue(
 							ITclParserOptions.REPORT_UNKNOWN_AS_ERROR, false);
-					FileInputStream stream = new FileInputStream(file1);
-					TclErrorCollector col = new TclErrorCollector();
 
-					try {
+					TclErrorCollector col = new TclErrorCollector();
+					try (FileInputStream stream = new FileInputStream(file1)) {
 						String source = TestUtils.getContents(stream);
 						CodeModel model = new CodeModel(source);
 						PerformanceMonitor.getDefault().begin(NEW_PARSE_TIME);
@@ -122,11 +121,11 @@ public class PerformanceParsingTests {
 							if (errors[i]
 									.getErrorKind() == ITclErrorConstants.WARNING
 									|| errors[i]
-											.getCode() == TclErrorCollector.DEPRECATED_COMMAND
+											.getCode() == ITclErrorConstants.DEPRECATED_COMMAND
 									|| errors[i]
-											.getCode() == TclErrorCollector.COMMAND_WITH_NAME_SUBSTITUTION
+											.getCode() == ITclErrorConstants.COMMAND_WITH_NAME_SUBSTITUTION
 									|| errors[i]
-											.getCode() == TclErrorCollector.INVALID_COMMAND_VERSION) {
+											.getCode() == ITclErrorConstants.INVALID_COMMAND_VERSION) {
 								continue;
 							}
 							if (writer != null)
@@ -157,8 +156,6 @@ public class PerformanceParsingTests {
 							if (writer != null)
 								writer.write(code + "\n");
 						}
-					} finally {
-						stream.close();
 					}
 					collector.addAll(col);
 					long endTime = System.currentTimeMillis();

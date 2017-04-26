@@ -30,25 +30,24 @@ public class WhileCommandTests {
 	NamespaceScopeProcessor processor;
 
 	@Test
-	public void testAdvancedParse001() throws Exception {
+	public void testAdvancedParse001() {
 		String source = "while 1 {puts alpha}";
 		typedCheck(source, 0, 1);
 	}
 
 	@Test
-	public void testAdvancedParse002() throws Exception {
+	public void testAdvancedParse002() {
 		String source = "while 1";
 		typedCheck(source, 1, 0);
 	}
 
 	@Test
-	public void testAdvancedParse003() throws Exception {
+	public void testAdvancedParse003() {
 		String source = "while 1 {puts alpha} {puts alpha}";
 		typedCheck(source, 1, 1);
 	}
 
-	private void typedCheck(String source, int errs, int code)
-			throws Exception {
+	private void typedCheck(String source, int errs, int code) {
 		processor = DefinitionManager.getInstance().createProcessor();
 		TclParser parser = TestUtils.createParser("8.4");
 		TclErrorCollector errors = new TclErrorCollector();

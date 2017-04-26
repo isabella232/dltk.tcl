@@ -31,7 +31,7 @@ import org.eclipse.emf.common.util.EList;
 import org.junit.Test;
 
 public class TclTypedArgumentsParseTests {
-	public Command createConstantsCommand() throws Exception {
+	public Command createConstantsCommand() {
 		DefinitionsFactory factory = DefinitionsFactory.eINSTANCE;
 
 		Command command = factory.createCommand();
@@ -73,7 +73,7 @@ public class TclTypedArgumentsParseTests {
 	}
 
 	@Test
-	public void test001() throws Exception {
+	public void test001() {
 		String source = "constants alfa {set a 20} gamma {set a 20}";
 		TclCommand cmd = typedCheck(source, 0, 2);
 		List<ArgumentMatch> list = cmd.getMatches();
@@ -94,7 +94,7 @@ public class TclTypedArgumentsParseTests {
 	}
 
 	@Test
-	public void test002() throws Exception {
+	public void test002() {
 		String source = "constants alfa gamma {set a 20}";
 		TclCommand cmd = typedCheck(source, 0, 1);
 		List<ArgumentMatch> list = cmd.getMatches();
@@ -114,13 +114,13 @@ public class TclTypedArgumentsParseTests {
 	}
 
 	@Test
-	public void test003() throws Exception {
+	public void test003() {
 		String source = "constants alfa [alfa gamma] gamma {set a 20}";
 		typedCheck(source, 0, 1);
 	}
 
 	@Test
-	public void test004() throws Exception {
+	public void test004() {
 		String source = "constants alfa {set a 20} [gamma] {set a 20}";
 		TclCommand command = typedCheck(source, 0, 2);
 		List<ArgumentMatch> list = command.getMatches();
@@ -142,19 +142,18 @@ public class TclTypedArgumentsParseTests {
 	}
 
 	@Test
-	public void test005() throws Exception {
+	public void test005() {
 		String source = "constants alfa alfa {set a 20} [gamma] {set a 20}";
 		typedCheck(source, 1, 1);
 	}
 
 	@Test
-	public void test006() throws Exception {
+	public void test006() {
 		String source = "constants alfa {set} [gamma] set";
 		typedCheck(source, 0, 2);
 	}
 
-	private TclCommand typedCheck(String source, int errs, int code)
-			throws Exception {
+	private TclCommand typedCheck(String source, int errs, int code) {
 		TclParser parser = TestUtils.createParser();
 		TestScopeProcessor manager = new TestScopeProcessor();
 		TclErrorCollector errors = new TclErrorCollector();

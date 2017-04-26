@@ -31,7 +31,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class SwitchReduceTest {
-	public Command createCommand001() throws Exception {
+	public Command createCommand001() {
 		DefinitionsFactory factory = DefinitionsFactory.eINSTANCE;
 
 		Command command = factory.createCommand();
@@ -77,7 +77,7 @@ public class SwitchReduceTest {
 		return command;
 	}
 
-	public Command createCommand002() throws Exception {
+	public Command createCommand002() {
 		DefinitionsFactory factory = DefinitionsFactory.eINSTANCE;
 
 		Command command = factory.createCommand();
@@ -124,7 +124,7 @@ public class SwitchReduceTest {
 	}
 
 	@Test
-	public void testReplaceSwitch001() throws Exception {
+	public void testReplaceSwitch001() {
 		System.out.println("TEST:"
 				+ Thread.currentThread().getStackTrace()[1].getMethodName());
 		Command[] commands = DefinitionUtils.reduceSwitches(createCommand001());
@@ -136,7 +136,7 @@ public class SwitchReduceTest {
 	}
 
 	@Test
-	public void testReplaceSwitch002() throws Exception {
+	public void testReplaceSwitch002() {
 		System.out.println("TEST:"
 				+ Thread.currentThread().getStackTrace()[1].getMethodName());
 		Command[] commands = DefinitionUtils.reduceSwitches(createCommand002());
@@ -150,12 +150,12 @@ public class SwitchReduceTest {
 	NamespaceScopeProcessor processor;
 
 	@Before
-	public void setUp() throws Exception {
+	public void setUp() {
 		processor = DefinitionManager.getInstance().createProcessor();
 	}
 
 	@Test
-	public void testReplaceSwitch004() throws Exception {
+	public void testReplaceSwitch004() {
 		System.out.println("TEST:"
 				+ Thread.currentThread().getStackTrace()[1].getMethodName());
 		Command commands[] = processor.getCommandDefinition("open");

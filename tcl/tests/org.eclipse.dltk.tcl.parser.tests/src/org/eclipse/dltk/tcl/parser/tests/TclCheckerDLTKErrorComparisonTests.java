@@ -29,7 +29,7 @@ import org.eclipse.dltk.tcl.internal.tclchecker.TclChecker;
 import org.eclipse.dltk.tcl.internal.tclchecker.TclCheckerConfigUtils;
 import org.eclipse.dltk.tcl.internal.tclchecker.TclCheckerConfigUtils.ValidatorInstanceResponse;
 import org.eclipse.dltk.tcl.internal.tclchecker.TclCheckerProblem;
-import org.eclipse.dltk.tcl.parser.ITclErrorReporter;
+import org.eclipse.dltk.tcl.parser.ITclErrorConstants;
 import org.eclipse.dltk.tcl.parser.ITclParserOptions;
 import org.eclipse.dltk.tcl.parser.TclErrorCollector;
 import org.eclipse.dltk.tcl.parser.TclParser;
@@ -70,7 +70,7 @@ public class TclCheckerDLTKErrorComparisonTests {
 		System.out.println("-----------------source----------------------\n");
 		col.reportAll(
 				(code, message, extraMessage, start, end, kind) -> System.out
-						.println((kind == ITclErrorReporter.ERROR ? "Error:"
+						.println((kind == ITclErrorConstants.ERROR ? "Error:"
 								: "Warning/Info:") + code + " (" + start + ","
 								+ end + ") message:" + message + "\n"
 								+ contents.substring(start, end)));

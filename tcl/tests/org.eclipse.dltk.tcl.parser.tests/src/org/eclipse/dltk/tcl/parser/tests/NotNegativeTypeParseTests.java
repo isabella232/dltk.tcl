@@ -29,7 +29,7 @@ import org.eclipse.emf.common.util.EList;
 import org.junit.Test;
 
 public class NotNegativeTypeParseTests {
-	public Command createConstantsCommand() throws Exception {
+	public Command createConstantsCommand() {
 		DefinitionsFactory factory = DefinitionsFactory.eINSTANCE;
 
 		Command command = factory.createCommand();
@@ -46,31 +46,30 @@ public class NotNegativeTypeParseTests {
 	}
 
 	@Test
-	public void test001() throws Exception {
+	public void test001() {
 		String source = "cmd 34";
 		typedCheck(source, 0, 0);
 	}
 
 	@Test
-	public void test002() throws Exception {
+	public void test002() {
 		String source = "cmd -34";
 		typedCheck(source, 1, 0);
 	}
 
 	@Test
-	public void test003() throws Exception {
+	public void test003() {
 		String source = "cmd 34.5";
 		typedCheck(source, 1, 0);
 	}
 
 	@Test
-	public void test004() throws Exception {
+	public void test004() {
 		String source = "cmd lalala";
 		typedCheck(source, 1, 0);
 	}
 
-	private void typedCheck(String source, int errs, int code)
-			throws Exception {
+	private void typedCheck(String source, int errs, int code) {
 		TclParser parser = TestUtils.createParser();
 		TestScopeProcessor manager = new TestScopeProcessor();
 		TclErrorCollector errors = new TclErrorCollector();

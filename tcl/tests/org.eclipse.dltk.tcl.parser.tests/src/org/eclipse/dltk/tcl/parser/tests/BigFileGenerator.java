@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2008 xored software, Inc.  
+ * Copyright (c) 2008, 2017 xored software, Inc. and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html  
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
  *     xored software, Inc. - initial API and Implementation (Andrei Sobolev)
@@ -21,14 +21,14 @@ import org.eclipse.dltk.tcl.parser.definitions.DefinitionUtils;
 import org.eclipse.dltk.tcl.parser.definitions.NamespaceScopeProcessor;
 
 public class BigFileGenerator {
-	public static String generateBigFile001() throws Exception {
+	public static String generateBigFile001() {
 		StringBuffer buffer = new StringBuffer();
 		NamespaceScopeProcessor processor = DefinitionManager.getInstance()
 				.createProcessor();
 		Command[] commands = processor.getCommands();
 		PerformanceMonitor.getDefault().begin("Command reduction");
 		for (int i = 0; i < commands.length; i++) {
-			Map<String, Object> options = new HashMap<String, Object>();
+			Map<String, Object> options = new HashMap<>();
 			options.put(DefinitionUtils.GENERATE_VARIANTS, true);
 			options.put(DefinitionUtils.SWITCH_COUNT, 3);
 			Command[] rc = DefinitionUtils.reduceSwitches(commands[i], options);

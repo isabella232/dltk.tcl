@@ -27,104 +27,104 @@ public class SimpleCodePrinterTests {
 	NamespaceScopeProcessor processor;
 
 	@Test
-	public void test001() throws Exception {
+	public void test001() {
 		outCheck("after 10 {puts alpha}", "after 10 {puts alpha}");
 	}
 
 	@Test
-	public void test002() throws Exception {
+	public void test002() {
 		outCheck("source $arg/beta.tcl", "source $arg/beta.tcl");
 	}
 
 	@Test
-	public void test003() throws Exception {
+	public void test003() {
 		outCheck("source {$arg/beta 2.tcl}", "source {$arg/beta 2.tcl}");
 	}
 
 	@Test
-	public void test004() throws Exception {
+	public void test004() {
 		outCheck("source \"$arg/beta 2.tcl\"", "source \"$arg/beta 2.tcl\"");
 	}
 
 	@Test
-	public void test005() throws Exception {
+	public void test005() {
 		outCheck("source [file join $dir alfa.tcl]",
 				"source [file join $dir alfa.tcl]");
 	}
 
 	@Test
-	public void test006() throws Exception {
+	public void test006() {
 		outCheck("file delete $path(gorp.file)",
 				"file delete $path(gorp.file)");
 	}
 
 	@Test
-	public void test007() throws Exception {
+	public void test007() {
 		outCheck("file delete $path(gorp.file)\n",
 				"file delete $path(gorp.file)");
 	}
 
 	@Test
-	public void test008() throws Exception {
+	public void test008() {
 		outCheck("file delete $path($result,$str)",
 				"file delete $path($result,$str)");
 	}
 
 	@Test
-	public void test009() throws Exception {
+	public void test009() {
 		outCheck("file delete $path($result,$str)\n",
 				"file delete $path($result,$str)");
 	}
 
 	@Test
-	public void test010() throws Exception {
+	public void test010() {
 		outCheck("proc hello2 {name2} {\n\t" + "puts \"Hello, $name2\"\n" + "}",
 				"proc hello2 {name2} {  puts \"Hello, $name2\" }");
 	}
 
 	@Test
-	public void test011() throws Exception {
+	public void test011() {
 		outCheck("if {$DEF(cancel) == $caller} {$caller} else {.$caller}",
 				"if {$DEF(cancel) == $caller} {$caller} else {.$caller}");
 	}
 
 	@Test
-	public void test012() throws Exception {
+	public void test012() {
 		String s = "if {     $DEF(cancel)      ==      $caller     } {$caller} else {.$caller}";
 		outCheck(s, s);
 	}
 
 	@Test
-	public void test013() throws Exception {
+	public void test013() {
 		String s = "if      {     $DEF(         cancel             )      ==      $caller     } {      $caller    } else {.$caller}";
 		outCheck(s, s);
 	}
 
 	@Test
-	public void test014() throws Exception {
+	public void test014() {
 		String s = "proc alfa {    a    {   bbbb  }  {c {    d   }   } {    }";
 		outCheck(s, s);
 	}
 
 	@Test
-	public void test015() throws Exception {
+	public void test015() {
 		String s = "set a [    alfa]";
 		outCheck(s, s);
 	}
 
 	@Test
-	public void test016() throws Exception {
+	public void test016() {
 		String s = "set a [    alfa      ]";
 		outCheck(s, s);
 	}
 
 	@Test
-	public void test017() throws Exception {
+	public void test017() {
 		String s = "set a       [    alfa                 ]";
 		outCheck(s, s);
 	}
 
-	private void outCheck(String source, String expected) throws Exception {
+	private void outCheck(String source, String expected) {
 		processor = DefinitionManager.getInstance().createProcessor();
 		TclParser parser = TestUtils.createParser("8.4");
 		TclErrorCollector errors = new TclErrorCollector();

@@ -29,7 +29,7 @@ import org.eclipse.emf.common.util.EList;
 import org.junit.Test;
 
 public class SetCommandParseTests {
-	public Command createConstantsCommand() throws Exception {
+	public Command createConstantsCommand() {
 		DefinitionsFactory factory = DefinitionsFactory.eINSTANCE;
 
 		Command command = factory.createCommand();
@@ -55,19 +55,19 @@ public class SetCommandParseTests {
 	}
 
 	@Test
-	public void test001() throws Exception {
+	public void test001() {
 		String source = "set var value";
 		typedCheck(source, 0, 0);
 	}
 
 	@Test
-	public void test002() throws Exception {
+	public void test002() {
 		String source = "set var";
 		typedCheck(source, 0, 0);
 	}
 
 	@Test
-	public void test003() throws Exception {
+	public void test003() {
 		String source = "set var value value";
 		typedCheck(source, 1, 0);
 	}
@@ -77,8 +77,7 @@ public class SetCommandParseTests {
 	 * "set {var} value"; typedCheck(source, 1, 1); }
 	 */
 
-	private void typedCheck(String source, int errs, int code)
-			throws Exception {
+	private void typedCheck(String source, int errs, int code) {
 		TclParser parser = TestUtils.createParser();
 		TestScopeProcessor manager = new TestScopeProcessor();
 		TclErrorCollector errors = new TclErrorCollector();

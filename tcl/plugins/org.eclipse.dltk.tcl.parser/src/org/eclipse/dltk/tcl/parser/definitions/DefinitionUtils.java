@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2008 xored software, Inc.  
+ * Copyright (c) 2008, 2017 xored software, Inc. and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html  
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
  *     xored software, Inc. - initial API and Implementation (Andrei Sobolev)
@@ -47,7 +47,8 @@ public class DefinitionUtils {
 		return false;
 	}
 
-	private static int getInt(Map<String, Object> options, String key, int def) {
+	private static int getInt(Map<String, Object> options, String key,
+			int def) {
 		if (options == null) {
 			return def;
 		}
@@ -63,13 +64,13 @@ public class DefinitionUtils {
 
 	public static List<List<Argument>> reduceSwitches(List<Argument> list,
 			Map<String, Object> options) {
-		List<List<Argument>> argumentsList = new ArrayList<List<Argument>>();
+		List<List<Argument>> argumentsList = new ArrayList<>();
 		for (Argument argument : list) {
 			List<Argument> args = reduceSwitchesArgument(argument, options);
-			List<List<Argument>> newArgumentsList = new ArrayList<List<Argument>>();
+			List<List<Argument>> newArgumentsList = new ArrayList<>();
 			if (argumentsList.size() == 0) {
 				for (Argument arg : args) {
-					List<Argument> a = new ArrayList<Argument>();
+					List<Argument> a = new ArrayList<>();
 					a.add(arg);
 					newArgumentsList.add(a);
 				}
@@ -77,7 +78,7 @@ public class DefinitionUtils {
 				for (Argument nextArgument : args) {
 					// Add argument to all other. Fill existed and append
 					for (List<Argument> al : argumentsList) {
-						List<Argument> nal = new ArrayList<Argument>();
+						List<Argument> nal = new ArrayList<>();
 						for (Argument argument2 : al) {
 							nal.add(copyArgument(argument2));
 						}
@@ -97,9 +98,10 @@ public class DefinitionUtils {
 
 	public static Command[] reduceSwitches(Command command,
 			Map<String, Object> options) {
-		List<Command> commands = new ArrayList<Command>();
+		List<Command> commands = new ArrayList<>();
 		EList<Argument> arguments = command.getArguments();
-		List<List<Argument>> removeSwitches = reduceSwitches(arguments, options);
+		List<List<Argument>> removeSwitches = reduceSwitches(arguments,
+				options);
 		for (List<Argument> list : removeSwitches) {
 			Command newCommand = DefinitionsFactory.eINSTANCE.createCommand();
 			newCommand.setDeprecated(command.getDeprecated());
@@ -113,7 +115,7 @@ public class DefinitionUtils {
 
 	private static List<Argument> reduceSwitchesArgument(Argument argument,
 			Map<String, Object> options) {
-		List<Argument> results = new ArrayList<Argument>();
+		List<Argument> results = new ArrayList<>();
 		if (argument instanceof Switch) {
 			Switch sw = (Switch) argument;
 			if (isSet(options, GENERATE_VARIANTS)) {
@@ -124,10 +126,11 @@ public class DefinitionUtils {
 				}
 			}
 			if (sw.getUpperBound() != -1) {
-				List<List<Group>> switchVariants = new ArrayList<List<Group>>();
+				List<List<Group>> switchVariants = new ArrayList<>();
 				for (int i = 0; i < sw.getLowerBound(); i++) {
 					List<Group> list = processGroups(sw, 1, 1, options);
-					switchVariants = updateVariants(switchVariants, list, false);
+					switchVariants = updateVariants(switchVariants, list,
+							false);
 				}
 				for (int i = sw.getLowerBound(); i < sw.getUpperBound(); i++) {
 					List<Group> list = processGroups(sw, 0, 1, options);
@@ -162,8 +165,8 @@ public class DefinitionUtils {
 
 		} else if (argument instanceof Group) {
 			Group g = (Group) argument;
-			List<List<Argument>> removeSwitches = reduceSwitches(g
-					.getArguments(), options);
+			List<List<Argument>> removeSwitches = reduceSwitches(
+					g.getArguments(), options);
 			if (removeSwitches.size() > 0) {
 				for (List<Argument> list : removeSwitches) {
 					Group ng = copyGroup(g);
@@ -176,8 +179,8 @@ public class DefinitionUtils {
 			}
 		} else if (argument instanceof ComplexArgument) {
 			ComplexArgument c = (ComplexArgument) argument;
-			List<List<Argument>> removeSwitches = reduceSwitches(c
-					.getArguments(), options);
+			List<List<Argument>> removeSwitches = reduceSwitches(
+					c.getArguments(), options);
 			if (removeSwitches.size() > 0) {
 				for (List<Argument> list : removeSwitches) {
 					ComplexArgument ng = copyComplexArgument(c);
@@ -252,10 +255,10 @@ public class DefinitionUtils {
 	private static List<List<Group>> updateVariants(
 			List<List<Group>> switchVariants, List<Group> list,
 			boolean addPrevious) {
-		List<List<Group>> resultList = new ArrayList<List<Group>>();
+		List<List<Group>> resultList = new ArrayList<>();
 		if (switchVariants.size() == 0) {
 			for (Group g : list) {
-				List<Group> gg = new ArrayList<Group>();
+				List<Group> gg = new ArrayList<>();
 				gg.add(g);
 				resultList.add(gg);
 			}
@@ -264,7 +267,7 @@ public class DefinitionUtils {
 			for (Group g : list) {
 				for (List<Group> nle : switchVariants) {
 					Argument rg = copyArgument(g);
-					List<Group> nl = new ArrayList<Group>();
+					List<Group> nl = new ArrayList<>();
 					for (Group nlee : nle) {
 						Argument nleer = copyArgument(nlee);
 						nl.add((Group) nleer);
@@ -327,9 +330,8 @@ public class DefinitionUtils {
 		if (a1.getLowerBound() != a2.getLowerBound()
 				|| a1.getUpperBound() != a2.getUpperBound())
 			return false;
-		if (!ignoreName
-				&& (a1.getName() != a2.getName() || a1.getName() == null || !a1
-						.getName().equals(a2.getName())))
+		if (!ignoreName && (a1.getName() != a2.getName() || a1.getName() == null
+				|| !a1.getName().equals(a2.getName())))
 			return false;
 		if (a1 instanceof Constant) {
 			String value1 = ((Constant) a1).getName();
@@ -337,8 +339,8 @@ public class DefinitionUtils {
 			if (value1 != value2 || value1 == null || !value1.equals(value2))
 				return false;
 		} else if (a1 instanceof TypedArgument) {
-			if (((TypedArgument) a1).getType().getValue() != ((TypedArgument) a2)
-					.getType().getValue())
+			if (((TypedArgument) a1).getType()
+					.getValue() != ((TypedArgument) a2).getType().getValue())
 				return false;
 		} else if (a1 instanceof Switch) {
 			if (((Switch) a1).getGroups().size() != ((Switch) a2).getGroups()
@@ -363,12 +365,14 @@ public class DefinitionUtils {
 					return false;
 			}
 		} else if (a1 instanceof ComplexArgument) {
-			if (((ComplexArgument) a1).getArguments().size() != ((ComplexArgument) a2)
-					.getArguments().size())
+			if (((ComplexArgument) a1).getArguments()
+					.size() != ((ComplexArgument) a2).getArguments().size())
 				return false;
-			for (int i = 0; i < ((ComplexArgument) a1).getArguments().size(); i++) {
-				if (!equalsArgument(((ComplexArgument) a1).getArguments()
-						.get(i), ((ComplexArgument) a2).getArguments().get(i),
+			for (int i = 0; i < ((ComplexArgument) a1).getArguments()
+					.size(); i++) {
+				if (!equalsArgument(
+						((ComplexArgument) a1).getArguments().get(i),
+						((ComplexArgument) a2).getArguments().get(i),
 						ignoreName))
 					return false;
 			}
@@ -390,7 +394,7 @@ public class DefinitionUtils {
 	private static List<Group> processGroups(Switch sw, int l, int u,
 			Map<String, Object> options) {
 		EList<Group> groups = sw.getGroups();
-		List<Group> results = new ArrayList<Group>();
+		List<Group> results = new ArrayList<>();
 		for (Group group : groups) {
 			List<Argument> variants = reduceSwitchesArgument(group, options);
 			for (Argument variant : variants) {
@@ -425,7 +429,9 @@ public class DefinitionUtils {
 			TypedArgument typed = (TypedArgument) arg;
 			if (!clean) {
 				return typed.getName()
-						/* + ":" + ((TypedArgument) arg).getType() */+ boundsToString(arg);
+						/*
+						 * + ":" + ((TypedArgument) arg).getType()
+						 */ + boundsToString(arg);
 			} else {
 				switch (typed.getType().getValue()) {
 				case ArgumentType.SCRIPT_VALUE:
@@ -553,7 +559,7 @@ public class DefinitionUtils {
 	}
 
 	public static List<Argument> minimizeBounds(List<Argument> arguments) {
-		List<Argument> minArguments = new ArrayList<Argument>();
+		List<Argument> minArguments = new ArrayList<>();
 		for (Argument argument : arguments) {
 			minArguments.add(minimizeBounds(argument));
 		}
@@ -562,9 +568,8 @@ public class DefinitionUtils {
 	}
 
 	public static boolean isOptions(Switch sw) {
-		return sw.getLowerBound() == 0
-				&& (sw.getUpperBound() == -1 || sw.getUpperBound() == sw
-						.getGroups().size());
+		return sw.getLowerBound() == 0 && (sw.getUpperBound() == -1
+				|| sw.getUpperBound() == sw.getGroups().size());
 	}
 
 	public static boolean isMode(Switch sw) {

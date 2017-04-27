@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2008 xored software, Inc.  
+ * Copyright (c) 2008, 2017 xored software, Inc.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html  
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
  *     xored software, Inc. - initial API and Implementation (Andrei Sobolev)
@@ -17,7 +17,7 @@ import java.util.Map;
 
 public class PerformanceMonitor {
 
-	private final Map<String, Entry> entries = new HashMap<String, Entry>();
+	private final Map<String, Entry> entries = new HashMap<>();
 
 	private static class Entry {
 		long value;
@@ -54,7 +54,7 @@ public class PerformanceMonitor {
 	public void print() {
 		final Map<String, Entry> copy;
 		synchronized (this) {
-			copy = new HashMap<String, Entry>(entries);
+			copy = new HashMap<>(entries);
 		}
 		final String[] keys = copy.keySet().toArray(new String[copy.size()]);
 		Arrays.sort(keys);

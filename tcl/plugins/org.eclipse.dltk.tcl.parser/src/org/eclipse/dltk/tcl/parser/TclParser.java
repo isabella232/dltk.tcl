@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2008 xored software, Inc.  
+ * Copyright (c) 2008, 2017 xored software, Inc. and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html  
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
  *     xored software, Inc. - initial API and Implementation (Andrei Sobolev)
@@ -59,7 +59,7 @@ public class TclParser implements ITclParserOptions {
 	private IScopeProcessor scopeProcessor;
 	private int globalOffset = 0;
 
-	private Map<String, Boolean> options = new HashMap<String, Boolean>();
+	private Map<String, Boolean> options = new HashMap<>();
 
 	private String version;
 
@@ -117,7 +117,7 @@ public class TclParser implements ITclParserOptions {
 		this.source = source;
 		this.reporter = reporter;
 		this.scopeProcessor = scopeProcessor;
-		List<TclCommand> tclCommands = new ArrayList<TclCommand>();
+		List<TclCommand> tclCommands = new ArrayList<>();
 		parseToBlock(tclCommands, source, 0);
 
 		module.getStatements().addAll(tclCommands);
@@ -129,7 +129,7 @@ public class TclParser implements ITclParserOptions {
 		this.source = source;
 		this.reporter = reporter;
 		this.scopeProcessor = scopeProcessor;
-		List<TclCommand> tclCommands = new ArrayList<TclCommand>();
+		List<TclCommand> tclCommands = new ArrayList<>();
 		parseToBlock(tclCommands, source, 0);
 		return tclCommands;
 	}
@@ -167,7 +167,7 @@ public class TclParser implements ITclParserOptions {
 
 	/**
 	 * Process TclCommand and build all required classes.
-	 * 
+	 *
 	 * @param st
 	 * @return
 	 */
@@ -188,25 +188,26 @@ public class TclParser implements ITclParserOptions {
 			TclErrorCollector parseErrors = new TclErrorCollector();
 			boolean matched = false;
 
-			st.setQualifiedName(this.scopeProcessor
-					.getQualifiedName(commandValue));
+			st.setQualifiedName(
+					this.scopeProcessor.getQualifiedName(commandValue));
 
 			if (definitions != null && 0 != definitions.length) {
 				for (int i = 0; i < definitions.length; i++) {
 					perf("processTclCommand:" + definitions[i].getName());
 					Command definition = definitions[i];
 					if (TRACE_PARSER) {
-						System.out.println("Matching command:"
-								+ definition.getName());
+						System.out.println(
+								"Matching command:" + definition.getName());
 						int start = st.getStart();
 						int end = st.getEnd();
-						System.out.println("Code:\n"
-								+ source.substring(start, end));
+						System.out.println(
+								"Code:\n" + source.substring(start, end));
 					}
 					boolean validVersion = true;
-					if (this.version != null && definition.getVersion() != null) {
-						validVersion = TclParserUtils.parseVersion(definition
-								.getVersion(), this.version);
+					if (this.version != null
+							&& definition.getVersion() != null) {
+						validVersion = TclParserUtils.parseVersion(
+								definition.getVersion(), this.version);
 					}
 					if (!validVersion) {
 						reportInvalidVersion(st, commandValue, parseErrors,
@@ -226,8 +227,8 @@ public class TclParser implements ITclParserOptions {
 					perf("matchTclCommand:" + definitions[i].getName());
 					perf("GLOBAL_MATCH_TIME");
 					if (TRACE_PARSER) {
-						System.out.println("Matching command:"
-								+ definitions[i].getName());
+						System.out.println(
+								"Matching command:" + definitions[i].getName());
 					}
 					st.setDefinition(definition);
 					st.setMatched(false);
@@ -237,8 +238,8 @@ public class TclParser implements ITclParserOptions {
 						// Set deprecation
 						if (definition.getDeprecated() != null
 								&& this.version != null) {
-							if (TclParserUtils.parseVersion(definition
-									.getDeprecated(), this.version)) {
+							if (TclParserUtils.parseVersion(
+									definition.getDeprecated(), this.version)) {
 								reportDeprecatedError(st, commandValue,
 										definition);
 							}
@@ -265,13 +266,13 @@ public class TclParser implements ITclParserOptions {
 					} else {
 						perf("matchTclCommand:" + definitions[i].getName());
 					}
-					repr("error count:" + definitions[i].getName(), matcher
-							.getErrorReporter().getCount());
+					repr("error count:" + definitions[i].getName(),
+							matcher.getErrorReporter().getCount());
 					perfDone("GLOBAL_MATCH_TIME");
 
 					matcher.reportErrors(this.reporter);
-					repr("error count:" + definitions[i].getName(), matcher
-							.getErrorReporter().getCount());
+					repr("error count:" + definitions[i].getName(),
+							matcher.getErrorReporter().getCount());
 					perfDone("processTclCommand:" + definitions[i].getName());
 					return st;
 				}
@@ -328,9 +329,10 @@ public class TclParser implements ITclParserOptions {
 			List<ComplexArgumentResult> complexArguments2 = arg
 					.getComplexArguments();
 			if (complexArguments2.size() > 0) {
-				processComplexArguments(list.getArguments(), complexArguments2
-						.toArray(new ComplexArgumentResult[complexArguments2
-								.size()]));
+				processComplexArguments(list.getArguments(),
+						complexArguments2.toArray(
+								new ComplexArgumentResult[complexArguments2
+										.size()]));
 			}
 			arguments.set(arg.getArgumentNumber(), list);
 			list.setKind(0);
@@ -384,15 +386,14 @@ public class TclParser implements ITclParserOptions {
 					|| wordText.startsWith("\"") && wordText.endsWith("\"")) {
 				script.setContentStart(script.getStart() + 1);
 				script.setContentEnd(script.getEnd() - 1);
-				parseToBlock(script.getCommands(), wordText.substring(1,
-						wordText.length() - 1), script.getContentStart()
-						- globalOffset);
+				parseToBlock(script.getCommands(),
+						wordText.substring(1, wordText.length() - 1),
+						script.getContentStart() - globalOffset);
 			} else {
 				script.setContentStart(script.getStart());
 				script.setContentEnd(script.getEnd());
-				parseToBlock(script.getCommands(), wordText, blockCode
-						.getStart()
-						- globalOffset);
+				parseToBlock(script.getCommands(), wordText,
+						blockCode.getStart() - globalOffset);
 			}
 			arguments.set(blockArguments[i], script);
 		}
@@ -509,8 +510,8 @@ public class TclParser implements ITclParserOptions {
 					}
 				} else if (index.getContents().size() > 1) {
 					ComplexString literal = makeComplexString(offset, content,
-							factory, index.getStart(), index.getEnd(), index
-									.getContents());
+							factory, index.getStart(), index.getEnd(),
+							index.getContents());
 					if (literal != null) {
 						ref.setIndex(literal);
 					}
@@ -568,7 +569,8 @@ public class TclParser implements ITclParserOptions {
 				pos += st.length();
 				a.setEnd(pos + offset + globalOffset);
 				literal.getArguments().add(a);
-			} else if (oo instanceof ISubstitution && oo instanceof TclElement) {
+			} else if (oo instanceof ISubstitution
+					&& oo instanceof TclElement) {
 				TclElement bs = (TclElement) oo;
 				pos = bs.getEnd() + 1;
 				TclArgument expr = processWordContentAsExpression(offset,
@@ -602,9 +604,8 @@ public class TclParser implements ITclParserOptions {
 
 	private void reportInvalidVersion(TclCommand st, String commandValue,
 			TclErrorCollector parseErrors, Command definition) {
-		String message = NLS.bind(
-				Messages.TclParser_Command_Version_Is_Invalid, new Object[] {
-						commandValue,
+		String message = NLS.bind(Messages.TclParser_Command_Version_Is_Invalid,
+				new Object[] { commandValue,
 
 						definition.getVersion() });
 		parseErrors.report(ITclErrorReporter.INVALID_COMMAND_VERSION, message,

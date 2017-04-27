@@ -93,7 +93,7 @@ public class SynopsisBuilder {
 
 	private static class Synopsis {
 		protected Argument selector;
-		private List<Synopsis> children = new ArrayList<Synopsis>();
+		private List<Synopsis> children = new ArrayList<>();
 		private String string = null;
 
 		public Synopsis() {
@@ -122,17 +122,17 @@ public class SynopsisBuilder {
 				if (cval != null && cval.length() > 0) {
 					Constant c = DefinitionsFactory.eINSTANCE.createConstant();
 					c.setName(cval);
-					return DefinitionUtils
-							.equalsArgumentIgnoreName(c, argument);
+					return DefinitionUtils.equalsArgumentIgnoreName(c,
+							argument);
 				} else if (group.getArguments().size() != 0) {
-					return DefinitionUtils.equalsArgumentIgnoreName(group
-							.getArguments().get(0), argument);
+					return DefinitionUtils.equalsArgumentIgnoreName(
+							group.getArguments().get(0), argument);
 				}
 			} else if (selector instanceof ComplexArgument) {
 				ComplexArgument complex = ((ComplexArgument) selector);
 				if (complex.getArguments().size() != 0)
-					return DefinitionUtils.equalsArgumentIgnoreName(complex
-							.getArguments().get(0), argument);
+					return DefinitionUtils.equalsArgumentIgnoreName(
+							complex.getArguments().get(0), argument);
 			} else {
 				return DefinitionUtils.equalsArgumentIgnoreName(selector,
 						argument);
@@ -141,7 +141,7 @@ public class SynopsisBuilder {
 		}
 
 		private List<Synopsis> matchPrefix(TclArgument tclArgument) {
-			List<Synopsis> matched = new ArrayList<Synopsis>();
+			List<Synopsis> matched = new ArrayList<>();
 			if (!(tclArgument instanceof StringArgument))
 				return matched;
 			String value = ((StringArgument) tclArgument).getValue();
@@ -155,7 +155,7 @@ public class SynopsisBuilder {
 			}
 			if (matched.size() == 0)
 				return matched;
-			List<Synopsis> notMatched = new ArrayList<Synopsis>();
+			List<Synopsis> notMatched = new ArrayList<>();
 			for (int i = 0; i < value.length(); i++) {
 				if (matched.size() == 1) {
 					String c = ((Constant) matched.get(0).selector).getName();
@@ -197,13 +197,13 @@ public class SynopsisBuilder {
 						&& tclCommand.getArguments().size() != 0) {
 					synopsises = matchPrefix(tclCommand.getArguments().get(0));
 					if (synopsises.size() == 1) {
-						String subResult = synopsises.get(0).getShortHint(
-								tclCommand, root);
+						String subResult = synopsises.get(0)
+								.getShortHint(tclCommand, root);
 						if (string != null)
 							result.append(string);
 						if (subResult.length() > 0)
-							result.append(DEFINITION_SEPARATOR).append(
-									subResult);
+							result.append(DEFINITION_SEPARATOR)
+									.append(subResult);
 						return result.toString();
 					}
 					if (synopsises.size() == 0)
@@ -212,13 +212,13 @@ public class SynopsisBuilder {
 					synopsises = children;
 					for (Synopsis synopsis : synopsises) {
 						if (synopsis.match(matches)) {
-							String subResult = synopsis.getShortHint(
-									tclCommand, root);
+							String subResult = synopsis.getShortHint(tclCommand,
+									root);
 							if (string != null)
 								result.append(string);
 							if (subResult.length() > 0)
-								result.append(DEFINITION_SEPARATOR).append(
-										subResult);
+								result.append(DEFINITION_SEPARATOR)
+										.append(subResult);
 							return result.toString();
 						}
 					}
@@ -247,7 +247,7 @@ public class SynopsisBuilder {
 		}
 
 		public List<String> getSynopsis() {
-			List<String> results = new ArrayList<String>();
+			List<String> results = new ArrayList<>();
 			if (children.size() == 0) {
 				results.add((string == null) ? NULL_SYNOPSIS : string);
 			}
@@ -283,8 +283,8 @@ public class SynopsisBuilder {
 		if (command == null)
 			return NULL_LINE;
 		Synopsis root = processCommand(command);
-		return join(root.getSynopsis(), asHtml ? HTML_LINE_SEPARATOR
-				: LINE_SEPARATOR);
+		return join(root.getSynopsis(),
+				asHtml ? HTML_LINE_SEPARATOR : LINE_SEPARATOR);
 	}
 
 	public String getShortHint(TclCommand tclCommand) {
@@ -356,7 +356,7 @@ public class SynopsisBuilder {
 				Constant c = DefinitionsFactory.eINSTANCE.createConstant();
 				c.setName(cval);
 				c.setName(cval);
-				List<Argument> list = new ArrayList<Argument>();
+				List<Argument> list = new ArrayList<>();
 				list.add(c);
 				list.addAll(group.getArguments());
 				child = processArgumentList(list, 0);
@@ -372,8 +372,8 @@ public class SynopsisBuilder {
 		StringBuilder result = new StringBuilder();
 		if (lower == 0) {
 			if (upper == -1) {
-				result.append(POSSIBLE_START).append(inner).append(
-						ENDLESS_BOUNDS_END).append(POSSIBLE_END);
+				result.append(POSSIBLE_START).append(inner)
+						.append(ENDLESS_BOUNDS_END).append(POSSIBLE_END);
 			} else {
 				if (upper <= 2) {
 					boolean first = true;
@@ -383,13 +383,13 @@ public class SynopsisBuilder {
 						} else {
 							result.append(DEFINITION_SEPARATOR);
 						}
-						result.append(POSSIBLE_START).append(inner).append(
-								POSSIBLE_END);
+						result.append(POSSIBLE_START).append(inner)
+								.append(POSSIBLE_END);
 					}
 				} else {
 					result.append(inner).append(BOUNDS_START).append(lower)
-							.append(BOUNDS_SEPARATOR).append(upper).append(
-									BOUNDS_END);
+							.append(BOUNDS_SEPARATOR).append(upper)
+							.append(BOUNDS_END);
 				}
 			}
 		} else {
@@ -405,18 +405,19 @@ public class SynopsisBuilder {
 				}
 				if (upper == -1) {
 					result.append(DEFINITION_SEPARATOR).append(POSSIBLE_START)
-							.append(inner).append(ENDLESS_BOUNDS_END).append(
-									POSSIBLE_END);
+							.append(inner).append(ENDLESS_BOUNDS_END)
+							.append(POSSIBLE_END);
 				} else {
 					for (int i = 0; i < upper - lower; i++) {
-						result.append(DEFINITION_SEPARATOR).append(
-								POSSIBLE_START).append(inner).append(
-								POSSIBLE_END);
+						result.append(DEFINITION_SEPARATOR)
+								.append(POSSIBLE_START).append(inner)
+								.append(POSSIBLE_END);
 					}
 				}
 			} else {
-				result.append(inner).append(BOUNDS_START).append(lower).append(
-						BOUNDS_SEPARATOR).append(upper).append(BOUNDS_END);
+				result.append(inner).append(BOUNDS_START).append(lower)
+						.append(BOUNDS_SEPARATOR).append(upper)
+						.append(BOUNDS_END);
 			}
 		}
 		return result.toString();
@@ -428,7 +429,7 @@ public class SynopsisBuilder {
 		if (definitions.size() == 1)
 			return definitionToString(definitions.get(0));
 
-		List<String> list = new ArrayList<String>();
+		List<String> list = new ArrayList<>();
 		for (Argument definition : definitions) {
 			String value = definitionToString(definition);
 			if (!list.contains(value))
@@ -457,7 +458,8 @@ public class SynopsisBuilder {
 			out.append(new SynopsisConstant(((Constant) argument).getName())
 					.toString());
 		} else if (argument instanceof TypedArgument
-				|| (argument.getName() != null && argument.getName().length() > 0)) {
+				|| (argument.getName() != null
+						&& argument.getName().length() > 0)) {
 			out.append(new SynopsisArgument(argument.getName()).toString());
 		} else if (argument instanceof Group) {
 			Group gr = (Group) argument;
@@ -466,17 +468,17 @@ public class SynopsisBuilder {
 			boolean isConst = cval != null && cval.length() > 0;
 			boolean isInner = inner != null && inner.length() > 0;
 			if (isConst && isInner)
-				out.append(new SynopsisConstant(cval).toString()).append(
-						DEFINITION_SEPARATOR).append(inner);
+				out.append(new SynopsisConstant(cval).toString())
+						.append(DEFINITION_SEPARATOR).append(inner);
 			else if (isConst)
 				out.append(new SynopsisConstant(cval).toString());
 			else if (isInner)
 				out.append(inner);
 		} else if (argument instanceof ComplexArgument) {
 			ComplexArgument ca = (ComplexArgument) argument;
-			out.append(COMPLEX_ARGUMENT_START).append(
-					definitionToString(ca.getArguments())).append(
-					COMPLEX_ARGUMENT_END);
+			out.append(COMPLEX_ARGUMENT_START)
+					.append(definitionToString(ca.getArguments()))
+					.append(COMPLEX_ARGUMENT_END);
 		} else if (argument instanceof Switch) {
 			Switch sw = (Switch) argument;
 			if (DefinitionUtils.isOptions(sw)) {
@@ -487,9 +489,9 @@ public class SynopsisBuilder {
 					} else {
 						out.append(DEFINITION_SEPARATOR);
 					}
-					out.append(POSSIBLE_START).append(
-							definitionToString(group, 1, 1)).append(
-							POSSIBLE_END);
+					out.append(POSSIBLE_START)
+							.append(definitionToString(group, 1, 1))
+							.append(POSSIBLE_END);
 				}
 				return out.toString();
 			} else if (DefinitionUtils.isMode(sw)) {
@@ -504,8 +506,8 @@ public class SynopsisBuilder {
 					out.append(definitionToString(group, 1, 1));
 				}
 				out.append(SWITCH_END);
-				return addBounds(out.toString(), sw.getLowerBound(), sw
-						.getUpperBound());
+				return addBounds(out.toString(), sw.getLowerBound(),
+						sw.getUpperBound());
 			}
 			boolean first = true;
 			out.append(SWITCH_START);

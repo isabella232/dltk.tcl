@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2008 xored software, Inc.  
+ * Copyright (c) 2008, 2017 xored software, Inc. and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html  
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
  *     xored software, Inc. - initial API and Implementation (Andrei Sobolev)
@@ -50,8 +50,8 @@ public class TclParserUtils implements ITclParserOptions {
 			.compile("([\\(\\[][^\\(\\)]*[\\)\\]])"); //$NON-NLS-1$
 	public static final Pattern INTERVAL_PATTERN = Pattern
 			.compile("([\\(\\[])(.*)[:;](.*)([\\)\\]])"); //$NON-NLS-1$
-	public static final Pattern VALID_VERSION_PATTERN = Pattern
-			.compile("([\\(\\[](([0-9]+(\\.[0-9]+)*)|-)[;:](([0-9]+(\\.[0-9]+)*)|-)[\\)\\]]\\s*)*"); //$NON-NLS-1$
+	public static final Pattern VALID_VERSION_PATTERN = Pattern.compile(
+			"([\\(\\[](([0-9]+(\\.[0-9]+)*)|-)[;:](([0-9]+(\\.[0-9]+)*)|-)[\\)\\]]\\s*)*"); //$NON-NLS-1$
 
 	public static boolean isVersionValid(String version) {
 		if (version == null || version.length() == 0)
@@ -86,26 +86,30 @@ public class TclParserUtils implements ITclParserOptions {
 
 				if (!lowerVersion.equals("-")) { //$NON-NLS-1$
 					if (lowerType.equals("(") //$NON-NLS-1$
-							&& compareVersions(currentVersion, lowerVersion) <= 0) {
+							&& compareVersions(currentVersion,
+									lowerVersion) <= 0) {
 						isIntervalValid = false;
 						continue;
 					}
 
 					if (lowerType.equals("[") //$NON-NLS-1$
-							&& compareVersions(currentVersion, lowerVersion) < 0) {
+							&& compareVersions(currentVersion,
+									lowerVersion) < 0) {
 						isIntervalValid = false;
 						continue;
 					}
 				}
 				if (!upperVersion.equals("-")) { //$NON-NLS-1$
 					if (upperType.equals(")") //$NON-NLS-1$
-							&& compareVersions(currentVersion, upperVersion) >= 0) {
+							&& compareVersions(currentVersion,
+									upperVersion) >= 0) {
 						isIntervalValid = false;
 						continue;
 					}
 
 					if (upperType.equals("]") //$NON-NLS-1$
-							&& compareVersions(currentVersion, upperVersion) > 0) {
+							&& compareVersions(currentVersion,
+									upperVersion) > 0) {
 						isIntervalValid = false;
 						continue;
 					}
@@ -139,7 +143,7 @@ public class TclParserUtils implements ITclParserOptions {
 
 	public static List<TclArgument> parseCommandArguments(int offset,
 			String content, List<Integer> blockArguments) {
-		List<TclArgument> results = new ArrayList<TclArgument>();
+		List<TclArgument> results = new ArrayList<>();
 		try {
 			AstFactory factory = AstFactory.eINSTANCE;
 			SimpleTclParser parser = new SimpleTclParser();
@@ -273,7 +277,7 @@ public class TclParserUtils implements ITclParserOptions {
 	public static String getSynopsis(Command command) {
 		if (command == null)
 			return null;
-		List<StringBuilder> list = new ArrayList<StringBuilder>();
+		List<StringBuilder> list = new ArrayList<>();
 		StringBuilder synopsis = new StringBuilder();
 		String name = command.getName();
 		if (name != null && name.length() != 0) {
@@ -301,8 +305,9 @@ public class TclParserUtils implements ITclParserOptions {
 	static final int MODE = 2;
 	static final int REGULAR = 3;
 
-	private static List<StringBuilder> getSynopsisArgInfo(Argument arg, int pos) {
-		List<StringBuilder> list = new ArrayList<StringBuilder>();
+	private static List<StringBuilder> getSynopsisArgInfo(Argument arg,
+			int pos) {
+		List<StringBuilder> list = new ArrayList<>();
 		if (arg instanceof Constant) {
 			list.add(new StringBuilder(((Constant) arg).getName()));
 		} else if (arg instanceof TypedArgument) {
@@ -356,7 +361,8 @@ public class TclParserUtils implements ITclParserOptions {
 				StringBuilder options = new StringBuilder();
 				options.append("<"); //$NON-NLS-1$
 				for (Group group : ((Switch) arg).getGroups()) {
-					for (StringBuilder str : getSynopsisArgInfo(group, pos + 1)) {
+					for (StringBuilder str : getSynopsisArgInfo(group,
+							pos + 1)) {
 						if (!first)
 							options.append("|"); //$NON-NLS-1$
 						else
@@ -398,7 +404,7 @@ public class TclParserUtils implements ITclParserOptions {
 
 	private static List<StringBuilder> concatSynopsises(
 			List<StringBuilder> prefixes, List<StringBuilder> ss) {
-		List<StringBuilder> newList = new ArrayList<StringBuilder>();
+		List<StringBuilder> newList = new ArrayList<>();
 		if (prefixes.size() == 0)
 			return ss;
 		for (StringBuilder prefix : prefixes) {
@@ -426,19 +432,19 @@ public class TclParserUtils implements ITclParserOptions {
 	 * subToken.substring(0,subToken.length()-1); if (subToken.equals("...")){
 	 * arg.setUpperBound(-1); break; } } } } } command.getArguments().add(arg);
 	 * }
-	 * 
+	 *
 	 * } return command; }
 	 */
 	/**
 	 * Return empty list if not matched.
-	 * 
+	 *
 	 * @param command
 	 * @param name
 	 * @return
 	 */
 	public static TclArgument[] getTypedMatch(TclCommand command, String name) {
 		EList<ArgumentMatch> matches = command.getMatches();
-		List<TclArgument> results = new ArrayList<TclArgument>();
+		List<TclArgument> results = new ArrayList<>();
 		for (ArgumentMatch argumentMatch : matches) {
 			Argument definition = argumentMatch.getDefinition();
 			if (definition instanceof TypedArgument) {

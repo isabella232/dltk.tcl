@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2008 xored software, Inc.  
+ * Copyright (c) 2008, 2017 xored software, Inc. and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html  
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
  *     xored software, Inc. - initial API and Implementation (Andrei Sobolev)
@@ -27,7 +27,7 @@ public class DefinitionExtensionManager {
 	private static final String EXTENSION_ID = TclParserCore.PLUGIN_ID
 			+ ".definitions";
 	private static DefinitionExtensionManager sInstance;
-	private Map<URL, String> extentions = new HashMap<URL, String>();
+	private Map<URL, String> extentions = new HashMap<>();
 	private boolean initialized = false;
 
 	private DefinitionExtensionManager() {
@@ -39,8 +39,8 @@ public class DefinitionExtensionManager {
 		}
 		initialized = true;
 		IConfigurationElement[] configurationElements = Platform
-				.getExtensionRegistry().getConfigurationElementsFor(
-						EXTENSION_ID);
+				.getExtensionRegistry()
+				.getConfigurationElementsFor(EXTENSION_ID);
 		for (IConfigurationElement config : configurationElements) {
 			String name = config.getAttribute("name");
 			String url = config.getAttribute("url");

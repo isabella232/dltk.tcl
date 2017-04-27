@@ -16,7 +16,7 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 public class DefinitionManager {
 	private static DefinitionManager sInstance;
 	private Map<String, Scope> scopes;
-	private Map<URI, EObject> eobjectCache = new HashMap<URI, EObject>();
+	private Map<URI, EObject> eobjectCache = new HashMap<>();
 
 	private DefinitionManager() {
 	}
@@ -27,7 +27,7 @@ public class DefinitionManager {
 
 	private void initialize() {
 		if (scopes == null) {
-			scopes = new HashMap<String, Scope>();
+			scopes = new HashMap<>();
 			Map<URL, String> extentions = DefinitionExtensionManager
 					.getInstance().getExtentions();
 			URL[] locations = DefinitionExtensionManager.getInstance()
@@ -98,7 +98,7 @@ public class DefinitionManager {
 
 	/**
 	 * Use {@link #createProcessor()} since now they do the same.
-	 * 
+	 *
 	 * @return
 	 */
 	@Deprecated

@@ -17,13 +17,13 @@ public class ArgumentDefinition {
 	private String name;
 	private boolean defaulted = false;
 	private boolean isDefaultEmtpy = false;
-	private List<Argument> uses = new ArrayList<Argument>();
+	private List<Argument> uses = new ArrayList<>();
 	private TclArgument argument;
 
 	static private DefinitionsFactory factory = DefinitionsFactory.eINSTANCE;
 
 	static public List<ArgumentDefinition> get(TclArgument tclArgument) {
-		List<ArgumentDefinition> list = new ArrayList<ArgumentDefinition>();
+		List<ArgumentDefinition> list = new ArrayList<>();
 		if (tclArgument instanceof StringArgument
 				|| tclArgument instanceof ComplexString
 				|| tclArgument instanceof Substitution

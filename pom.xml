@@ -5,9 +5,9 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.eclipse.dltk</groupId>
-		<artifactId>dltk</artifactId>
+		<artifactId>dltk.build.all</artifactId>
 		<version>5.7.2-SNAPSHOT</version>
-		<relativePath>../org.eclipse.dltk.releng/build/pom.xml</relativePath>
+		<relativePath>../org.eclipse.dltk.releng/pom.xml</relativePath>
 	</parent>
 	<groupId>org.eclipse.dltk.tcl</groupId>
 	<artifactId>tcl-all</artifactId>

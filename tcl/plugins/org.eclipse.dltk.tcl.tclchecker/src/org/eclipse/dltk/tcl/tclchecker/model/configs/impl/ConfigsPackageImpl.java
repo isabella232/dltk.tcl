@@ -110,20 +110,10 @@ public class ConfigsPackageImpl extends EPackageImpl implements ConfigsPackage {
 	private static boolean isInited = false;
 
 	/**
-	 * Creates, registers, and initializes the <b>Package</b> for this
-	 * model, and for any others upon which it depends.  Simple
-	 * dependencies are satisfied by calling this method on all
-	 * dependent packages before doing anything else.  This method drives
-	 * initialization for interdependent packages directly, in parallel
-	 * with this package, itself.
-	 * <p>Of this package and its interdependencies, all packages which
-	 * have not yet been registered by their URI values are first created
-	 * and registered.  The packages are then initialized in two steps:
-	 * meta-model objects for all of the packages are created before any
-	 * are initialized, since one package's meta-model objects may refer to
-	 * those of another.
-	 * <p>Invocation of this method will not affect any packages that have
-	 * already been initialized.
+	 * Creates, registers, and initializes the <b>Package</b> for this model, and for any others upon which it depends.
+	 *
+	 * <p>This method is used to initialize {@link ConfigsPackage#eINSTANCE} when that field is accessed.
+	 * Clients should not invoke it directly. Instead, they should simply access that field to obtain the package.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see #eNS_URI
@@ -135,7 +125,8 @@ public class ConfigsPackageImpl extends EPackageImpl implements ConfigsPackage {
 		if (isInited) return (ConfigsPackage)EPackage.Registry.INSTANCE.getEPackage(ConfigsPackage.eNS_URI);
 
 		// Obtain or create and register package
-		ConfigsPackageImpl theConfigsPackage = (ConfigsPackageImpl)(EPackage.Registry.INSTANCE.getEPackage(eNS_URI) instanceof ConfigsPackageImpl ? EPackage.Registry.INSTANCE.getEPackage(eNS_URI) : new ConfigsPackageImpl());
+		Object registeredConfigsPackage = EPackage.Registry.INSTANCE.get(eNS_URI);
+		ConfigsPackageImpl theConfigsPackage = registeredConfigsPackage instanceof ConfigsPackageImpl ? (ConfigsPackageImpl)registeredConfigsPackage : new ConfigsPackageImpl();
 
 		isInited = true;
 
@@ -143,7 +134,8 @@ public class ConfigsPackageImpl extends EPackageImpl implements ConfigsPackage {
 		ValidatorsPackage.eINSTANCE.eClass();
 
 		// Obtain or create and register interdependencies
-		MessagesPackageImpl theMessagesPackage = (MessagesPackageImpl)(EPackage.Registry.INSTANCE.getEPackage(MessagesPackage.eNS_URI) instanceof MessagesPackageImpl ? EPackage.Registry.INSTANCE.getEPackage(MessagesPackage.eNS_URI) : MessagesPackage.eINSTANCE);
+		Object registeredPackage = EPackage.Registry.INSTANCE.getEPackage(MessagesPackage.eNS_URI);
+		MessagesPackageImpl theMessagesPackage = (MessagesPackageImpl)(registeredPackage instanceof MessagesPackageImpl ? registeredPackage : MessagesPackage.eINSTANCE);
 
 		// Create package meta-data objects
 		theConfigsPackage.createPackageContents();
@@ -156,6 +148,8 @@ public class ConfigsPackageImpl extends EPackageImpl implements ConfigsPackage {
 		// Mark meta-data to indicate it can't be changed
 		theConfigsPackage.freeze();
 
+		// Update the registry and return the package
+		EPackage.Registry.INSTANCE.put(ConfigsPackage.eNS_URI, theConfigsPackage);
 		return theConfigsPackage;
 	}
 
@@ -164,6 +158,7 @@ public class ConfigsPackageImpl extends EPackageImpl implements ConfigsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EClass getCheckerConfig() {
 		return checkerConfigEClass;
 	}
@@ -173,6 +168,7 @@ public class ConfigsPackageImpl extends EPackageImpl implements ConfigsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EAttribute getCheckerConfig_Summary() {
 		return (EAttribute)checkerConfigEClass.getEStructuralFeatures().get(0);
 	}
@@ -182,6 +178,7 @@ public class ConfigsPackageImpl extends EPackageImpl implements ConfigsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EAttribute getCheckerConfig_Mode() {
 		return (EAttribute)checkerConfigEClass.getEStructuralFeatures().get(1);
 	}
@@ -191,6 +188,7 @@ public class ConfigsPackageImpl extends EPackageImpl implements ConfigsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EReference getCheckerConfig_MessageStates() {
 		return (EReference)checkerConfigEClass.getEStructuralFeatures().get(2);
 	}
@@ -200,6 +198,7 @@ public class ConfigsPackageImpl extends EPackageImpl implements ConfigsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EAttribute getCheckerConfig_UseTclVer() {
 		return (EAttribute)checkerConfigEClass.getEStructuralFeatures().get(3);
 	}
@@ -209,6 +208,7 @@ public class ConfigsPackageImpl extends EPackageImpl implements ConfigsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EAttribute getCheckerConfig_IndividualMessageStates() {
 		return (EAttribute)checkerConfigEClass.getEStructuralFeatures().get(4);
 	}
@@ -218,6 +218,7 @@ public class ConfigsPackageImpl extends EPackageImpl implements ConfigsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EClass getMessageStateMap() {
 		return messageStateMapEClass;
 	}
@@ -227,6 +228,7 @@ public class ConfigsPackageImpl extends EPackageImpl implements ConfigsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EAttribute getMessageStateMap_Key() {
 		return (EAttribute)messageStateMapEClass.getEStructuralFeatures().get(0);
 	}
@@ -236,6 +238,7 @@ public class ConfigsPackageImpl extends EPackageImpl implements ConfigsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EAttribute getMessageStateMap_Value() {
 		return (EAttribute)messageStateMapEClass.getEStructuralFeatures().get(1);
 	}
@@ -245,6 +248,7 @@ public class ConfigsPackageImpl extends EPackageImpl implements ConfigsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EClass getCheckerEnvironmentInstance() {
 		return checkerEnvironmentInstanceEClass;
 	}
@@ -254,6 +258,7 @@ public class ConfigsPackageImpl extends EPackageImpl implements ConfigsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EAttribute getCheckerEnvironmentInstance_PcxFileFolders() {
 		return (EAttribute)checkerEnvironmentInstanceEClass.getEStructuralFeatures().get(0);
 	}
@@ -263,6 +268,7 @@ public class ConfigsPackageImpl extends EPackageImpl implements ConfigsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EAttribute getCheckerEnvironmentInstance_UsePcxFiles() {
 		return (EAttribute)checkerEnvironmentInstanceEClass.getEStructuralFeatures().get(1);
 	}
@@ -272,6 +278,7 @@ public class ConfigsPackageImpl extends EPackageImpl implements ConfigsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EReference getCheckerEnvironmentInstance_Instance() {
 		return (EReference)checkerEnvironmentInstanceEClass.getEStructuralFeatures().get(2);
 	}
@@ -281,6 +288,7 @@ public class ConfigsPackageImpl extends EPackageImpl implements ConfigsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EClass getCheckerInstance() {
 		return checkerInstanceEClass;
 	}
@@ -290,6 +298,7 @@ public class ConfigsPackageImpl extends EPackageImpl implements ConfigsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EAttribute getCheckerInstance_Version() {
 		return (EAttribute)checkerInstanceEClass.getEStructuralFeatures().get(0);
 	}
@@ -299,6 +308,7 @@ public class ConfigsPackageImpl extends EPackageImpl implements ConfigsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EAttribute getCheckerInstance_CommandLineOptions() {
 		return (EAttribute)checkerInstanceEClass.getEStructuralFeatures().get(1);
 	}
@@ -308,6 +318,7 @@ public class ConfigsPackageImpl extends EPackageImpl implements ConfigsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EReference getCheckerInstance_Environments() {
 		return (EReference)checkerInstanceEClass.getEStructuralFeatures().get(2);
 	}
@@ -317,6 +328,7 @@ public class ConfigsPackageImpl extends EPackageImpl implements ConfigsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EReference getCheckerInstance_Favorite() {
 		return (EReference)checkerInstanceEClass.getEStructuralFeatures().get(3);
 	}
@@ -326,6 +338,7 @@ public class ConfigsPackageImpl extends EPackageImpl implements ConfigsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EReference getCheckerInstance_Configs() {
 		return (EReference)checkerInstanceEClass.getEStructuralFeatures().get(4);
 	}
@@ -335,6 +348,7 @@ public class ConfigsPackageImpl extends EPackageImpl implements ConfigsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EEnum getCheckerMode() {
 		return checkerModeEEnum;
 	}
@@ -344,6 +358,7 @@ public class ConfigsPackageImpl extends EPackageImpl implements ConfigsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EEnum getMessageState() {
 		return messageStateEEnum;
 	}
@@ -353,6 +368,7 @@ public class ConfigsPackageImpl extends EPackageImpl implements ConfigsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EEnum getCheckerVersion() {
 		return checkerVersionEEnum;
 	}
@@ -362,6 +378,7 @@ public class ConfigsPackageImpl extends EPackageImpl implements ConfigsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public ConfigsFactory getConfigsFactory() {
 		return (ConfigsFactory)getEFactoryInstance();
 	}

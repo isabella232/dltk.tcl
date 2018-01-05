@@ -28,12 +28,12 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.dltk.tcl.tclchecker.model.configs.impl.CheckerEnvironmentInstanceImpl#getPcxFileFolders <em>Pcx File Folders</em>}</li>
  *   <li>{@link org.eclipse.dltk.tcl.tclchecker.model.configs.impl.CheckerEnvironmentInstanceImpl#isUsePcxFiles <em>Use Pcx Files</em>}</li>
  *   <li>{@link org.eclipse.dltk.tcl.tclchecker.model.configs.impl.CheckerEnvironmentInstanceImpl#getInstance <em>Instance</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */
@@ -92,6 +92,7 @@ public class CheckerEnvironmentInstanceImpl extends ValidatorEnvironmentInstance
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EList<String> getPcxFileFolders() {
 		if (pcxFileFolders == null) {
 			pcxFileFolders = new EDataTypeUniqueEList<String>(String.class, this, ConfigsPackage.CHECKER_ENVIRONMENT_INSTANCE__PCX_FILE_FOLDERS);
@@ -104,6 +105,7 @@ public class CheckerEnvironmentInstanceImpl extends ValidatorEnvironmentInstance
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public boolean isUsePcxFiles() {
 		return usePcxFiles;
 	}
@@ -113,6 +115,7 @@ public class CheckerEnvironmentInstanceImpl extends ValidatorEnvironmentInstance
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public void setUsePcxFiles(boolean newUsePcxFiles) {
 		boolean oldUsePcxFiles = usePcxFiles;
 		usePcxFiles = newUsePcxFiles;
@@ -125,9 +128,10 @@ public class CheckerEnvironmentInstanceImpl extends ValidatorEnvironmentInstance
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public CheckerInstance getInstance() {
-		if (eContainerFeatureID != ConfigsPackage.CHECKER_ENVIRONMENT_INSTANCE__INSTANCE) return null;
-		return (CheckerInstance)eContainer();
+		if (eContainerFeatureID() != ConfigsPackage.CHECKER_ENVIRONMENT_INSTANCE__INSTANCE) return null;
+		return (CheckerInstance)eInternalContainer();
 	}
 
 	@Override
@@ -150,8 +154,9 @@ public class CheckerEnvironmentInstanceImpl extends ValidatorEnvironmentInstance
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public void setInstance(CheckerInstance newInstance) {
-		if (newInstance != eInternalContainer() || (eContainerFeatureID != ConfigsPackage.CHECKER_ENVIRONMENT_INSTANCE__INSTANCE && newInstance != null)) {
+		if (newInstance != eInternalContainer() || (eContainerFeatureID() != ConfigsPackage.CHECKER_ENVIRONMENT_INSTANCE__INSTANCE && newInstance != null)) {
 			if (EcoreUtil.isAncestor(this, newInstance))
 				throw new IllegalArgumentException("Recursive containment not allowed for " + toString()); //$NON-NLS-1$
 			NotificationChain msgs = null;
@@ -203,7 +208,7 @@ public class CheckerEnvironmentInstanceImpl extends ValidatorEnvironmentInstance
 	 */
 	@Override
 	public NotificationChain eBasicRemoveFromContainerFeature(NotificationChain msgs) {
-		switch (eContainerFeatureID) {
+		switch (eContainerFeatureID()) {
 			case ConfigsPackage.CHECKER_ENVIRONMENT_INSTANCE__INSTANCE:
 				return eInternalContainer().eInverseRemove(this, ConfigsPackage.CHECKER_INSTANCE__ENVIRONMENTS, CheckerInstance.class, msgs);
 		}
@@ -221,7 +226,7 @@ public class CheckerEnvironmentInstanceImpl extends ValidatorEnvironmentInstance
 			case ConfigsPackage.CHECKER_ENVIRONMENT_INSTANCE__PCX_FILE_FOLDERS:
 				return getPcxFileFolders();
 			case ConfigsPackage.CHECKER_ENVIRONMENT_INSTANCE__USE_PCX_FILES:
-				return isUsePcxFiles() ? Boolean.TRUE : Boolean.FALSE;
+				return isUsePcxFiles();
 			case ConfigsPackage.CHECKER_ENVIRONMENT_INSTANCE__INSTANCE:
 				return getInstance();
 		}
@@ -242,7 +247,7 @@ public class CheckerEnvironmentInstanceImpl extends ValidatorEnvironmentInstance
 				getPcxFileFolders().addAll((Collection<? extends String>)newValue);
 				return;
 			case ConfigsPackage.CHECKER_ENVIRONMENT_INSTANCE__USE_PCX_FILES:
-				setUsePcxFiles(((Boolean)newValue).booleanValue());
+				setUsePcxFiles((Boolean)newValue);
 				return;
 			case ConfigsPackage.CHECKER_ENVIRONMENT_INSTANCE__INSTANCE:
 				setInstance((CheckerInstance)newValue);
@@ -299,7 +304,7 @@ public class CheckerEnvironmentInstanceImpl extends ValidatorEnvironmentInstance
 	public String toString() {
 		if (eIsProxy()) return super.toString();
 
-		StringBuffer result = new StringBuffer(super.toString());
+		StringBuilder result = new StringBuilder(super.toString());
 		result.append(" (pcxFileFolders: "); //$NON-NLS-1$
 		result.append(pcxFileFolders);
 		result.append(", usePcxFiles: "); //$NON-NLS-1$

@@ -27,13 +27,13 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.dltk.tcl.tclchecker.model.messages.impl.MessageGroupImpl#getId <em>Id</em>}</li>
  *   <li>{@link org.eclipse.dltk.tcl.tclchecker.model.messages.impl.MessageGroupImpl#getName <em>Name</em>}</li>
  *   <li>{@link org.eclipse.dltk.tcl.tclchecker.model.messages.impl.MessageGroupImpl#getMessages <em>Messages</em>}</li>
  *   <li>{@link org.eclipse.dltk.tcl.tclchecker.model.messages.impl.MessageGroupImpl#getPriority <em>Priority</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */
@@ -132,6 +132,7 @@ public class MessageGroupImpl extends EObjectImpl implements MessageGroup {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public String getId() {
 		return id;
 	}
@@ -141,6 +142,7 @@ public class MessageGroupImpl extends EObjectImpl implements MessageGroup {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public void setId(String newId) {
 		String oldId = id;
 		id = newId;
@@ -153,6 +155,7 @@ public class MessageGroupImpl extends EObjectImpl implements MessageGroup {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public String getName() {
 		return name;
 	}
@@ -162,6 +165,7 @@ public class MessageGroupImpl extends EObjectImpl implements MessageGroup {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public void setName(String newName) {
 		String oldName = name;
 		name = newName;
@@ -174,6 +178,7 @@ public class MessageGroupImpl extends EObjectImpl implements MessageGroup {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EList<CheckerMessage> getMessages() {
 		if (messages == null) {
 			messages = new EObjectContainmentWithInverseEList<CheckerMessage>(CheckerMessage.class, this, MessagesPackage.MESSAGE_GROUP__MESSAGES, MessagesPackage.CHECKER_MESSAGE__GROUP);
@@ -186,6 +191,7 @@ public class MessageGroupImpl extends EObjectImpl implements MessageGroup {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public int getPriority() {
 		return priority;
 	}
@@ -195,6 +201,7 @@ public class MessageGroupImpl extends EObjectImpl implements MessageGroup {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public void setPriority(int newPriority) {
 		int oldPriority = priority;
 		priority = newPriority;
@@ -246,7 +253,7 @@ public class MessageGroupImpl extends EObjectImpl implements MessageGroup {
 			case MessagesPackage.MESSAGE_GROUP__MESSAGES:
 				return getMessages();
 			case MessagesPackage.MESSAGE_GROUP__PRIORITY:
-				return new Integer(getPriority());
+				return getPriority();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -271,7 +278,7 @@ public class MessageGroupImpl extends EObjectImpl implements MessageGroup {
 				getMessages().addAll((Collection<? extends CheckerMessage>)newValue);
 				return;
 			case MessagesPackage.MESSAGE_GROUP__PRIORITY:
-				setPriority(((Integer)newValue).intValue());
+				setPriority((Integer)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -330,7 +337,7 @@ public class MessageGroupImpl extends EObjectImpl implements MessageGroup {
 	public String toString() {
 		if (eIsProxy()) return super.toString();
 
-		StringBuffer result = new StringBuffer(super.toString());
+		StringBuilder result = new StringBuilder(super.toString());
 		result.append(" (id: "); //$NON-NLS-1$
 		result.append(id);
 		result.append(", name: "); //$NON-NLS-1$

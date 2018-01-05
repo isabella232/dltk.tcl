@@ -26,11 +26,11 @@ import org.eclipse.emf.ecore.impl.EObjectImpl;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.dltk.tcl.tclchecker.model.configs.impl.MessageStateMapImpl#getTypedKey <em>Key</em>}</li>
  *   <li>{@link org.eclipse.dltk.tcl.tclchecker.model.configs.impl.MessageStateMapImpl#getTypedValue <em>Value</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */
@@ -213,7 +213,7 @@ public class MessageStateMapImpl extends EObjectImpl implements BasicEMap.Entry<
 	public String toString() {
 		if (eIsProxy()) return super.toString();
 
-		StringBuffer result = new StringBuffer(super.toString());
+		StringBuilder result = new StringBuilder(super.toString());
 		result.append(" (key: "); //$NON-NLS-1$
 		result.append(key);
 		result.append(", value: "); //$NON-NLS-1$
@@ -234,6 +234,7 @@ public class MessageStateMapImpl extends EObjectImpl implements BasicEMap.Entry<
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public int getHash() {
 		if (hash == -1) {
 			Object theKey = getKey();
@@ -247,6 +248,7 @@ public class MessageStateMapImpl extends EObjectImpl implements BasicEMap.Entry<
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public void setHash(int hash) {
 		this.hash = hash;
 	}
@@ -256,6 +258,7 @@ public class MessageStateMapImpl extends EObjectImpl implements BasicEMap.Entry<
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public String getKey() {
 		return getTypedKey();
 	}
@@ -265,6 +268,7 @@ public class MessageStateMapImpl extends EObjectImpl implements BasicEMap.Entry<
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public void setKey(String key) {
 		setTypedKey(key);
 	}
@@ -274,6 +278,7 @@ public class MessageStateMapImpl extends EObjectImpl implements BasicEMap.Entry<
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public MessageState getValue() {
 		return getTypedValue();
 	}
@@ -283,6 +288,7 @@ public class MessageStateMapImpl extends EObjectImpl implements BasicEMap.Entry<
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public MessageState setValue(MessageState value) {
 		MessageState oldValue = getValue();
 		setTypedValue(value);

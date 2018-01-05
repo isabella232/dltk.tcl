@@ -34,6 +34,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * <em><b>Checker Instance</b></em>'. <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.dltk.tcl.tclchecker.model.configs.impl.CheckerInstanceImpl#getVersion <em>Version</em>}</li>
  *   <li>{@link org.eclipse.dltk.tcl.tclchecker.model.configs.impl.CheckerInstanceImpl#getCommandLineOptions <em>Command Line Options</em>}</li>
@@ -41,7 +42,6 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *   <li>{@link org.eclipse.dltk.tcl.tclchecker.model.configs.impl.CheckerInstanceImpl#getFavorite <em>Favorite</em>}</li>
  *   <li>{@link org.eclipse.dltk.tcl.tclchecker.model.configs.impl.CheckerInstanceImpl#getConfigs <em>Configs</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */
@@ -135,6 +135,7 @@ public class CheckerInstanceImpl extends ValidatorInstanceImpl implements
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public CheckerVersion getVersion() {
 		return version;
 	}
@@ -143,6 +144,7 @@ public class CheckerInstanceImpl extends ValidatorInstanceImpl implements
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public void setVersion(CheckerVersion newVersion) {
 		CheckerVersion oldVersion = version;
 		version = newVersion == null ? VERSION_EDEFAULT : newVersion;
@@ -154,6 +156,7 @@ public class CheckerInstanceImpl extends ValidatorInstanceImpl implements
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public String getCommandLineOptions() {
 		return commandLineOptions;
 	}
@@ -162,6 +165,7 @@ public class CheckerInstanceImpl extends ValidatorInstanceImpl implements
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public void setCommandLineOptions(String newCommandLineOptions) {
 		String oldCommandLineOptions = commandLineOptions;
 		commandLineOptions = newCommandLineOptions;
@@ -173,6 +177,7 @@ public class CheckerInstanceImpl extends ValidatorInstanceImpl implements
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EList<CheckerEnvironmentInstance> getEnvironments() {
 		if (environments == null) {
 			environments = new EObjectContainmentWithInverseEList<CheckerEnvironmentInstance>(CheckerEnvironmentInstance.class, this, ConfigsPackage.CHECKER_INSTANCE__ENVIRONMENTS, ConfigsPackage.CHECKER_ENVIRONMENT_INSTANCE__INSTANCE);
@@ -184,6 +189,7 @@ public class CheckerInstanceImpl extends ValidatorInstanceImpl implements
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public CheckerConfig getFavorite() {
 		if (favorite != null && favorite.eIsProxy()) {
 			InternalEObject oldFavorite = (InternalEObject)favorite;
@@ -208,6 +214,7 @@ public class CheckerInstanceImpl extends ValidatorInstanceImpl implements
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public void setFavorite(CheckerConfig newFavorite) {
 		CheckerConfig oldFavorite = favorite;
 		favorite = newFavorite;
@@ -219,6 +226,7 @@ public class CheckerInstanceImpl extends ValidatorInstanceImpl implements
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EList<CheckerConfig> getConfigs() {
 		if (configs == null) {
 			configs = new EObjectContainmentEList<CheckerConfig>(CheckerConfig.class, this, ConfigsPackage.CHECKER_INSTANCE__CONFIGS);
@@ -231,6 +239,7 @@ public class CheckerInstanceImpl extends ValidatorInstanceImpl implements
 	 * 
 	 * @generated NOT
 	 */
+	@Override
 	public CheckerEnvironmentInstance getEnvironment(String environmentId) {
 		final EList<CheckerEnvironmentInstance> envs = getEnvironments();
 		for (CheckerEnvironmentInstance environmentInstance : envs) {
@@ -251,6 +260,7 @@ public class CheckerInstanceImpl extends ValidatorInstanceImpl implements
 	 * <!-- end-user-doc -->
 	 * @generated NOT
 	 */
+	@Override
 	public CheckerEnvironmentInstance findEnvironment(String environmentId) {
 		final EList<CheckerEnvironmentInstance> envs = getEnvironments();
 		for (CheckerEnvironmentInstance environmentInstance : envs) {
@@ -398,7 +408,7 @@ public class CheckerInstanceImpl extends ValidatorInstanceImpl implements
 	public String toString() {
 		if (eIsProxy()) return super.toString();
 
-		StringBuffer result = new StringBuffer(super.toString());
+		StringBuilder result = new StringBuilder(super.toString());
 		result.append(" (version: "); //$NON-NLS-1$
 		result.append(version);
 		result.append(", commandLineOptions: "); //$NON-NLS-1$

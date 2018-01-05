@@ -27,13 +27,13 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.dltk.tcl.tclchecker.model.messages.impl.CheckerMessageImpl#getMessageId <em>Message Id</em>}</li>
  *   <li>{@link org.eclipse.dltk.tcl.tclchecker.model.messages.impl.CheckerMessageImpl#getExplanation <em>Explanation</em>}</li>
  *   <li>{@link org.eclipse.dltk.tcl.tclchecker.model.messages.impl.CheckerMessageImpl#getCategory <em>Category</em>}</li>
  *   <li>{@link org.eclipse.dltk.tcl.tclchecker.model.messages.impl.CheckerMessageImpl#getGroup <em>Group</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */
@@ -122,6 +122,7 @@ public class CheckerMessageImpl extends EObjectImpl implements CheckerMessage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public String getMessageId() {
 		return messageId;
 	}
@@ -131,6 +132,7 @@ public class CheckerMessageImpl extends EObjectImpl implements CheckerMessage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public void setMessageId(String newMessageId) {
 		String oldMessageId = messageId;
 		messageId = newMessageId;
@@ -143,6 +145,7 @@ public class CheckerMessageImpl extends EObjectImpl implements CheckerMessage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public String getExplanation() {
 		return explanation;
 	}
@@ -152,6 +155,7 @@ public class CheckerMessageImpl extends EObjectImpl implements CheckerMessage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public void setExplanation(String newExplanation) {
 		String oldExplanation = explanation;
 		explanation = newExplanation;
@@ -164,6 +168,7 @@ public class CheckerMessageImpl extends EObjectImpl implements CheckerMessage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public MessageCategory getCategory() {
 		return category;
 	}
@@ -173,6 +178,7 @@ public class CheckerMessageImpl extends EObjectImpl implements CheckerMessage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public void setCategory(MessageCategory newCategory) {
 		MessageCategory oldCategory = category;
 		category = newCategory == null ? CATEGORY_EDEFAULT : newCategory;
@@ -185,9 +191,10 @@ public class CheckerMessageImpl extends EObjectImpl implements CheckerMessage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public MessageGroup getGroup() {
-		if (eContainerFeatureID != MessagesPackage.CHECKER_MESSAGE__GROUP) return null;
-		return (MessageGroup)eContainer();
+		if (eContainerFeatureID() != MessagesPackage.CHECKER_MESSAGE__GROUP) return null;
+		return (MessageGroup)eInternalContainer();
 	}
 
 	/**
@@ -205,8 +212,9 @@ public class CheckerMessageImpl extends EObjectImpl implements CheckerMessage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public void setGroup(MessageGroup newGroup) {
-		if (newGroup != eInternalContainer() || (eContainerFeatureID != MessagesPackage.CHECKER_MESSAGE__GROUP && newGroup != null)) {
+		if (newGroup != eInternalContainer() || (eContainerFeatureID() != MessagesPackage.CHECKER_MESSAGE__GROUP && newGroup != null)) {
 			if (EcoreUtil.isAncestor(this, newGroup))
 				throw new IllegalArgumentException("Recursive containment not allowed for " + toString()); //$NON-NLS-1$
 			NotificationChain msgs = null;
@@ -258,7 +266,7 @@ public class CheckerMessageImpl extends EObjectImpl implements CheckerMessage {
 	 */
 	@Override
 	public NotificationChain eBasicRemoveFromContainerFeature(NotificationChain msgs) {
-		switch (eContainerFeatureID) {
+		switch (eContainerFeatureID()) {
 			case MessagesPackage.CHECKER_MESSAGE__GROUP:
 				return eInternalContainer().eInverseRemove(this, MessagesPackage.MESSAGE_GROUP__MESSAGES, MessageGroup.class, msgs);
 		}
@@ -362,7 +370,7 @@ public class CheckerMessageImpl extends EObjectImpl implements CheckerMessage {
 	public String toString() {
 		if (eIsProxy()) return super.toString();
 
-		StringBuffer result = new StringBuffer(super.toString());
+		StringBuilder result = new StringBuilder(super.toString());
 		result.append(" (messageId: "); //$NON-NLS-1$
 		result.append(messageId);
 		result.append(", explanation: "); //$NON-NLS-1$

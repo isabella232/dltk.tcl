@@ -122,6 +122,8 @@ public enum MessageState implements Enumerator {
 	 * Returns the '<em><b>Message State</b></em>' literal with the specified literal value.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
+	 * @param literal the literal.
+	 * @return the matching enumerator or <code>null</code>.
 	 * @generated
 	 */
 	public static MessageState get(String literal) {
@@ -138,6 +140,8 @@ public enum MessageState implements Enumerator {
 	 * Returns the '<em><b>Message State</b></em>' literal with the specified name.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
+	 * @param name the name.
+	 * @return the matching enumerator or <code>null</code>.
 	 * @generated
 	 */
 	public static MessageState getByName(String name) {
@@ -154,6 +158,8 @@ public enum MessageState implements Enumerator {
 	 * Returns the '<em><b>Message State</b></em>' literal with the specified integer value.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
+	 * @param value the integer value.
+	 * @return the matching enumerator or <code>null</code>.
 	 * @generated
 	 */
 	public static MessageState get(int value) {
@@ -203,6 +209,7 @@ public enum MessageState implements Enumerator {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public int getValue() {
 	  return value;
 	}
@@ -212,6 +219,7 @@ public enum MessageState implements Enumerator {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public String getName() {
 	  return name;
 	}
@@ -221,6 +229,7 @@ public enum MessageState implements Enumerator {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public String getLiteral() {
 	  return literal;
 	}

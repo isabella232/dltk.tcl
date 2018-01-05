@@ -16,12 +16,12 @@ import org.eclipse.emf.common.util.EList;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.dltk.tcl.tclchecker.model.configs.CheckerEnvironmentInstance#getPcxFileFolders <em>Pcx File Folders</em>}</li>
  *   <li>{@link org.eclipse.dltk.tcl.tclchecker.model.configs.CheckerEnvironmentInstance#isUsePcxFiles <em>Use Pcx Files</em>}</li>
  *   <li>{@link org.eclipse.dltk.tcl.tclchecker.model.configs.CheckerEnvironmentInstance#getInstance <em>Instance</em>}</li>
  * </ul>
- * </p>
  *
  * @see org.eclipse.dltk.tcl.tclchecker.model.configs.ConfigsPackage#getCheckerEnvironmentInstance()
  * @model

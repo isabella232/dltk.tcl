@@ -32,7 +32,7 @@ public class MessagesFactoryImpl extends EFactoryImpl implements MessagesFactory
 	 */
 	public static MessagesFactory init() {
 		try {
-			MessagesFactory theMessagesFactory = (MessagesFactory)EPackage.Registry.INSTANCE.getEFactory("http://www.eclipse.org/dltk/tcl/tclchecker/messages"); //$NON-NLS-1$ 
+			MessagesFactory theMessagesFactory = (MessagesFactory)EPackage.Registry.INSTANCE.getEFactory(MessagesPackage.eNS_URI);
 			if (theMessagesFactory != null) {
 				return theMessagesFactory;
 			}
@@ -103,6 +103,7 @@ public class MessagesFactoryImpl extends EFactoryImpl implements MessagesFactory
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public CheckerMessage createCheckerMessage() {
 		CheckerMessageImpl checkerMessage = new CheckerMessageImpl();
 		return checkerMessage;
@@ -113,6 +114,7 @@ public class MessagesFactoryImpl extends EFactoryImpl implements MessagesFactory
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public MessageGroup createMessageGroup() {
 		MessageGroupImpl messageGroup = new MessageGroupImpl();
 		return messageGroup;
@@ -143,6 +145,7 @@ public class MessagesFactoryImpl extends EFactoryImpl implements MessagesFactory
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public MessagesPackage getMessagesPackage() {
 		return (MessagesPackage)getEPackage();
 	}

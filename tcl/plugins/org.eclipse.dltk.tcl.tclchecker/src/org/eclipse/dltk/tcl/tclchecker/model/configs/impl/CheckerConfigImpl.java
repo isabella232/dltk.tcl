@@ -27,6 +27,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.dltk.tcl.tclchecker.model.configs.impl.CheckerConfigImpl#isSummary <em>Summary</em>}</li>
  *   <li>{@link org.eclipse.dltk.tcl.tclchecker.model.configs.impl.CheckerConfigImpl#getMode <em>Mode</em>}</li>
@@ -34,7 +35,6 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *   <li>{@link org.eclipse.dltk.tcl.tclchecker.model.configs.impl.CheckerConfigImpl#isUseTclVer <em>Use Tcl Ver</em>}</li>
  *   <li>{@link org.eclipse.dltk.tcl.tclchecker.model.configs.impl.CheckerConfigImpl#isIndividualMessageStates <em>Individual Message States</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */
@@ -153,6 +153,7 @@ public class CheckerConfigImpl extends ValidatorConfigImpl implements CheckerCon
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public boolean isSummary() {
 		return summary;
 	}
@@ -162,6 +163,7 @@ public class CheckerConfigImpl extends ValidatorConfigImpl implements CheckerCon
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public void setSummary(boolean newSummary) {
 		boolean oldSummary = summary;
 		summary = newSummary;
@@ -174,6 +176,7 @@ public class CheckerConfigImpl extends ValidatorConfigImpl implements CheckerCon
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public CheckerMode getMode() {
 		return mode;
 	}
@@ -183,6 +186,7 @@ public class CheckerConfigImpl extends ValidatorConfigImpl implements CheckerCon
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public void setMode(CheckerMode newMode) {
 		CheckerMode oldMode = mode;
 		mode = newMode == null ? MODE_EDEFAULT : newMode;
@@ -195,6 +199,7 @@ public class CheckerConfigImpl extends ValidatorConfigImpl implements CheckerCon
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public EMap<String, MessageState> getMessageStates() {
 		if (messageStates == null) {
 			messageStates = new EcoreEMap<String,MessageState>(ConfigsPackage.Literals.MESSAGE_STATE_MAP, MessageStateMapImpl.class, this, ConfigsPackage.CHECKER_CONFIG__MESSAGE_STATES);
@@ -207,6 +212,7 @@ public class CheckerConfigImpl extends ValidatorConfigImpl implements CheckerCon
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public boolean isUseTclVer() {
 		return useTclVer;
 	}
@@ -216,6 +222,7 @@ public class CheckerConfigImpl extends ValidatorConfigImpl implements CheckerCon
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public void setUseTclVer(boolean newUseTclVer) {
 		boolean oldUseTclVer = useTclVer;
 		useTclVer = newUseTclVer;
@@ -228,6 +235,7 @@ public class CheckerConfigImpl extends ValidatorConfigImpl implements CheckerCon
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public boolean isIndividualMessageStates() {
 		return individualMessageStates;
 	}
@@ -237,6 +245,7 @@ public class CheckerConfigImpl extends ValidatorConfigImpl implements CheckerCon
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public void setIndividualMessageStates(boolean newIndividualMessageStates) {
 		boolean oldIndividualMessageStates = individualMessageStates;
 		individualMessageStates = newIndividualMessageStates;
@@ -267,16 +276,16 @@ public class CheckerConfigImpl extends ValidatorConfigImpl implements CheckerCon
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
 			case ConfigsPackage.CHECKER_CONFIG__SUMMARY:
-				return isSummary() ? Boolean.TRUE : Boolean.FALSE;
+				return isSummary();
 			case ConfigsPackage.CHECKER_CONFIG__MODE:
 				return getMode();
 			case ConfigsPackage.CHECKER_CONFIG__MESSAGE_STATES:
 				if (coreType) return getMessageStates();
 				else return getMessageStates().map();
 			case ConfigsPackage.CHECKER_CONFIG__USE_TCL_VER:
-				return isUseTclVer() ? Boolean.TRUE : Boolean.FALSE;
+				return isUseTclVer();
 			case ConfigsPackage.CHECKER_CONFIG__INDIVIDUAL_MESSAGE_STATES:
-				return isIndividualMessageStates() ? Boolean.TRUE : Boolean.FALSE;
+				return isIndividualMessageStates();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -290,7 +299,7 @@ public class CheckerConfigImpl extends ValidatorConfigImpl implements CheckerCon
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
 			case ConfigsPackage.CHECKER_CONFIG__SUMMARY:
-				setSummary(((Boolean)newValue).booleanValue());
+				setSummary((Boolean)newValue);
 				return;
 			case ConfigsPackage.CHECKER_CONFIG__MODE:
 				setMode((CheckerMode)newValue);
@@ -299,10 +308,10 @@ public class CheckerConfigImpl extends ValidatorConfigImpl implements CheckerCon
 				((EStructuralFeature.Setting)getMessageStates()).set(newValue);
 				return;
 			case ConfigsPackage.CHECKER_CONFIG__USE_TCL_VER:
-				setUseTclVer(((Boolean)newValue).booleanValue());
+				setUseTclVer((Boolean)newValue);
 				return;
 			case ConfigsPackage.CHECKER_CONFIG__INDIVIDUAL_MESSAGE_STATES:
-				setIndividualMessageStates(((Boolean)newValue).booleanValue());
+				setIndividualMessageStates((Boolean)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -366,7 +375,7 @@ public class CheckerConfigImpl extends ValidatorConfigImpl implements CheckerCon
 	public String toString() {
 		if (eIsProxy()) return super.toString();
 
-		StringBuffer result = new StringBuffer(super.toString());
+		StringBuilder result = new StringBuilder(super.toString());
 		result.append(" (summary: "); //$NON-NLS-1$
 		result.append(summary);
 		result.append(", mode: "); //$NON-NLS-1$

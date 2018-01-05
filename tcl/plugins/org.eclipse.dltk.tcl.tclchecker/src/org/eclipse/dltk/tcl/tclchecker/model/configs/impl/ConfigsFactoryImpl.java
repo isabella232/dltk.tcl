@@ -34,7 +34,7 @@ public class ConfigsFactoryImpl extends EFactoryImpl implements ConfigsFactory {
 	 */
 	public static ConfigsFactory init() {
 		try {
-			ConfigsFactory theConfigsFactory = (ConfigsFactory)EPackage.Registry.INSTANCE.getEFactory("http://www.eclipse.org/dltk/tcl/tclchecker/configs"); //$NON-NLS-1$ 
+			ConfigsFactory theConfigsFactory = (ConfigsFactory)EPackage.Registry.INSTANCE.getEFactory(ConfigsPackage.eNS_URI);
 			if (theConfigsFactory != null) {
 				return theConfigsFactory;
 			}
@@ -115,6 +115,7 @@ public class ConfigsFactoryImpl extends EFactoryImpl implements ConfigsFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public CheckerConfig createCheckerConfig() {
 		CheckerConfigImpl checkerConfig = new CheckerConfigImpl();
 		return checkerConfig;
@@ -135,6 +136,7 @@ public class ConfigsFactoryImpl extends EFactoryImpl implements ConfigsFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public CheckerEnvironmentInstance createCheckerEnvironmentInstance() {
 		CheckerEnvironmentInstanceImpl checkerEnvironmentInstance = new CheckerEnvironmentInstanceImpl();
 		return checkerEnvironmentInstance;
@@ -145,6 +147,7 @@ public class ConfigsFactoryImpl extends EFactoryImpl implements ConfigsFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public CheckerInstance createCheckerInstance() {
 		CheckerInstanceImpl checkerInstance = new CheckerInstanceImpl();
 		return checkerInstance;
@@ -215,6 +218,7 @@ public class ConfigsFactoryImpl extends EFactoryImpl implements ConfigsFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public ConfigsPackage getConfigsPackage() {
 		return (ConfigsPackage)getEPackage();
 	}

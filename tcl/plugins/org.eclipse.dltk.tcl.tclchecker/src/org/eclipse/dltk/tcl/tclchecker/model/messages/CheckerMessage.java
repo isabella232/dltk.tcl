@@ -15,13 +15,13 @@ import org.eclipse.emf.ecore.EObject;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.dltk.tcl.tclchecker.model.messages.CheckerMessage#getMessageId <em>Message Id</em>}</li>
  *   <li>{@link org.eclipse.dltk.tcl.tclchecker.model.messages.CheckerMessage#getExplanation <em>Explanation</em>}</li>
  *   <li>{@link org.eclipse.dltk.tcl.tclchecker.model.messages.CheckerMessage#getCategory <em>Category</em>}</li>
  *   <li>{@link org.eclipse.dltk.tcl.tclchecker.model.messages.CheckerMessage#getGroup <em>Group</em>}</li>
  * </ul>
- * </p>
  *
  * @see org.eclipse.dltk.tcl.tclchecker.model.messages.MessagesPackage#getCheckerMessage()
  * @model extendedMetaData="name='message'"

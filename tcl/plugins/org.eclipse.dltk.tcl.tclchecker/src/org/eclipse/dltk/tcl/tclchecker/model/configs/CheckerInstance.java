@@ -16,6 +16,7 @@ import org.eclipse.emf.common.util.EList;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.dltk.tcl.tclchecker.model.configs.CheckerInstance#getVersion <em>Version</em>}</li>
  *   <li>{@link org.eclipse.dltk.tcl.tclchecker.model.configs.CheckerInstance#getCommandLineOptions <em>Command Line Options</em>}</li>
@@ -23,7 +24,6 @@ import org.eclipse.emf.common.util.EList;
  *   <li>{@link org.eclipse.dltk.tcl.tclchecker.model.configs.CheckerInstance#getFavorite <em>Favorite</em>}</li>
  *   <li>{@link org.eclipse.dltk.tcl.tclchecker.model.configs.CheckerInstance#getConfigs <em>Configs</em>}</li>
  * </ul>
- * </p>
  *
  * @see org.eclipse.dltk.tcl.tclchecker.model.configs.ConfigsPackage#getCheckerInstance()
  * @model

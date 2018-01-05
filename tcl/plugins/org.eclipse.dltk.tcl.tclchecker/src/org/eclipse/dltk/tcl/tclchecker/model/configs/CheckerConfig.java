@@ -16,6 +16,7 @@ import org.eclipse.emf.common.util.EMap;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.dltk.tcl.tclchecker.model.configs.CheckerConfig#isSummary <em>Summary</em>}</li>
  *   <li>{@link org.eclipse.dltk.tcl.tclchecker.model.configs.CheckerConfig#getMode <em>Mode</em>}</li>
@@ -23,7 +24,6 @@ import org.eclipse.emf.common.util.EMap;
  *   <li>{@link org.eclipse.dltk.tcl.tclchecker.model.configs.CheckerConfig#isUseTclVer <em>Use Tcl Ver</em>}</li>
  *   <li>{@link org.eclipse.dltk.tcl.tclchecker.model.configs.CheckerConfig#isIndividualMessageStates <em>Individual Message States</em>}</li>
  * </ul>
- * </p>
  *
  * @see org.eclipse.dltk.tcl.tclchecker.model.configs.ConfigsPackage#getCheckerConfig()
  * @model
@@ -96,7 +96,7 @@ public interface CheckerConfig extends ValidatorConfig {
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Message States</em>' map.
 	 * @see org.eclipse.dltk.tcl.tclchecker.model.configs.ConfigsPackage#getCheckerConfig_MessageStates()
-	 * @model mapType="org.eclipse.dltk.tcl.tclchecker.model.configs.MessageStateMap<org.eclipse.emf.ecore.EString, org.eclipse.dltk.tcl.tclchecker.model.configs.MessageState>"
+	 * @model mapType="org.eclipse.dltk.tcl.tclchecker.model.configs.MessageStateMap&lt;org.eclipse.emf.ecore.EString, org.eclipse.dltk.tcl.tclchecker.model.configs.MessageState&gt;"
 	 * @generated
 	 */
 	EMap<String, MessageState> getMessageStates();

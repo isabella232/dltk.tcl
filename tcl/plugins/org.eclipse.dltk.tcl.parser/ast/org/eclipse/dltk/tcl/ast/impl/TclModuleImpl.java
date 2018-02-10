@@ -33,12 +33,12 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * <em><b>Tcl Module</b></em>'. <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.dltk.tcl.ast.impl.TclModuleImpl#getStatements <em>Statements</em>}</li>
  *   <li>{@link org.eclipse.dltk.tcl.ast.impl.TclModuleImpl#getSize <em>Size</em>}</li>
  *   <li>{@link org.eclipse.dltk.tcl.ast.impl.TclModuleImpl#getCodeModel <em>Code Model</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */
@@ -164,13 +164,15 @@ public class TclModuleImpl extends EObjectImpl implements TclModule {
 		if (newCodeModel != codeModel) {
 			NotificationChain msgs = null;
 			if (codeModel != null)
-				msgs = ((InternalEObject) codeModel)
-						.eInverseRemove(this, EOPPOSITE_FEATURE_BASE
-								- AstPackage.TCL_MODULE__CODE_MODEL, null, msgs);
+				msgs = ((InternalEObject) codeModel).eInverseRemove(this,
+						EOPPOSITE_FEATURE_BASE
+								- AstPackage.TCL_MODULE__CODE_MODEL,
+						null, msgs);
 			if (newCodeModel != null)
-				msgs = ((InternalEObject) newCodeModel)
-						.eInverseAdd(this, EOPPOSITE_FEATURE_BASE
-								- AstPackage.TCL_MODULE__CODE_MODEL, null, msgs);
+				msgs = ((InternalEObject) newCodeModel).eInverseAdd(this,
+						EOPPOSITE_FEATURE_BASE
+								- AstPackage.TCL_MODULE__CODE_MODEL,
+						null, msgs);
 			msgs = basicSetCodeModel(newCodeModel, msgs);
 			if (msgs != null)
 				msgs.dispatch();
@@ -287,7 +289,8 @@ public class TclModuleImpl extends EObjectImpl implements TclModule {
 		result.append(" (size: "); //$NON-NLS-1$
 		result.append(size);
 		result.append(')');
-		result.append(SimpleCodePrinter.getCommandsString(getStatements(),false));
+		result.append(
+				SimpleCodePrinter.getCommandsString(getStatements(), false));
 		return result.toString();
 	}
 

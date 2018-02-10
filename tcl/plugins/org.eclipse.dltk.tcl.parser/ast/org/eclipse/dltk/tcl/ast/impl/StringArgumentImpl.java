@@ -23,16 +23,16 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.dltk.tcl.ast.impl.StringArgumentImpl#getValue <em>Value</em>}</li>
  *   <li>{@link org.eclipse.dltk.tcl.ast.impl.StringArgumentImpl#getRawValue <em>Raw Value</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */
-public class StringArgumentImpl extends TclArgumentImpl implements
-		StringArgument {
+public class StringArgumentImpl extends TclArgumentImpl
+		implements StringArgument {
 	/**
 	 * The default value of the '{@link #getValue() <em>Value</em>}' attribute.
 	 * <!-- begin-user-doc -->
@@ -198,8 +198,8 @@ public class StringArgumentImpl extends TclArgumentImpl implements
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
 		case AstPackage.STRING_ARGUMENT__VALUE:
-			return VALUE_EDEFAULT == null ? value != null : !VALUE_EDEFAULT
-					.equals(value);
+			return VALUE_EDEFAULT == null ? value != null
+					: !VALUE_EDEFAULT.equals(value);
 		case AstPackage.STRING_ARGUMENT__RAW_VALUE:
 			return RAW_VALUE_EDEFAULT == null ? rawValue != null
 					: !RAW_VALUE_EDEFAULT.equals(rawValue);
@@ -217,7 +217,7 @@ public class StringArgumentImpl extends TclArgumentImpl implements
 		if (eIsProxy())
 			return super.toString();
 
-		StringBuffer result = new StringBuffer(super.toString());
+		StringBuilder result = new StringBuilder(super.toString());
 		result.append(" (value: "); //$NON-NLS-1$
 		result.append(value);
 		result.append(", rawValue: "); //$NON-NLS-1$

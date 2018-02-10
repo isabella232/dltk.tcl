@@ -37,7 +37,7 @@ public class DefinitionsFactoryImpl extends EFactoryImpl implements DefinitionsF
 	 */
 	public static DefinitionsFactory init() {
 		try {
-			DefinitionsFactory theDefinitionsFactory = (DefinitionsFactory)EPackage.Registry.INSTANCE.getEFactory("http://www.eclipse.org/dltk/tcl/parserules.ecore"); 
+			DefinitionsFactory theDefinitionsFactory = (DefinitionsFactory)EPackage.Registry.INSTANCE.getEFactory(DefinitionsPackage.eNS_URI);
 			if (theDefinitionsFactory != null) {
 				return theDefinitionsFactory;
 			}

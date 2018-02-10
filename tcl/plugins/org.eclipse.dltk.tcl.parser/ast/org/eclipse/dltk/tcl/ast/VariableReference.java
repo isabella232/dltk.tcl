@@ -18,11 +18,11 @@ package org.eclipse.dltk.tcl.ast;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.dltk.tcl.ast.VariableReference#getName <em>Name</em>}</li>
  *   <li>{@link org.eclipse.dltk.tcl.ast.VariableReference#getIndex <em>Index</em>}</li>
  * </ul>
- * </p>
  *
  * @see org.eclipse.dltk.tcl.ast.AstPackage#getVariableReference()
  * @model

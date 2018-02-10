@@ -20,11 +20,11 @@ import org.eclipse.emf.ecore.EObject;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.dltk.tcl.ast.Node#getStart <em>Start</em>}</li>
  *   <li>{@link org.eclipse.dltk.tcl.ast.Node#getEnd <em>End</em>}</li>
  * </ul>
- * </p>
  *
  * @see org.eclipse.dltk.tcl.ast.AstPackage#getNode()
  * @model

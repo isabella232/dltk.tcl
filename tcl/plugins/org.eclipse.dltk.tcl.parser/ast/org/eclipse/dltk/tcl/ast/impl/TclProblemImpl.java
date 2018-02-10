@@ -23,6 +23,7 @@ import org.eclipse.emf.ecore.util.EDataTypeEList;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.dltk.tcl.ast.impl.TclProblemImpl#getArguments <em>Arguments</em>}</li>
  *   <li>{@link org.eclipse.dltk.tcl.ast.impl.TclProblemImpl#getId <em>Id</em>}</li>
@@ -34,7 +35,6 @@ import org.eclipse.emf.ecore.util.EDataTypeEList;
  *   <li>{@link org.eclipse.dltk.tcl.ast.impl.TclProblemImpl#getFileName <em>File Name</em>}</li>
  *   <li>{@link org.eclipse.dltk.tcl.ast.impl.TclProblemImpl#getLineNumber <em>Line Number</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */
@@ -327,7 +327,8 @@ public class TclProblemImpl extends EObjectImpl implements TclProblem {
 		sourceEnd = newSourceEnd;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET,
-					AstPackage.TCL_PROBLEM__SOURCE_END, oldSourceEnd, sourceEnd));
+					AstPackage.TCL_PROBLEM__SOURCE_END, oldSourceEnd,
+					sourceEnd));
 	}
 
 	/**
@@ -571,7 +572,7 @@ public class TclProblemImpl extends EObjectImpl implements TclProblem {
 		if (eIsProxy())
 			return super.toString();
 
-		StringBuffer result = new StringBuffer(super.toString());
+		StringBuilder result = new StringBuilder(super.toString());
 		result.append(" (arguments: "); //$NON-NLS-1$
 		result.append(arguments);
 		result.append(", id: "); //$NON-NLS-1$

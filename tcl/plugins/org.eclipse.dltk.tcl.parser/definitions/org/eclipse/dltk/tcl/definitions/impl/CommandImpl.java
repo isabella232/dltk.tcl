@@ -37,6 +37,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.dltk.tcl.definitions.impl.CommandImpl#getName <em>Name</em>}</li>
  *   <li>{@link org.eclipse.dltk.tcl.definitions.impl.CommandImpl#getArguments <em>Arguments</em>}</li>
@@ -44,7 +45,6 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *   <li>{@link org.eclipse.dltk.tcl.definitions.impl.CommandImpl#getScope <em>Scope</em>}</li>
  *   <li>{@link org.eclipse.dltk.tcl.definitions.impl.CommandImpl#getDeprecated <em>Deprecated</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */
@@ -359,7 +359,7 @@ public class CommandImpl extends ScopeImpl implements Command {
 	public String toString() {
 		if (eIsProxy()) return super.toString();
 
-		StringBuffer result = new StringBuffer(super.toString());
+		StringBuilder result = new StringBuilder(super.toString());
 		result.append(" (name: ");
 		result.append(name);
 		result.append(", version: ");

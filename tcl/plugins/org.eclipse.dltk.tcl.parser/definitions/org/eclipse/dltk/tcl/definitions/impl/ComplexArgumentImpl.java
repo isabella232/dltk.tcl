@@ -37,13 +37,13 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.dltk.tcl.definitions.impl.ComplexArgumentImpl#getLowerBound <em>Lower Bound</em>}</li>
  *   <li>{@link org.eclipse.dltk.tcl.definitions.impl.ComplexArgumentImpl#getUpperBound <em>Upper Bound</em>}</li>
  *   <li>{@link org.eclipse.dltk.tcl.definitions.impl.ComplexArgumentImpl#getName <em>Name</em>}</li>
  *   <li>{@link org.eclipse.dltk.tcl.definitions.impl.ComplexArgumentImpl#getArguments <em>Arguments</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */
@@ -235,9 +235,9 @@ public class ComplexArgumentImpl extends EObjectImpl implements ComplexArgument 
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
 			case DefinitionsPackage.COMPLEX_ARGUMENT__LOWER_BOUND:
-				return new Integer(getLowerBound());
+				return getLowerBound();
 			case DefinitionsPackage.COMPLEX_ARGUMENT__UPPER_BOUND:
-				return new Integer(getUpperBound());
+				return getUpperBound();
 			case DefinitionsPackage.COMPLEX_ARGUMENT__NAME:
 				return getName();
 			case DefinitionsPackage.COMPLEX_ARGUMENT__ARGUMENTS:
@@ -256,10 +256,10 @@ public class ComplexArgumentImpl extends EObjectImpl implements ComplexArgument 
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
 			case DefinitionsPackage.COMPLEX_ARGUMENT__LOWER_BOUND:
-				setLowerBound(((Integer)newValue).intValue());
+				setLowerBound((Integer)newValue);
 				return;
 			case DefinitionsPackage.COMPLEX_ARGUMENT__UPPER_BOUND:
-				setUpperBound(((Integer)newValue).intValue());
+				setUpperBound((Integer)newValue);
 				return;
 			case DefinitionsPackage.COMPLEX_ARGUMENT__NAME:
 				setName((String)newValue);
@@ -325,7 +325,7 @@ public class ComplexArgumentImpl extends EObjectImpl implements ComplexArgument 
 	public String toString() {
 		if (eIsProxy()) return super.toString();
 
-		StringBuffer result = new StringBuffer(super.toString());
+		StringBuilder result = new StringBuilder(super.toString());
 		result.append(" (lowerBound: ");
 		result.append(lowerBound);
 		result.append(", upperBound: ");

@@ -31,15 +31,16 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.dltk.tcl.ast.impl.ComplexStringImpl#getArguments <em>Arguments</em>}</li>
  *   <li>{@link org.eclipse.dltk.tcl.ast.impl.ComplexStringImpl#getKind <em>Kind</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */
-public class ComplexStringImpl extends TclArgumentImpl implements ComplexString {
+public class ComplexStringImpl extends TclArgumentImpl
+		implements ComplexString {
 	/**
 	 * The cached value of the '{@link #getArguments() <em>Arguments</em>}' containment reference list.
 	 * <!-- begin-user-doc -->
@@ -221,7 +222,7 @@ public class ComplexStringImpl extends TclArgumentImpl implements ComplexString 
 		if (eIsProxy())
 			return super.toString();
 
-		StringBuffer result = new StringBuffer(super.toString());
+		StringBuilder result = new StringBuilder(super.toString());
 		result.append(" (kind: "); //$NON-NLS-1$
 		result.append(kind);
 		result.append(')');

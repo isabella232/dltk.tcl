@@ -31,11 +31,11 @@ import org.eclipse.emf.ecore.util.EObjectResolvingEList;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.dltk.tcl.ast.impl.ArgumentMatchImpl#getDefinition <em>Definition</em>}</li>
  *   <li>{@link org.eclipse.dltk.tcl.ast.impl.ArgumentMatchImpl#getArguments <em>Arguments</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */

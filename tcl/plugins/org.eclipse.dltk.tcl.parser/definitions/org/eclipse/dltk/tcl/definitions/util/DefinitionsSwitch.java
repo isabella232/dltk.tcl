@@ -17,6 +17,8 @@ import org.eclipse.dltk.tcl.definitions.*;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EPackage;
+import org.eclipse.emf.ecore.util.Switch;
 
 /**
  * <!-- begin-user-doc -->
@@ -31,7 +33,7 @@ import org.eclipse.emf.ecore.EObject;
  * @see org.eclipse.dltk.tcl.definitions.DefinitionsPackage
  * @generated
  */
-public class DefinitionsSwitch<T> {
+public class DefinitionsSwitch<T> extends Switch<T> {
 	/**
 	 * The cached model package
 	 * <!-- begin-user-doc -->
@@ -53,14 +55,16 @@ public class DefinitionsSwitch<T> {
 	}
 
 	/**
-	 * Calls <code>caseXXX</code> for each class of the model until one returns a non null result; it yields that result.
+	 * Checks whether this is a switch for the given package.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the first non-null result returned by a <code>caseXXX</code> call.
+	 * @param ePackage the package in question.
+	 * @return whether this is a switch for the given package.
 	 * @generated
 	 */
-	public T doSwitch(EObject theEObject) {
-		return doSwitch(theEObject.eClass(), theEObject);
+	@Override
+	protected boolean isSwitchFor(EPackage ePackage) {
+		return ePackage == modelPackage;
 	}
 
 	/**
@@ -70,26 +74,7 @@ public class DefinitionsSwitch<T> {
 	 * @return the first non-null result returned by a <code>caseXXX</code> call.
 	 * @generated
 	 */
-	protected T doSwitch(EClass theEClass, EObject theEObject) {
-		if (theEClass.eContainer() == modelPackage) {
-			return doSwitch(theEClass.getClassifierID(), theEObject);
-		}
-		else {
-			List<EClass> eSuperTypes = theEClass.getESuperTypes();
-			return
-				eSuperTypes.isEmpty() ?
-					defaultCase(theEObject) :
-					doSwitch(eSuperTypes.get(0), theEObject);
-		}
-	}
-
-	/**
-	 * Calls <code>caseXXX</code> for each class of the model until one returns a non null result; it yields that result.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the first non-null result returned by a <code>caseXXX</code> call.
-	 * @generated
-	 */
+	@Override
 	protected T doSwitch(int classifierID, EObject theEObject) {
 		switch (classifierID) {
 			case DefinitionsPackage.ARGUMENT: {
@@ -126,7 +111,7 @@ public class DefinitionsSwitch<T> {
 				return result;
 			}
 			case DefinitionsPackage.SWITCH: {
-				Switch switch_ = (Switch)theEObject;
+				org.eclipse.dltk.tcl.definitions.Switch switch_ = (org.eclipse.dltk.tcl.definitions.Switch)theEObject;
 				T result = caseSwitch(switch_);
 				if (result == null) result = caseArgument(switch_);
 				if (result == null) result = defaultCase(theEObject);
@@ -243,7 +228,7 @@ public class DefinitionsSwitch<T> {
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseSwitch(Switch object) {
+	public T caseSwitch(org.eclipse.dltk.tcl.definitions.Switch object) {
 		return null;
 	}
 
@@ -303,6 +288,7 @@ public class DefinitionsSwitch<T> {
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject)
 	 * @generated
 	 */
+	@Override
 	public T defaultCase(EObject object) {
 		return null;
 	}

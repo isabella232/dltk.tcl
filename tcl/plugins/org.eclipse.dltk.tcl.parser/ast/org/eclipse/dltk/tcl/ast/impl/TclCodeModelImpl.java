@@ -21,11 +21,11 @@ import org.eclipse.emf.ecore.util.EDataTypeEList;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.dltk.tcl.ast.impl.TclCodeModelImpl#getDelimeters <em>Delimeters</em>}</li>
  *   <li>{@link org.eclipse.dltk.tcl.ast.impl.TclCodeModelImpl#getLineOffsets <em>Line Offsets</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */
@@ -176,7 +176,7 @@ public class TclCodeModelImpl extends EObjectImpl implements TclCodeModel {
 		if (eIsProxy())
 			return super.toString();
 
-		StringBuffer result = new StringBuffer(super.toString());
+		StringBuilder result = new StringBuilder(super.toString());
 		result.append(" (delimeters: "); //$NON-NLS-1$
 		result.append(delimeters);
 		result.append(", lineOffsets: "); //$NON-NLS-1$

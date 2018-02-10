@@ -32,17 +32,17 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.dltk.tcl.ast.impl.TclArgumentListImpl#getArguments <em>Arguments</em>}</li>
  *   <li>{@link org.eclipse.dltk.tcl.ast.impl.TclArgumentListImpl#getDefinitionArgument <em>Definition Argument</em>}</li>
  *   <li>{@link org.eclipse.dltk.tcl.ast.impl.TclArgumentListImpl#getKind <em>Kind</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */
-public class TclArgumentListImpl extends TclArgumentImpl implements
-		TclArgumentList {
+public class TclArgumentListImpl extends TclArgumentImpl
+		implements TclArgumentList {
 	/**
 	 * The cached value of the '{@link #getArguments() <em>Arguments</em>}' containment reference list.
 	 * <!-- begin-user-doc -->
@@ -124,7 +124,8 @@ public class TclArgumentListImpl extends TclArgumentImpl implements
 	public ComplexArgument getDefinitionArgument() {
 		if (definitionArgument != null && definitionArgument.eIsProxy()) {
 			InternalEObject oldDefinitionArgument = (InternalEObject) definitionArgument;
-			definitionArgument = (ComplexArgument) eResolveProxy(oldDefinitionArgument);
+			definitionArgument = (ComplexArgument) eResolveProxy(
+					oldDefinitionArgument);
 			if (definitionArgument != oldDefinitionArgument) {
 				if (eNotificationRequired())
 					eNotify(new ENotificationImpl(this, Notification.RESOLVE,
@@ -288,7 +289,7 @@ public class TclArgumentListImpl extends TclArgumentImpl implements
 		if (eIsProxy())
 			return super.toString();
 
-		StringBuffer result = new StringBuffer(super.toString());
+		StringBuilder result = new StringBuilder(super.toString());
 		result.append(" (kind: "); //$NON-NLS-1$
 		result.append(kind);
 		result.append(')');

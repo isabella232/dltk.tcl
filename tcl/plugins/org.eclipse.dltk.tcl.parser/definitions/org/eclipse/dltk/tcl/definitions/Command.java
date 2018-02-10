@@ -20,6 +20,7 @@ import org.eclipse.emf.common.util.EList;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.dltk.tcl.definitions.Command#getName <em>Name</em>}</li>
  *   <li>{@link org.eclipse.dltk.tcl.definitions.Command#getArguments <em>Arguments</em>}</li>
@@ -27,7 +28,6 @@ import org.eclipse.emf.common.util.EList;
  *   <li>{@link org.eclipse.dltk.tcl.definitions.Command#getScope <em>Scope</em>}</li>
  *   <li>{@link org.eclipse.dltk.tcl.definitions.Command#getDeprecated <em>Deprecated</em>}</li>
  * </ul>
- * </p>
  *
  * @see org.eclipse.dltk.tcl.definitions.DefinitionsPackage#getCommand()
  * @model

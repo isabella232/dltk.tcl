@@ -37,6 +37,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.dltk.tcl.definitions.impl.SwitchImpl#getLowerBound <em>Lower Bound</em>}</li>
  *   <li>{@link org.eclipse.dltk.tcl.definitions.impl.SwitchImpl#getUpperBound <em>Upper Bound</em>}</li>
@@ -44,7 +45,6 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *   <li>{@link org.eclipse.dltk.tcl.definitions.impl.SwitchImpl#getGroups <em>Groups</em>}</li>
  *   <li>{@link org.eclipse.dltk.tcl.definitions.impl.SwitchImpl#isCheckPrefix <em>Check Prefix</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */
@@ -277,15 +277,15 @@ public class SwitchImpl extends EObjectImpl implements Switch {
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
 			case DefinitionsPackage.SWITCH__LOWER_BOUND:
-				return new Integer(getLowerBound());
+				return getLowerBound();
 			case DefinitionsPackage.SWITCH__UPPER_BOUND:
-				return new Integer(getUpperBound());
+				return getUpperBound();
 			case DefinitionsPackage.SWITCH__NAME:
 				return getName();
 			case DefinitionsPackage.SWITCH__GROUPS:
 				return getGroups();
 			case DefinitionsPackage.SWITCH__CHECK_PREFIX:
-				return isCheckPrefix() ? Boolean.TRUE : Boolean.FALSE;
+				return isCheckPrefix();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -300,10 +300,10 @@ public class SwitchImpl extends EObjectImpl implements Switch {
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
 			case DefinitionsPackage.SWITCH__LOWER_BOUND:
-				setLowerBound(((Integer)newValue).intValue());
+				setLowerBound((Integer)newValue);
 				return;
 			case DefinitionsPackage.SWITCH__UPPER_BOUND:
-				setUpperBound(((Integer)newValue).intValue());
+				setUpperBound((Integer)newValue);
 				return;
 			case DefinitionsPackage.SWITCH__NAME:
 				setName((String)newValue);
@@ -313,7 +313,7 @@ public class SwitchImpl extends EObjectImpl implements Switch {
 				getGroups().addAll((Collection<? extends Group>)newValue);
 				return;
 			case DefinitionsPackage.SWITCH__CHECK_PREFIX:
-				setCheckPrefix(((Boolean)newValue).booleanValue());
+				setCheckPrefix((Boolean)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -377,7 +377,7 @@ public class SwitchImpl extends EObjectImpl implements Switch {
 	public String toString() {
 		if (eIsProxy()) return super.toString();
 
-		StringBuffer result = new StringBuffer(super.toString());
+		StringBuilder result = new StringBuilder(super.toString());
 		result.append(" (lowerBound: ");
 		result.append(lowerBound);
 		result.append(", upperBound: ");

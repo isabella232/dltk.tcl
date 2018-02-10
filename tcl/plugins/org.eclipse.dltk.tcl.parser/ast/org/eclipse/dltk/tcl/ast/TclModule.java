@@ -17,12 +17,12 @@ import org.eclipse.emf.ecore.EObject;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.dltk.tcl.ast.TclModule#getStatements <em>Statements</em>}</li>
  *   <li>{@link org.eclipse.dltk.tcl.ast.TclModule#getSize <em>Size</em>}</li>
  *   <li>{@link org.eclipse.dltk.tcl.ast.TclModule#getCodeModel <em>Code Model</em>}</li>
  * </ul>
- * </p>
  *
  * @see org.eclipse.dltk.tcl.ast.AstPackage#getTclModule()
  * @model

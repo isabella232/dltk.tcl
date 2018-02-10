@@ -30,10 +30,10 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.dltk.tcl.ast.impl.SubstitutionImpl#getCommands <em>Commands</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */
@@ -74,8 +74,8 @@ public class SubstitutionImpl extends TclArgumentImpl implements Substitution {
 	 */
 	public EList<TclCommand> getCommands() {
 		if (commands == null) {
-			commands = new EObjectContainmentEList<TclCommand>(
-					TclCommand.class, this, AstPackage.SUBSTITUTION__COMMANDS);
+			commands = new EObjectContainmentEList<TclCommand>(TclCommand.class,
+					this, AstPackage.SUBSTITUTION__COMMANDS);
 		}
 		return commands;
 	}
@@ -155,7 +155,7 @@ public class SubstitutionImpl extends TclArgumentImpl implements Substitution {
 		}
 		return super.eIsSet(featureID);
 	}
-	
+
 	@Override
 	public String toString() {
 		if (eIsProxy())

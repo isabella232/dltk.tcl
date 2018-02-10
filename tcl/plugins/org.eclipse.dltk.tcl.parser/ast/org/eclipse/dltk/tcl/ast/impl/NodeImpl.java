@@ -24,11 +24,11 @@ import org.eclipse.emf.ecore.impl.EObjectImpl;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.dltk.tcl.ast.impl.NodeImpl#getStart <em>Start</em>}</li>
  *   <li>{@link org.eclipse.dltk.tcl.ast.impl.NodeImpl#getEnd <em>End</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */
@@ -214,7 +214,7 @@ public class NodeImpl extends EObjectImpl implements Node {
 		if (eIsProxy())
 			return super.toString();
 
-		StringBuffer result = new StringBuffer(super.toString());
+		StringBuilder result = new StringBuilder(super.toString());
 		result.append(" (start: "); //$NON-NLS-1$
 		result.append(start);
 		result.append(", end: "); //$NON-NLS-1$

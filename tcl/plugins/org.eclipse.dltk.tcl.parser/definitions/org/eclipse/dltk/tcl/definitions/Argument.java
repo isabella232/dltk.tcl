@@ -20,12 +20,12 @@ import org.eclipse.emf.ecore.EObject;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.dltk.tcl.definitions.Argument#getLowerBound <em>Lower Bound</em>}</li>
  *   <li>{@link org.eclipse.dltk.tcl.definitions.Argument#getUpperBound <em>Upper Bound</em>}</li>
  *   <li>{@link org.eclipse.dltk.tcl.definitions.Argument#getName <em>Name</em>}</li>
  * </ul>
- * </p>
  *
  * @see org.eclipse.dltk.tcl.definitions.DefinitionsPackage#getArgument()
  * @model interface="true" abstract="true"

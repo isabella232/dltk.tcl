@@ -20,12 +20,12 @@ import org.eclipse.emf.common.util.EList;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.dltk.tcl.ast.Script#getCommands <em>Commands</em>}</li>
  *   <li>{@link org.eclipse.dltk.tcl.ast.Script#getContentStart <em>Content Start</em>}</li>
  *   <li>{@link org.eclipse.dltk.tcl.ast.Script#getContentEnd <em>Content End</em>}</li>
  * </ul>
- * </p>
  *
  * @see org.eclipse.dltk.tcl.ast.AstPackage#getScript()
  * @model

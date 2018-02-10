@@ -19,10 +19,10 @@ package org.eclipse.dltk.tcl.definitions;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.dltk.tcl.definitions.Constant#isStrictMatch <em>Strict Match</em>}</li>
  * </ul>
- * </p>
  *
  * @see org.eclipse.dltk.tcl.definitions.DefinitionsPackage#getConstant()
  * @model

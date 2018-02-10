@@ -22,6 +22,7 @@ import org.eclipse.emf.common.util.EList;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.dltk.tcl.ast.TclCommand#getName <em>Name</em>}</li>
  *   <li>{@link org.eclipse.dltk.tcl.ast.TclCommand#getArguments <em>Arguments</em>}</li>
@@ -30,7 +31,6 @@ import org.eclipse.emf.common.util.EList;
  *   <li>{@link org.eclipse.dltk.tcl.ast.TclCommand#getQualifiedName <em>Qualified Name</em>}</li>
  *   <li>{@link org.eclipse.dltk.tcl.ast.TclCommand#isMatched <em>Matched</em>}</li>
  * </ul>
- * </p>
  *
  * @see org.eclipse.dltk.tcl.ast.AstPackage#getTclCommand()
  * @model

@@ -28,13 +28,13 @@ import org.eclipse.emf.ecore.impl.EObjectImpl;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.dltk.tcl.definitions.impl.TypedArgumentImpl#getLowerBound <em>Lower Bound</em>}</li>
  *   <li>{@link org.eclipse.dltk.tcl.definitions.impl.TypedArgumentImpl#getUpperBound <em>Upper Bound</em>}</li>
  *   <li>{@link org.eclipse.dltk.tcl.definitions.impl.TypedArgumentImpl#getName <em>Name</em>}</li>
  *   <li>{@link org.eclipse.dltk.tcl.definitions.impl.TypedArgumentImpl#getType <em>Type</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */
@@ -231,9 +231,9 @@ public class TypedArgumentImpl extends EObjectImpl implements TypedArgument {
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
 			case DefinitionsPackage.TYPED_ARGUMENT__LOWER_BOUND:
-				return new Integer(getLowerBound());
+				return getLowerBound();
 			case DefinitionsPackage.TYPED_ARGUMENT__UPPER_BOUND:
-				return new Integer(getUpperBound());
+				return getUpperBound();
 			case DefinitionsPackage.TYPED_ARGUMENT__NAME:
 				return getName();
 			case DefinitionsPackage.TYPED_ARGUMENT__TYPE:
@@ -251,10 +251,10 @@ public class TypedArgumentImpl extends EObjectImpl implements TypedArgument {
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
 			case DefinitionsPackage.TYPED_ARGUMENT__LOWER_BOUND:
-				setLowerBound(((Integer)newValue).intValue());
+				setLowerBound((Integer)newValue);
 				return;
 			case DefinitionsPackage.TYPED_ARGUMENT__UPPER_BOUND:
-				setUpperBound(((Integer)newValue).intValue());
+				setUpperBound((Integer)newValue);
 				return;
 			case DefinitionsPackage.TYPED_ARGUMENT__NAME:
 				setName((String)newValue);
@@ -319,7 +319,7 @@ public class TypedArgumentImpl extends EObjectImpl implements TypedArgument {
 	public String toString() {
 		if (eIsProxy()) return super.toString();
 
-		StringBuffer result = new StringBuffer(super.toString());
+		StringBuilder result = new StringBuilder(super.toString());
 		result.append(" (lowerBound: ");
 		result.append(lowerBound);
 		result.append(", upperBound: ");

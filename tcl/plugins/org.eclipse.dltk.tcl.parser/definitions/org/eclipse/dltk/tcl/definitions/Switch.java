@@ -20,11 +20,11 @@ import org.eclipse.emf.common.util.EList;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.dltk.tcl.definitions.Switch#getGroups <em>Groups</em>}</li>
  *   <li>{@link org.eclipse.dltk.tcl.definitions.Switch#isCheckPrefix <em>Check Prefix</em>}</li>
  * </ul>
- * </p>
  *
  * @see org.eclipse.dltk.tcl.definitions.DefinitionsPackage#getSwitch()
  * @model

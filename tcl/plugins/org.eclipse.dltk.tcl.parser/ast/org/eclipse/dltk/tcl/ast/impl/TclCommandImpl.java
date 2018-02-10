@@ -33,6 +33,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * <em><b>Tcl Command</b></em>'. <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.dltk.tcl.ast.impl.TclCommandImpl#getName <em>Name</em>}</li>
  *   <li>{@link org.eclipse.dltk.tcl.ast.impl.TclCommandImpl#getArguments <em>Arguments</em>}</li>
@@ -41,7 +42,6 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *   <li>{@link org.eclipse.dltk.tcl.ast.impl.TclCommandImpl#getQualifiedName <em>Qualified Name</em>}</li>
  *   <li>{@link org.eclipse.dltk.tcl.ast.impl.TclCommandImpl#isMatched <em>Matched</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */
@@ -306,8 +306,8 @@ public class TclCommandImpl extends NodeImpl implements TclCommand {
 			return ((InternalEList<?>) getArguments()).basicRemove(otherEnd,
 					msgs);
 		case AstPackage.TCL_COMMAND__MATCHES:
-			return ((InternalEList<?>) getMatches())
-					.basicRemove(otherEnd, msgs);
+			return ((InternalEList<?>) getMatches()).basicRemove(otherEnd,
+					msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}

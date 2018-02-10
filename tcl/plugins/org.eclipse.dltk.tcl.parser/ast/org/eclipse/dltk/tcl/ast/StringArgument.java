@@ -18,11 +18,11 @@ package org.eclipse.dltk.tcl.ast;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.dltk.tcl.ast.StringArgument#getValue <em>Value</em>}</li>
  *   <li>{@link org.eclipse.dltk.tcl.ast.StringArgument#getRawValue <em>Raw Value</em>}</li>
  * </ul>
- * </p>
  *
  * @see org.eclipse.dltk.tcl.ast.AstPackage#getStringArgument()
  * @model

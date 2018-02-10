@@ -30,14 +30,15 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.dltk.tcl.ast.impl.TclProblemModelImpl#getProblems <em>Problems</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */
-public class TclProblemModelImpl extends EObjectImpl implements TclProblemModel {
+public class TclProblemModelImpl extends EObjectImpl
+		implements TclProblemModel {
 	/**
 	 * The cached value of the '{@link #getProblems() <em>Problems</em>}' containment reference list.
 	 * <!-- begin-user-doc -->
@@ -74,9 +75,8 @@ public class TclProblemModelImpl extends EObjectImpl implements TclProblemModel 
 	 */
 	public EList<TclProblem> getProblems() {
 		if (problems == null) {
-			problems = new EObjectContainmentEList<TclProblem>(
-					TclProblem.class, this,
-					AstPackage.TCL_PROBLEM_MODEL__PROBLEMS);
+			problems = new EObjectContainmentEList<TclProblem>(TclProblem.class,
+					this, AstPackage.TCL_PROBLEM_MODEL__PROBLEMS);
 		}
 		return problems;
 	}

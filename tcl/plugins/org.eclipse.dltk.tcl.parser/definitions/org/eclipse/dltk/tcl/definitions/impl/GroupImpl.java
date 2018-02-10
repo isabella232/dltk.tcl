@@ -37,6 +37,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.dltk.tcl.definitions.impl.GroupImpl#getLowerBound <em>Lower Bound</em>}</li>
  *   <li>{@link org.eclipse.dltk.tcl.definitions.impl.GroupImpl#getUpperBound <em>Upper Bound</em>}</li>
@@ -44,7 +45,6 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *   <li>{@link org.eclipse.dltk.tcl.definitions.impl.GroupImpl#getConstant <em>Constant</em>}</li>
  *   <li>{@link org.eclipse.dltk.tcl.definitions.impl.GroupImpl#getArguments <em>Arguments</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */
@@ -277,9 +277,9 @@ public class GroupImpl extends EObjectImpl implements Group {
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
 			case DefinitionsPackage.GROUP__LOWER_BOUND:
-				return new Integer(getLowerBound());
+				return getLowerBound();
 			case DefinitionsPackage.GROUP__UPPER_BOUND:
-				return new Integer(getUpperBound());
+				return getUpperBound();
 			case DefinitionsPackage.GROUP__NAME:
 				return getName();
 			case DefinitionsPackage.GROUP__CONSTANT:
@@ -300,10 +300,10 @@ public class GroupImpl extends EObjectImpl implements Group {
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
 			case DefinitionsPackage.GROUP__LOWER_BOUND:
-				setLowerBound(((Integer)newValue).intValue());
+				setLowerBound((Integer)newValue);
 				return;
 			case DefinitionsPackage.GROUP__UPPER_BOUND:
-				setUpperBound(((Integer)newValue).intValue());
+				setUpperBound((Integer)newValue);
 				return;
 			case DefinitionsPackage.GROUP__NAME:
 				setName((String)newValue);
@@ -377,7 +377,7 @@ public class GroupImpl extends EObjectImpl implements Group {
 	public String toString() {
 		if (eIsProxy()) return super.toString();
 
-		StringBuffer result = new StringBuffer(super.toString());
+		StringBuilder result = new StringBuilder(super.toString());
 		result.append(" (lowerBound: ");
 		result.append(lowerBound);
 		result.append(", upperBound: ");

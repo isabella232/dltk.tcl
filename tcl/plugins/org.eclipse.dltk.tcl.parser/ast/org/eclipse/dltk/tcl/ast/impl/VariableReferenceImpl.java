@@ -27,16 +27,16 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.dltk.tcl.ast.impl.VariableReferenceImpl#getName <em>Name</em>}</li>
  *   <li>{@link org.eclipse.dltk.tcl.ast.impl.VariableReferenceImpl#getIndex <em>Index</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */
-public class VariableReferenceImpl extends TclArgumentImpl implements
-		VariableReference {
+public class VariableReferenceImpl extends TclArgumentImpl
+		implements VariableReference {
 	/**
 	 * The default value of the '{@link #getName() <em>Name</em>}' attribute.
 	 * <!-- begin-user-doc -->
@@ -147,13 +147,13 @@ public class VariableReferenceImpl extends TclArgumentImpl implements
 			if (index != null)
 				msgs = ((InternalEObject) index).eInverseRemove(this,
 						EOPPOSITE_FEATURE_BASE
-								- AstPackage.VARIABLE_REFERENCE__INDEX, null,
-						msgs);
+								- AstPackage.VARIABLE_REFERENCE__INDEX,
+						null, msgs);
 			if (newIndex != null)
 				msgs = ((InternalEObject) newIndex).eInverseAdd(this,
 						EOPPOSITE_FEATURE_BASE
-								- AstPackage.VARIABLE_REFERENCE__INDEX, null,
-						msgs);
+								- AstPackage.VARIABLE_REFERENCE__INDEX,
+						null, msgs);
 			msgs = basicSetIndex(newIndex, msgs);
 			if (msgs != null)
 				msgs.dispatch();
@@ -238,8 +238,8 @@ public class VariableReferenceImpl extends TclArgumentImpl implements
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
 		case AstPackage.VARIABLE_REFERENCE__NAME:
-			return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT
-					.equals(name);
+			return NAME_EDEFAULT == null ? name != null
+					: !NAME_EDEFAULT.equals(name);
 		case AstPackage.VARIABLE_REFERENCE__INDEX:
 			return index != null;
 		}
@@ -256,7 +256,7 @@ public class VariableReferenceImpl extends TclArgumentImpl implements
 		if (eIsProxy())
 			return super.toString();
 
-		StringBuffer result = new StringBuffer(super.toString());
+		StringBuilder result = new StringBuilder(super.toString());
 		result.append(" (name: "); //$NON-NLS-1$
 		result.append(name);
 		result.append(')');

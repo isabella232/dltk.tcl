@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2009 xored software, Inc.  
+ * Copyright (c) 2009, 2018 xored software, Inc.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html  
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
  *     xored software, Inc. - initial API and Implementation (Alex Panchenko)
@@ -36,8 +36,8 @@ import org.eclipse.emf.common.util.EList;
 /**
  * @since 2.0
  */
-public abstract class AbstractTclCommandModelBuilder extends
-		TclModelBuilderUtil implements ITclModelBuilder {
+public abstract class AbstractTclCommandModelBuilder extends TclModelBuilderUtil
+		implements ITclModelBuilder {
 
 	protected static abstract class FieldInitializer {
 
@@ -57,7 +57,8 @@ public abstract class AbstractTclCommandModelBuilder extends
 	}
 
 	protected void processField(TclCommand command, TclArgument nameArg,
-			String varName, final int modifiers, ITclModelBuildContext context) {
+			String varName, final int modifiers,
+			ITclModelBuildContext context) {
 		processField(command, nameArg, varName, modifiers, context, null, null);
 	}
 
@@ -119,7 +120,8 @@ public abstract class AbstractTclCommandModelBuilder extends
 			return;
 		}
 		final String varName = asSymbol(nameArg);
-		final int modifiers = TclVisibilityUtils.isPrivate(varName) ? Modifiers.AccPrivate
+		final int modifiers = TclVisibilityUtils.isPrivate(varName)
+				? Modifiers.AccPrivate
 				: Modifiers.AccPublic;
 		processField(command, nameArg, varName, modifiers, context);
 	}
@@ -170,8 +172,8 @@ public abstract class AbstractTclCommandModelBuilder extends
 			return Collections.singletonList(new Parameter(argument));
 		} else if (argument instanceof TclArgumentList) {
 			final TclArgumentList list = (TclArgumentList) argument;
-			final List<Parameter> parameters = new ArrayList<Parameter>(list
-					.getArguments().size());
+			final List<Parameter> parameters = new ArrayList<>(
+					list.getArguments().size());
 			for (TclArgument arg : list.getArguments()) {
 				if (arg instanceof StringArgument) {
 					parameters.add(new Parameter(arg));
@@ -180,14 +182,17 @@ public abstract class AbstractTclCommandModelBuilder extends
 							.getArguments();
 					final TclArgument pName = argWithInitializer.get(0);
 					if (argWithInitializer.size() >= 2) {
-						parameters.add(new Parameter(asSymbol(pName), pName
-								.getStart(), pName.getEnd(), TclProcessorUtil
-								.asString(argWithInitializer.get(1), false)));
+						parameters
+								.add(new Parameter(asSymbol(pName),
+										pName.getStart(), pName.getEnd(),
+										TclProcessorUtil.asString(
+												argWithInitializer.get(1),
+												false)));
 					} else if (argWithInitializer.size() == 1) {
 						parameters.add(new Parameter(pName));
 					} else {
-						parameters.add(new Parameter(Util.EMPTY_STRING, arg
-								.getStart(), arg.getEnd()));
+						parameters.add(new Parameter(Util.EMPTY_STRING,
+								arg.getStart(), arg.getEnd()));
 					}
 				} else {
 					parameters.add(new Parameter(arg));
@@ -254,13 +259,13 @@ public abstract class AbstractTclCommandModelBuilder extends
 				content = value;
 			}
 		} else {
-			content = SimpleCodePrinter.getArgumentString(argument, argument
-					.getStart());
+			content = SimpleCodePrinter.getArgumentString(argument,
+					argument.getStart());
 		}
 		TclParser parser = new TclParser();
 		parser.setGlobalOffset(offset);
 		List<TclCommand> commands = parser.parse(content);
-		List<TclArgument> result = new ArrayList<TclArgument>();
+		List<TclArgument> result = new ArrayList<>();
 		for (TclCommand c : commands) {
 			result.add(c.getName());
 			result.addAll(c.getArguments());

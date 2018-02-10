@@ -27,13 +27,13 @@ import org.eclipse.emf.ecore.impl.EObjectImpl;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.dltk.tcl.definitions.impl.ConstantImpl#getLowerBound <em>Lower Bound</em>}</li>
  *   <li>{@link org.eclipse.dltk.tcl.definitions.impl.ConstantImpl#getUpperBound <em>Upper Bound</em>}</li>
  *   <li>{@link org.eclipse.dltk.tcl.definitions.impl.ConstantImpl#getName <em>Name</em>}</li>
  *   <li>{@link org.eclipse.dltk.tcl.definitions.impl.ConstantImpl#isStrictMatch <em>Strict Match</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */
@@ -230,13 +230,13 @@ public class ConstantImpl extends EObjectImpl implements Constant {
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
 			case DefinitionsPackage.CONSTANT__LOWER_BOUND:
-				return new Integer(getLowerBound());
+				return getLowerBound();
 			case DefinitionsPackage.CONSTANT__UPPER_BOUND:
-				return new Integer(getUpperBound());
+				return getUpperBound();
 			case DefinitionsPackage.CONSTANT__NAME:
 				return getName();
 			case DefinitionsPackage.CONSTANT__STRICT_MATCH:
-				return isStrictMatch() ? Boolean.TRUE : Boolean.FALSE;
+				return isStrictMatch();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -250,16 +250,16 @@ public class ConstantImpl extends EObjectImpl implements Constant {
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
 			case DefinitionsPackage.CONSTANT__LOWER_BOUND:
-				setLowerBound(((Integer)newValue).intValue());
+				setLowerBound((Integer)newValue);
 				return;
 			case DefinitionsPackage.CONSTANT__UPPER_BOUND:
-				setUpperBound(((Integer)newValue).intValue());
+				setUpperBound((Integer)newValue);
 				return;
 			case DefinitionsPackage.CONSTANT__NAME:
 				setName((String)newValue);
 				return;
 			case DefinitionsPackage.CONSTANT__STRICT_MATCH:
-				setStrictMatch(((Boolean)newValue).booleanValue());
+				setStrictMatch((Boolean)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -318,7 +318,7 @@ public class ConstantImpl extends EObjectImpl implements Constant {
 	public String toString() {
 		if (eIsProxy()) return super.toString();
 
-		StringBuffer result = new StringBuffer(super.toString());
+		StringBuilder result = new StringBuilder(super.toString());
 		result.append(" (lowerBound: ");
 		result.append(lowerBound);
 		result.append(", upperBound: ");

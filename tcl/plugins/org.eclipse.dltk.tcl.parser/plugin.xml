@@ -10,6 +10,13 @@
             class="org.eclipse.dltk.tcl.definitions.DefinitionsPackage"
             genModel="models/definitions.genmodel"/>
    </extension>
+
+   <extension point="org.eclipse.emf.ecore.extension_parser">
+      <!-- @generated definitions -->
+      <parser
+            type="definitions"
+            class="org.eclipse.dltk.tcl.definitions.util.DefinitionsResourceFactoryImpl"/>
+   </extension>
    <extension point="org.eclipse.emf.ecore.generated_package">
       <package
             uri="http:///org/eclipse/dltk/tcl/ast.ecore"

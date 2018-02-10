@@ -31,12 +31,12 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.dltk.tcl.ast.impl.ScriptImpl#getCommands <em>Commands</em>}</li>
  *   <li>{@link org.eclipse.dltk.tcl.ast.impl.ScriptImpl#getContentStart <em>Content Start</em>}</li>
  *   <li>{@link org.eclipse.dltk.tcl.ast.impl.ScriptImpl#getContentEnd <em>Content End</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */
@@ -114,8 +114,8 @@ public class ScriptImpl extends TclArgumentImpl implements Script {
 	 */
 	public EList<TclCommand> getCommands() {
 		if (commands == null) {
-			commands = new EObjectContainmentEList<TclCommand>(
-					TclCommand.class, this, AstPackage.SCRIPT__COMMANDS);
+			commands = new EObjectContainmentEList<TclCommand>(TclCommand.class,
+					this, AstPackage.SCRIPT__COMMANDS);
 		}
 		return commands;
 	}
@@ -271,7 +271,7 @@ public class ScriptImpl extends TclArgumentImpl implements Script {
 		if (eIsProxy())
 			return super.toString();
 
-		StringBuffer result = new StringBuffer(super.toString());
+		StringBuilder result = new StringBuilder(super.toString());
 		result.append(" (contentStart: "); //$NON-NLS-1$
 		result.append(contentStart);
 		result.append(", contentEnd: "); //$NON-NLS-1$

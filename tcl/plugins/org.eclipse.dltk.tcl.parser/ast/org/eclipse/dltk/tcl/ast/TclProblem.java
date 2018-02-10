@@ -17,6 +17,7 @@ import org.eclipse.emf.ecore.EObject;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.dltk.tcl.ast.TclProblem#getArguments <em>Arguments</em>}</li>
  *   <li>{@link org.eclipse.dltk.tcl.ast.TclProblem#getId <em>Id</em>}</li>
@@ -28,7 +29,6 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link org.eclipse.dltk.tcl.ast.TclProblem#getFileName <em>File Name</em>}</li>
  *   <li>{@link org.eclipse.dltk.tcl.ast.TclProblem#getLineNumber <em>Line Number</em>}</li>
  * </ul>
- * </p>
  *
  * @see org.eclipse.dltk.tcl.ast.AstPackage#getTclProblem()
  * @model

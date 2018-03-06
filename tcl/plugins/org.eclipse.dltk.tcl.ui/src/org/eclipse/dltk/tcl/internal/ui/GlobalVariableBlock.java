@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 xored software, Inc.
+ * Copyright (c) 2009, 2018 xored software, Inc. and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -44,7 +44,7 @@ import org.eclipse.swt.widgets.Composite;
 /**
  * Control used to edit the environment variables associated with a Interpreter
  * install
- * 
+ *
  * @since 2.0
  */
 public class GlobalVariableBlock
@@ -70,7 +70,7 @@ public class GlobalVariableBlock
 	 * Creates and returns the source lookup control.
 	 *
 	 * @param parent
-	 *            the parent widget of this control
+	 *                   the parent widget of this control
 	 */
 	public void createControlsIn(Composite parent) {
 		Font font = parent.getFont();
@@ -112,9 +112,9 @@ public class GlobalVariableBlock
 	 * Creates and returns a button
 	 *
 	 * @param parent
-	 *            parent widget
+	 *                   parent widget
 	 * @param label
-	 *            label
+	 *                   label
 	 * @return Button
 	 */
 	protected Button createPushButton(Composite parent, String label) {
@@ -147,12 +147,11 @@ public class GlobalVariableBlock
 		Object source = e.getSource();
 		if (source == fRemoveButton) {
 			fContentProvider.remove(
-					((IStructuredSelection) fVariablesViewer.getSelection())
-							.toList());
+					(fVariablesViewer.getStructuredSelection()).toList());
 		} else if (source == fAddButton) {
 			handleAdd();
 		} else if (source == fEditButton) {
-			edit((IStructuredSelection) fVariablesViewer.getSelection());
+			edit(fVariablesViewer.getStructuredSelection());
 		}
 		update();
 	}
@@ -231,8 +230,8 @@ public class GlobalVariableBlock
 	 * Refresh the enable/disable state for the buttons.
 	 */
 	private void updateButtons() {
-		IStructuredSelection selection = (IStructuredSelection) fVariablesViewer
-				.getSelection();
+		IStructuredSelection selection = fVariablesViewer
+				.getStructuredSelection();
 		fRemoveButton.setEnabled(!selection.isEmpty());
 		fEditButton.setEnabled(selection.size() == 1);
 	}

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2017 xored software, Inc. and others.
+ * Copyright (c) 2009, 2018 xored software, Inc. and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -349,7 +349,7 @@ public class ManPagesLocationsDialog extends StatusDialog
 	}
 
 	protected IStructuredSelection getSelection() {
-		return (IStructuredSelection) pathViewer.getSelection();
+		return pathViewer.getStructuredSelection();
 	}
 
 	protected boolean canRemove(IStructuredSelection selection) {

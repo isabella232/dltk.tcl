@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2017 xored software, Inc. and others.
+ * Copyright (c) 2009, 2018 xored software, Inc. and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -358,14 +358,12 @@ public class TclCheckerInstanceBlock extends AbstractValidatorEditBlock {
 				if (environmentInstance == null) {
 					return;
 				}
-				final ISelection selection = pcxList.getSelection();
-				if (selection instanceof IStructuredSelection) {
-					for (Iterator<?> i = ((IStructuredSelection) selection).iterator(); i.hasNext();) {
-						final String path = (String) i.next();
-						environmentInstance.getPcxFileFolders().remove(path);
-						pcxList.remove(path);
-						validate();
-					}
+				final IStructuredSelection selection = pcxList.getStructuredSelection();
+				for (Iterator<?> i = selection.iterator(); i.hasNext();) {
+					final String path = (String) i.next();
+					environmentInstance.getPcxFileFolders().remove(path);
+					pcxList.remove(path);
+					validate();
 				}
 			}
 		});

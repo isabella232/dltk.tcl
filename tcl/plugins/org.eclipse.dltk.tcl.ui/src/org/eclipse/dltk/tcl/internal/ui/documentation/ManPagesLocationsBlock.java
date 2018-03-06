@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2017 IBM Corporation and others.
+ * Copyright (c) 2005, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -191,7 +191,7 @@ public class ManPagesLocationsBlock implements ISelectionChangedListener {
 	 * Creates and returns the source lookup control.
 	 *
 	 * @param parent
-	 *            the parent widget of this control
+	 *                   the parent widget of this control
 	 */
 	public Control createControl(Composite parent) {
 		Composite comp = new Composite(parent, SWT.NONE);
@@ -289,9 +289,9 @@ public class ManPagesLocationsBlock implements ISelectionChangedListener {
 	 * Creates and returns a button
 	 *
 	 * @param parent
-	 *            parent widget
+	 *                   parent widget
 	 * @param label
-	 *            label
+	 *                   label
 	 * @return Button
 	 */
 	protected Button createPushButton(Composite parent, String label) {
@@ -441,7 +441,7 @@ public class ManPagesLocationsBlock implements ISelectionChangedListener {
 	}
 
 	protected IStructuredSelection getSelection() {
-		return (IStructuredSelection) fLocationsViewer.getSelection();
+		return fLocationsViewer.getStructuredSelection();
 	}
 
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2017 IBM Corporation and others.
+ * Copyright (c) 2005, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -57,7 +57,7 @@ public class TclInterpretersBlock extends InterpretersBlock {
 		fetchInterpreterInformation.addSelectionListener(new SelectionListener() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				IStructuredSelection selection = (IStructuredSelection) fInterpreterList.getSelection();
+				IStructuredSelection selection = fInterpreterList.getStructuredSelection();
 				final IInterpreterInstall install = (IInterpreterInstall) selection.getFirstElement();
 				fetchInterpreterInformation(install);
 			}
@@ -73,7 +73,7 @@ public class TclInterpretersBlock extends InterpretersBlock {
 	protected void enableButtons() {
 		super.enableButtons();
 		if (fetchInterpreterInformation != null) {
-			IStructuredSelection selection = (IStructuredSelection) fInterpreterList.getSelection();
+			IStructuredSelection selection = fInterpreterList.getStructuredSelection();
 			int selectionCount = selection.size();
 			if (selectionCount == 1) {
 				fetchInterpreterInformation.setEnabled(true);

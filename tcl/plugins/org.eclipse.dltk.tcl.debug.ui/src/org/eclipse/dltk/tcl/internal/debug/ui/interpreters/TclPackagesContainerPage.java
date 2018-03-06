@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2017 xored software, Inc.  and others.
+ * Copyright (c) 2016, 2018 xored software, Inc.  and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -200,30 +200,24 @@ public class TclPackagesContainerPage extends NewElementWizardPage
 		this.fElements.setLabelProvider(new PackagesLabelProvider());
 		this.fElements.setInput(this.packages);
 		this.fElements.addSelectionChangedListener(event -> {
-			ISelection selection = event.getSelection();
-			if (selection instanceof IStructuredSelection) {
-				IStructuredSelection sel = (IStructuredSelection) selection;
-				remove.setEnabled(!sel.isEmpty());
-			}
+			ISelection selection = event.getStructuredSelection();
+			remove.setEnabled(!selection.isEmpty());
 		});
 		remove.setEnabled(false);
 	}
 
 	protected void removePackage() {
-		ISelection selection = this.fElements.getSelection();
-		if (selection instanceof IStructuredSelection) {
-			IStructuredSelection sel = (IStructuredSelection) selection;
-			boolean update = false;
-			for (Iterator iterator = sel.iterator(); iterator.hasNext();) {
-				String pkg = (String) iterator.next();
-				boolean res = this.packages.remove(pkg);
-				if (res) {
-					update = res;
-				}
+		IStructuredSelection sel = this.fElements.getStructuredSelection();
+		boolean update = false;
+		for (Iterator iterator = sel.iterator(); iterator.hasNext();) {
+			String pkg = (String) iterator.next();
+			boolean res = this.packages.remove(pkg);
+			if (res) {
+				update = res;
 			}
-			if (update) {
-				refreshView();
-			}
+		}
+		if (update) {
+			refreshView();
 		}
 	}
 

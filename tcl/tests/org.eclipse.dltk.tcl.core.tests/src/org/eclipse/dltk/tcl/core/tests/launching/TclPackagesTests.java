@@ -15,11 +15,7 @@ import junit.framework.Test;
 public class TclPackagesTests extends AbstractModelTests {
 
 	public TclPackagesTests(String name) {
-		super("org.eclipse.dltk.tcl.core.tests", name);
-	}
-
-	public TclPackagesTests(String testProjectName, String name) {
-		super(testProjectName, name);
+		super(name);
 	}
 
 	public static Test suite() {
@@ -32,8 +28,8 @@ public class TclPackagesTests extends AbstractModelTests {
 
 	protected IInterpreterInstall createInstall(String path, String id,
 			IInterpreterInstallType type) {
-		IFileHandle file = EnvironmentManager.getLocalEnvironment().getFile(
-				new Path(path));
+		IFileHandle file = EnvironmentManager.getLocalEnvironment()
+				.getFile(new Path(path));
 		if (!file.exists()) {
 			return null;
 		}
@@ -57,14 +53,14 @@ public class TclPackagesTests extends AbstractModelTests {
 		int id = 0;
 		for (int i = 0; i < installTypes.length; i++) {
 			String installId = getNatureId() + "_";
-			IInterpreterInstall install = createInstall(atsRootPath
-					+ "bin/tclsh", installId + Integer.toString(++id),
-					installTypes[i]);
+			IInterpreterInstall install = createInstall(
+					atsRootPath + "bin/tclsh",
+					installId + Integer.toString(++id), installTypes[i]);
 			if (install != null) {
 				EnvironmentVariable[] vars = {
 						new EnvironmentVariable("AUTOTEST", atsRootPath),
-						new EnvironmentVariable("ATS_EASY", atsRootPath
-								+ "ats_easy") };
+						new EnvironmentVariable("ATS_EASY",
+								atsRootPath + "ats_easy") };
 				install.setEnvironmentVariables(vars);
 				return install;
 			}

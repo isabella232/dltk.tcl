@@ -4,7 +4,7 @@
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -32,7 +32,7 @@ public class SimpleStructureParserTests extends AbstractModelTests {
 	private static final String PROJECT_NAME = "Structure";
 
 	public SimpleStructureParserTests(String name) {
-		super(Activator.PLUGIN_ID, name);
+		super(name);
 	}
 
 	public static Test suite() {
@@ -42,7 +42,7 @@ public class SimpleStructureParserTests extends AbstractModelTests {
 	@Override
 	public void setUpSuite() throws Exception {
 		super.setUpSuite();
-		setUpScriptProject(PROJECT_NAME);
+		setUpScriptProject(PROJECT_NAME, Activator.PLUGIN_ID);
 	}
 
 	@Override

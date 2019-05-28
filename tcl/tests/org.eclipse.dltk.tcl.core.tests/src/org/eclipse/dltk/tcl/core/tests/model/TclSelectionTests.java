@@ -3,7 +3,7 @@
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  *******************************************************************************/
@@ -23,12 +23,13 @@ public class TclSelectionTests extends AbstractModelCompletionTests {
 	private static final String SELECTION_PROJECT = "TCL_Selection";
 
 	public TclSelectionTests(String name) {
-		super(Activator.PLUGIN_ID, name);
+		super(name);
 	}
 
 	@Override
 	public void setUpSuite() throws Exception {
-		PROJECT = setUpScriptProjectTo(SELECTION_PROJECT, "Selection");
+		PROJECT = setUpScriptProjectTo(SELECTION_PROJECT, "Selection",
+				Activator.PLUGIN_ID);
 
 		super.setUpSuite();
 		waitUntilIndexesReady();

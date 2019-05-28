@@ -13,7 +13,7 @@ public class TclCommentElementTests extends AbstractModelTests {
 	private static final String PROJECT_NAME = "comments";
 
 	public TclCommentElementTests(String name) {
-		super(TclUITestsPlugin.PLUGIN_NAME, name);
+		super(name);
 	}
 
 	public static Suite suite() {
@@ -22,7 +22,7 @@ public class TclCommentElementTests extends AbstractModelTests {
 
 	public void setUpSuite() throws Exception {
 		super.setUpSuite();
-		setUpScriptProject(PROJECT_NAME);
+		setUpScriptProject(PROJECT_NAME, TclUITestsPlugin.PLUGIN_NAME);
 	}
 
 	public void tearDownSuite() throws Exception {

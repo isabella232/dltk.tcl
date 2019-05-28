@@ -27,7 +27,7 @@ import org.eclipse.dltk.utils.CorePrinter;
 
 public class TclASTBuildTests extends AbstractModelTests {
 	public TclASTBuildTests(String name) {
-		super(TclTestsPlugin.PLUGIN_NAME, name);
+		super(name);
 	}
 
 	public static Test suite() {
@@ -44,7 +44,7 @@ public class TclASTBuildTests extends AbstractModelTests {
 
 	public void testBuildExtendedAST001() throws Exception {
 		String prj = "prj1";
-		IScriptProject project = setUpScriptProject(prj);
+		IScriptProject project = setUpScriptProject(prj, TclTestsPlugin.PLUGIN_NAME);
 
 		ISourceModule module = this.getSourceModule(prj, "src", new Path(
 				"module0.tcl"));

@@ -3,7 +3,7 @@
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  *******************************************************************************/
@@ -22,12 +22,13 @@ public class PASelectionTests extends AbstractModelCompletionTests {
 	private static final String PROJECT_NAME = "PASelection";
 
 	public PASelectionTests(String name) {
-		super(Activator.PLUGIN_ID, name);
+		super(name);
 	}
 
 	@Override
 	public void setUpSuite() throws Exception {
-		this.PROJECT = this.setUpScriptProject(PROJECT_NAME);
+		this.PROJECT = this.setUpScriptProject(PROJECT_NAME,
+				Activator.PLUGIN_ID);
 		super.setUpSuite();
 		waitUntilIndexesReady();
 	}

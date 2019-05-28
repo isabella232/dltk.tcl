@@ -41,7 +41,7 @@ public class CheckMethodExistanceTest extends AbstractModelTests {
 	private IProject project = null;
 
 	public CheckMethodExistanceTest() {
-		super(TclValidatorTestsPlugin.PLUGIN_ID, "CheckMethodExistanceTest");
+		super("CheckMethodExistanceTest");
 	}
 
 	public void setUpSuite() throws Exception {
@@ -52,7 +52,7 @@ public class CheckMethodExistanceTest extends AbstractModelTests {
 
 	private void init() throws CoreException, IOException {
 		if (this.project == null) {
-			this.project = setUpProject(CHECK_PROC_EXISTS_NAME);
+			this.project = setUpProject(CHECK_PROC_EXISTS_NAME, TclValidatorTestsPlugin.PLUGIN_ID);
 		}
 		waitForAutoBuild();
 		waitUntilIndexesReady();

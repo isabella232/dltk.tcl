@@ -3,7 +3,7 @@
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  *******************************************************************************/
@@ -30,7 +30,7 @@ public class SearchTests extends AbstractDLTKSearchTests
 	private static final String TCLSEARCH2 = "PROJ_TCLSearch2";
 
 	public SearchTests(String name) {
-		super(Activator.PLUGIN_ID, name);
+		super(name);
 	}
 
 	public static Suite suite() {
@@ -52,8 +52,9 @@ public class SearchTests extends AbstractDLTKSearchTests
 
 	private void up() throws Exception {
 		if (SCRIPT_PROJECT == null) {
-			SCRIPT_PROJECT = setUpScriptProjectTo(TCLSEARCH, "TCLSearch");
-			setUpScriptProjectTo(TCLSEARCH2, "TCLSearch2");
+			SCRIPT_PROJECT = setUpScriptProjectTo(TCLSEARCH, "TCLSearch",
+					Activator.PLUGIN_ID);
+			setUpScriptProjectTo(TCLSEARCH2, "TCLSearch2", Activator.PLUGIN_ID);
 			waitUntilIndexesReady();
 		}
 	}

@@ -26,13 +26,13 @@ public class XOTclSelectionTests extends AbstractModelCompletionTests {
 	private static final String SELECTION_PROJECT = "XOTCL_Selection";
 
 	public XOTclSelectionTests(String name) {
-		super(Activator.PLUGIN_ID, name);
+		super(name);
 		super.fTestProjectName = "org.eclipse.dltk.xotcl.core.tests";
 	}
 
 	public void setUpSuite() throws Exception {
 		if (PROJECT == null) {
-			PROJECT = setUpScriptProjectTo("XOTCL_Selection", "Selection");
+			PROJECT = setUpScriptProjectTo("XOTCL_Selection", "Selection", Activator.PLUGIN_ID);
 
 			super.setUpSuite();
 			waitUntilIndexesReady();

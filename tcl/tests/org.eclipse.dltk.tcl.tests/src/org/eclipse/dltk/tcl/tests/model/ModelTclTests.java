@@ -21,7 +21,7 @@ import org.eclipse.dltk.tcl.tests.TclTestsPlugin;
 
 public class ModelTclTests extends AbstractModelTests {
 	public ModelTclTests(String name) {
-		super(TclTestsPlugin.PLUGIN_NAME, name);
+		super(name);
 	}
 
 	public static Test suite() {
@@ -38,7 +38,7 @@ public class ModelTclTests extends AbstractModelTests {
 
 	public void testModel00_() throws Exception {
 		String prj = "model0";
-		IScriptProject project = setUpScriptProject(prj);
+		IScriptProject project = setUpScriptProject(prj, TclTestsPlugin.PLUGIN_NAME);
 
 		ISourceModule module = this.getSourceModule(prj, "", new Path("X.tcl"));
 
@@ -59,7 +59,7 @@ public class ModelTclTests extends AbstractModelTests {
 
 	public void testModel01() throws Exception {
 		String prj = "model1";
-		IScriptProject project = setUpScriptProject(prj);
+		IScriptProject project = setUpScriptProject(prj, TclTestsPlugin.PLUGIN_NAME);
 
 		ISourceModule module = this.getSourceModule(prj, "", new Path("X.tcl"));
 

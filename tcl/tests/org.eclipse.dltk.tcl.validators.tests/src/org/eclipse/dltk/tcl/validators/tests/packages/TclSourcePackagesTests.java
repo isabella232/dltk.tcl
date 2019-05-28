@@ -17,11 +17,7 @@ import org.eclipse.dltk.tcl.parser.tests.TestUtils;
 public class TclSourcePackagesTests extends AbstractModelTests {
 
 	public TclSourcePackagesTests(String name) {
-		super("org.eclipse.dltk.tcl.core.tests", name);
-	}
-
-	public TclSourcePackagesTests(String testProjectName, String name) {
-		super(testProjectName, name);
+		super(name);
 	}
 
 	public static Test suite() {

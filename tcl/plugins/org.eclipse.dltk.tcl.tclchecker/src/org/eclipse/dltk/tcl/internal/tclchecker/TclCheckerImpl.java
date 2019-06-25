@@ -3,7 +3,7 @@
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  *******************************************************************************/
@@ -37,7 +37,6 @@ public class TclCheckerImpl extends AbstractValidator {
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
 	public Object getValidator(IScriptProject project, Class validatorType) {
 		if (ISourceModuleValidator.class.equals(validatorType)) {
 			final ValidatorInstanceResponse response = TclCheckerConfigUtils.getConfiguration(project,

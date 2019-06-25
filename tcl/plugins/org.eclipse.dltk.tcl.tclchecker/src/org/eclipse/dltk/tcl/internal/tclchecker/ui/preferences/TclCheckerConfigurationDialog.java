@@ -141,7 +141,6 @@ public class TclCheckerConfigurationDialog extends StatusDialog {
 		}
 
 		@Override
-		@SuppressWarnings("unchecked")
 		public Object[] getElements(Object inputElement) {
 			if (inputElement instanceof List) {
 				return ((List) inputElement).toArray();

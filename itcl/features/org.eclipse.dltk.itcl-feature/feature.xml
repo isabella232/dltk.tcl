@@ -18,7 +18,7 @@
 <feature
       id="org.eclipse.dltk.itcl"
       label="%featureName"
-      version="5.11.0.qualifier"
+      version="6.0.0.qualifier"
       provider-name="%providerName"
       image="eclipse_update_120.jpg"
       license-feature="org.eclipse.license"
@@ -54,7 +54,7 @@ SPDX-License-Identifier: EPL-2.0
       <import plugin="org.eclipse.jface.text"/>
       <import plugin="org.eclipse.dltk.xotcl.core"/>
       <import plugin="org.eclipse.ui.editors"/>
-      <import feature="org.eclipse.dltk.tcl" version="5.0.0" match="compatible"/>
+      <import feature="org.eclipse.dltk.tcl" version="6.0.0" match="compatible"/>
    </requires>
 
    <plugin

@@ -1,9 +1,9 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2017 IBM Corporation and others.
+ * Copyright (c) 2000, 2020 IBM Corporation and others.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -49,7 +49,7 @@ public class TclBrowsingPerspectiveFactory implements IPerspectiveFactory {
 		// views - standard workbench
 		layout.addShowViewShortcut(IPageLayout.ID_OUTLINE);
 		layout.addShowViewShortcut(IPageLayout.ID_PROBLEM_VIEW);
-		layout.addShowViewShortcut(IPageLayout.ID_RES_NAV);
+		layout.addShowViewShortcut(IPageLayout.ID_PROJECT_EXPLORER);
 		layout.addShowViewShortcut(IPageLayout.ID_TASK_LIST);
 		layout.addShowViewShortcut(IProgressConstants.PROGRESS_VIEW_ID);
 		addActionSets(layout);
@@ -80,8 +80,8 @@ public class TclBrowsingPerspectiveFactory implements IPerspectiveFactory {
 				.createPlaceholderFolder("left", IPageLayout.LEFT, (float) 0.25, //$NON-NLS-1$
 						IPageLayout.ID_EDITOR_AREA);
 		placeHolderLeft.addPlaceholder(IPageLayout.ID_OUTLINE);
-		placeHolderLeft.addPlaceholder(DLTKUIPlugin.ID_SCRIPTEXPLORER);
-		placeHolderLeft.addPlaceholder(IPageLayout.ID_RES_NAV);
+		placeHolderLeft.addPlaceholder(DLTKUIPlugin.ID_SCRIPT_EXPLORER);
+		placeHolderLeft.addPlaceholder(IPageLayout.ID_PROJECT_EXPLORER);
 
 		IPlaceholderFolderLayout placeHolderBottom = layout
 				.createPlaceholderFolder("bottom", IPageLayout.BOTTOM, //$NON-NLS-1$

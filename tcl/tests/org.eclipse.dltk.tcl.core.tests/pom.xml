@@ -21,6 +21,7 @@
 			  <configuration>
 				  <testSuite>org.eclipse.dltk.tcl.core.tests</testSuite>
 				  <testClass>org.eclipse.dltk.tcl.core.tests.AllTests</testClass>
+				  <argLine>${tycho.testArgLine}</argLine>
 				  <dependencies>
 					  <dependency>
 						  <type>p2-installable-unit</type>

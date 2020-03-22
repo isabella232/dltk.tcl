@@ -10,6 +10,10 @@
   </parent>
   <artifactId>org.eclipse.dltk.xotcl.core.tests</artifactId>
   <packaging>eclipse-test-plugin</packaging>
+  <properties>
+    <sonar.sources></sonar.sources>
+    <sonar.tests>src</sonar.tests>
+  </properties>
   <build>
 	  <plugins>
 		  <plugin>

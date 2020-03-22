@@ -11,6 +11,10 @@
 	</parent>
 	<artifactId>tcl.tests</artifactId>
 	<packaging>pom</packaging>
+	<properties>
+		<sonar.sources></sonar.sources>
+		<sonar.tests>src</sonar.tests>
+	</properties>
 	<modules>
 		<module>org.eclipse.dltk.tcl.tests</module>
 		<module>org.eclipse.dltk.tcl.core.tests</module>
